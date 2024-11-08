@@ -124,18 +124,18 @@ BS <- 50
 BM <- 500
 BL <- 5000
 
-# Couches à extraire :
-#Layer_ALAN <- "/mnt/beegfs/ybas/SIG/SVDNB_npp_20160101-20161231_75N060W_vcm-orm-ntl_v10_c201807311200.avg_rade9.tif"
-folder_alan <- file.path(data_folder, "GIS", "ALAN")
-folder_vcf <- file.path(data_folder, "GIS", "VCF")
-# Layer_Alti <- file.path(loc, "data", "prep_data", "BDALTI")
-layer_alti <- file.path(data_folder, "GIS", "BDALTI")
-Layer_Carthage_P <- file.path(data_folder, "GIS", "BD_TOPAGE_2023-shp", "SurfaceElementaire_FXX.shp")
-Layer_Carthage_C <- file.path(data_folder, "GIS", "BD_TOPAGE_2023-shp", "TronconHydrographique_FXX.shp")
-folder_CLC <- file.path(data_folder, "GIS", "CLC")
-folder_OCS <- file.path(data_folder, "GIS", "OCS_OSO")
-folder_route <- file.path(data_folder, "GIS", "ROUTE500_3-0__SHP_LAMB93_FXX_2021-11-03")
-clim_norm_folder <- file.path(data_folder, "GIS", "CLIM_NORM")
+if (opt$region == "france_met"){
+  #  GIS Layers locations :
+  folder_alan <- file.path(data_folder, "GIS", "ALAN")
+  folder_vcf <- file.path(data_folder, "GIS", "VCF")
+  layer_alti <- file.path(data_folder, "GIS", "BDALTI")
+  Layer_Carthage_P <- file.path(data_folder, "GIS", "BD_TOPAGE_2023-shp", "SurfaceElementaire_FXX.shp")
+  Layer_Carthage_C <- file.path(data_folder, "GIS", "BD_TOPAGE_2023-shp", "TronconHydrographique_FXX.shp")
+  folder_CLC <- file.path(data_folder, "GIS", "CLC")
+  folder_OCS <- file.path(data_folder, "GIS", "OCS_OSO")
+  folder_route <- file.path(data_folder, "GIS", "ROUTE500_3-0__SHP_LAMB93_FXX_2021-11-03")
+  clim_norm_folder <- file.path(data_folder, "GIS", "CLIM_NORM")
+}
 
 ListLayer <- c(
   "ALAN", "Alti", "Carthage", "CLCraster", "OCS2018bis",
