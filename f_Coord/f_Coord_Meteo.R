@@ -1,6 +1,7 @@
 print("load Meteo")
 # points = FCoord
 library(dplyr)
+library(terra)
 library(sf)
 Coord_Meteo <- function(points) {
   if (opt$mode == "predict") {
@@ -16,6 +17,12 @@ Coord_Meteo <- function(points) {
   system(command)
 
   setwd(loc)
+
+  # now i need to calculate difference to normal:
+  # - load raster normals
+  # - get value at point
+  # - calculate difference (train, keep normals for predict)
+  # - remove other columns (or not)
 
   if (exists("date_pred")) {
     OccSL <- readr::read_delim(paste0(points, ".csv"), delim = ",") %>%
