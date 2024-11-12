@@ -85,28 +85,28 @@ def get_open_weather(in_gpdDF, monthly=False):
             hourly_data["is_day"] = hourly_is_day
             hourly_data["precipitations"] = precipitations
             hourly_dataframe = pd.DataFrame(data=hourly_data)
-            night_dataframe = hourly_dataframe[hourly_dataframe.is_day == 0]
-            night_dataframe["hour"] = night_dataframe.date.dt.hour
-            night_dataframe['date_nuit'] = np.where(night_dataframe.date.dt.hour > 12,
-                                                    night_dataframe.date,
-                                                    night_dataframe.date - dt.timedelta(days=1))
-            night_dataframe["month"] = night_dataframe.date_nuit.dt.month
-            night_dataframe.date_nuit = night_dataframe.date_nuit.dt.date
-            night_dataframe = night_dataframe[night_dataframe.month == int(
+            night_centered_dataframe = hourly_dataframe[hourly_dataframe.is_day == 0]
+            night_centered_dataframe["hour"] = night_centered_dataframe.date.dt.hour
+            night_centered_dataframe['date_nuit'] = np.where(night_centered_dataframe.date.dt.hour > 12,
+                                                             night_centered_dataframe.date,
+                                                             night_centered_dataframe.date - dt.timedelta(days=1))
+            night_centered_dataframe["month"] = night_centered_dataframe.date_nuit.dt.month
+            night_centered_dataframe.date_nuit = night_centered_dataframe.date_nuit.dt.date
+            night_centered_dataframe = night_centered_dataframe[night_centered_dataframe.month == int(
                 mois)]
-            mean_temp = night_dataframe.groupby(
+            mean_temp = night_centered_dataframe.groupby(
                 "date_nuit").temperature_2m.mean().median()
-            max_temp = night_dataframe.groupby(
+            max_temp = night_centered_dataframe.groupby(
                 "date_nuit").temperature_2m.max().median()
-            min_temp = night_dataframe.groupby(
+            min_temp = night_centered_dataframe.groupby(
                 "date_nuit").temperature_2m.min().median()
-            max_wind = night_dataframe.groupby(
+            max_wind = night_centered_dataframe.groupby(
                 "date_nuit").hourly_wind_speed_10m.max().median()
-            min_wind = night_dataframe.groupby(
+            min_wind = night_centered_dataframe.groupby(
                 "date_nuit").hourly_wind_speed_10m.min().median()
-            mean_wind = night_dataframe.groupby(
+            mean_wind = night_centered_dataframe.groupby(
                 "date_nuit").hourly_wind_speed_10m.mean().median()
-            total_precipitations = night_dataframe.groupby(
+            total_precipitations = night_centered_dataframe.groupby(
                 "date_nuit").precipitations.sum().median()
             in_gpdDF.loc[j, ("Spmean_temp")] = mean_temp
             in_gpdDF.loc[j, ("Spmax_temp")] = max_temp
@@ -154,22 +154,22 @@ def get_open_weather(in_gpdDF, monthly=False):
             hourly_data["is_day"] = hourly_is_day
             hourly_data["precipitations"] = precipitations
             hourly_dataframe = pd.DataFrame(data=hourly_data)
-            night_dataframe = hourly_dataframe[hourly_dataframe.is_day == 0]
-            night_dataframe = night_dataframe[((night_dataframe.date.dt.strftime('%Y-%m-%d')
-                                              == str(date)) &
-                                              (night_dataframe.date.dt.strftime('%H').astype(int)
-                                               > 12)) |
-                                              ((night_dataframe.date.dt.strftime('%Y-%m-%d')
-                                                == str(fin_nuit)) &
-                                               (night_dataframe.date.dt.strftime('%H').astype(int)
-                                                  < 12))]
-            mean_temp = night_dataframe.temperature_2m.mean()
-            max_temp = night_dataframe.temperature_2m.max()
-            min_temp = night_dataframe.temperature_2m.min()
-            max_wind = night_dataframe.hourly_wind_speed_10m.max()
-            min_wind = night_dataframe.hourly_wind_speed_10m.min()
-            mean_wind = night_dataframe.hourly_wind_speed_10m.mean()
-            total_precipitations = night_dataframe.precipitations.sum()
+            night_centered_dataframe = hourly_dataframe[hourly_dataframe.is_day == 0]
+            night_centered_dataframe = night_centered_dataframe[((night_centered_dataframe.date.dt.strftime('%Y-%m-%d')
+                                                                  == str(date)) &
+                                                                 (night_centered_dataframe.date.dt.strftime('%H').astype(int)
+                                                                  > 12)) |
+                                                                ((night_centered_dataframe.date.dt.strftime('%Y-%m-%d')
+                                                                  == str(fin_nuit)) &
+                                                                 (night_centered_dataframe.date.dt.strftime('%H').astype(int)
+                                                                    < 12))]
+            mean_temp = night_centered_dataframe.temperature_2m.mean()
+            max_temp = night_centered_dataframe.temperature_2m.max()
+            min_temp = night_centered_dataframe.temperature_2m.min()
+            max_wind = night_centered_dataframe.hourly_wind_speed_10m.max()
+            min_wind = night_centered_dataframe.hourly_wind_speed_10m.min()
+            mean_wind = night_centered_dataframe.hourly_wind_speed_10m.mean()
+            total_precipitations = night_centered_dataframe.precipitations.sum()
             in_gpdDF.loc[j, ("Spmean_temp")] = mean_temp
             in_gpdDF.loc[j, ("Spmax_temp")] = max_temp
             in_gpdDF.loc[j, ("Spmin_temp")] = min_temp
@@ -250,28 +250,28 @@ def get_open_weather_api_key(in_gpdDF, monthly=False):
             hourly_data["is_day"] = hourly_is_day
             hourly_data["precipitations"] = precipitations
             hourly_dataframe = pd.DataFrame(data=hourly_data)
-            night_dataframe = hourly_dataframe[hourly_dataframe.is_day == 0]
-            night_dataframe["hour"] = night_dataframe.date.dt.hour
-            night_dataframe['date_nuit'] = np.where(night_dataframe.date.dt.hour > 12,
-                                                    night_dataframe.date,
-                                                    night_dataframe.date - dt.timedelta(days=1))
-            night_dataframe["month"] = night_dataframe.date_nuit.dt.month
-            night_dataframe.date_nuit = night_dataframe.date_nuit.dt.date
-            night_dataframe = night_dataframe[night_dataframe.month == int(
+            night_centered_dataframe = hourly_dataframe[hourly_dataframe.is_day == 0]
+            night_centered_dataframe["hour"] = night_centered_dataframe.date.dt.hour
+            night_centered_dataframe['date_nuit'] = np.where(night_centered_dataframe.date.dt.hour > 12,
+                                                             night_centered_dataframe.date,
+                                                             night_centered_dataframe.date - dt.timedelta(days=1))
+            night_centered_dataframe["month"] = night_centered_dataframe.date_nuit.dt.month
+            night_centered_dataframe.date_nuit = night_centered_dataframe.date_nuit.dt.date
+            night_centered_dataframe = night_centered_dataframe[night_centered_dataframe.month == int(
                 mois)]
-            mean_temp = night_dataframe.groupby(
+            mean_temp = night_centered_dataframe.groupby(
                 "date_nuit").temperature_2m.mean().median()
-            max_temp = night_dataframe.groupby(
+            max_temp = night_centered_dataframe.groupby(
                 "date_nuit").temperature_2m.max().median()
-            min_temp = night_dataframe.groupby(
+            min_temp = night_centered_dataframe.groupby(
                 "date_nuit").temperature_2m.min().median()
-            max_wind = night_dataframe.groupby(
+            max_wind = night_centered_dataframe.groupby(
                 "date_nuit").hourly_wind_speed_10m.max().median()
-            min_wind = night_dataframe.groupby(
+            min_wind = night_centered_dataframe.groupby(
                 "date_nuit").hourly_wind_speed_10m.min().median()
-            mean_wind = night_dataframe.groupby(
+            mean_wind = night_centered_dataframe.groupby(
                 "date_nuit").hourly_wind_speed_10m.mean().median()
-            total_precipitations = night_dataframe.groupby(
+            total_precipitations = night_centered_dataframe.groupby(
                 "date_nuit").precipitations.sum().median()
             in_gpdDF.loc[j, ("Spmean_temp")] = mean_temp
             in_gpdDF.loc[j, ("Spmax_temp")] = max_temp
@@ -304,7 +304,7 @@ def get_open_weather_api_key(in_gpdDF, monthly=False):
             # on params order
             hourly_temperature_2m = hourly.Variables(0).ValuesAsNumpy()
             hourly_wind_speed_10m = hourly.Variables(1).ValuesAsNumpy()
-            hourly_wind_direction_10m = hourly.Variables(2).ValuesAsNumpy()
+            # hourly_wind_direction_10m = hourly.Variables(2).ValuesAsNumpy()
             hourly_is_day = hourly.Variables(3).ValuesAsNumpy()
             precipitations = hourly.Variables(4).ValuesAsNumpy()
             hourly_data = {"date": pd.date_range(
@@ -317,31 +317,31 @@ def get_open_weather_api_key(in_gpdDF, monthly=False):
             )}
             hourly_data["temperature_2m"] = hourly_temperature_2m
             hourly_data["hourly_wind_speed_10m"] = hourly_wind_speed_10m
-            hourly_data["hourly_wind_direction_10m"] = hourly_wind_direction_10m
-            hourly_data["is_day"] = hourly_is_day
+            # hourly_data["hourly_wind_direction_10m"] = hourly_wind_direction_10m
+            # hourly_data["is_day"] = hourly_is_day
             hourly_data["precipitations"] = precipitations
             hourly_dataframe = pd.DataFrame(data=hourly_data)
-            night_dataframe = hourly_dataframe[hourly_dataframe.is_day == 0]
-            night_dataframe = night_dataframe[((night_dataframe.date.dt.strftime('%Y-%m-%d')
-                                              == str(date)) &
-                                              (night_dataframe.date.dt.strftime('%H').astype(int)
-                                               > 12)) |
-                                              ((night_dataframe.date.dt.strftime('%Y-%m-%d')
-                                                == str(fin_nuit)) &
-                                               (night_dataframe.date.dt.strftime('%H').astype(int)
-                                                  < 12))]
-            mean_temp = night_dataframe.temperature_2m.mean()
-            max_temp = night_dataframe.temperature_2m.max()
-            min_temp = night_dataframe.temperature_2m.min()
-            max_wind = night_dataframe.hourly_wind_speed_10m.max()
-            min_wind = night_dataframe.hourly_wind_speed_10m.min()
-            mean_wind = night_dataframe.hourly_wind_speed_10m.mean()
-            total_precipitations = night_dataframe.precipitations.sum()
+            # night_centered_dataframe = hourly_dataframe[hourly_dataframe.is_day == 0]
+            night_centered_dataframe = night_centered_dataframe[((night_centered_dataframe.date.dt.strftime('%Y-%m-%d')
+                                                                  == str(date)) &
+                                                                 (night_centered_dataframe.date.dt.strftime('%H').astype(int)
+                                                                  > 12)) |
+                                                                ((night_centered_dataframe.date.dt.strftime('%Y-%m-%d')
+                                                                  == str(fin_nuit)) &
+                                                                 (night_centered_dataframe.date.dt.strftime('%H').astype(int)
+                                                                    <= 12))]
+            mean_temp = night_centered_dataframe.temperature_2m.mean()
+            # max_temp = night_centered_dataframe.temperature_2m.max()
+            # min_temp = night_centered_dataframe.temperature_2m.min()
+            # max_wind = night_centered_dataframe.hourly_wind_speed_10m.max()
+            # min_wind = night_centered_dataframe.hourly_wind_speed_10m.min()
+            mean_wind = night_centered_dataframe.hourly_wind_speed_10m.mean()
+            total_precipitations = night_centered_dataframe.precipitations.sum()
             in_gpdDF.loc[j, ("Spmean_temp")] = mean_temp
-            in_gpdDF.loc[j, ("Spmax_temp")] = max_temp
-            in_gpdDF.loc[j, ("Spmin_temp")] = min_temp
-            in_gpdDF.loc[j, ("Spmin_wind")] = min_wind
-            in_gpdDF.loc[j, ("Spmax_wind")] = max_wind
+            # in_gpdDF.loc[j, ("Spmax_temp")] = max_temp
+            # in_gpdDF.loc[j, ("Spmin_temp")] = min_temp
+            # in_gpdDF.loc[j, ("Spmin_wind")] = min_wind
+            # in_gpdDF.loc[j, ("Spmax_wind")] = max_wind
             in_gpdDF.loc[j, ("Spmean_wind")] = mean_wind
             in_gpdDF.loc[j, ("Sptotal_precipitations")] = total_precipitations
     return in_gpdDF
