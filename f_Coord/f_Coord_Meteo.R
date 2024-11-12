@@ -5,7 +5,7 @@ library(sf)
 Coord_Meteo <- function(points) {
   if (opt$mode == "predict") {
     mode <- "predict"
-    command <- paste0("python3 get_meteo.py --mode ", mode, " --date ", date_pred, " --file ", points, ".csv")
+    command <- paste0("python3 get_meteo.py --mode ", mode, " --date ", opt$date, " --file ", points, ".csv")
   } else {
     mode <- "train"
     command <- paste0("python3 get_meteo.py --mode ", mode, " --file ", points, ".csv")
