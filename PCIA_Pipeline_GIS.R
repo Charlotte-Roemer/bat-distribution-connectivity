@@ -98,11 +98,11 @@ if (opt$mode == "train") {
   )
   locs$fortnight_year <- paste0(locs$fortnight, "_", format(as.Date(locs$Nuit), "%Y"))
 
-  locs_l93 <- locs %>% sf::st_transform(2154)
+  locs_etrs89 <- locs %>% sf::st_transform(3035)
 
   grid_file <- file.path(data_folder, "GIS", paste0("SysGrid_500m_de_cote_", opt$region, ".csv"))
   study_area <- st_read(zone_file, layer = opt$region)
-  study_area_m <- st_transform(study_area, 2154)
+  study_area_m <- st_transform(study_area, 3035)
   study_area_m_buf <- st_buffer(study_area_m, 250)
 
   xmin <- st_bbox(study_area_m_buf)["xmin"] - 250
@@ -122,16 +122,16 @@ if (opt$mode == "train") {
 
   grid_polyg$grid_id <- seq(1, nrow(grid_polyg))
 
-  locs_l93 <- st_join(locs_l93, grid_polyg, join = st_covered_by)
-  width <- nchar(as.character(max(locs_l93$grid_id)))
-  locs_l93$code <- paste0(
-    str_pad(locs_l93$grid_id, width = width, pad = "0"),
+  locs_etrs89 <- st_join(locs_etrs89, grid_polyg, join = st_covered_by)
+  width <- nchar(as.character(max(locs_etrs89$grid_id)))
+  locs_etrs89$code <- paste0(
+    str_pad(locs_etrs89$grid_id, width = width, pad = "0"),
     "-",
-    locs_l93$fortnight
+    locs_etrs89$fortnight
   )
 
 
-  codes <- locs_l93 %>% dplyr::select(FID, code)
+  codes <- locs_etrs89 %>% dplyr::select(FID, code)
   codes <- codes %>% sf::st_drop_geometry()
   locs <- locs %>% dplyr::left_join(codes, by = "FID")
   locs <- locs %>%
