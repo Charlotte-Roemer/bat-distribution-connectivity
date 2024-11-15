@@ -1,4 +1,3 @@
-# install.packages("exactextractr")
 library(exactextractr)
 library(svDialogs)
 library(optparse)
@@ -18,7 +17,8 @@ option_list <- list(
   ),
   optparse::make_option(c("-r", "--region"),
     type = "character", default = "france_met",
-    help = 'Set region of interest between "france_met" (default), "europe", "idf"'
+    help = 'Set region of interest between "france_met" (default),
+ "europe", "idf"'
   ),
   optparse::make_option(c("-d", "--date"),
     type = "character", default = NULL,
@@ -44,8 +44,8 @@ if (is.null(opt$region)) {
 
 data_folder <- data_path
 zone_file <- file.path(data_folder, "GIS", "regions.gpkg")
-dir.create(file.path(data_folder, "observations", "obs_vars"))
-dir.create(file.path(data_folder, "observations", "pred_vars"))
+dir.create(file.path(data_folder, "observations", "obs_vars"), showWarnings = FALSE)
+dir.create(file.path(data_folder, "observations", "pred_vars"), showWarnings = FALSE)
 
 obs_vars_folder <- file.path(data_folder, "observations", "obs_vars")
 pred_vars_folder <- file.path(data_folder, "observations", "pred_vars")
@@ -58,7 +58,7 @@ pred_vars_folder <- file.path(data_folder, "observations", "pred_vars")
 # }
 # }
 
-zone <- st_read(zone_file, layer = "france_met")
+zone <- sf::st_read(zone_file, layer = "france_met")
 
 
 # Localisation des fonctions d’extraction (relative à loc) :
@@ -84,6 +84,7 @@ if (opt$mode == "predict") {
 # Pipeline <- "exists"
 
 if (opt$mode == "train") {
+
   nuits_obs_file <- file.path(data_folder, "observations", "parti_unique_non_confi.csv")
   nuits_obs <- read.csv2(nuits_obs_file)
   nuits_obs$X <- nuits_obs$longitude
