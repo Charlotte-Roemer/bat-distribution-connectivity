@@ -1,6 +1,6 @@
 print("load ALAN")
 
-Coord_ALAN <- function(points, names_coord, bm, bl, layers) {
+Coord_ALAN <- function(points, names_coord, bm, bl, layers){
   print("ALAN")
   library(data.table)
   library(terra)

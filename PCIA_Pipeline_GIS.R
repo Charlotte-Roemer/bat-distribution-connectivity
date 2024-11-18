@@ -114,7 +114,7 @@ if (opt$mode == "train") {
                                 )
                          )
   study_area <- st_read(zone_file, layer = opt$region)
-  study_area_m <- st_transform(study_area, 3035)
+  study_area_m <- st_transform(tudy_area, 3035)
   study_area_m_buf <- st_buffer(study_area_m, 250)
 
   xmin <- st_bbox(study_area_m_buf)["xmin"] - 250
@@ -179,7 +179,7 @@ if (opt$region == "france_met") {
   folder_OCS <- file.path(data_folder, "GIS", "OCS_OSO")
   folder_route <- file.path(data_folder, "GIS", "ROUTE500_3-0__SHP_LAMB93_FXX_2021-11-03")
   clim_norm_folder <- file.path(data_folder, "GIS", "CLIM_NORM")
-  wind_turbines_file <- file.path(data_folder, "GIS", "wind_turbines", "Mats_service_TOTAL.shp")
+  layer_wind_turbines <- file.path(data_folder, "GIS", "wind_turbines", "Mats_service_TOTAL.shp")
   
 }
 
@@ -227,8 +227,16 @@ Coord_Alti(
   bl = BL,
   layer = layer_alti
 )
-Sys.time()
 
+### Wind Turbines ###
+print("Wind Turbines")
+
+Coord_eol(points = Fcoord,
+          names_coord = Coord_Headers,
+          bs = BS,
+          bm = BM,
+          bl = BL,
+          layer = layer_wind_turbines)
 
 #### CARTHAGE (eau) ####
 print("Water")
