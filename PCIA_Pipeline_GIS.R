@@ -168,6 +168,8 @@ if (opt$region == "france_met") {
   folder_OCS <- file.path(data_folder, "GIS", "OCS_OSO")
   folder_route <- file.path(data_folder, "GIS", "ROUTE500_3-0__SHP_LAMB93_FXX_2021-11-03")
   clim_norm_folder <- file.path(data_folder, "GIS", "CLIM_NORM")
+  wind_turbines_file <- file.path(data_folder, "GIS", "wind_turbines", "Mats_service_TOTAL.shp")
+  
 }
 
 ListLayer <- c(
