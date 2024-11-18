@@ -1,5 +1,3 @@
-Test=T
-if(exists("Pipeline")){Test=F}
 Coord_BioclimLocal=function(points,names_coord,bm,bl,layer,layCorr)
 {
   library(data.table)
@@ -100,21 +98,5 @@ Coord_BioclimLocal=function(points,names_coord,bm,bl,layer,layCorr)
   colnames(OccSL_All)[colnames(OccSL_All) == 'longitude'] = "X"
   
   fwrite(OccSL_All,paste0(FOccSL,"_Bioclim.csv"))
-  
-  
 }
 
-if(Test)
-{
-  #for test
-  Coord_BioclimLocal(
-    points="mnt/GI/SysGrid_Radius_930000_810000_2e+05" #table giving coordinates in WGS84
-    ,
-    names_coord=c("decimalLongitude","decimalLatitude") #vector of two values giving 
-    ,
-    layer="mnt/SIG/Bioclim30s"
-    ,
-    layCorr="mnt/SIG/BioclimGross/GrossV.shp"
-  )
-  
-}

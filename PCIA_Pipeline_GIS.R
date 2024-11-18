@@ -85,7 +85,9 @@ if (opt$mode == "predict") {
 
 if (opt$mode == "train") {
 
-  nuits_obs_file <- file.path(data_folder, "observations", "parti_unique_non_confi.csv")
+  nuits_obs_file <- file.path(data_folder,
+                              "observations",
+                              "parti_unique_non_confi.csv")
   nuits_obs <- read.csv2(nuits_obs_file)
   nuits_obs$X <- nuits_obs$longitude
   nuits_obs$Y <- nuits_obs$latitude
@@ -97,11 +99,20 @@ if (opt$mode == "train") {
     as.integer(format(as.Date(locs$Nuit), "%m")) * 2 - 1,
     as.integer(format(as.Date(locs$Nuit), "%m")) * 2
   )
-  locs$fortnight_year <- paste0(locs$fortnight, "_", format(as.Date(locs$Nuit), "%Y"))
+  locs$fortnight_year <- paste0(locs$fortnight,
+                                "_",
+                                format(as.Date(locs$Nuit), "%Y")
+                                )
 
   locs_etrs89 <- locs %>% sf::st_transform(3035)
 
-  grid_file <- file.path(data_folder, "GIS", paste0("SysGrid_500m_de_cote_", opt$region, ".csv"))
+  grid_file <- file.path(data_folder,
+                         "GIS",
+                         paste0("SysGrid_500m_de_cote_",
+                                opt$region,
+                                ".csv"
+                                )
+                         )
   study_area <- st_read(zone_file, layer = opt$region)
   study_area_m <- st_transform(study_area, 3035)
   study_area_m_buf <- st_buffer(study_area_m, 250)
@@ -146,7 +157,7 @@ if (opt$mode == "train") {
   GridName <- basename(FCoord)
   rm(grid_polyg)
 } else {
-  FCoord <- file.path(data_vc, paste0("SysGrid_500m_de_cote_", opt$region))
+  FCoord <- file.path(pred_vars_folder, paste0("SysGrid_500m_de_cote_", opt$region))
   GridName <- basename(FCoord)
 }
 

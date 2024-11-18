@@ -1,3 +1,6 @@
+library(sf)
+library(data.table)
+library(tidyverse)
 
 # #Test
 # points = FCoord
@@ -6,8 +9,6 @@
 # bm = BM
 # bl = BL
 # layer1 = Layer_eoliennes
-# VCFolder = FolderVC
-# NameGrid = GridName
 
 
 ##########INPUTS################
@@ -17,15 +18,9 @@
 
 "extraction of data"
 
-Coord_eol <- function(points, names_coord, bs, bm, bl, layer1, VCFolder, NameGrid) {
-  library(sf)
-  library(data.table)
-  library(tidyverse)
-
+Coord_eol <- function(points, names_coord, bs, bm, bl, layer){
   print("a")
-
   FOccSL <- points # grid points
-  #OccSL=read_sf(dsn = VCFolder, layer = NameGrid)
   OccSL = read_delim(paste0(FOccSL, ".csv")) %>%
     select(names_coord)
   OccSL$FID <- c(1:nrow(OccSL))
@@ -64,15 +59,9 @@ Coord_eol <- function(points, names_coord, bs, bm, bl, layer1, VCFolder, NameGri
   BufferS$pt_count <- st_intersects(BufferS, R1) %>%
     lengths()
 
-  # ggplot(SpEol, aes(fill=pt_count)) +
-  #   geom_sf() +
-  #   scale_fill_gradientn(colours=rev(magma(6))) +
-  #   scale_x_continuous(limits= c(0,0.1)) +
-  #   scale_y_continuous(limits= c(42.7, 42.8))
-
   SpEol <- BufferS
 
-  if (length(BufferS$pt_count) > 0) {
+  if (length(BufferS$pt_count) > 0){
     PC_50 <- aggregate(SpEol$pt_count, by = list(SpEol$FID), FUN = sum)
     names(PC_50)[ncol(PC_50)] <- "SpRo_S"
     OccSL_Re <- merge(OccSL,PC_50, by.x = "FID", by.y = "Group.1", all.x = ,TRUE)
@@ -103,14 +92,14 @@ Coord_eol <- function(points, names_coord, bs, bm, bl, layer1, VCFolder, NameGri
 
   SpEol <- BufferM
 
-  if (length(BufferM$pt_count) > 0) {
+  if (length(BufferM$pt_count) > 0){
     Sys.time()
     PC_50 <- aggregate(SpEol$pt_count, by = list(SpEol$FID), FUN = sum)
     names(PC_50)[ncol(PC_50)] <- "SpRo_M"
     OccSL_Re=merge(OccSL_Re,PC_50, by.x = "FID", by.y = "Group.1", all.x = TRUE)
     OccSL_Re$SpRo_M[is.na(OccSL_Re$SpRo_M)] <- 0
 
-  }else{
+  } else {
     OccSL_Re$SpRo_M <- 0
   }
 
@@ -134,7 +123,7 @@ Coord_eol <- function(points, names_coord, bs, bm, bl, layer1, VCFolder, NameGri
 
   SpEol=BufferL
 
-  if (length(BufferL$pt_count) > 0) {
+  if (length(BufferL$pt_count) > 0){
     PC_50 <- aggregate(SpEol$pt_count, by = list(SpEol$FID), FUN = sum)
     names(PC_50)[ncol(PC_50)] <- "SpRo_L"
     OccSL_Re <- merge(OccSL_Re,PC_50, by.x = "FID", by.y = "Group.1", all.x=TRUE)
