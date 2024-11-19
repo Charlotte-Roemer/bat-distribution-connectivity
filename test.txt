@@ -1,6 +1,7 @@
-!$ une ligne à supprimer en ligne
-du texte à modifier en ligne
+
+du texte à pas trop modifier en ligne quand même
 
 du texte à pas modiffier en ligne
 
 j’ajoute une ligne
+c'est nouveau
