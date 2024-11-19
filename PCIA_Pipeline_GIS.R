@@ -10,6 +10,7 @@ source("variables.R")
 # Setup project folder (must contain folders scripts, data, outputs):
 setwd(project_path) # dossier dans lequel
 
+## Script is called with Rscript and options :
 option_list <- list(
   optparse::make_option(c("-m", "--mode"),
     type = "character", default = NULL,
@@ -34,16 +35,16 @@ option_list <- list(
   )
 )
 
+# Parse options to opt object
 opt_parser <- OptionParser(option_list = option_list)
 opt <- parse_args(opt_parser)
 
-if (is.null(opt$region)) {
-  print_help(opt_parser)
-  stop("At least one region must be supplied from france_met, europe, idf with argument --region")
-}
+## Setting variables from variables.R
 
 data_folder <- data_path
 zone_file <- file.path(data_folder, "GIS", "regions.gpkg")
+
+## creating folders to receive the extracted variables if they don’t exist
 dir.create(file.path(data_folder, "observations", "obs_vars"), showWarnings = FALSE)
 dir.create(file.path(data_folder, "observations", "pred_vars"), showWarnings = FALSE)
 
@@ -57,11 +58,13 @@ pred_vars_folder <- file.path(data_folder, "observations", "pred_vars")
 # dir.create(file.path(pred_vars_folder, folder_name), showWarnings = FALSE)
 # }
 # }
+
+## loading study area
 # change to zone <− sf::st_read(zone_file, layer = opt$region) in production
 zone <- sf::st_read(zone_file, layer = "france_met")
 
 
-# Localisation des fonctions d’extraction (relative à loc) :
+## Function folder :
 folderfun <- file.path(project_path, "f_Coord")
 
 
@@ -88,10 +91,11 @@ if (opt$mode == "predict") {
 # end of replacement
 
 
-# Pipeline <- "exists"
-
+## To extract predictors on observation points :
 if (opt$mode == "train") {
-
+  
+  ## Load file with "latitude" "longitude" and "Nuit" (date) columns
+  ## CRS must be 4326
   nuits_obs_file <- file.path(data_folder,
                               "observations",
                               "parti_unique_non_confi.csv")
@@ -100,7 +104,7 @@ if (opt$mode == "train") {
   nuits_obs$Y <- nuits_obs$latitude
 
   locs <- sf::st_as_sf(nuits_obs, coords = c("X", "Y"), crs = 4326)
-# rapide
+  ## rapide
   locs <- locs[zone, ]
   ## long
   ## locs_intersects <- sf::st_intersection(locs, zone)  
