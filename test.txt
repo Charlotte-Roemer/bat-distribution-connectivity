@@ -1,0 +1,4 @@
+!$ une ligne à supprimer en ligne
+du texte à modifier en ligne
+
+du texte à pas modiffier en ligne
