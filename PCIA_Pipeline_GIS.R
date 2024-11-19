@@ -96,7 +96,7 @@ if (opt$mode == "train") {
 
   locs_index <- locs[zone, ]
 
-  nrow(locs)
+  nrow(locs_intersects)
 
   locs_intersects <- sf::st_intersection(locs, zone)  
 
@@ -122,7 +122,8 @@ if (opt$mode == "train") {
                                 )
                          )
   study_area <- st_read(zone_file, layer = opt$region)
-  study_area_m <- st_transform(tudy_area, 3035)
+  # buffer size is to be adapted depending on the study region 
+  study_area_m <- st_transform(study_area, 3035)
   study_area_m_buf <- st_buffer(study_area_m, 250)
 
   xmin <- st_bbox(study_area_m_buf)["xmin"] - 250
