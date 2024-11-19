@@ -4,3 +4,6 @@ du texte à modifier en ligne
 du texte à pas modiffier en ligne
 
 j’ajoute une ligne
+et une autre (erreur)
+
+CElle la est à garder
