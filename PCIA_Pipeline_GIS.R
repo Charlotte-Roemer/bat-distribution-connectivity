@@ -65,6 +65,13 @@ zone <- sf::st_read(zone_file, layer = "france_met")
 folderfun <- file.path(project_path, "f_Coord")
 
 
+# for testing purposes
+
+## opt <- NA
+## opt$region <- "france_met"
+## opt$mode <- "train"
+
+
 # FCoord varie selon qu’on soit sur les observations ou de la préparation
 # de données de prédiction
 
@@ -93,13 +100,12 @@ if (opt$mode == "train") {
   nuits_obs$Y <- nuits_obs$latitude
 
   locs <- sf::st_as_sf(nuits_obs, coords = c("X", "Y"), crs = 4326)
+# rapide
+  locs <- locs[zone, ]
+  ## long
+  ## locs_intersects <- sf::st_intersection(locs, zone)  
 
-  locs_index <- locs[zone, ]
-
-  nrow(locs_intersects)
-
-  locs_intersects <- sf::st_intersection(locs, zone)  
-
+  locs <- locs %>% dplyr::select(X, Y, Nuit)
   locs$FID <- 1:nrow(locs)
   # setting the fortnight number (1-24) :
   locs$fortnight <-
