@@ -57,7 +57,7 @@ pred_vars_folder <- file.path(data_folder, "observations", "pred_vars")
 # dir.create(file.path(pred_vars_folder, folder_name), showWarnings = FALSE)
 # }
 # }
-
+# change to zone <− sf::st_read(zone_file, layer = opt$region) in production
 zone <- sf::st_read(zone_file, layer = "france_met")
 
 
@@ -91,11 +91,19 @@ if (opt$mode == "train") {
   nuits_obs <- read.csv2(nuits_obs_file)
   nuits_obs$X <- nuits_obs$longitude
   nuits_obs$Y <- nuits_obs$latitude
+
   locs <- sf::st_as_sf(nuits_obs, coords = c("X", "Y"), crs = 4326)
-  locs <- sf::st_intersection(locs$geometry, zone)
+
+  locs_index <- locs[zone, ]
+
+  nrow(locs)
+
+  locs_intersects <- sf::st_intersection(locs, zone)  
+
   locs$FID <- 1:nrow(locs)
   # setting the fortnight number (1-24) :
-  locs$fortnight <- ifelse(as.integer(format(as.Date(locs$Nuit), "%d")) <= 15,
+  locs$fortnight <-
+    ifelse(as.integer(format(as.Date(locs$Nuit), "%d")) <= 15,
     as.integer(format(as.Date(locs$Nuit), "%m")) * 2 - 1,
     as.integer(format(as.Date(locs$Nuit), "%m")) * 2
   )
