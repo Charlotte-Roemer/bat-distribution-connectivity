@@ -36,17 +36,13 @@ Coord_BioclimLocal <- function(points, names_coord, layer_folder, layCorr) {
     rasti <- terra::rast(asc_files[i])
     Sys.time()
     SpBioci <- terra::extract(rasti, OccSL)
-    print(paste(i, Sys.time()))
-    print(head(SpBioci))
-    print("on ajoute la colonne :")
     OccSL$SpBioci <- SpBioci[, 2]
 
     NumBioci <- data.table::tstrsplit(basename(asc_files[i]), split = "_")[[4]]
     NumBioci <- gsub(".tif", "", NumBioci)
-    print("on nomme la colonne avec ")
-    print(NumBioci)
+    print(paste0("extracting : SpBioC", NumBioci))
 
-    names(OccSL)[ncol(OccSL)] <- paste0("SpBioC",NumBioci)
+    names(OccSL)[ncol(OccSL)] <- paste0("SpBioC", NumBioci)
   }
 
   #multiplier par 10 : 1-2 4-11
@@ -77,7 +73,7 @@ Coord_BioclimLocal <- function(points, names_coord, layer_folder, layCorr) {
     # Extract GrossBioclim variables
     print("extracting bioclim for points at sea")
 
-    print(names(OccSL_NA))
+    ## print(names(OccSL_NA))
 
     OccSL_NA_pour_inter <- OccSL_NA %>%
       select(-starts_with("SpBio"))
@@ -92,19 +88,19 @@ Coord_BioclimLocal <- function(points, names_coord, layer_folder, layCorr) {
 
     names(OccSL_NAdd)[names(OccSL_NAdd) == 'num.site'] <- "num site"
 
+    print("drop geometry a")
     OccSL_A <- sf::st_drop_geometry(OccSL_A)
-    OccSL_NAdd <- sf::st_drop_geometry(OccSL_NAdd)
-
     ## OccSL_A <- OccSL_A %>%
-    ##     select(!geometry) %>%
+    ##     select(-geometry) %>%
     ##     as.data.frame()
 
-  ## OccSL_NAdd <- OccSL_NAdd %>%
-  ##   select(!geometry) %>%
-  ##   as.data.frame()
+    print("drop geometry nadd")
 
-    print(names(OccSL_A))
-    print(names(OccSL_NAdd))
+    OccSL_NAdd <- sf::st_drop_geometry(OccSL_NAdd)
+    OccSL_NAdd <- OccSL_NAdd %>%
+      select(-geometry) %>%
+      as.data.frame()
+
 
     OccSL_All <- rbind(OccSL_A, OccSL_NAdd)
 
@@ -118,6 +114,6 @@ Coord_BioclimLocal <- function(points, names_coord, layer_folder, layCorr) {
   colnames(OccSL_All)[colnames(OccSL_All) == 'latitude'] <- "Y"
   colnames(OccSL_All)[colnames(OccSL_All) == 'longitude'] <- "X"
 
-  fwrite(OccSL_All,paste0(FOccSL,"_Bioclim.csv"))
-  head(OccSL_All)
+  print(paste0("Writing file ", FOccSL, "_Bioclim.csv"))
+  fwrite(OccSL_All, paste0(FOccSL, "_Bioclim.csv"))
 }
