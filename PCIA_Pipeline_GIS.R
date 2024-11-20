@@ -105,6 +105,7 @@ if (opt$mode == "train") {
 
   locs <- sf::st_as_sf(nuits_obs, coords = c("X", "Y"), crs = 4326)
   ## rapide
+
   locs <- locs[zone, ]
   ## long
   ## locs_intersects <- sf::st_intersection(locs, zone)  
