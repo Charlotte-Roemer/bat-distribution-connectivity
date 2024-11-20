@@ -55,15 +55,21 @@ Coord_CLCraster <- function(points, names_coord, bm, bl, layer) {
     full.names = TRUE
   )
 
-  clc_annees <- as.vector(as.integer(
+
+clc_annees <- as.vector(
+  as.integer(
     substring(
       sapply(
-        strsplit(
-          clc_files, "_"
-        ), "[", 4
+        str_split(
+          tools::file_path_sans_ext(
+            basename(clc_files)
+          ), "_"
+        ), "[", 2
       ), 4, 7
     )
-  ))
+  )
+)
+
 
   # extract CLC habitats
   options(dplyr.summarise.inform = FALSE) # to quiet the message produced by the sumarize function below

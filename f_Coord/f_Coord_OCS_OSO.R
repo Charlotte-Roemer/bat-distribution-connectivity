@@ -57,8 +57,7 @@ Coord_OCS_OSO <- function(points, names_coord, bs, bm, layer) {
   tableaux_m <- list()
   tableaux_s <- list()
 
-  x,,
-  ocs_annes <- as.vector(
+  ocs_annees <- as.vector(
     as.integer(
       sapply(
         str_split(

@@ -70,9 +70,9 @@ folderfun <- file.path(project_path, "f_Coord")
 
 # for testing purposes
 
-## opt <- NA
-## opt$region <- "france_met"
-## opt$mode <- "train"
+opt <- NA
+opt$region <- "france_met"
+opt$mode <- "train"
 
 
 # FCoord varie selon qu’on soit sur les observations ou de la préparation
@@ -103,7 +103,7 @@ if (opt$mode == "train") {
   nuits_obs$X <- nuits_obs$longitude
   nuits_obs$Y <- nuits_obs$latitude
 
-  locs <- sf::st_as_sf(nuits_obs, coords = c("X", "Y"), crs = 4326)
+  locs <- sf::st_as_sf(nuits_obs, coords = c("X", "Y"), remove = FALSE, crs = 4326)
   ## rapide
 
   locs <- locs[zone, ]
@@ -169,8 +169,8 @@ if (opt$mode == "train") {
   locs <- locs %>%
     dplyr::select(-FID) %>%
     sf::st_drop_geometry()
-  locs$X <- locs$longitude
-  locs$Y <- locs$latitude
+  ## locs$X <- locs$longitude
+  ## locs$Y <- locs$latitude
 
   FCoord <- file.path(obs_vars_folder, paste0("loc_train_", opt$region))
   readr::write_delim(locs, paste0(FCoord, ".csv"), delim = ",")
@@ -200,7 +200,8 @@ if (opt$region == "france_met") {
   folder_route <- file.path(data_folder, "GIS", "ROUTE500_3-0__SHP_LAMB93_FXX_2021-11-03")
   clim_norm_folder <- file.path(data_folder, "GIS", "CLIM_NORM")
   layer_wind_turbines <- file.path(data_folder, "GIS", "wind_turbines", "Mats_service_TOTAL.shp")
-  
+  bioclim_folder <- file.path(data_folder, "GIS", "worldclim")
+  layer_bioclim_gross <- file.path(data_folder, "GIS", "BioclimGross", "GrossV.shp")
 }
 
 ListLayer <- c(
@@ -209,12 +210,23 @@ ListLayer <- c(
 )
 
 
-listfun <- list.files(folderfun, full.names = T, pattern = ".R$")
+
+listfun <- list.files(folderfun, full.names = TRUE, pattern = ".R$")
+
 
 for (i in 1:length(listfun))
 {
   source(listfun[i])
 }
+
+### Bioclim ###
+print("Bioclim")
+Coord_BioclimLocal(
+  points = FCoord,
+  names_coord = Coord_Headers,
+  layer_folder = bioclim_folder,
+  layCorr = layer_bioclim_gross
+)
 
 ###  ALAN ###
 print("ALAN")

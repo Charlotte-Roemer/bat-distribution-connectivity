@@ -41,7 +41,7 @@ Coord_ALAN <- function(points, names_coord, bm, bl, layers){
     CoordH <- names_coord
   }
 
-  unique_years <- unique(strsplit(OccSL_L93$Nuit, "-"[[1]][1]))
+  unique_years <- unique(sapply(strsplit(OccSL_L93$Nuit, "-"), "[", 1))
   tables <- list()
   # Get all the .tif files in the folder
   alan <- list.files(folder_alan,
@@ -50,14 +50,23 @@ Coord_ALAN <- function(points, names_coord, bm, bl, layers){
     full.names = TRUE
   )
 
+  alan_annees <- as.vector(
+    as.integer(
+      sapply(strsplit(basename(alan), "_"), "[", 4)
+    )
+  )
+  print(alan_annees)
+
   for (year in unique_years) {
-    year <- as.character(year)
-    print(year)
+    print(paste0("annee : ", year))
+    print(alan)
+    year_file <- alan[which.min(abs(alan_annees - as.integer(year)))]
+    print(year_file)
     table_year <- OccSL_L93[strsplit(OccSL_L93$Nuit, "-")[[1]][1] == year, ]
 
     # match the year alan raster
-    year_index <- grep(pattern = paste0("_", year, "_"), x = alan)
-    year_file <- alan[year_index]
+    ## year_index <- grep(pattern = paste0("_", year, "_"), x = alan)
+    ## year_file <- alan[year_index]
     ALAN <- terra::rast(year_file)
     # create a buffer around the points
     table_BM <- sf::st_buffer(table_year, bm) %>%
