@@ -77,7 +77,7 @@ Coord_CLCraster <- function(points, names_coord, bm, bl, layer) {
     tableau_nuit <- OccSL_L93[OccSL_L93$Nuit == nuit, ]
     annee <- as.integer(strsplit(nuit, "-")[[1]][1])
 
-    # Determine which clc yeur is closest
+    # Determine which clc year is closest
     clc_file <- clc_files[which.min(abs(clc_annees - annee))]
 
     CLC <- terra::rast(clc_file)

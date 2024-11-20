@@ -50,7 +50,6 @@ Coord_ALAN <- function(points, names_coord, bm, bl, layers){
     full.names = TRUE
   )
 
-  grep()
   for (year in unique_years) {
     year <- as.character(year)
     print(year)

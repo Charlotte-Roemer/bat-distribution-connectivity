@@ -57,14 +57,17 @@ Coord_OCS_OSO <- function(points, names_coord, bs, bm, layer) {
   tableaux_m <- list()
   tableaux_s <- list()
 
-  ocs_annees <- as.vector(as.integer(
-    substring(
+  x,,
+  ocs_annes <- as.vector(
+    as.integer(
       sapply(
-        strsplit(ocs_files, "_"),
-        "[", 5
-      ), 1, 4
+        str_split(
+          tools::file_path_sans_ext(
+                   basename(ocs_files)
+                 ), "_"
+        ), "[", 2)
     )
-  ))
+  )
 
   options(dplyr..summarise.inform = FALSE) # to quiet the message produced by the sumarize function below
 
