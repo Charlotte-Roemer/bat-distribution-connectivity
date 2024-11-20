@@ -93,7 +93,7 @@ Coord_BioclimLocal <- function(points, names_coord, layer_folder, layCorr) {
     names(OccSL_NAdd)[names(OccSL_NAdd) == 'num.site'] <- "num site"
 
     OccSL_A <- sf::st_drop_geometry(OccSL_A)
-    OccSL_NAdd <- sf::st_drop_geometry((OccSL_NAdd))
+    OccSL_NAdd <- sf::st_drop_geometry(OccSL_NAdd)
 
     ## OccSL_A <- OccSL_A %>%
     ##     select(!geometry) %>%
