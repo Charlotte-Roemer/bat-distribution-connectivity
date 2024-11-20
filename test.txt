@@ -1,11 +1,11 @@
-!$ une ligne à supprimer en ligne
-du texte à modifier en ligne
+
+du texte à pas trop modifier en ligne quand même
 
 du texte à pas modiffier en ligne
 
 j’ajoute une ligne
-et une autre (erreur)
-
 CElle la est à garder
  et là je change encore
  
+
+c'est nouveau
