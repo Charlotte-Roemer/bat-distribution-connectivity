@@ -127,7 +127,7 @@ Coord_eol <- function(points, names_coord, bs, bm, bl, layer){
     PC_50 <- aggregate(SpEol$pt_count, by = list(SpEol$FID), FUN = sum)
     names(PC_50)[ncol(PC_50)] <- "SpRo_L"
     OccSL_Re <- merge(OccSL_Re,PC_50, by.x = "FID", by.y = "Group.1", all.x=TRUE)
-    OccSL_Re$SpRo_L[is.na(OccSL_Re$SpRo_L)]0
+    OccSL_Re$SpRo_L[is.na(OccSL_Re$SpRo_L)] <- 0
 
   } else {
     OccSL_Re$SpRo_L <- 0

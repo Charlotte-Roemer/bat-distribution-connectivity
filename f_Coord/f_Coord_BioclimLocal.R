@@ -1,7 +1,5 @@
-Coord_BioclimLocal=function(points,names_coord,layer_folder,layCorr) {
-
+Coord_BioclimLocal <- function(points, names_coord, layer_folder, layCorr) {
   library(data.table)
-  ## library(raster)
   library(terra)
   library(tidyverse)
   library(sf)
@@ -94,13 +92,16 @@ Coord_BioclimLocal=function(points,names_coord,layer_folder,layCorr) {
 
     names(OccSL_NAdd)[names(OccSL_NAdd) == 'num.site'] <- "num site"
 
-    OccSL_A <- OccSL_A %>%
-        select(!geometry) %>%
-        as.data.frame()
+    OccSL_A <- sf::st_drop_geometry(OccSL_A)
+    OccSL_NAdd <- sf::st_drop_geometry((OccSL_NAdd))
 
-  OccSL_NAdd <- OccSL_NAdd %>%
-    select(!geometry) %>%
-    as.data.frame()
+    ## OccSL_A <- OccSL_A %>%
+    ##     select(!geometry) %>%
+    ##     as.data.frame()
+
+  ## OccSL_NAdd <- OccSL_NAdd %>%
+  ##   select(!geometry) %>%
+  ##   as.data.frame()
 
     print(names(OccSL_A))
     print(names(OccSL_NAdd))

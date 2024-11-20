@@ -58,7 +58,7 @@ Coord_ALAN <- function(points, names_coord, bm, bl, layers){
 
     # match the year alan raster
     year_index <- grep(pattern = paste0("_", year, "_"), x = alan)
-    year_file <− alan[year_index]
+    year_file <- alan[year_index]
     ALAN <- terra::rast(year_file)
     # create a buffer around the points
     table_BM <- sf::st_buffer(table_year, bm) %>%
