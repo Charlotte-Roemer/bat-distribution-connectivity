@@ -6,11 +6,11 @@ Coord_BioclimLocal=function(points,names_coord,layer_folder,layCorr) {
   library(tidyverse)
   library(sf)
 
-                                        # for testing purposes :
-  points <- "/home/bbk9/Nextcloud/tsevere/projet_git_BMRE/data/observations/parti_unique_non_confi"
-  names_coord <- c("X", "Y")
-  layer_folder <- "/home/bbk9/Documents/mnhn/data/worldclim"
-  layCorr <- "/home/bbk9/Documents/mnhn/data/BioclimGross/GrossV.shp"
+  ## for testing purposes :
+  ## points <- "/home/bbk9/Documents/mnhn/data/observations/obs_vars/loc_train_france_met"
+  ## names_coord <- c("X", "Y")
+  ## layer_folder <- "/home/bbk9/Documents/mnhn/data/GIS/worldclim"
+  ## layCorr <- "/home/bbk9/Documents/mnhn/data/GIS/BioclimGross/GrossV.shp"
 
   sf_use_s2(FALSE) # important to avoid geometry error during st_intersection(OccSL_NA[,1:3],GrossBioclim)
 
@@ -23,7 +23,7 @@ Coord_BioclimLocal=function(points,names_coord,layer_folder,layCorr) {
   OccSL$FID <- c(1:nrow(OccSL))
 
   OccSL <- OccSL %>%
-    sf::st_as_sf(coords = Coord_Headers, crs = 4326, remove = FALSE)
+    sf::st_as_sf(coords = names_coord, crs = 4326, remove = FALSE)
 
   # List bioclim rasters
   CoordH <- names_coord
@@ -37,12 +37,16 @@ Coord_BioclimLocal=function(points,names_coord,layer_folder,layCorr) {
   for (i in 1:length(asc_files)) {
     rasti <- terra::rast(asc_files[i])
     Sys.time()
-    SpBioci <- terra::extract(rasti,OccSL)
+    SpBioci <- terra::extract(rasti, OccSL)
     print(paste(i, Sys.time()))
-    OccSL$SpBioci <- SpBioci
+    print(head(SpBioci))
+    print("on ajoute la colonne :")
+    OccSL$SpBioci <- SpBioci[, 2]
 
     NumBioci <- data.table::tstrsplit(basename(asc_files[i]), split = "_")[[4]]
     NumBioci <- gsub(".tif", "", NumBioci)
+    print("on nomme la colonne avec ")
+    print(NumBioci)
 
     names(OccSL)[ncol(OccSL)] <- paste0("SpBioC",NumBioci)
   }
@@ -61,46 +65,58 @@ Coord_BioclimLocal=function(points,names_coord,layer_folder,layCorr) {
   OccSL$SpBioC11 <- OccSL$SpBioC11*10
 
   OccSL_NA <- subset(OccSL, is.na(OccSL$SpBioC1))
+
   OccSL_A <- subset(OccSL, !is.na(OccSL$SpBioC1))
+
   print(nrow(OccSL_NA))
 
   # For points which had no correspondance with Bioblim, use the layer Bioclim Gross (extension at sea)
-  if (nrow(OccSL_NA)>0) {
+  if (nrow(OccSL_NA) > 0) {
+    
     GrossBioclim = GrossBioclim   %>%
       st_transform(st_crs(OccSL_NA))
 
     # Extract GrossBioclim variables
     print("extracting bioclim for points at sea")
+
     print(names(OccSL_NA))
+
     OccSL_NA_pour_inter <- OccSL_NA %>%
       select(-starts_with("SpBio"))
-    OccSL_Add <- st_intersection(OccSL_NA_pour_inter,GrossBioclim)
+
+    OccSL_Add <- st_intersection(OccSL_NA_pour_inter, GrossBioclim)
     names(OccSL_Add) <- gsub("bio", "SpBioC", names(OccSL_Add))
 
     # Paste coordinates and Bioclim Gross values
     OccSL_NAdd <- OccSL_Add %>%
       select(!ID) %>%
       as.data.frame()
+
     names(OccSL_NAdd)[names(OccSL_NAdd) == 'num.site'] <- "num site"
 
     OccSL_A <- OccSL_A %>%
         select(!geometry) %>%
         as.data.frame()
 
+  OccSL_NAdd <- OccSL_NAdd %>%
+    select(!geometry) %>%
+    as.data.frame()
+
     print(names(OccSL_A))
     print(names(OccSL_NAdd))
 
-    OccSL_All <- rbind(OccSL_A,OccSL_NAdd)
+    OccSL_All <- rbind(OccSL_A, OccSL_NAdd)
 
   } else {
     OccSL_All <- as.data.frame(OccSL_A)
   }
 
   OccSL_All <- OccSL_All %>%
-    select(!c(geometry, FID))
+    select(!c(FID))
 
   colnames(OccSL_All)[colnames(OccSL_All) == 'latitude'] <- "Y"
   colnames(OccSL_All)[colnames(OccSL_All) == 'longitude'] <- "X"
 
   fwrite(OccSL_All,paste0(FOccSL,"_Bioclim.csv"))
+  head(OccSL_All)
 }
