@@ -32,8 +32,7 @@ Coord_OCS_OSO <- function(points, names_coord, bs, bm, layer) {
 
     CoordH <- names_coord
   } else {
-    OccSL <- read.csv(paste0(points, ".csv"), colClasses = c("character", "numeric", "numeric", "character", "numeric", "numeric")) %>%
-      dplyr::select(names_coord)
+    OccSL <- read.csv(paste0(points, ".csv"))
     OccSL$FID <- c(1:nrow(OccSL))
     OccSL <- OccSL %>%
       sf::st_as_sf(coords = c("X", "Y"), crs = 4326, remove = FALSE)
@@ -42,8 +41,11 @@ Coord_OCS_OSO <- function(points, names_coord, bs, bm, layer) {
       sf::st_transform(2154)
   }
 
+  OccSL_L93$year <- sapply(strsplit(OccSL_L93$Nuit, "-"), "[", 1)
+  unique_years <- unique(OccSL_L93$year)
 
   CoordH <- names_coord
+
   BuffersSmall <- bs
   BufferMedium <- bm
 
@@ -70,20 +72,21 @@ Coord_OCS_OSO <- function(points, names_coord, bs, bm, layer) {
 
   options(dplyr..summarise.inform = FALSE) # to quiet the message produced by the sumarize function below
 
-  for (nuit in nuits_uniques) {
-    nuit <- as.character(nuit)
-    print(nuit)
-    tableau_nuit <- OccSL_L93[OccSL_L93$Nuit == nuit, ]
-    annee <- as.integer(strsplit(nuit, "-")[[1]][1])
+  for (year in unique_years) {
+    ## nuit <- as.character(nuit)
+    ## print(nuit)
+    print(paste0("Treating year : ", year))
+    tableau_year <- OccSL_L93[OccSL_L93$year == year, ]
+    ## annee <- as.integer(strsplit(nuit, "-")[[1]][1])
 
     # Determine which clc year is closest
-    ocs_file <- ocs_files[which.min(abs(ocs_annees - annee))]
+    ocs_file <- ocs_files[which.min(abs(ocs_annees - as.integer(year)))]
     OCS <- terra::rast(ocs_file)
 
     # create a buffer around the points
-    tableau_BM <- sf::st_buffer(tableau_nuit, bm) %>%
+    tableau_BM <- sf::st_buffer(tableau_year, bm) %>%
       sf::st_transform(2154)
-    tableau_BS <- sf::st_buffer(tableau_nuit, bs) %>%
+    tableau_BS <- sf::st_buffer(tableau_year, bs) %>%
       sf::st_transform(2154)
 
     # Extract values in medium buffer

@@ -37,7 +37,7 @@ Coord_eol <- function(points, names_coord, bs, bm, bl, layer){
 
   # Read wind turbines layer
   Sys.time()
-  R1 <- read_sf(layer1) %>%
+  R1 <- read_sf(layer) %>%
     st_transform(2154) # convert to L93 to intersect with grid points
 
   ##########################################

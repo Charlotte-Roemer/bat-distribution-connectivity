@@ -27,11 +27,9 @@ Coord_CLCraster <- function(points, names_coord, bm, bl, layer) {
     OccSL_L93 <- OccSL %>%
       sf::st_transform(2154)
 
-
     CoordH <- names_coord
   } else {
-    OccSL <- read.csv(paste0(points, ".csv"), colClasses = c("character", "numeric", "numeric", "character", "numeric", "numeric")) %>%
-      dplyr::select(names_coord)
+    OccSL <- read.csv(paste0(points, ".csv"))
     OccSL$FID <- c(1:nrow(OccSL))
     OccSL <- OccSL %>%
       sf::st_as_sf(coords = c("X", "Y"), crs = 4326, remove = FALSE)
@@ -41,12 +39,15 @@ Coord_CLCraster <- function(points, names_coord, bm, bl, layer) {
     CoordH <- names_coord
   }
 
+  OccSL_L93$year <- sapply(strsplit(OccSL_L93$Nuit, "-"), "[", 1)
+  unique_years <- unique(OccSL_L93$year)
+
 
   BufferMedium <- bm
   BufferLarge <- bl
 
   # début ajout extraction nuit (à adapter)
-  nuits_uniques <- unique(OccSL_L93$Nuit)
+  ## nuits_uniques <- unique(OccSL_L93$Nuit)
   tableaux_m <- list()
   tableaux_l <- list()
   clc_files <- list.files(folder_CLC,
@@ -77,20 +78,21 @@ clc_annees <- as.vector(
   # test
   # OccSL_L93 <- OccSL_L93[1:50, ]
 
-  for (nuit in nuits_uniques) {
-    nuit <- as.character(nuit)
-    print(nuit)
-    tableau_nuit <- OccSL_L93[OccSL_L93$Nuit == nuit, ]
-    annee <- as.integer(strsplit(nuit, "-")[[1]][1])
+  for (year in unique_years) {
+    ## nuit <- as.character(nuit)
+    ## print(nuit)
+    print(paste0("Treating year : ", year))
+    tableau_year <- OccSL_L93[OccSL_L93$year == year, ]
+    ## annee <- as.integer(strsplit(nuit, "-")[[1]][1])
 
     # Determine which clc year is closest
-    clc_file <- clc_files[which.min(abs(clc_annees - annee))]
+    clc_file <- clc_files[which.min(abs(clc_annees - as.integer(year)))]
 
     CLC <- terra::rast(clc_file)
     # create a buffer around the points
-    tableau_BM <- st_buffer(tableau_nuit, bm) %>%
+    tableau_BM <- st_buffer(tableau_year, bm) %>%
       st_transform(3035)
-    tableau_BL <- st_buffer(tableau_nuit, bl) %>%
+    tableau_BL <- st_buffer(tableau_year, bl) %>%
       st_transform(3035)
 
     # Extract values in medium buffer

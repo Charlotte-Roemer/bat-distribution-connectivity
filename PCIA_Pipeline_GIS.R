@@ -262,13 +262,13 @@ Coord_Alti(
 
 ### Wind Turbines ###
 print("Wind Turbines")
-
-Coord_eol(points = Fcoord,
+Coord_eol(points = FCoord,
           names_coord = Coord_Headers,
           bs = BS,
           bm = BM,
           bl = BL,
-          layer = layer_wind_turbines)
+          layer = layer_wind_turbines
+          )
 
 #### CARTHAGE (eau) ####
 print("Water")
