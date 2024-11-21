@@ -60,7 +60,7 @@ clc_annees <- as.vector(
   as.integer(
     substring(
       sapply(
-        str_split(
+        strsplit(
           tools::file_path_sans_ext(
             basename(clc_files)
           ), "_"

@@ -60,7 +60,7 @@ Coord_OCS_OSO <- function(points, names_coord, bs, bm, layer) {
   ocs_annees <- as.vector(
     as.integer(
       sapply(
-        str_split(
+        strsplit(
           tools::file_path_sans_ext(
                    basename(ocs_files)
                  ), "_"

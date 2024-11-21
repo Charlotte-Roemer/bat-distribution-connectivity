@@ -27,8 +27,7 @@ Coord_VCF <- function(points, names_coord, bs, bm, bl, layers) {
     CoordH <- names_coord
   } else {
     print("loading observations:")
-    OccSL <- read.csv(paste0(points, ".csv")) %>%
-      select(names_coord)
+    OccSL <- read.csv(paste0(points, ".csv")) 
     print("observations loaded")
     #OccSL <- points
     OccSL$FID <- c(1:nrow(OccSL))
@@ -38,43 +37,61 @@ Coord_VCF <- function(points, names_coord, bs, bm, bl, layers) {
     OccSL_L93 <- OccSL %>%
       sf::st_transform(2154)
     CoordH <- names_coord
+   
   }
 
-  nuits_uniques <- unique(OccSL_L93$Nuit)
-  tableaux <- list()
+  OccSL_L93$year <- sapply(strsplit(OccSL_L93$Nuit, "-"), "[", 1)
+  unique_years <- unique(OccSL_L93$year)
 
-  for (nuit in nuits_uniques){
-    nuit <- as.character(nuit)
-    print(nuit)
-    tableau_nuit <- OccSL_L93[OccSL_L93$Nuit == nuit, ]
-    annee <- strsplit(nuit, "-")[[1]][1]
-    pattern <- paste0("A", annee)
-    raster <- list.files(layers, pattern = pattern, full.names = TRUE)
+  tableaux <- list()
+  vcf_files <- list.files(folder_vcf,
+                          recursive = TRUE,
+                          pattern = "tif$",
+                          full.names = TRUE)
+  vcf_years <- as.vector(
+    as.integer(
+      substring(
+        sapply(
+          strsplit(
+            basename(vcf_files),
+            "A"
+          ),
+          "[", 2
+        ), 1, 4
+      )
+    )
+  )
+
+  for (year in unique_years){
+    print(paste0("Treating year : ", year))
+    tableau_year <- OccSL_L93[OccSL_L93$year == year, ]
+    
+    raster <- vcf_files[which.min(abs(vcf_years - as.integer(year)))]
 
     VCF <- terra::rast(raster)
     # create a buffer around the points
-    tableau_BS <- sf::st_buffer(tableau_nuit, bs) %>%
+    tableau_BS <- sf::st_buffer(tableau_year, bs) %>%
       sf::st_transform(4326)
-    tableau_BM <- sf::st_buffer(tableau_nuit, bm) %>%
+    tableau_BM <- sf::st_buffer(tableau_year, bm) %>%
       sf::st_transform(4326)
-    tableau_BL <- sf::st_buffer(tableau_nuit, bl) %>%
+    tableau_BL <- sf::st_buffer(tableau_year, bl) %>%
       sf::st_transform(4326)
 
     print("Buffer Small")
 
     SpVCF_S_tab <- exactextractr::exact_extract(VCF, tableau_BS, "mean")
-    tableau_nuit$SpVCF_S <- SpVCF_S_tab
+    tableau_year$SpVCF_S <- SpVCF_S_tab
 
     print("Buffer Medium")
 
     SpVCF_M_tab <- exactextractr::exact_extract(VCF, tableau_BM, "mean")
-    tableau_nuit$SpVCF_M <- SpVCF_M_tab
+    tableau_year$SpVCF_M <- SpVCF_M_tab
 
     print("Buffer Large")
 
     SpVCF_L_tab <- exactextractr::exact_extract(VCF, tableau_BL, "mean")
-    tableau_nuit$SpVCF_L <- SpVCF_L_tab
-    tableaux <- rlist::list.append(tableaux, tableau_nuit)
+    tableau_year$SpVCF_L <- SpVCF_L_tab
+    tableaux <- rlist::list.append(tableaux, tableau_year)
   }
 
   tab <- do.call("rbind", tableaux)
