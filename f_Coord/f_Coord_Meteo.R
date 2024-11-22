@@ -7,9 +7,8 @@ Coord_Meteo <- function(points) {
   if (opt$mode == "predict") {
     mode <- "predict"
     command <- paste0("python3 get_meteo.py --mode ", mode, " --date ", opt$date, " --file ", points, ".csv")
-  } else {
-    mode <- "train"
-    command <- paste0("python3 get_meteo.py --mode ", mode, " --file ", points, ".csv")
+  } else if (opt$mode == "train"){
+    command <- paste0("python3 get_meteo.py  --file ", points, ".csv")
   }
 
   setwd(project_path) # optional ?
