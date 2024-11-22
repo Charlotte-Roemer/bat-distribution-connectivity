@@ -29,17 +29,10 @@ pd.set_option("mode.chained_assignment", None)
 # filelist.append(df)
 
 main_parser = argparse.ArgumentParser()
-main_parser.add_argument("--mode",
-                         help=""""Indicate if you want to get data for training
-                            (based on observation data) or predicting""",
-                         type=str, required=True,
-                         choices=["train", "predict"])
+
 main_parser.add_argument("--file",
                          help="""Location of csv file""",
                          required=True, type=str)
-main_parser.add_argument("--date", help="""Set date for prediction (format:
-                                        YYYY-mm-dd)""",
-                         type=str, required=False)
 
 main_args, _ = main_parser.parse_known_args()
 
@@ -50,22 +43,17 @@ main_args, _ = main_parser.parse_known_args()
 # type=str, required=True)
 
 # date_args = date_parser.parse_args()
-
 csv_file = main_args.file
 filename_ext = os.path.basename(csv_file)
 filename = os.path.splitext(filename_ext)[0]
 csv_folder = os.path.dirname(csv_file)
-date = main_args.date
-# csv_file = "../data/dependances_fixes/loc_train.csv"
-if main_args.mode == "train":
-    observations = pd.read_csv(csv_file, sep=",", parse_dates=["Nuit"])
-    monthly = False
-else:
-    observations = pd.read_csv(csv_file, sep=",")
-    observations["Nuit"] = dt.datetime.strptime(
-        f"{main_args.date}", '%Y-%m-%d')
-    monthly = True
 
+
+
+observations = pd.read_csv(csv_file, sep=",", parse_dates=["Nuit"])
+
+# csv_file = "../data/dependances_fixes/loc_train.csv"
+observations = pd.read_csv(csv_file, sep=",", parse_dates=["Nuit"])
 
 data = gpd.GeoDataFrame(
     observations,
@@ -74,10 +62,11 @@ data = gpd.GeoDataFrame(
     crs="EPSG:4326"
 )
 
-# in no apikey
+# if no apikey
+# (function split_get has to be modified)
 # data_weathered = fun.split_get(data, 500, m=monthly)
 
-data_weathered = fun.get_open_weather_api_key(data, monthly=monthly)
+data_weathered = fun.get_open_weather_api_key(data)
 
 data_tab = pd.DataFrame(data_weathered.drop(columns=['geometry'
                                                      ]))

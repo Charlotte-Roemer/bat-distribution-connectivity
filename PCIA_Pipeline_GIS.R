@@ -318,31 +318,31 @@ Coord_Route(
   folder = folder_route
 )
 
-print("Meteo")
-Coord_Meteo(
-  points = FCoord
-)
+## print("Meteo")
+## Coord_Meteo(
+##   points = FCoord
+## )
 
-loc_data <- file.path(loc, "data")
-
-
-if (exists("date_pred")) {
-  commande <- paste0("python group_obs.py --mode predict --date ", date_pred, " --loc ", loc_data)
-} else if (valid) {
-  espece <- as.character(svDialogs::dlgInput("Pour quelle espèces voulez-vous préparer les données ? (Barbar, Pippip...): ")$res)
-  commande <- paste0("python group_obs.py --mode valid --sp ", espece, " --loc ", loc_data)
-} else {
-  espece <- as.character(svDialogs::dlgInput("Pour quelle espèces voulez-vous préparer les données ? (Barbar, Pippip...): ")$res)
-  commande <- paste0("python group_obs.py --mode train --sp ", espece, " --loc ", loc_data)
-}
+## loc_data <- file.path(loc, "data")
 
 
-if (getwd() != file.path(loc, "prep_data_chiros", "scripts")) {
-  setwd("./prep_data_chiros/scripts")
-}
+## if (exists("date_pred")) {
+##   commande <- paste0("python group_obs.py --mode predict --date ", date_pred, " --loc ", loc_data)
+## } else if (valid) {
+##   espece <- as.character(svDialogs::dlgInput("Pour quelle espèces voulez-vous préparer les données ? (Barbar, Pippip...): ")$res)
+##   commande <- paste0("python group_obs.py --mode valid --sp ", espece, " --loc ", loc_data)
+## } else {
+##   espece <- as.character(svDialogs::dlgInput("Pour quelle espèces voulez-vous préparer les données ? (Barbar, Pippip...): ")$res)
+##   commande <- paste0("python group_obs.py --mode train --sp ", espece, " --loc ", loc_data)
+## }
 
 
-system(commande)
+## if (getwd() != file.path(loc, "prep_data_chiros", "scripts")) {
+##   setwd("./prep_data_chiros/scripts")
+## }
+
+
+## system(commande)
 
 # remplacer combine par appel à group_obs.py avec arguments (date, mode, espèce)
 # combineGIS_FR(
