@@ -198,7 +198,7 @@ if (opt$mode == "train" && loc_train_exists == FALSE) {
   GridName <- basename(FCoord)
 }
 
-Coord_Headers <- c("X", "Y", "Nuit") # long and lat
+Coord_Headers <- c("X", "Y") # long and lat
 
 # buffers distances :
 BS <- 50
@@ -251,7 +251,7 @@ Coord_BioclimLocal(
 print("ALAN")
 Coord_ALAN(
   points = FCoord,
-  names_coord = Coord_Headers,
+  names_coord = c(Coord_Headers, "Nuit"),
   bm = BM,
   bl = BL,
   layers = folder_alan
@@ -261,7 +261,7 @@ Coord_ALAN(
 print("VCF")
 Coord_VCF(
   points = FCoord,
-  names_coord = Coord_Headers,
+  names_coord = c(Coord_Headers, "Nuit"),
   bs = BS,
   bm = BM,
   bl = BL,
@@ -306,7 +306,7 @@ Coord_Carthage(
 print("CLC")
 Coord_CLCraster(
   points = FCoord,
-  names_coord = Coord_Headers,
+  names_coord = c(Coord_Headers, "Nuit"),
   bm = BM,
   bl = BL,
   layer = folder_CLC
@@ -317,7 +317,7 @@ Coord_CLCraster(
 print("OCS OSO")
 Coord_OCS_OSO(
   points = FCoord,
-  names_coord = Coord_Headers,
+  names_coord = c(Coord_Headers, "Nuit"),
   bs = BS,
   bm = BM
   # Buffer Large is not done because was too long in Pipeline V1, and
