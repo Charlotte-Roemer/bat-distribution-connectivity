@@ -1,5 +1,4 @@
 library(exactextractr)
-library(svDialogs)
 library(optparse)
 library(dplyr)
 library(stringr)
