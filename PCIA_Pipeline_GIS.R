@@ -96,14 +96,16 @@ print(paste0("MODE : ", opt$mode))
 
 ## To extract predictors on observation points :
 if (opt$mode == "train") {
-  print("train mode")
   
   ## Load file with "latitude" "longitude" and "Nuit" (date) columns
   ## CRS must be 4326
+  print("Loading observations")
   nuits_obs_file <- file.path(data_folder,
                               "observations",
                               "parti_unique_non_confi.csv")
   nuits_obs <- read.csv2(nuits_obs_file)
+  print("Observations loaded")
+
   nuits_obs$X <- nuits_obs$longitude
   nuits_obs$Y <- nuits_obs$latitude
 
@@ -117,6 +119,7 @@ if (opt$mode == "train") {
   locs <- locs %>% dplyr::select(X, Y, Nuit)
   locs$FID <- 1:nrow(locs)
   # setting the fortnight number (1-24) :
+  print("Setting fortnight code")
   locs$fortnight <-
     ifelse(as.integer(format(as.Date(locs$Nuit), "%d")) <= 15,
     as.integer(format(as.Date(locs$Nuit), "%m")) * 2 - 1,
@@ -136,7 +139,7 @@ if (opt$mode == "train") {
                                 ".csv"
                                 )
                          )
-  study_area <- st_read(zone_file, layer = opt$region)
+  study_area <- zone
   # buffer size is to be adapted depending on the study region 
   study_area_m <- st_transform(study_area, 3035)
   study_area_m_buf <- st_buffer(study_area_m, 250)
@@ -150,16 +153,22 @@ if (opt$mode == "train") {
   cols <- (xmax - xmin) / 500
   rows <- (ymax - ymin) / 500
 
+  print("Making grid over study area")
   grid_polyg <- st_make_grid(study_area_m_buf,
     cellsize = c(500, 500),
     offset = c(xmin, ymin),
     n = c(cols, rows)
   ) %>% st_as_sf()
 
+  print("Setting grid IDs")
   grid_polyg$grid_id <- seq(1, nrow(grid_polyg))
 
+  print("Attributing grid code to observations")
   locs_etrs89 <- st_join(locs_etrs89, grid_polyg, join = st_covered_by)
   width <- nchar(as.character(max(locs_etrs89$grid_id)))
+
+  print("Creating code from grid and fortnight")
+
   locs_etrs89$code <- paste0(
     str_pad(locs_etrs89$grid_id, width = width, pad = "0"),
     "-",
