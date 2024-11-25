@@ -94,8 +94,10 @@ if (opt$mode == "predict") {
 
 print(paste0("MODE : ", opt$mode))
 
+loc_train_exists <- file.exists(file.path(obs_vars_folder, paste0("loc_train_", opt$region, ".csv")))
+
 ## To extract predictors on observation points :
-if (opt$mode == "train") {
+if (opt$mode == "train" && loc_train_exists == FALSE) {
   
   ## Load file with "latitude" "longitude" and "Nuit" (date) columns
   ## CRS must be 4326
@@ -176,6 +178,7 @@ if (opt$mode == "train") {
   )
 
 
+  print("Getting codes from temp file, left joining them to locs")
   codes <- locs_etrs89 %>% dplyr::select(FID, code)
   codes <- codes %>% sf::st_drop_geometry()
   locs <- locs %>% dplyr::left_join(codes, by = "FID")
@@ -184,6 +187,7 @@ if (opt$mode == "train") {
     sf::st_drop_geometry()
   ## locs$X <- locs$longitude
   ## locs$Y <- locs$latitude
+  print("Writting observations with codes file")
 
   FCoord <- file.path(obs_vars_folder, paste0("loc_train_", opt$region))
   readr::write_delim(locs, paste0(FCoord, ".csv"), delim = ",")
@@ -201,6 +205,7 @@ BS <- 50
 BM <- 500
 BL <- 5000
 
+print("Setting layers")
 if (opt$region == "france_met") {
   #  GIS Layers locations :
   folder_alan <- file.path(data_folder, "GIS", "ALAN")
@@ -223,10 +228,11 @@ ListLayer <- c(
 )
 
 
-
+print("Listing function files")
 listfun <- list.files(folderfun, full.names = TRUE, pattern = ".R$")
 
 
+print("Loading function files")
 for (i in 1:length(listfun))
 {
   source(listfun[i])
