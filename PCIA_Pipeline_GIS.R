@@ -61,7 +61,9 @@ pred_vars_folder <- file.path(data_folder, "observations", "pred_vars")
 
 ## loading study area
 # change to zone <− sf::st_read(zone_file, layer = opt$region) in production
+print("Loading study area...")
 zone <- sf::st_read(zone_file, layer = "france_met")
+print("Study area loaded.")
 
 
 ## Function folder :
@@ -70,9 +72,9 @@ folderfun <- file.path(project_path, "f_Coord")
 
 # for testing purposes
 
-opt <- NA
-opt$region <- "france_met"
-opt$mode <- "train"
+## opt <- NA
+## opt$region <- "france_met"
+## opt$mode <- "train"
 
 
 # FCoord varie selon qu’on soit sur les observations ou de la préparation
@@ -84,15 +86,18 @@ opt$mode <- "train"
 # replace date setting with options
 # to be replaced
 if (opt$mode == "predict") {
+  print("predict mode")
   # date_pred should be in fortnightnumber_year format fn_yyyy. Fortnight scales
   # from 1 to 24 as there are two every month (ex : 2_2023)
   date_pred <- opt$date
 }
 # end of replacement
 
+print(paste0("MODE : ", opt$mode))
 
 ## To extract predictors on observation points :
 if (opt$mode == "train") {
+  print("train mode")
   
   ## Load file with "latitude" "longitude" and "Nuit" (date) columns
   ## CRS must be 4326
