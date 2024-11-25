@@ -262,10 +262,10 @@ def get_open_weather_api_key(in_gpdDF):
         mean_temp = night_centered_dataframe.temperature_2m.mean()
         mean_wind = night_centered_dataframe.hourly_wind_speed_10m.mean()
         total_precipitations = night_centered_dataframe.precipitations.sum()
-        in_gpdDF.loc[j, ("Spmean_temp")] = mean_temp
+        in_gpdDF.loc[j, ("mean_temp")] = mean_temp
 
-        in_gpdDF.loc[j, ("Spmean_wind")] = mean_wind
-        in_gpdDF.loc[j, ("Sptotal_precipitations")] = total_precipitations
+        in_gpdDF.loc[j, ("mean_wind")] = mean_wind
+        in_gpdDF.loc[j, ("total_precipitations")] = total_precipitations
     return in_gpdDF
 
 

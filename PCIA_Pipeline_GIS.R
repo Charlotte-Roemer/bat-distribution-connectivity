@@ -220,6 +220,9 @@ if (opt$region == "france_met") {
   layer_wind_turbines <- file.path(data_folder, "GIS", "wind_turbines", "Mats_service_TOTAL.shp")
   bioclim_folder <- file.path(data_folder, "GIS", "worldclim")
   layer_bioclim_gross <- file.path(data_folder, "GIS", "BioclimGross", "GrossV.shp")
+  layer_wind <- file.path(data_folder, "GIS", "WIND", "gwa3_250_windspeed_10m_europe.tif")
+  layer_precip <- file.path(data_folder, "GIS", "CLIM_NORM", "chelsea_eur11_pr_norm_1981-2005_v1_1.tif")
+  layer_temp <- file.path(data_folder, "GIS", "CLIM_NORM", "chelsea_eur11_tas_norm_1981-2005_v1_1.tif")
 }
 
 ListLayer <- c(
@@ -339,7 +342,10 @@ Coord_Route(
 
 ## print("Meteo")
 ## Coord_Meteo(
-##   points = FCoord
+##   points = FCoord,
+## temp = layer_temp,
+## prec = layer_precip,
+## wind = layer_precip
 ## )
 
 ## loc_data <- file.path(loc, "data")
