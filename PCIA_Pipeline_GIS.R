@@ -194,10 +194,12 @@ if (opt$mode == "train" && loc_train_exists == FALSE) {
   GridName <- basename(FCoord)
   rm(grid_polyg)
 } else if (opt$mode == "train" && loc_train_exists == FALSE) {
+  print("train file existing already")
   FCoord <- file.path(obs_vars_folder, paste0("loc_train_", opt$region))
+  print(paste0("FCoord = ", FCoord))
   GridName <- basename(FCoord)
 
-} else if opt$mode == "predict"{
+} else if (opt$mode == "predict") {
   FCoord <- file.path(pred_vars_folder, paste0("SysGrid_500m_de_cote_", opt$region))
   GridName <- basename(FCoord)
 }
@@ -246,13 +248,13 @@ for (i in 1:length(listfun))
 }
 
 ### Bioclim ###
-print("Bioclim")
-Coord_BioclimLocal(
-  points = FCoord,
-  names_coord = Coord_Headers,
-  layer_folder = bioclim_folder,
-  layCorr = layer_bioclim_gross
-)
+## print("Bioclim")
+## Coord_BioclimLocal(
+##   points = FCoord,
+##   names_coord = Coord_Headers,
+##   layer_folder = bioclim_folder,
+##   layCorr = layer_bioclim_gross
+## )
 
 ###  ALAN ###
 print("ALAN")
