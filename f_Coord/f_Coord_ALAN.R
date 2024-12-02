@@ -42,7 +42,7 @@ Coord_ALAN <- function(points, names_coord, bm, bl, layers){
     CoordH <- names_coord
   }
 
-  print(unique(sapply(strsplit(OccSL_L93$Nuit, "-"), "[", 1)))
+  print(class(sapply(strsplit(OccSL_L93$Nuit, "-"), "[", 1)))
 
   unique_years <- unique(sapply(strsplit(OccSL_L93$Nuit, "-"), "[", 1))
   tables <- list()
