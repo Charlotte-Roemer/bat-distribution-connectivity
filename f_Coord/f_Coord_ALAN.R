@@ -31,7 +31,6 @@ Coord_ALAN <- function(points, names_coord, bm, bl, layers){
     print(points)
 
     OccSL <- read.csv(paste0(points, ".csv"))
-    print(rownames(OccSL))
     print("observations loaded")
     # OccSL <- points
     OccSL$FID <- c(1:nrow(OccSL))
@@ -42,6 +41,8 @@ Coord_ALAN <- function(points, names_coord, bm, bl, layers){
       sf::st_transform(2154)
     CoordH <- names_coord
   }
+
+  print(unique(sapply(strsplit(OccSL_L93$Nuit, "-"), "[", 1)))
 
   unique_years <- unique(sapply(strsplit(OccSL_L93$Nuit, "-"), "[", 1))
   tables <- list()
