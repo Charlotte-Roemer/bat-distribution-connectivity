@@ -29,7 +29,7 @@ Coord_ALAN <- function(points, names_coord, bm, bl, layers){
   } else {
     print("loading observations:")
     OccSL <- read.csv(paste0(points, ".csv")) %>%
-      dplyr::select(names_coord)
+      dplyr::select(c(names_coord, "Nuit"))
     print("observations loaded")
     # OccSL <- points
     OccSL$FID <- c(1:nrow(OccSL))
