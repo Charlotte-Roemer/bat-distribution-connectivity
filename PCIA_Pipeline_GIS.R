@@ -193,7 +193,11 @@ if (opt$mode == "train" && loc_train_exists == FALSE) {
   readr::write_delim(locs, paste0(FCoord, ".csv"), delim = ",")
   GridName <- basename(FCoord)
   rm(grid_polyg)
-} else {
+} else if opt$mode == "train" && loc_train_exists == FALSE{
+  FCoord <- file.path(obs_vars_folder, paste0("loc_train_", opt$region))
+  GridName <- basename(FCoord)
+
+} else if opt$mode == "predict"{
   FCoord <- file.path(pred_vars_folder, paste0("SysGrid_500m_de_cote_", opt$region))
   GridName <- basename(FCoord)
 }
@@ -257,7 +261,7 @@ Coord_ALAN(
   names_coord = c(Coord_Headers, "Nuit"),
   bm = BM,
   bl = BL,
-  layers = folder_alan
+ layers = folder_alan
 )
 
 ###  VCF ###
