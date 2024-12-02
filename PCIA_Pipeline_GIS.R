@@ -193,7 +193,7 @@ if (opt$mode == "train" && loc_train_exists == FALSE) {
   readr::write_delim(locs, paste0(FCoord, ".csv"), delim = ",")
   GridName <- basename(FCoord)
   rm(grid_polyg)
-} else if opt$mode == "train" && loc_train_exists == FALSE{
+} else if (opt$mode == "train" && loc_train_exists == FALSE) {
   FCoord <- file.path(obs_vars_folder, paste0("loc_train_", opt$region))
   GridName <- basename(FCoord)
 
