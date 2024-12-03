@@ -11,7 +11,7 @@ import glob
 import os
 import math
 import prep_data_fun as fun
-impohttps://rustdesk.com/fr/rt sys
+import sys
 import argparse
 pd.set_option("mode.chained_assignment", None)
 
