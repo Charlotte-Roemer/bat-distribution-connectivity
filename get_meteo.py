@@ -66,7 +66,9 @@ data = gpd.GeoDataFrame(
 # (function split_get has to be modified)
 # data_weathered = fun.split_get(data, 500, m=monthly)
 
-data_weathered = fun.get_open_weather_api_key(data)
+data_filtered = data.query("Nuit >= '2013-01-01' and Nuit < '2024-12-09'")
+
+data_weathered = fun.get_open_weather_api_key(data_filtered)
 
 data_tab = pd.DataFrame(data_weathered.drop(columns=['geometry'
                                                      ]))
