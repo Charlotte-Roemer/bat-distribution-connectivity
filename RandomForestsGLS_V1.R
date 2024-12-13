@@ -13,11 +13,12 @@ library(randomForest)
 ## library(doParallel)
 ## library(beepr)
 ## library(SpatialML)
+source("variables.R")
 
 install.packages("randomForest")
 
 #to show milliseconds
-op <- options(digits.secs=3)
+op <- options(digits.secs = 3)
 
 # Sorting threshold (weighted, 0, 50, 90)
 ThresholdSort <- "weighted"
@@ -28,15 +29,23 @@ GroupSel <- "bat"
 #GroupSel=NA #sorting according to the group column of Specieslist (args[3), NA if no sorting
 
 # Do variable selection?
-DoBoruta <- F
+DoBoruta <- FALSE
 
-if(ThresholdSort != "weighted"){
-  args <- paste0("C:/Users/croemer01/Documents/Donnees vigie-chiro/SpNuit2_DI_", ThresholdSort, "_DataLP_PF_exportTot") #bat activity table. file without csv extension
-}else{
-  args <- paste0("C:/Users/croemer01/Documents/Donnees vigie-chiro/SpNuit2_DI_", ThresholdSort, "_DataLP_PF_exportTot") #bat activity table. file without csv extension 
+
+
+if(ThresholdSort != "weighted") {
+  args <- file.path(data, "observations", paste0(
+    "SpNuit2_DI_",
+    ThresholdSort, "_DataLP_PF_exportTot"
+  )) # bat activity table. file without csv extension
+} else {
+  args <- file.path(data, "observations", paste0(
+    "SpNuit2_DI_",
+    ThresholdSort, "_DataLP_PF_exportTot"
+  )) # bat activity table. file without csv extension
 }
-args[2] <- "C:/Users/croemer01/Documents/Donnees vigie-chiro/GI_FR_sites_localites" #table with spatial variables (habitat and climate)
-args[3] <- "C:/Users/croemer01/Documents/Donnees vigie-chiro/SpeciesList.csv" # Species list to build models
+args[2] <- file.path(data, "GI_FR_sites_localites") # table with spatial variables (habitat and climate)
+args[3] <- file.path(data, "SpeciesList.csv") # Species list to build models
 #args[3]=NA #NA if we want all species without filter (but specify args[5)
 #args[4]="Esp" #name of taxa column (useless if args[3] is specified)
 args[4] <- "espece" #name of taxa column (useless if args[3] is specified)
@@ -55,7 +64,7 @@ args[11] <- 40 #number of coordinates projections (must be a division of 360)
 #args[12]="C:/Users/croemer01/Documents/Donnees vigie-chiro/Tab_sounds_all_50ScriptLea.csv" # table with bat activity (bat passes)
 MinData <- 1
 DM <- TRUE #option if you also want a model to predict minimum time lapse between bat passes and sunset and sunrise
-Output <- paste0("C:/Users/croemer01/Documents/Donnees vigie-chiro/ModPred/VC", ThresholdSort, "PG_", Sys.Date()) #folder to copy models to (fichiers .learner), no "_" else bug !!!
+Output <- file.path(data, "ModPred", paste0("VC", ThresholdSort, "PG_", Sys.Date())) # folder to copy models to (fichiers .learner), no "_" else bug !!!
 Tag <- paste0("VC", ThresholdSort) #tag which will be written in the filename, no "_", else bug !!!
 effectYear <- FALSE # option to add a year effect: to predict population trends
 varYear <- "annee" #name of the year variable (needless if effectYear=F)
