@@ -3,3 +3,4 @@ variables.R
 data/GIS/
 _vars.*
 .Rhistory
+.#*

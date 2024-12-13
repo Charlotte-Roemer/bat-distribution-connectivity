@@ -1,36 +1,34 @@
 
 # To create random forest models (.learner files) of bat activity
 
-library(data.table)
-library(raster)
-library(rgdal)
-library(rgeos)
-library(latticeExtra)
+## library(data.table)
+## library(latticeExtra)
 library(randomForest)
-library(gdata)
-library(spdep) # for Rotation function
-library(tidyverse)
-library(pgirmess)
-library(sp)
-library(rsample)
-library(foreach)
-library(doParallel)
-library(beepr)
-library(SpatialML)
+## library(gdata)
+## library(spdep) # for Rotation function
+## library(tidyverse)
+## library(pgirmess)
+## library(rsample)
+## library(foreach)
+## library(doParallel)
+## library(beepr)
+## library(SpatialML)
+
+install.packages("randomForest")
 
 #to show milliseconds
 op <- options(digits.secs=3)
 
 # Sorting threshold (weighted, 0, 50, 90)
-ThresholdSort = "weighted"
+ThresholdSort <- "weighted"
 
 # choose species
-Sp = "all" # choose a species (e.g. "Pippip") or "all"
-GroupSel="bat"
+Sp <- "all" # choose a species (e.g. "Pippip") or "all"
+GroupSel <- "bat"
 #GroupSel=NA #sorting according to the group column of Specieslist (args[3), NA if no sorting
 
 # Do variable selection?
-DoBoruta = F
+DoBoruta <- F
 
 if(ThresholdSort != "weighted"){
   args=paste0("C:/Users/croemer01/Documents/Donnees vigie-chiro/SpNuit2_DI_", ThresholdSort, "_DataLP_PF_exportTot") #bat activity table. file without csv extension
