@@ -44,7 +44,7 @@ args[4] <- "espece" #name of taxa column (useless if args[3] is specified)
 #args[5]="STRTUR" #name of taxa group (useless if args[3] is specified)
 DataLoc <- FALSE #TRUE if coordinates are in table args[1
 #CoordinateNames=c("longitude_wgs84","latitude_wgs84") 
-CoordinateNames <- c("X","Y") #name of columns with coordinates in the locality table (sites_localites.txt)
+CoordinateNames <- c("X", "Y") #name of columns with coordinates in the locality table (sites_localites.txt)
 args[6] <- "participation" #name of sampling event
 args[7] <- "localite" #name of locality in CoordSIG (if DataLoc=T)
 args[8] <- "participation" #name of participation (=sampling event)
@@ -54,7 +54,7 @@ args[10] <- "nb_contacts_nd" #the name of the parameter which gives the metric t
 args[11] <- 40 #number of coordinates projections (must be a division of 360)
 #args[12]="C:/Users/croemer01/Documents/Donnees vigie-chiro/Tab_sounds_all_50ScriptLea.csv" # table with bat activity (bat passes)
 MinData <- 1
-DM <- T #option if you also want a model to predict minimum time lapse between bat passes and sunset and sunrise
+DM <- TRUE #option if you also want a model to predict minimum time lapse between bat passes and sunset and sunrise
 Output <- paste0("C:/Users/croemer01/Documents/Donnees vigie-chiro/ModPred/VC", ThresholdSort, "PG_", Sys.Date()) #folder to copy models to (fichiers .learner), no "_" else bug !!!
 Tag <- paste0("VC", ThresholdSort) #tag which will be written in the filename, no "_", else bug !!!
 effectYear <- FALSE # option to add a year effect: to predict population trends
@@ -322,82 +322,84 @@ for (i in 1:length(ListSp)) {
   Dataset.RF_train = 
   
   RF_classic <- randomForest(nb_contacts ~.,
-                             data=Dataset.RF,
-                             replace=F,
+                             data = Dataset.RF,
+                             replace = FALSE,
                              ntree = 1,
-                             mtry=length(Prednames),
-                             strata=paste(DataSaison$id_site,
+                             mtry = length(Prednames),
+                             strata = paste(DataSaison$id_site,
                                           DataSaison$localite),
-                             importance=F)
-  
-  Grid = fread("C:/Users/croemer01/Documents/Donnees vigie-chiro/SysGrid_500m_de_cote_FULL.csv")
-  
+                             importance = FALSE
+                             )
+
+  Grid <- fread("C:/Users/croemer01/Documents/Donnees vigie-chiro/SysGrid_500m_de_cote_FULL.csv")
   # Load table containing habitat variables
-  CoordSIG=fread(paste0(args[2],".csv")) 
-  CoordSIG=subset(CoordSIG,is.na(CoordSIG$SpAltiS)==F)
-  CoordSIG=subset(CoordSIG,is.na(CoordSIG$SpBioC1)==F)
-  CoordDS=as.matrix(cbind(CoordSIG$X,CoordSIG$Y)) #WGS84
-  
+  CoordSIG <- fread(paste0(args[2],".csv"))
+  CoordSIG <- subset(CoordSIG, is.na(CoordSIG$SpAltiS) == FALSE)
+  CoordSIG <- subset(CoordSIG, is.na(CoordSIG$SpBioC1) == FALSE)
+  CoordDS <- as.matrix(cbind(CoordSIG$X,CoordSIG$Y)) #WGS84
+
   # Cleans coordinates
-  CoordSIG = CoordSIG %>%
-    rename_all(~str_replace_all(.,"\\.x",""))
+  CoordSIG <- CoordSIG %>%
+    rename_all(~str_replace_all(., "\\.x", ""))
   CoordSIG <- CoordSIG %>% select(-contains(".y"))
-  CoordSIG$SpYear=year(Date_of_model)
-  
+  CoordSIG$SpYear = year(Date_of_model)
+
   # Create date vector with a sample each 15 days
-  CoordSIG$SpGite=0
-  Sp = ListSp[i]
-  
-  Date_of_model='2018-03-01'
-  CoordSIG$SpFDate=yday(Date_of_model)
-  CoordSIG$SpCDate=cos(CoordSIG$SpFDate/365*2*pi) # to create a circular variable for date
-  CoordSIG$SpSDate=sin(CoordSIG$SpFDate/365*2*pi) # to create a circular variable for date
-  
-  CoordSIG[is.na(CoordSIG)]=0
+  CoordSIG$SpGite <- 0
+  Sp <- ListSp[i]
 
-  New_coords = as.matrix(cbind(CoordSIG$longitude, CoordSIG$latitude))
+  Date_of_model <- '2018-03-01'
+  CoordSIG$SpFDate <- yday(Date_of_model)
+  CoordSIG$SpCDate <- cos(CoordSIG$SpFDate / 365 * 2 * pi) # to create a circular variable for date
+  CoordSIG$SpSDate <- sin(CoordSIG$SpFDate / 365 * 2 * pi) # to create a circular variable for date
 
-  Predictors=DataSaison %>%
+  CoordSIG[is.na(CoordSIG)] <- 0
+
+  New_coords <- as.matrix(cbind(CoordSIG$longitude, CoordSIG$latitude))
+
+  Predictors <- DataSaison %>%
     select(all_of(Prednames))
-  
-  RFGLS_predict_spatial <- RFGLS_predict_spatial(RF_GLS, New_coords, 
-                                                 matrix(x[161:200,],40,1))
-  
-  dataa_Month2 = RFGLS_predict_spatial %>% 
-    st_as_sf(coords=c("X", "Y"), crs=4326) %>% 
-    st_transform(2154) %>% 
-    mutate(x = st_coordinates(.)[,1],
-           y = st_coordinates(.)[,2]) %>% 
+
+  RFGLS_predict_spatial <- RFGLS_predict_spatial(RF_GLS, New_coords,
+                                                 matrix(x[161:200, ], 40, 1))
+
+  dataa_Month2 <- RFGLS_predict_spatial %>%
+    sf::st_as_sf(coords = c("X", "Y"), crs = 4326) %>%
+    sf::st_transform(2154) %>%
+    mutate(x = st_coordinates(.)[, 1],
+           y = st_coordinates(.)[, 2]) %>%
     as.data.frame()
-  
-  dataa_Month3=data.frame(x=dataa_Month2$x, y=dataa_Month2$y, z=dataa_Month2$pred)
-  dataa_Month4 = rasterFromXYZ(dataa_Month3, res = 500)
-  
-  dataa_Month5 = dataa_Month4 %>% 
+
+  dataa_Month3 <- data.frame(x = dataa_Month2$x,
+                             y = dataa_Month2$y,
+                             z = dataa_Month2$pred
+                             )
+  dataa_Month4 <- rasterFromXYZ(
+    dataa_Month3,
+    res = 500
+  )
+
+  dataa_Month5 = dataa_Month4 %>%
     as.data.frame(xy=T)
   dataa_Month5$z[dataa_Month5$z==0] <- NA
-  
+
   library(viridis)
   plot1 <- ggplot()+
-    
-    # geom_point(data = dataa_Month, 
-    #            mapping = aes(x=X, y=Y, col=pred, size=0.00000001) 
+
+    # geom_point(data = dataa_Month,
+    #            mapping = aes(x=X, y=Y, col=pred, size=0.00000001)
     #            ) +
-    
+
     geom_raster(data = dataa_Month5, aes(x = x, y = y, fill = z)) +
-    
     scale_fill_viridis(name = "Number of \nbat passes/night",
-                       limits = ScaleLimit, 
+                       limits = ScaleLimit,
                        #trans = "pseudo_log",
                        oob = scales::squish,
                        option = "A",
                        na.value = alpha("lightgrey", 0)) +
-    
-    # geom_sf(data= france_f, size=0.1, 
+    # geom_sf(data= france_f, size=0.1,
     #         fill=alpha("lightgrey", 0), colour = "black") +
-    
     guides(scale = "none") +
-    
     theme(panel.grid.major = element_blank(),
           panel.grid.minor = element_blank(),
           panel.background = element_rect(fill='transparent'), #transparent panel bg
@@ -406,7 +408,7 @@ for (i in 1:length(ListSp)) {
           legend.background = element_rect(fill='transparent'), #transparent legend bg
           legend.box.background = element_rect(fill='transparent'), #transparent legend panel
           plot.subtitle = element_text(size=12)) +
-    
+
     labs(title = paste0(full_latin_name, "\n", Day_name, " of ", Month_name),
          subtitle = paste("Number of bat passes per night : ",
                           "Mean = ",
@@ -415,7 +417,5 @@ for (i in 1:length(ListSp)) {
                           round(max(as.data.frame(dataa_Month)$pred),1),
                           sep="")) +
     ylab("") +
-    xlab("") 
-  
-  
+    xlab("")
 }
