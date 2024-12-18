@@ -1,7 +1,8 @@
 
 # To create random forest models (.learner files) of bat activity
 
-## library(data.table)
+library(data.table)
+library(dplyr)
 ## library(latticeExtra)
 library(randomForest)
 ## library(gdata)
@@ -14,8 +15,6 @@ library(randomForest)
 ## library(beepr)
 ## library(SpatialML)
 source("variables.R")
-
-install.packages("randomForest")
 
 #to show milliseconds
 op <- options(digits.secs = 3)
@@ -35,16 +34,16 @@ DoBoruta <- FALSE
 
 if(ThresholdSort != "weighted") {
   args <- file.path(data, "observations", paste0(
-    "SpNuit2_DI_",
-    ThresholdSort, "_DataLP_PF_exportTot"
-  )) # bat activity table. file without csv extension
+    "SpNuit2_",
+    ThresholdSort, "_DataLP_PF_exportTot")
+    ) # bat activity table. file without csv extension
 } else {
   args <- file.path(data, "observations", paste0(
-    "SpNuit2_DI_",
-    ThresholdSort, "_DataLP_PF_exportTot"
-  )) # bat activity table. file without csv extension
+    "SpNuit2_",
+    ThresholdSort, "_DataLP_PF_exportTot")
+    ) # bat activity table. file without csv extension
 }
-args[2] <- file.path(data, "GI_FR_sites_localites") # table with spatial variables (habitat and climate)
+args[2] <- file.path(data, "train_dataset_france_met") # table with spatial variables (habitat and climate)
 args[3] <- file.path(data, "SpeciesList.csv") # Species list to build models
 #args[3]=NA #NA if we want all species without filter (but specify args[5)
 #args[4]="Esp" #name of taxa column (useless if args[3] is specified)
@@ -70,17 +69,17 @@ effectYear <- FALSE # option to add a year effect: to predict population trends
 varYear <- "annee" #name of the year variable (needless if effectYear=F)
 W0 <- FALSE #whether the table args[1 contains the 0 bat passes/night
 MergedGI <- F #whether habitat-climate variables are in the table args[1 
-Fpar <- "C:/Users/croemer01/Documents/Donnees vigie-chiro/p_export.csv" #the file with data about participations
-Fsl <- "C:/Users/croemer01/Documents/Donnees vigie-chiro/sites_localites.txt"	#the file with the data about localities
+Fpar <- file.path(data, "observations", "parti_unique_non_confi.csv") # the file with data about participations
+Fsl <- file.path(data, "sites_localites.csv") # the file with the data about localities
 ProbThreshold <- 0 # a filter on the score_max parameter (takes all data superior or equal to this value)
 #min_dist = 200 # geographical distance in meters to create a custom test and train dataset
 #reps_process = 1 # how many trials should be made to sort train/test dataset (see buffer_CR.r)
 DateLimit <- Sys.Date()  # to use only data before this date; default = Sys.Date() 
 
-dir.create(Output)
+dir.create(Output, recursive = TRUE)
 
 # Reads bat activity data
-DataCPL2 <- fread(paste0(args[1],".csv"))
+DataCPL2 <- data.table::fread(paste0(args[1], ".csv"))
 DataCPL2$Nuit <- as.Date(DataCPL2$Nuit)
 DataCPL3 <- DataCPL2 %>%
   dplyr::filter(Nuit < DateLimit)
@@ -97,7 +96,7 @@ Sys.time()
 CoordSIG <- fread(paste0(args[2],".csv"))
 print((CoordSIG)[1,])
 CoordSIG <- CoordSIG %>% 
-  rename(longitude = CoordinateNames[1], latitude = CoordinateNames[2])
+  rename(X = longitude, Y = latitude)
 print((CoordSIG)[1,])
 
 CoordSIG <- CoordSIG %>%
@@ -108,9 +107,9 @@ Sys.time()
 if(!MergedGI) { # If habitat-climate variables are not in the bat activity table
   if(!DataLoc) {# If coordinates are not in the bat activity table
     #reads participation data
-    Particip <- read_delim(Fpar,delim=";")
+    Particip <- readr::read_delim(Fpar, delim = ";")
     #reads locality data
-    SiteLoc <- fread(Fsl)
+    SiteLoc <- data.table::fread(Fsl)
     Gite <- mapply(function(x,y)
       ((grepl(paste0(y,"="),x))|(grepl(paste0(y," ="),x)))
       ,SiteLoc$commentaire
