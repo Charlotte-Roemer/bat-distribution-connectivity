@@ -8,7 +8,10 @@
 library(data.table)
 library(randomForest)
 library(gdata)
-library(tidyverse)
+library(tidyr)
+library(dplyr)
+library(stringr)
+library(readr)
 library(sf)
 library(CAST)
 library(Boruta)
@@ -17,91 +20,92 @@ library(Boruta)
 #library(rsample)
 #library(doParallel)
 library(beepr)
+source("variables.R")
 
-Place = "PCIA" # local, PCIA or IN2P3
+Place <- "local" # local, PCIA or IN2P3
 
 #### Options ####--------------------------------------------------------
 
 # Sorting threshold (weighted, 0, 50, 90)
-ThresholdSort = "weighted"
+ThresholdSort <- "weighted"
 print(ThresholdSort)
 
 # Species to model
-Sp = "Rhifer" # choose a species (e.g. "Pippip") or "all" or "paper"
-GroupSel="bat"
+Sp <- "Rhifer" # choose a species (e.g. "Pippip") or "all" or "paper"
+GroupSel <- "bat"
 #GroupSel=NA #sorting according to the group column of Specieslist (args[3), NA if no sorting
-ListPaper = c("Minsch", "Barbar", "Nyclei", "Nycnoc", "Eptser", "Pipkuh", "Pipnat", 
+ListPaper <- c("Minsch", "Barbar", "Nyclei", "Nycnoc", "Eptser", "Pipkuh", "Pipnat", 
               "Pippip", "Pippyg", "Rhifer")
 
 # Filter data by date?
-DateLimit = Sys.Date()  # e.g.as.Date("2021-12-31") to use only data before this date; default = Sys.Date()
+DateLimit <- Sys.Date()  # e.g.as.Date("2021-12-31") to use only data before this date; default = Sys.Date()
 
 # Predictors and model specs
-CoordType = "EDF" # Spatial proxies in predictors: "LongLat" = X + Y ; "EDF" = X + Y + Euclidian Distance Fields ;  "noCoord" = no coordinates
-YearEffect=T # Add year?
+CoordType <- "EDF" # Spatial proxies in predictors: "LongLat" = X + Y ; "EDF" = X + Y + Euclidian Distance Fields ;  "noCoord" = no coordinates
+YearEffect <- TRUE # Add year?
 #MTRY = "default"  # "default" or "npred" or "2-3" for 2/3 of npred
-NTREE = 500
+NTREE <- 500
 
 # Do variable selection?
-DoBoruta = T
+DoBoruta <- TRUE
 
 
 
 #### Directories ####-----------------------------------------------------------
 
 if(Place == "local"){
-  args=paste0("C:/Users/croemer01/Documents/Donnees vigie-chiro/SpNuit2_", ThresholdSort, "_DataLP_PF_exportTot") #bat activity table (not DI !! --> need the file where microphone quality is sorted out) . file without csv extension
-  args[2]="C:/Users/croemer01/Documents/Donnees vigie-chiro/GI_FR_sites_localites" #table with spatial variables (habitat and climate)
-  args[3]="C:/Users/croemer01/Documents/Donnees vigie-chiro/SpeciesList.csv" # Species list to build models
-  args[4]="C:/Users/croemer01/Documents/SIG/Delimitations_pays" # france limits
-  Output=paste0("C:/Users/croemer01/Documents/Donnees vigie-chiro/ModPred/VC", ThresholdSort, "_", Sys.Date()) #folder to copy models to (fichiers .learner), no "_" else bug !!!
-  Fpar="C:/Users/croemer01/Documents/Donnees vigie-chiro/p_export.csv" #the file with data about participations
-  Fsl="C:/Users/croemer01/Documents/Donnees vigie-chiro/sites_localites.txt"	#the file with the data about localities
-  sfolds_source = paste0("C:/Users/croemer01/Documents/Donnees vigie-chiro/ModPred/VC", ThresholdSort, "_", Sys.Date(), "/temp_sfolds.rds")
-  source(paste("C:/Users/croemer01/Documents/R/bat-migration-europe/bat-migration-europe/Models/PCIA/","RF_prepare_data.R",sep=""))
-  source(paste("C:/Users/croemer01/Documents/R/bat-migration-europe/bat-migration-europe/Models/PCIA/","RF_functions.R",sep=""))
+  args <- file.path(data, "observations", "donnees_vigie_chiro", paste0("SpNuit2_", ThresholdSort, "_DataLP_PF_exportTot")) # bat activity table (not DI !! --> need the file where microphone quality is sorted out) . file without csv extension
+  args[2] <- file.path(data, "observations", "donnees_vigie_chiro", "GI_FR_sites_localites") #table with spatial variables (habitat and climate)
+  args[3] <- file.path(data, "observations", "donnees_vigie_chiro", "SpeciesList.csv") # Species list to build models
+  args[4] <- file.path(data, "GIS", "regions.gpkg") # france limits
+  Output <- file.path(data, "ModPred", paste0("VC", ThresholdSort, "_", Sys.Date())) # folder to copy models to (fichiers .learner), no "_" else bug !!!
+  Fpar <- file.path(data, "observations", "donnees_vigie_chiro", "p_export.csv") # the file with data about participations
+  Fsl <- file.path(data, "observations", "donnees_vigie_chiro", "sites_localites.csv")	#the file with the data about localities
+  sfolds_source <- file.path(data, "ModPred", paste0("VC", ThresholdSort, "_", Sys.Date()), "temp_sfolds.rds") # quezaco?
+  source("RF_prepare_data.R")
+  source("RF_functions.R")
   
 }
 
-if(Place == "PCIA"){
-  if(ThresholdSort != "weighted"){
-    args=paste0("/mnt/beegfs/ybas/VigieChiro/Raw/SpNuit2_", ThresholdSort, "_DataLP_PF_exportTot") #bat activity table (not DI !! --> need the file where microphone quality is sorted out) . file without csv extension
-  }else{
-    args=paste0("/mnt/beegfs/croemer/VigieChiro/Raw/SpNuit2_", ThresholdSort, "_DataLP_PF_exportTot") #bat activity table (not DI !! --> need the file where microphone quality is sorted out) . file without csv extension
-  }
-  #args[2]="/mnt/beegfs/ybas/GI/GI_sites_localites" #table with spatial variables (habitat and climate)
-  args[2]="/mnt/beegfs/croemer/VigieChiro/GI_FR_sites_localites" #table with spatial variables (habitat and climate)
-  args[3]="/mnt/beegfs/croemer/VigieChiro/SpeciesList.csv" # Species list to build models
-  args[4]="/mnt/beegfs/croemer/VigieChiro/SIG" # france limits
-  Output=paste0("/mnt/beegfs/croemer/VigieChiro/ModPred/VC", ThresholdSort, "_", Sys.Date()) #folder to copy models to (fichiers .learner), no "_" else bug !!!
-  Fpar="/mnt/beegfs/ybas/VigieChiro/p_export.csv" #the file with data about participations
-  Fsl="/mnt/beegfs/ybas/VigieChiro/sites_localites.txt"	#the file with the data about localities
-  sfolds_source = paste0("/trinity/home/croemer/VigieChiro/ModPred/VC", ThresholdSort, "_", Sys.Date(), "/temp_sfolds.rds")
-  source(paste("/trinity/home/croemer/scripts_VC/","RF_prepare_data.R",sep=""))
-  source(paste("/trinity/home/croemer/scripts_VC/","RF_functions.R",sep=""))
+## if(Place == "PCIA"){
+##   if(ThresholdSort != "weighted"){
+##     args=paste0("/mnt/beegfs/ybas/VigieChiro/Raw/SpNuit2_", ThresholdSort, "_DataLP_PF_exportTot") #bat activity table (not DI !! --> need the file where microphone quality is sorted out) . file without csv extension
+##   }else{
+##     args=paste0("/mnt/beegfs/croemer/VigieChiro/Raw/SpNuit2_", ThresholdSort, "_DataLP_PF_exportTot") #bat activity table (not DI !! --> need the file where microphone quality is sorted out) . file without csv extension
+##   }
+##   #args[2]="/mnt/beegfs/ybas/GI/GI_sites_localites" #table with spatial variables (habitat and climate)
+##   args[2]="/mnt/beegfs/croemer/VigieChiro/GI_FR_sites_localites" #table with spatial variables (habitat and climate)
+##   args[3]="/mnt/beegfs/croemer/VigieChiro/SpeciesList.csv" # Species list to build models
+##   args[4]="/mnt/beegfs/croemer/VigieChiro/SIG" # france limits
+##   Output=paste0("/mnt/beegfs/croemer/VigieChiro/ModPred/VC", ThresholdSort, "_", Sys.Date()) #folder to copy models to (fichiers .learner), no "_" else bug !!!
+##   Fpar="/mnt/beegfs/ybas/VigieChiro/p_export.csv" #the file with data about participations
+##   Fsl="/mnt/beegfs/ybas/VigieChiro/sites_localites.txt"	#the file with the data about localities
+##   sfolds_source = paste0("/trinity/home/croemer/VigieChiro/ModPred/VC", ThresholdSort, "_", Sys.Date(), "/temp_sfolds.rds")
+##   source(paste("/trinity/home/croemer/scripts_VC/","RF_prepare_data.R",sep=""))
+##   source(paste("/trinity/home/croemer/scripts_VC/","RF_functions.R",sep=""))
   
-}
+## }
 
-if(Place == "IN2P3"){
-  args=paste0("/pbs/home/c/croemer/Donnees/Raw/SpNuit2_", ThresholdSort, "_DataLP_PF_exportTot") #bat activity table (not DI !! --> need the file where microphone quality is sorted out) . file without csv extension
-  args[2]="/pbs/home/c/croemer/Donnees/GI_FR_sites_localites" #table with spatial variables (habitat and climate)
-  args[3]="/pbs/home/c/croemer/Donnees/SpeciesList.csv" # Species list to build models
-  args[4]="/pbs/home/c/croemer/Donnees/SIG" # france limits
-  Output=paste0("/pbs/home/c/croemer/Donnees/ModPred/VC", ThresholdSort, "_", Sys.Date()) #folder to copy models to (fichiers .learner), no "_" else bug !!!
-  Fpar="/pbs/home/c/croemer/Donnees/p_export.csv" #the file with data about participations
-  Fsl="/pbs/home/c/croemer/Donnees/sites_localites.txt"	#the file with the data about localities
-  sfolds_source = paste0("/pbs/home/c/croemer/Donnees/ModPred/VC", ThresholdSort, "_", Sys.Date(), "/temp_sfolds.rds")
-  source(paste("/pbs/home/c/croemer/Scripts/","RF_prepare_data.R",sep=""))
-  source(paste("/pbs/home/c/croemer/Scripts/","RF_functions.R",sep=""))
+## if(Place == "IN2P3"){
+##   args=paste0("/pbs/home/c/croemer/Donnees/Raw/SpNuit2_", ThresholdSort, "_DataLP_PF_exportTot") #bat activity table (not DI !! --> need the file where microphone quality is sorted out) . file without csv extension
+##   args[2]="/pbs/home/c/croemer/Donnees/GI_FR_sites_localites" #table with spatial variables (habitat and climate)
+##   args[3]="/pbs/home/c/croemer/Donnees/SpeciesList.csv" # Species list to build models
+##   args[4]="/pbs/home/c/croemer/Donnees/SIG" # france limits
+##   Output=paste0("/pbs/home/c/croemer/Donnees/ModPred/VC", ThresholdSort, "_", Sys.Date()) #folder to copy models to (fichiers .learner), no "_" else bug !!!
+##   Fpar="/pbs/home/c/croemer/Donnees/p_export.csv" #the file with data about participations
+##   Fsl="/pbs/home/c/croemer/Donnees/sites_localites.txt"	#the file with the data about localities
+##   sfolds_source = paste0("/pbs/home/c/croemer/Donnees/ModPred/VC", ThresholdSort, "_", Sys.Date(), "/temp_sfolds.rds")
+##   source(paste("/pbs/home/c/croemer/Scripts/","RF_prepare_data.R",sep=""))
+##   source(paste("/pbs/home/c/croemer/Scripts/","RF_functions.R",sep=""))
   
-}
+## }
 
-args[6]="participation" #name of sampling event
-args[7]="localite" #name of locality in CoordSIG (if DataLoc=T)
-args[8]="participation" #name of participation (=sampling event)
-args[10]="nb_contacts_nd" #the name of the parameter which gives the metric to predict
-Tag=paste0("VC", ThresholdSort) #tag which will be written in the filename, no "_", else bug !!!
-CoordinateNames=c("X","Y") #name of columns with coordinates in the locality table (sites_localites.txt)
+args[6] <- "participation" #name of sampling event
+args[7] <- "localite" #name of locality in CoordSIG (if DataLoc=T)
+args[8] <- "participation" #name of participation (=sampling event)
+args[10] <- "nb_contacts_nd" #the name of the parameter which gives the metric to predict
+Tag <- paste0("VC", ThresholdSort) #tag which will be written in the filename, no "_", else bug !!!
+CoordinateNames <- c("X","Y") #name of columns with coordinates in the locality table (sites_localites.txt)
 
 dir.create(Output)
 
@@ -109,7 +113,8 @@ dir.create(Output)
 
 #### Prepare general dataset ####-------------------------------------------------------
 
-List_data_prepared = prepare_data(args, Fpar, Fsl)
+List_data_prepared <- prepare_data(args, Fpar, Fsl)
+
 CoordPS = List_data_prepared[[1]] # environmental variables
 DataCPL3 = List_data_prepared[[2]]  # bat activity (without absence data)
 SelParSL = List_data_prepared[[3]] # list of sampling sessions to know when to add absence data
