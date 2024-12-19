@@ -23,7 +23,7 @@ prepare_data <- function(ARGS, FPAR, FSL){
   
   # Read participation and locality data
   print("Reading participations...")
-  Particip <- read_delim(FPAR,delim=";")
+  Particip <- read_delim(FPAR, delim = ";")
   print("Reading locations...")
   SiteLoc <- fread(FSL)
   
@@ -40,24 +40,42 @@ prepare_data <- function(ARGS, FPAR, FSL){
   
   # List coordinates existing in bat activity data to help add 0 in nb_contacts later
   print("Listing unique locations") # Là il faut peut-être discuter
-  print("Voir avec Charlotte pour cette étape ")
   ListPar <- levels(as.factor(DataCPL3$participation))
   SelPar <- subset(Particip,Particip$participation %in% ListPar)
-  SelParSL <- merge(SiteLoc, SelPar, by.x = c("site", "point"), by.y = c("site","point"))
-  CoordPar=aggregate(SelParSL$participation
-                     ,by=c(list("longitude" = SelParSL$longitude),
-                           list("latitude" = SelParSL$latitude),
-                           list("participation" = SelParSL$participation))
-                     ,FUN=length)
-  CoordPar$x=NULL
+  SelPar <- unique(SelPar)
+  SiteLoc <- unique(SiteLoc)
+  print("Merging Site locations and participations")
+  SelParSL <- merge(SiteLoc, SelPar, by.x = c("site", "nom"), by.y = c("site","point"))
+  print("Merge done")
+    CoordPar <- aggregate(SelParSL$participation
+                      ,by = c(list("longitude" = SelParSL$longitude),
+                            list("latitude" = SelParSL$latitude),
+                            list("participation" = SelParSL$participation))
+                      ,FUN = length)
+  CoordPar$x <- NULL
   
   # Merge list of coordinates with environmental variables
-  CoordPS=merge(CoordPar,CoordSIG,by=c("longitude","latitude"))
-  CoordPS[is.na(CoordPS)]=0
+  print("Merging Coordinates")
+  CoordPS <- merge(CoordPar,CoordSIG,by=c("longitude","latitude"))
+  print("Merged")
+  CoordPS[is.na(CoordPS)] <- 0
   testPar=grepl(ARGS[6],names(CoordPS))
+  print("TESTPAR")
+  print(testPar)
+  print("Subseting data")
   numPar=subset(c(1:length(testPar)),testPar)
+  print("data subseted")
+  print("SELPARSL")
+  print(head(SelParSL))
+  print("DATACPL3")
+  print(head(DataCPL3))
+  print("COORDPS")
+  print(names(CoordPS))
+  print(head(CoordPS))
+  print(numPar[1])
   CoordPS$participation=as.data.frame(CoordPS)[,numPar[1]]
   
+  print("Done... ready to return data")
   return(list(
   CoordPS, # environmental variables
   DataCPL3, # bat activity (without absence data)
