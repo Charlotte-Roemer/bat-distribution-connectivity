@@ -8,3 +8,4 @@ _vars.*
 __pycache__/
 *.swp
 *.out
+*.sqlite
