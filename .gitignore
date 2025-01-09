@@ -4,3 +4,7 @@ data/GIS/
 _vars.*
 .Rhistory
 .#*
+*.csv
+__pycache__/
+*.swp
+*.out
