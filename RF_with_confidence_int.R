@@ -3,9 +3,57 @@
 # help(grf)
 library(grf)
 library(dplyr)
+source("variables.R")
 
+region <- "france_met"
 future::plan("multisession")
 
+obs_folder <- file.path(data, "observations", "obs_vars")
+obs <- file.path(obs_folder, "loc_train_france_met.csv")
+observations <- read.csv(obs)
+head(observations)
+observations$annee <- as.integer(sapply(strsplit(observations$Nuit, "-"), "[", 1))
+
+observations <- observations[between(observations$annee, 2013, 2024), ]
+
+
+csvs <- list.files(obs_folder, full.names = TRUE)
+
+tabs <- lapply(csvs, read.csv)
+
+
+date_d <- function(dataframe) {
+  if (all(c("X", "Y", "Nuit") %in% colnames(dataframe))) {
+    return(TRUE)
+  } else {
+    return(FALSE)
+  }
+}
+
+
+
+cond <- unlist(lapply(tabs, date_d))
+
+bidule <- tabs[cond]
+bidulo <- tabs[!cond]
+
+for (tab in bidulo) {
+  ## tab <- tab[1:1000,]
+  tab <- unique(tab)
+  observations <<- observations %>% left_join(tab, by = c("X", "Y"))
+}
+
+
+head(bidule)
+df_dates <- purrr::reduce(bidule, full_join, by = c("X", "Y", "Nuit"))
+df_dates <- df_dates  %>%  select(-FID)
+df_dates <- unique(df_dates)
+
+observations <- 
+  observations %>%
+  left_join(df_dates, by = c("X", "Y", "Nuit"))
+
+head(df_dates)
 tool_data <- read.csv("/home/bbk9/Documents/asellia/Barba_2024/data/dependances_fixes/vars_obs_Barbar.csv")
 X_pred_aout <- read.csv("/home/bbk9/Documents/asellia/Barba_2024/data/dependances_fixes/vars_predict_2023-08.csv")
 
