@@ -57,7 +57,7 @@ Coord_Meteo <- function(points, temp, prec, wind) {
       monthly_tables <- rlist::list.append(monthly_tables, tableau_month)
     }
     tab <- do.call("rbind", monthly_tables)
-    tab$Spprecipitations <- tab$temp_norm - tab$total_precipitations
+    tab$Spprecipitations <- tab$precip_norm - tab$total_precipitations
     tab$Sptemp <- tab$temp_norm - tab$mean_temp
     tab$Spwind <- tab$wind_norm - tab$mean_wind
   }
