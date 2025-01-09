@@ -55,15 +55,15 @@ DoBoruta <- FALSE
 #### Directories ####-----------------------------------------------------------
 
 if (Place == "local") {
-  args <- file.path(data, "observations", "donnees_vigie_chiro",
+  args <- file.path(data_path, "observations", "donnees_vigie_chiro",
                     paste0("SpNuit2_", ThresholdSort, "_DataLP_PF_exportTot")) # bat activity table (not DI !! --> need the file where microphone quality is sorted out) . file without csv extension
-  args[2] <- file.path(data, "observations", "donnees_vigie_chiro", "GI_FR_sites_localites") # table with spatial variables (habitat and climate)
-  args[3] <- file.path(data, "observations", "donnees_vigie_chiro", "SpeciesList.csv") # Species list to build models
-  args[4] <- file.path(data, "GIS", "regions.gpkg") # france limits
-  Output <- file.path(data, "ModPred", paste0("VC", ThresholdSort, "_", Sys.Date())) # folder to copy models to (fichiers .learner), no "_" else bug !!!
-  Fpar <- file.path(data, "observations", "donnees_vigie_chiro", "p_export.csv") # the file with data about participations
-  Fsl <- file.path(data, "observations", "donnees_vigie_chiro", "sites_localites.txt") # the file with the data about localities
-  sfolds_source <- file.path(data, "ModPred", paste0("VC", ThresholdSort, "_", Sys.Date()), "temp_sfolds.rds") # quezaco?
+  args[2] <- file.path(data_path, "observations", "donnees_vigie_chiro", "GI_FR_sites_localites") # table with spatial variables (habitat and climate)
+  args[3] <- file.path(data_path, "observations", "donnees_vigie_chiro", "SpeciesList.csv") # Species list to build models
+  args[4] <- file.path(data_path, "GIS", "regions.gpkg") # france limits
+  Output <- file.path(data_path, "ModPred", paste0("VC", ThresholdSort, "_", Sys.Date())) # folder to copy models to (fichiers .learner), no "_" else bug !!!
+  Fpar <- file.path(data_path, "observations", "donnees_vigie_chiro", "p_export.csv") # the file with data about participations
+  Fsl <- file.path(data_path, "observations", "donnees_vigie_chiro", "sites_localites.txt") # the file with the data about localities
+  sfolds_source <- file.path(data_path, "ModPred", paste0("VC", ThresholdSort, "_", Sys.Date()), "temp_sfolds.rds") # quezaco?
 }
 
 ## if(Place == "PCIA"){
