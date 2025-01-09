@@ -50,7 +50,7 @@ YearEffect <- TRUE # Add year?
 NTREE <- 500
 
 # Do variable selection?
-DoBoruta <- TRUE
+DoBoruta <- FALSE
 
 
 
@@ -180,9 +180,9 @@ for (i in 1:length(ListSp))
 
   # Exclude data with obvious wrong date (<2010)
   DataSpSL_w0_2 <- DataSpSL_w0_2[which(DataSpSL_w0_2$Nuit > as.Date("2010-01-01")), ]
-  print(CoordPS$Nuit[1])
 
   DataSpSL_w0_2$Nuit <- as.Date(DataSpSL_w0_2$Nuit)
+  CoordPS$Nuit <- as.Date(CoordPS$Nuit)
   DataSaison <- full_join(DataSpSL_w0_2, CoordPS) # adds environmental variables to activity data
 
   print(Sys.time())
@@ -321,7 +321,7 @@ for (i in 1:length(ListSp))
   if (!file.exists(sfolds_source)) {
     DataSaison_sf <- st_as_sf(DataSaison, coords = c(x = "longitude", y = "latitude"), crs = 4326) %>%
       st_transform(2154)
-    aoi <- read_sf(dsn = args[4], layer = "France_metropolitaine") %>% # Load France contour
+    aoi <- read_sf(dsn = args[4], layer = "france_met") %>% # Load France contour
       st_transform(2154)
     set.seed(123)
     START <- Sys.time()
