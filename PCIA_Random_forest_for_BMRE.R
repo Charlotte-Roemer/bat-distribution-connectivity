@@ -52,13 +52,11 @@ NTREE <- 500
 # Do variable selection?
 DoBoruta <- FALSE
 
-# test
-print(paste0(ThresholdSort, "coucou"))
-
 #### Directories ####-----------------------------------------------------------
 
 if (Place == "local") {
-  args <- file.path(data, "observations", "donnees_vigie_chiro", paste0("SpNuit2_", ThresholdSort, "_DataLP_PF_exportTot")) # bat activity table (not DI !! --> need the file where microphone quality is sorted out) . file without csv extension
+  args <- file.path(data, "observations", "donnees_vigie_chiro",
+                    paste0("SpNuit2_", ThresholdSort, "_DataLP_PF_exportTot")) # bat activity table (not DI !! --> need the file where microphone quality is sorted out) . file without csv extension
   args[2] <- file.path(data, "observations", "donnees_vigie_chiro", "GI_FR_sites_localites") # table with spatial variables (habitat and climate)
   args[3] <- file.path(data, "observations", "donnees_vigie_chiro", "SpeciesList.csv") # Species list to build models
   args[4] <- file.path(data, "GIS", "regions.gpkg") # france limits
