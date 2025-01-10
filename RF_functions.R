@@ -56,7 +56,7 @@ fitvalpred_rf <- function(covariates,
   #preds <- predict(rstack, spatial_mod, na.rm=TRUE)
   
   # 4. Variable importance
-  impfeat <- importance(spatial_mod$finalModel, type = 2)
+  impfeat <- randomForest::importance(spatial_mod$finalModel, type = 2)
   impfeat <- sum(impfeat[row.names(impfeat) %in% covariates, 1])/sum(impfeat[,1])*100
   names(impfeat) <- "impfeat"
   
