@@ -6,7 +6,8 @@ library(sf)
 Coord_Meteo <- function(points, temp, prec, wind) {
   if (opt$mode == "predict") {
     OccSL <- readr::read_delim(paste0(points, ".csv"), delim = ",") %>%
-      select(c("X", "Y", "Nuit"))
+      select(c("X", "Y"))
+    OccSL$Nuit <- opt$date
     OccSL$Spwind <- 0
     OccSL$Sptemp <- 0
     OccSL$Spprecipitations <- 0
