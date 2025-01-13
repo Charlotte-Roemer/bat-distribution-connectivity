@@ -320,7 +320,7 @@ for (i in 1:length(ListSp))
   if (!file.exists(sfolds_source)) {
     DataSaison_sf <- st_as_sf(DataSaison, coords = c(x = "longitude", y = "latitude"), crs = 4326) %>%
       st_transform(2154)
-    aoi <- read_sf(dsn = args[4], layer = "france_met") %>% # Load France contour
+    aoi <- read_sf(dsn = args[4], layer = "paca") %>% # Load France contour
       st_transform(2154)
     set.seed(123)
     START <- Sys.time()
@@ -333,8 +333,12 @@ for (i in 1:length(ListSp))
     sfolds <- readRDS(sfolds_folder)
   }
   sindx <- CreateSpacetimeFolds(data.frame(ID = sfolds$clusters), spacevar = "ID", k = 10)
+  print("sindx :")
+  print(head(sindx))
   sctrl <- caret::trainControl(method = "cv", index = sindx$index, savePredictions = "final")
 
+  print("sctrl :")
+  print(head(sctrl))
 
   print("Cross-validation indices prepared")
 

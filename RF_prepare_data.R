@@ -61,7 +61,7 @@ prepare_data <- function(ARGS, FPAR, FSL){
   CoordPS[is.na(CoordPS)] <- 0
   testPar=grepl(ARGS[6],names(CoordPS))
   print("TESTPAR")
-  print(testPar)
+  print(head(testPar))
   print("Subseting data")
   numPar=subset(c(1:length(testPar)),testPar)
   print("data subseted")
