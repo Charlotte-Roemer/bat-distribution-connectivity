@@ -255,7 +255,7 @@ for (i in 1:length(listfun))
 ##   layCorr = layer_bioclim_gross
 ## )
 
- ALAN ###
+## ALAN ###
 print("ALAN")
 Coord_ALAN(
  points = FCoord,
@@ -265,7 +265,7 @@ Coord_ALAN(
 layers = folder_alan
 )
 
- VCF ###
+## VCF ###
 print("VCF")
 Coord_VCF(
  points = FCoord,
@@ -276,7 +276,7 @@ Coord_VCF(
  layers = folder_vcf
 )
 
-ALTI ####
+## ALTI ####
 print("Altitude & slope")
 Coord_Alti(
  points = FCoord,
@@ -287,7 +287,7 @@ Coord_Alti(
  layer = layer_alti
 )
 
-Wind Turbines ###
+## Wind Turbines ###
 print("Wind Turbines")
 Coord_eol(points = FCoord,
          names_coord = Coord_Headers,
@@ -297,7 +297,7 @@ Coord_eol(points = FCoord,
          layer = layer_wind_turbines
          )
 
-CARTHAGE (eau) ####
+## CARTHAGE (eau) ####
 print("Water")
 Coord_Carthage(
  points = FCoord,
@@ -310,7 +310,7 @@ Coord_Carthage(
 )
 
 
-CLC Corine Land Cover (Habitat) ####
+## CLC Corine Land Cover (Habitat) ####
 print("CLC")
 Coord_CLCraster(
  points = FCoord,
@@ -321,7 +321,7 @@ Coord_CLCraster(
 )
 
 
-CESBIO (Habitat) ####
+## CESBIO (Habitat) ####
 print("OCS OSO")
 Coord_OCS_OSO(
  points = FCoord,
@@ -334,7 +334,7 @@ Coord_OCS_OSO(
 )
 
 
-ROADS and TRAINS ####
+## ROADS and TRAINS ####
 print("Roads and trains")
 Coord_Route(
  points = FCoord,
