@@ -7,7 +7,7 @@ source("variables.R")
 
 
 # Setup project folder (must contain folders scripts, data, outputs):
-setwd(project_path) # dossier dans lequel
+setwd(data_path) # dossier dans lequel
 
 ## Script is called with Rscript and options :
 option_list <- list(
@@ -228,11 +228,12 @@ if (opt$region == "france_met") {
   layer_wind <- file.path(data_folder, "GIS", "WIND", "gwa3_250_windspeed_10m_europe.tif")
   layer_precip <- file.path(data_folder, "GIS", "CLIM_NORM", "chelsea_eur11_pr_norm_1981-2005_v1_1.tif")
   layer_temp <- file.path(data_folder, "GIS", "CLIM_NORM", "chelsea_eur11_tas_norm_1981-2005_v1_1.tif")
+  layer_grotto <- file.path(data_folder, "GIS", "grottocenter.gpkg")
 }
 
 ListLayer <- c(
   "ALAN", "Alti", "Carthage", "CLCraster", "OCS2018bis",
-  "Transports", "Reseau", "Meteo", "VCF"
+  "Transports", "Reseau", "Meteo", "VCF", "grotto"
 )
 
 
@@ -255,95 +256,106 @@ for (i in 1:length(listfun))
 ##   layCorr = layer_bioclim_gross
 ## )
 
-## ALAN ###
-print("ALAN")
-Coord_ALAN(
- points = FCoord,
- names_coord = c(Coord_Headers, "Nuit"),
- bm = BM,
- bl = BL,
-layers = folder_alan
+## ## ALAN ###
+## print("ALAN")
+## Coord_ALAN(
+##  points = FCoord,
+##  names_coord = c(Coord_Headers, "Nuit"),
+##  bm = BM,
+##  bl = BL,
+## layers = folder_alan
+## )
+
+## Grotto ###
+print("Grotto")
+Coord_Grotto(
+  points = FCoord,
+  names_coord = Coord_Headers,
+  bs = BS,
+  bm = BM,
+  bl = BL,
+  layer = layer_grotto
 )
 
-## VCF ###
-print("VCF")
-Coord_VCF(
- points = FCoord,
- names_coord = c(Coord_Headers, "Nuit"),
- bs = BS,
- bm = BM,
- bl = BL,
- layers = folder_vcf
-)
+## ## VCF ###
+## print("VCF")
+## Coord_VCF(
+##  points = FCoord,
+##  names_coord = c(Coord_Headers, "Nuit"),
+##  bs = BS,
+##  bm = BM,
+##  bl = BL,
+##  layers = folder_vcf
+## )
 
-## ALTI ####
-print("Altitude & slope")
-Coord_Alti(
- points = FCoord,
- names_coord = Coord_Headers,
- bs = BS,
- bm = BM,
- bl = BL,
- layer = layer_alti
-)
+## ## ALTI ####
+## print("Altitude & slope")
+## Coord_Alti(
+##  points = FCoord,
+##  names_coord = Coord_Headers,
+##  bs = BS,
+##  bm = BM,
+##  bl = BL,
+##  layer = layer_alti
+## )
 
-## Wind Turbines ###
-print("Wind Turbines")
-Coord_eol(points = FCoord,
-         names_coord = Coord_Headers,
-         bs = BS,
-         bm = BM,
-         bl = BL,
-         layer = layer_wind_turbines
-         )
+## ## Wind Turbines ###
+## print("Wind Turbines")
+## Coord_eol(points = FCoord,
+##          names_coord = Coord_Headers,
+##          bs = BS,
+##          bm = BM,
+##          bl = BL,
+##          layer = layer_wind_turbines
+##          )
 
-## CARTHAGE (eau) ####
-print("Water")
-Coord_Carthage(
- points = FCoord,
- names_coord = Coord_Headers,
- bs = BS,
- bm = BM,
- bl = BL,
- carthagep = Layer_Carthage_P,
- carthagec = Layer_Carthage_C
-)
-
-
-## CLC Corine Land Cover (Habitat) ####
-print("CLC")
-Coord_CLCraster(
- points = FCoord,
- names_coord = c(Coord_Headers, "Nuit"),
- bm = BM,
- bl = BL,
- layer = folder_CLC
-)
+## ## CARTHAGE (eau) ####
+## print("Water")
+## Coord_Carthage(
+##  points = FCoord,
+##  names_coord = Coord_Headers,
+##  bs = BS,
+##  bm = BM,
+##  bl = BL,
+##  carthagep = Layer_Carthage_P,
+##  carthagec = Layer_Carthage_C
+## )
 
 
-## CESBIO (Habitat) ####
-print("OCS OSO")
-Coord_OCS_OSO(
- points = FCoord,
- names_coord = c(Coord_Headers, "Nuit"),
- bs = BS,
- bm = BM
- # Buffer Large is not done because was too long in Pipeline V1, and
- # at this scale, Corine Land Cover is sufficient anyway
- , layer = Layer_OCS
-)
+## ## CLC Corine Land Cover (Habitat) ####
+## print("CLC")
+## Coord_CLCraster(
+##  points = FCoord,
+##  names_coord = c(Coord_Headers, "Nuit"),
+##  bm = BM,
+##  bl = BL,
+##  layer = folder_CLC
+## )
 
 
-## ROADS and TRAINS ####
-print("Roads and trains")
-Coord_Route(
- points = FCoord,
- names_coord = Coord_Headers,
- bs = BS,
- bm = BM,
- bl = BL,
- folder = folder_route
-)
+## ## CESBIO (Habitat) ####
+## print("OCS OSO")
+## Coord_OCS_OSO(
+##  points = FCoord,
+##  names_coord = c(Coord_Headers, "Nuit"),
+##  bs = BS,
+##  bm = BM
+##  # Buffer Large is not done because was too long in Pipeline V1, and
+##  # at this scale, Corine Land Cover is sufficient anyway
+##  , layer = Layer_OCS
+## )
+
+
+## ## ROADS and TRAINS ####
+## print("Roads and trains")
+## Coord_Route(
+##  points = FCoord,
+##  names_coord = Coord_Headers,
+##  bs = BS,
+##  bm = BM,
+##  bl = BL,
+##  folder = folder_route
+## )
 
 ## print("Meteo")
 ## Coord_Meteo(
