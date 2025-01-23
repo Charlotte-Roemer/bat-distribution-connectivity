@@ -248,23 +248,23 @@ for (i in 1:length(listfun))
 }
 
 ## Bioclim ###
-## print("Bioclim")
-## Coord_BioclimLocal(
-##   points = FCoord,
-##   names_coord = Coord_Headers,
-##   layer_folder = bioclim_folder,
-##   layCorr = layer_bioclim_gross
-## )
+print("Bioclim")
+Coord_BioclimLocal(
+  points = FCoord,
+  names_coord = Coord_Headers,
+  layer_folder = bioclim_folder,
+  layCorr = layer_bioclim_gross
+)
 
-## ## ALAN ###
-## print("ALAN")
-## Coord_ALAN(
-##  points = FCoord,
-##  names_coord = c(Coord_Headers, "Nuit"),
-##  bm = BM,
-##  bl = BL,
-## layers = folder_alan
-## )
+## ALAN ###
+print("ALAN")
+Coord_ALAN(
+ points = FCoord,
+ names_coord = c(Coord_Headers, "Nuit"),
+ bm = BM,
+ bl = BL,
+layers = folder_alan
+)
 
 ## Grotto ###
 print("Grotto")
@@ -277,93 +277,93 @@ Coord_Grotto(
   layer = layer_grotto
 )
 
-## ## VCF ###
-## print("VCF")
-## Coord_VCF(
-##  points = FCoord,
-##  names_coord = c(Coord_Headers, "Nuit"),
-##  bs = BS,
-##  bm = BM,
-##  bl = BL,
-##  layers = folder_vcf
-## )
+## VCF ###
+print("VCF")
+Coord_VCF(
+ points = FCoord,
+ names_coord = c(Coord_Headers, "Nuit"),
+ bs = BS,
+ bm = BM,
+ bl = BL,
+ layers = folder_vcf
+)
 
-## ## ALTI ####
-## print("Altitude & slope")
-## Coord_Alti(
-##  points = FCoord,
-##  names_coord = Coord_Headers,
-##  bs = BS,
-##  bm = BM,
-##  bl = BL,
-##  layer = layer_alti
-## )
+ALTI ####
+print("Altitude & slope")
+Coord_Alti(
+ points = FCoord,
+ names_coord = Coord_Headers,
+ bs = BS,
+ bm = BM,
+ bl = BL,
+ layer = layer_alti
+)
 
-## ## Wind Turbines ###
-## print("Wind Turbines")
-## Coord_eol(points = FCoord,
-##          names_coord = Coord_Headers,
-##          bs = BS,
-##          bm = BM,
-##          bl = BL,
-##          layer = layer_wind_turbines
-##          )
+## Wind Turbines ###
+print("Wind Turbines")
+Coord_eol(points = FCoord,
+         names_coord = Coord_Headers,
+         bs = BS,
+         bm = BM,
+         bl = BL,
+         layer = layer_wind_turbines
+         )
 
-## ## CARTHAGE (eau) ####
-## print("Water")
-## Coord_Carthage(
-##  points = FCoord,
-##  names_coord = Coord_Headers,
-##  bs = BS,
-##  bm = BM,
-##  bl = BL,
-##  carthagep = Layer_Carthage_P,
-##  carthagec = Layer_Carthage_C
-## )
-
-
-## ## CLC Corine Land Cover (Habitat) ####
-## print("CLC")
-## Coord_CLCraster(
-##  points = FCoord,
-##  names_coord = c(Coord_Headers, "Nuit"),
-##  bm = BM,
-##  bl = BL,
-##  layer = folder_CLC
-## )
+## CARTHAGE (eau) ####
+print("Water")
+Coord_Carthage(
+ points = FCoord,
+ names_coord = Coord_Headers,
+ bs = BS,
+ bm = BM,
+ bl = BL,
+ carthagep = Layer_Carthage_P,
+ carthagec = Layer_Carthage_C
+)
 
 
-## ## CESBIO (Habitat) ####
-## print("OCS OSO")
-## Coord_OCS_OSO(
-##  points = FCoord,
-##  names_coord = c(Coord_Headers, "Nuit"),
-##  bs = BS,
-##  bm = BM
-##  # Buffer Large is not done because was too long in Pipeline V1, and
-##  # at this scale, Corine Land Cover is sufficient anyway
-##  , layer = Layer_OCS
-## )
+## CLC Corine Land Cover (Habitat) ####
+print("CLC")
+Coord_CLCraster(
+ points = FCoord,
+ names_coord = c(Coord_Headers, "Nuit"),
+ bm = BM,
+ bl = BL,
+ layer = folder_CLC
+)
 
 
-## ## ROADS and TRAINS ####
-## print("Roads and trains")
-## Coord_Route(
-##  points = FCoord,
-##  names_coord = Coord_Headers,
-##  bs = BS,
-##  bm = BM,
-##  bl = BL,
-##  folder = folder_route
-## )
+## CESBIO (Habitat) ####
+print("OCS OSO")
+Coord_OCS_OSO(
+ points = FCoord,
+ names_coord = c(Coord_Headers, "Nuit"),
+ bs = BS,
+ bm = BM
+ # Buffer Large is not done because was too long in Pipeline V1, and
+ # at this scale, Corine Land Cover is sufficient anyway
+ , layer = Layer_OCS
+)
 
-## print("Meteo")
-## Coord_Meteo(
-##   points = FCoord,
-## temp = layer_temp,
-## prec = layer_precip,
-## wind = layer_wind
-## )
+
+## ROADS and TRAINS ####
+print("Roads and trains")
+Coord_Route(
+ points = FCoord,
+ names_coord = Coord_Headers,
+ bs = BS,
+ bm = BM,
+ bl = BL,
+ folder = folder_route
+)
+
+print("Meteo")
+Coord_Meteo(
+  points = FCoord,
+temp = layer_temp,
+prec = layer_precip,
+wind = layer_wind
+)
 
 ## loc_data <- file.path(loc, "data")
 
