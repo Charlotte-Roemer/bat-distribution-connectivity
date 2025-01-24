@@ -288,7 +288,7 @@ Coord_VCF(
  layers = folder_vcf
 )
 
-ALTI ####
+## ALTI ####
 print("Altitude & slope")
 Coord_Alti(
  points = FCoord,

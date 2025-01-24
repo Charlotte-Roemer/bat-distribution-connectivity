@@ -6,12 +6,14 @@ prepare_data <- function(ARGS, FPAR, FSL){
   # Read bat activity data
   print("Reading data")
   DataCPL2 <- fread(paste0(ARGS[1],".csv"))
+  DataCPL2 <- unique(DataCPL2)
   DataCPL2$Nuit <- as.Date(DataCPL2$Nuit)
   DataCPL3 <- DataCPL2 %>% 
     dplyr::filter(Nuit < DateLimit)
   
   # Read predictor table
   CoordSIG <- fread(paste0(ARGS[2],".csv"))
+  CoordSIG <- unique(CoordSIG)
   CoordSIG <- CoordSIG %>% 
     rename(longitude = CoordinateNames[1], 
            latitude = CoordinateNames[2])
@@ -24,8 +26,10 @@ prepare_data <- function(ARGS, FPAR, FSL){
   # Read participation and locality data
   print("Reading participations...")
   Particip <- read_delim(FPAR, delim = ";")
+  Particip <- unique(Particip)
   print("Reading locations...")
   SiteLoc <- fread(FSL)
+  SiteLoc <- unique(SiteLoc)
   
   # Identifies sites recorded near bat roosts !!! Remove these sites ???
   print("Identifying shelters")
