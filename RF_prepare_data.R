@@ -6,14 +6,12 @@ prepare_data <- function(ARGS, FPAR, FSL){
   # Read bat activity data
   print("Reading data")
   DataCPL2 <- fread(paste0(ARGS[1],".csv"))
-  DataCPL2 <- unique(DataCPL2)
   DataCPL2$Nuit <- as.Date(DataCPL2$Nuit)
   DataCPL3 <- DataCPL2 %>% 
     dplyr::filter(Nuit < DateLimit)
   
   # Read predictor table
   CoordSIG <- fread(paste0(ARGS[2],".csv"))
-  CoordSIG <- unique(CoordSIG)
   CoordSIG <- CoordSIG %>% 
     rename(longitude = CoordinateNames[1], 
            latitude = CoordinateNames[2])
@@ -26,10 +24,8 @@ prepare_data <- function(ARGS, FPAR, FSL){
   # Read participation and locality data
   print("Reading participations...")
   Particip <- read_delim(FPAR, delim = ";")
-  Particip <- unique(Particip)
   print("Reading locations...")
   SiteLoc <- fread(FSL)
-  SiteLoc <- unique(SiteLoc)
   
   # Identifies sites recorded near bat roosts !!! Remove these sites ???
   print("Identifying shelters")
@@ -64,18 +60,9 @@ prepare_data <- function(ARGS, FPAR, FSL){
   print("Merged")
   CoordPS[is.na(CoordPS)] <- 0
   testPar=grepl(ARGS[6],names(CoordPS))
-  print("TESTPAR")
-  print(head(testPar))
   print("Subseting data")
   numPar=subset(c(1:length(testPar)),testPar)
   print("data subseted")
-  print("SELPARSL")
-  print(head(SelParSL))
-  print("DATACPL3")
-  print(head(DataCPL3))
-  print("COORDPS")
-  print(names(CoordPS))
-  print(head(CoordPS))
   print(numPar[1])
   CoordPS$participation=as.data.frame(CoordPS)[,numPar[1]]
   
