@@ -3,7 +3,7 @@
 #SBATCH --job-name=extract_data_bmre
 #SBATCH --mem=100G
 #SBATCH --partition=type_2
-#SBATCH --time=1-00:00:00
+#SBATCH --time=7-00:00:00
 #SBATCH --exclude=node-08
 
 module load userspace/tr17.10

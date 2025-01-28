@@ -55,12 +55,8 @@ Coord_Grotto <- function(points, names_coord, bs, bm, bl, layer){
   BufferS <- st_buffer(OccSL, dist = BufferSmall) %>%
     st_transform(st_crs(grottes))
   Sys.time()
-  print("longueur du tableau :")
-  print(nrow(OccSL))
   BufferS$pt_count <- st_intersects(BufferS, grottes) %>%
     lengths()
-  print("longueur du décompte :")
-  print(nrow(Buffer))
 
   SpGrot <- BufferS
 
