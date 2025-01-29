@@ -95,7 +95,6 @@ if (Place == "local") {
   Output <- file.path(data_path, "ModPred", paste0("VC", ThresholdSort, "_", Sys.Date())) # folder to copy models to (fichiers .learner), no "_" else bug !!!
   Fpar <- file.path(data_path, "observations", "donnees_vigie_chiro", "p_export.csv") # the file with data about participations
   Fsl <- file.path(data_path, "observations", "donnees_vigie_chiro", "sites_localites.txt") # the file with the data about localities
-  sfolds_source <- file.path(data_path, "ModPred", paste0("VC", ThresholdSort, "_", Sys.Date()), "temp_sfolds.rds") # quezaco?
 }
 args[6] <- "participation" # name of sampling event
 args[7] <- "localite" # name of locality in CoordSIG (if DataLoc=T)
@@ -204,14 +203,6 @@ for (i in 1:length(ListSp))
     DataSaison$SpYear <- year(Date1)
   }
 
-
-  # Add spatial proxies
-  if (CoordType == "LongLat") { # coordinates
-    DataSaison$Splatitude <- DataSaison$latitude
-    DataSaison$Splongitude <- DataSaison$longitude
-  }
-
-  if (CoordType == "EDF") { # Eurclidian Distance Fields
     DataSaison_sf <- st_as_sf(DataSaison, coords = c(x = "longitude", y = "latitude"), crs = 4326) %>%
       st_transform(2154)
 
@@ -238,7 +229,6 @@ for (i in 1:length(ListSp))
 
     DataSaison$Splatitude <- DataSaison$latitude
     DataSaison$Splongitude <- DataSaison$longitude
-  }
 
   # Add material as predictor
   DataSaison$SpRecorder <- DataSaison$detecteur_enregistreur_type
@@ -246,7 +236,8 @@ for (i in 1:length(ListSp))
   # Identify predictors
   testPred <- (substr(names(DataSaison), 1, 2) == "Sp")
   Prednames <- names(DataSaison)[testPred]
-  # print(Prednames)
+  testPredLatLong <- substr(Prednames, 3, 5) != "EDF" 
+  PrednamesLatLong <- Prednames[testPredLatLong] # for latlong only RF
 
   # Do not use species distribution area yet
   ListSpeciesDistribution <- c(
@@ -262,11 +253,19 @@ for (i in 1:length(ListSp))
   Prednames <- Prednames[which(!Prednames %in% ListSpeciesDistribution)]
 
   Predictors <- DataSaison[, ..Prednames]
+  PredictorsLatLong <- DataSaison[, ..PrednamesLatLong]
 
   DataSaison <- DataSaison %>%
     drop_na(all_of(Prednames)) %>% # deletes rows without predictor (outdated GI table)
     drop_na(nb_contacts) # deletes rows without contacts (people did not upload their data)
 
+  # filtering excessive values
+  quant <- quantile(DataSaison$nb_contacts, probs = 0.98)
+
+DataSaison <- DataSaison[DataSaison$nb_contacts <= quant, ]
+
+  moran <- check_moran(DataSaison, "nb_contacts")
+ 
   print("Predictors identified")
 
   # Statistics for paper
@@ -286,9 +285,6 @@ for (i in 1:length(ListSp))
   print(summary(testNA))
   testNA2 <- apply(Predictors, MARGIN = 1, FUN = function(x) sum(is.na(x)))
   print(summary(testNA2))
-
-  DataSaison$ActLog10 <- log10(DataSaison$nb_contacts + 1) # pas sur que ce soit pertinent
-  print(summary(DataSaison$ActLog10))
   Sys.time()
 
   # Find Boruta formula (variable)
@@ -301,7 +297,12 @@ for (i in 1:length(ListSp))
     formula.Boruta <- try(getConfirmedFormula(ModRFTemp.Boruta)) # retrieve formula of selected variables if at least one was selected (error if none is selected)
     if (inherits(formula.Boruta, "try-error")) {
       formula.Boruta <- formula("ActLog10 ~.")
-      errorlog <- data.frame("message" = paste0("Boruta ended by not selecting any predictor for model ", ListSp[i]))
+      errorlog <- data.frame(
+        "message" = paste0(
+          "Boruta ended by not selecting any predictor for model ",
+          ListSp[i]
+        )
+      )
       fwrite(errorlog, paste0(Output, "/", ListSp[i], "_", Tag, "_log.txt"))
     } else {
       formula.Boruta <- getConfirmedFormula(ModRFTemp.Boruta)
@@ -315,22 +316,41 @@ for (i in 1:length(ListSp))
   #### Modelling ####-----------------------------------------------------------
 
   # Prepare random and spatial cross-validation indices
+  sfolds_source <- file.path(data_path,
+                             "ModPred",
+                             paste0("VC",
+                                    ThresholdSort,
+                                    "_",
+                                    ListSp[i]
+                                    ),
+                             "_temp_sfolds.rds") # quezaco?
+
   if (!file.exists(sfolds_source)) {
-    DataSaison_sf <- st_as_sf(DataSaison, coords = c(x = "longitude", y = "latitude"), crs = 4326) %>%
+    DataSaison_sf <- st_as_sf(DataSaison,
+                              coords = c(x = "longitude", y = "latitude"),
+                              crs = 4326) %>%
       st_transform(2154)
-    aoi <- read_sf(dsn = args[4], layer = "paca") %>% # Load France contour
-      st_transform(2154)
+  aoi <- sf::read_sf(
+  dsn = args[4],
+  layer = opt$region
+) %>%
+  st_transform(2154)
     set.seed(123)
     START <- Sys.time()
     sfolds <- knndm(DataSaison_sf, aoi, k = 10, maxp = 0.5) # k = number of folds
     END <- Sys.time()
     print(END - START) # 1 to 1.4 hours
     # beep(2)
-    saveRDS(sfolds, paste0(Output, "/temp_sfolds.rds"))
+    saveRDS(sfolds, sfolds_source))
   } else {
-    sfolds <- readRDS(sfolds_folder)
+    sfolds <- readRDS(sfolds_sfolds_source)
   }
-  sindx <- CreateSpacetimeFolds(data.frame(ID = sfolds$clusters), spacevar = "ID", k = 10)
+
+DataSaison$sfold <- sfolds$clusters
+sindx <- CreateSpacetimeFolds(DataSaison,
+                              spacevar = "sfold",
+                              ## timevar = "fortnight",
+                              k = 10)
   print("sindx :")
   print(head(sindx))
   sctrl <- caret::trainControl(method = "cv", index = sindx$index, savePredictions = "final")
@@ -363,20 +383,40 @@ for (i in 1:length(ListSp))
   } else {
     suffix <- paste0(CoordType, "_", NTREE)
   }
-
-  write.csv(EDFmod$tab, paste0(
-    Output, "/Evaluation_", ListSp[i],
-    Tag, "_", DateLimit,
-    "_", suffix, ".csv"
-  ))
+write.csv(
+  EDFmod$tab,
+  file.path(
+    Output,
+    paste0(
+      "Evaluation_",
+      ListSp[i],
+      Tag, "_",
+      DateLimit,
+      "_",
+      suffix,
+      ".csv"
+    )
+  )
+)
   # saveRDS(EDFmod$tunemod, paste0(Output, "/RFtune_", ListSp[i]
   #                                ,Tag,"_", DateLimit
   #                                ,"_", suffix, ".rds"))
-  saveRDS(EDFmod$spatmod, paste0(
-    Output, "/RFspat_", ListSp[i],
-    Tag, "_", DateLimit,
-    "_", suffix, ".rds"
-  ))
+saveRDS(
+  EDFmod$spatmod,
+  file.path(
+    Output,
+    paste0(
+      "RFspat_",
+      ListSp[i],
+      Tag,
+      "_",
+      DateLimit,
+      "_",
+      suffix,
+      ".rds"
+    )
+  )
+)
   rm("EDFmod", "proxycovs")
 
   END1 <- Sys.time()
@@ -384,9 +424,9 @@ for (i in 1:length(ListSp))
 }
 
 
-print(ListSp[i])
-print(ThresholdSort)
-if (DoBoruta) {
-  print(paste0("Variables before selection = ", length(Predictors)))
-  print(paste0("Variables after selection = ", length(names.Boruta)))
-}
+## print(ListSp[i])
+## print(ThresholdSort)
+## if (DoBoruta) {
+##   print(paste0("Variables before selection = ", length(Predictors)))
+##   print(paste0("Variables after selection = ", length(names.Boruta)))
+## }
