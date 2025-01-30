@@ -19,23 +19,52 @@ fitvalpred_rf <- function(covariates,
   
   # # 1. Tune (find the best mtry)
   print("tuning model")
-  tune_grid <- round(seq(2, length(c(covariates, proxies)), length.out=3))
-  tune_grid <- data.frame(mtry = tune_grid[!duplicated(tune_grid)])
+  tune_grid <- expand.grid(mtry = c(17, 75, 150, 200))
   tune_ctrl <- caret::trainControl(method="oob")
-  tune_mod <- caret::train(x = as.data.frame(traindf)[,c(covariates, proxies)], 
-                           y = as.data.frame(traindf)[,"ActLog10"],
-                           method="rf", 
-                           importance=TRUE,
-                           trControl=tune_ctrl, 
-                           ntree=n_tree, 
-                           tuneGrid=tune_grid)
+  cl <- parallel::makeCluster(20)
+  doParallel::registerDoParallel(cl)
+  ntree <- c(150, 500, 1500, 6000)
+  print("starting RF tuning")
+  error <- list()
+  params <- list()
+  R2 <- list()
+  ntrees <- list()
+  for (tree in ntree) {
+    tune_mod <- caret::train(
+      x = as.data.frame(traindf)[, covariates],
+      y = as.data.frame(traindf)[, "nb_contacts"],
+      method = "rf",
+      importance = TRUE,
+      trControl = tune_ctrl,
+      ntree = n_tree,
+      tuneGrid = tune_grid
+    )
+    error <- append(error, tune_mod$results$RMSE)
+    R2 <- append(R2, tune_mod$results$Rsquared)
+    params <- append(params, tune_mod$results$mtry)
+    ntrees <- append(ntrees, tree)
+  }
   print("model tuned")
+  parallel::stopCluster(cl)
   # AOA <- suppressMessages(aoa(rstack, tune_mod))
   # AOA <- as.numeric(global(AOA$AOA, na.rm=TRUE))
   # names(AOA) <- "AOA"
-  
+
+  results <- data.frame(R2 = unlist(R2),
+                        RMSE = unlist(error),
+                        mtry = as.factor(unlist(params)),
+                        ntrees = as.factor(unlist(ntrees))
+                        )
+
+best_mtry <- results[results$R2 == max(results$R2), ]$mtry
+best_ntrees <- results[results$R2 == max(results$R2), ]$ntrees
+  best_params_graph <- ggplot(data = results,
+                              aes(x = ntrees, y = mtry, fill = R2)) +
+  geom_tile() +
+  scale_fill_viridis_c()
+
   # 2. # build model and calculate RMSE and R² using the kNNDM cross-validation method
-  spatial_grid <- data.frame(mtry = tune_mod$bestTune$mtry)
+  spatial_grid <- data.frame(mtry = best_mtry)
   #spatial_grid <- data.frame(mtry = round(length(covariates)*2/3))
   print("building model")
   A=Sys.time()
@@ -44,7 +73,7 @@ fitvalpred_rf <- function(covariates,
                               method="rf", 
                               importance=FALSE,
                               trControl=spatial_ctrl, 
-                              ntree = n_tree, 
+                              ntree = best_ntrees, 
                               tuneGrid=spatial_grid)
   B=Sys.time()
   print(B-A)
@@ -68,8 +97,9 @@ fitvalpred_rf <- function(covariates,
   #names(preds) <- c("prediction")
   list(tab = tabres, 
        #preds = preds, 
-       tunemod = tune_mod,
-       spatmod = spatial_mod)
+       ## tunemod = tune_mod,
+       spatmod = spatial_mod,
+       graphmod = best_params_graph)
 }
 
 

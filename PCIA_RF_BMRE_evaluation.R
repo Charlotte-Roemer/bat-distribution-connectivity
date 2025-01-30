@@ -354,35 +354,34 @@ sindx <- CreateSpacetimeFolds(DataSaison,
   print("sindx :")
   print(head(sindx))
   sctrl <- caret::trainControl(method = "cv", index = sindx$index, savePredictions = "final")
+print("sctrl :")
+print(head(sctrl))
 
-  print("sctrl :")
-  print(head(sctrl))
+print("Cross-validation indices prepared")
 
-  print("Cross-validation indices prepared")
+# EDF model
+proxycovs <- NULL # already coded in Predictors
 
-  # EDF model
-  proxycovs <- NULL # already coded in Predictors
+set.seed(123)
+EDFmod <- fitvalpred_rf(
+  names.Boruta,
+  proxycovs,
+  # rctrl,
+  sctrl,
+  DataSaison,
+  NTREE # ,
+  # tempstack[[c(basecovs, proxycovs)]]
+)
 
-  set.seed(123)
-  EDFmod <- fitvalpred_rf(
-    names.Boruta,
-    proxycovs,
-    # rctrl,
-    sctrl,
-    DataSaison,
-    NTREE # ,
-    # tempstack[[c(basecovs, proxycovs)]]
-  )
+print("Model done")
 
-  print("Model done")
+#### Save ####----------------------------------------------------------------
 
-  #### Save ####----------------------------------------------------------------
-
-  if (DoBoruta == T) {
-    suffix <- paste0("_Boruta_", CoordType, "_", NTREE)
-  } else {
-    suffix <- paste0(CoordType, "_", NTREE)
-  }
+if (DoBoruta == T) {
+  suffix <- paste0("_Boruta_", "EDF", "_", ListSp[i])
+} else {
+  suffix <- paste0("EDF", "_", ListSp[i])
+}
 write.csv(
   EDFmod$tab,
   file.path(
@@ -398,6 +397,19 @@ write.csv(
     )
   )
 )
+
+
+ggsave(paste0(output, "_", suffix, ".png"),
+  plot = EDFmod$graphmod
+)
+
+write(ListSp[1], paste0(output, ".txt"))
+write("----", paste0(output, ".txt"), append = TRUE)
+write("Moran :", paste0(output, ".txt"), append = TRUE)
+write(moran, paste0(output, ".txt"), append = TRUE)
+write("EDF", paste0(output, ".txt"), append = TRUE)
+write(EDFmod$patmod, paste0(output, ".txt"), append = TRUE)
+
   # saveRDS(EDFmod$tunemod, paste0(Output, "/RFtune_", ListSp[i]
   #                                ,Tag,"_", DateLimit
   #                                ,"_", suffix, ".rds"))
@@ -419,8 +431,81 @@ saveRDS(
 )
   rm("EDFmod", "proxycovs")
 
+## LatLong model
+
+
+# remove EDF variables from names.boruta
+testPred <- substr(names.Boruta, 1, 5) != "SpEDF"
+names.Boruta <- names.Boruta[testPred]
+
+LatLongmod <- fitvalpred_rf(
+  names.Boruta,
+  proxycovs,
+  # rctrl,
+  sctrl,
+  DataSaison,
+  NTREE # ,
+  # tempstack[[c(basecovs, proxycovs)]]
+)
+
+print("Model done")
+
+#### Save ####----------------------------------------------------------------
+
+if (DoBoruta == T) {
+  suffix <- paste0("_Boruta_", "LatLong", "_", ListSp[i])
+} else {
+  suffix <- paste0("LatLong", "_", ListSp[i])
+}
+
+write.csv(
+  LatLongmod$tab,
+  file.path(
+    Output,
+    paste0(
+      "Evaluation_",
+      ListSp[i],
+      Tag, "_",
+      DateLimit,
+      "_",
+      suffix,
+      ".csv"
+    )
+  )
+)
+
+
+ggsave(paste0(output, "_", suffix, ".png"),
+  plot = LatLongmod$graphmod
+)
+
+write("LatLong", paste0(output, ".txt"), append = TRUE)
+write(EDFmod$patmod, paste0(output, ".txt"), append = TRUE)
+
+  # saveRDS(EDFmod$tunemod, paste0(Output, "/RFtune_", ListSp[i]
+  #                                ,Tag,"_", DateLimit
+  #                                ,"_", suffix, ".rds"))
+saveRDS(
+  LatLongmod$spatmod,
+  file.path(
+    Output,
+    paste0(
+      "RFspat_",
+      ListSp[i],
+      Tag,
+      "_",
+      DateLimit,
+      "_",
+      suffix,
+      ".rds"
+    )
+  )
+)
+  rm("LatLongmod", "proxycovs")
+
   END1 <- Sys.time()
   print(END1 - START1)
+
 }
 
 
