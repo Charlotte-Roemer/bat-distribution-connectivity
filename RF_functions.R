@@ -9,7 +9,7 @@
 # n_tree = NTREE
 
 fitvalpred_rf <- function(covariates, 
-                          proxies=NULL,
+                          ## proxies=NULL,
                           #random_ctrl, 
                           spatial_ctrl,
                           traindf,

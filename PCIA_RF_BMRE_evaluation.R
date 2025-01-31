@@ -360,12 +360,10 @@ print(head(sctrl))
 print("Cross-validation indices prepared")
 
 # EDF model
-proxycovs <- NULL # already coded in Predictors
 
 set.seed(123)
 EDFmod <- fitvalpred_rf(
   names.Boruta,
-  proxycovs,
   # rctrl,
   sctrl,
   DataSaison,
@@ -429,7 +427,7 @@ saveRDS(
     )
   )
 )
-  rm("EDFmod", "proxycovs")
+  rm("EDFmod")
 
 ## LatLong model
 
@@ -440,7 +438,6 @@ names.Boruta <- names.Boruta[testPred]
 
 LatLongmod <- fitvalpred_rf(
   names.Boruta,
-  proxycovs,
   # rctrl,
   sctrl,
   DataSaison,
@@ -501,7 +498,78 @@ saveRDS(
     )
   )
 )
-  rm("LatLongmod", "proxycovs")
+  rm("LatLongmod")
+
+# remove EDF variables from names.boruta
+testPred <- substr(names.Boruta, 1, 5) != "Splat"
+names.Boruta <- names.Boruta[testPred]
+testPred <- substr(names.Boruta, 1, 5) != "Splon"
+names.Boruta <- names.Boruta[testPred]
+
+noSpacemod <- fitvalpred_rf(
+  names.Boruta,
+  # rctrl,
+  sctrl,
+  DataSaison,
+  NTREE # ,
+  # tempstack[[c(basecovs, proxycovs)]]
+)
+
+print("Model done")
+
+#### Save ####----------------------------------------------------------------
+
+if (DoBoruta == T) {
+  suffix <- paste0("_Boruta_", "noSpace", "_", ListSp[i])
+} else {
+  suffix <- paste0("noSpace", "_", ListSp[i])
+}
+
+write.csv(
+  noSpacemod$tab,
+  file.path(
+    Output,
+    paste0(
+      "Evaluation_",
+      ListSp[i],
+      Tag, "_",
+      DateLimit,
+      "_",
+      suffix,
+      ".csv"
+    )
+  )
+)
+
+
+ggsave(paste0(output, "_", suffix, ".png"),
+  plot = noSpacemod$graphmod
+)
+
+write("noSpace", paste0(output, ".txt"), append = TRUE)
+write(noSpacemod$patmod, paste0(output, ".txt"), append = TRUE)
+
+  # saveRDS(EDFmod$tunemod, paste0(Output, "/RFtune_", ListSp[i]
+  #                                ,Tag,"_", DateLimit
+  #                                ,"_", suffix, ".rds"))
+saveRDS(
+  noSpacemod$spatmod,
+  file.path(
+    Output,
+    paste0(
+      "RFspat_",
+      ListSp[i],
+      Tag,
+      "_",
+      DateLimit,
+      "_",
+      suffix,
+      ".rds"
+    )
+  )
+)
+  rm("noSpacemod")
+
 
   END1 <- Sys.time()
   print(END1 - START1)
