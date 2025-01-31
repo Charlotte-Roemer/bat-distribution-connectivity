@@ -247,46 +247,46 @@ for (i in 1:length(listfun))
   source(listfun[i])
 }
 
-## Bioclim ###
-print("Bioclim")
-Coord_BioclimLocal(
-  points = FCoord,
-  names_coord = Coord_Headers,
-  layer_folder = bioclim_folder,
-  layCorr = layer_bioclim_gross
-)
-
-## ALAN ###
-print("ALAN")
-Coord_ALAN(
- points = FCoord,
- names_coord = c(Coord_Headers, "Nuit"),
- bm = BM,
- bl = BL,
-layers = folder_alan
-)
-
-## Grotto ###
-print("Grotto")
-Coord_Grotto(
-  points = FCoord,
-  names_coord = Coord_Headers,
-  bs = BS,
-  bm = BM,
-  bl = BL,
-  layer = layer_grotto
-)
-
-## VCF ###
-print("VCF")
-Coord_VCF(
- points = FCoord,
- names_coord = c(Coord_Headers, "Nuit"),
- bs = BS,
- bm = BM,
- bl = BL,
- layers = folder_vcf
-)
+# ## Bioclim ###
+# print("Bioclim")
+# Coord_BioclimLocal(
+#   points = FCoord,
+#   names_coord = Coord_Headers,
+#   layer_folder = bioclim_folder,
+#   layCorr = layer_bioclim_gross
+# )
+# 
+# ## ALAN ###
+# print("ALAN")
+# Coord_ALAN(
+#  points = FCoord,
+#  names_coord = c(Coord_Headers, "Nuit"),
+#  bm = BM,
+#  bl = BL,
+# layers = folder_alan
+# )
+# 
+# ## Grotto ###
+# print("Grotto")
+# Coord_Grotto(
+#   points = FCoord,
+#   names_coord = Coord_Headers,
+#   bs = BS,
+#   bm = BM,
+#   bl = BL,
+#   layer = layer_grotto
+# )
+# 
+# ## VCF ###
+# print("VCF")
+# Coord_VCF(
+#  points = FCoord,
+#  names_coord = c(Coord_Headers, "Nuit"),
+#  bs = BS,
+#  bm = BM,
+#  bl = BL,
+#  layers = folder_vcf
+# )
 
 ## ALTI ####
 print("Altitude & slope")
