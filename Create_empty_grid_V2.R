@@ -8,7 +8,7 @@ option_list <- list(
     help = "Set region you want to make a grid on (france_met, europe, idf)"
   ),
   optparse::make_option(c("-s", "--size"),
-    type = "integer", default = 500,
+    type = "integer", default = 5000,
     help = "Set regular grid size in meters"
   )
 )
@@ -23,7 +23,7 @@ data_loc <- data_path # dossier dans lequel
 # se trouvent data(dependances_fixes, prep_data, observations), scripts
 
 size_square <- opt$size # in meters
-GridName <- paste0("SysGrid_500m_de_cote_", opt$region)
+GridName <- paste0("SysGrid_", opt$size, "m_de_cote_", opt$region)
 # Pathname = "C:/Users/croemer01/Documents/Donnees vigie-chiro/"
 
 emprise <- file.path(data_loc, "GIS", "regions.gpkg")
@@ -54,3 +54,5 @@ st_write(
   file.path(data_loc, "GIS", paste0(GridName, ".csv"))
 )
 # }
+
+data_loc
