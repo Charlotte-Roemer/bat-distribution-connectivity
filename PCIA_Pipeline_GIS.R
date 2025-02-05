@@ -299,15 +299,15 @@ Coord_Alti(
  layer = layer_alti
 )
 
-## Wind Turbines ###
-print("Wind Turbines")
-Coord_eol(points = FCoord,
-         names_coord = Coord_Headers,
-         bs = BS,
-         bm = BM,
-         bl = BL,
-         layer = layer_wind_turbines
-         )
+## ## Wind Turbines ###
+## print("Wind Turbines")
+## Coord_eol(points = FCoord,
+##          names_coord = Coord_Headers,
+##          bs = BS,
+##          bm = BM,
+##          bl = BL,
+##          layer = layer_wind_turbines
+##          )
 
 ## CARTHAGE (eau) ####
 print("Water")
@@ -333,17 +333,17 @@ Coord_CLCraster(
 )
 
 
-## CESBIO (Habitat) ####
-print("OCS OSO")
-Coord_OCS_OSO(
- points = FCoord,
- names_coord = c(Coord_Headers, "Nuit"),
- bs = BS,
- bm = BM
- # Buffer Large is not done because was too long in Pipeline V1, and
- # at this scale, Corine Land Cover is sufficient anyway
- , layer = Layer_OCS
-)
+## ## CESBIO (Habitat) ####
+## print("OCS OSO")
+## Coord_OCS_OSO(
+##  points = FCoord,
+##  names_coord = c(Coord_Headers, "Nuit"),
+##  bs = BS,
+##  bm = BM
+##  # Buffer Large is not done because was too long in Pipeline V1, and
+##  # at this scale, Corine Land Cover is sufficient anyway
+##  , layer = Layer_OCS
+## )
 
 
 ## ROADS and TRAINS ####
@@ -357,13 +357,13 @@ Coord_Route(
  folder = folder_route
 )
 
-print("Meteo")
-Coord_Meteo(
-  points = FCoord,
-temp = layer_temp,
-prec = layer_precip,
-wind = layer_wind
-)
+## print("Meteo")
+## Coord_Meteo(
+##   points = FCoord,
+## temp = layer_temp,
+## prec = layer_precip,
+## wind = layer_wind
+## )
 
 ## loc_data <- file.path(loc, "data")
 
