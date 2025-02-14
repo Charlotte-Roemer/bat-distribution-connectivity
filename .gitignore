@@ -10,3 +10,5 @@ __pycache__/
 *.out
 *.sqlite
 TEST*
+in_the*
+f_combin*
