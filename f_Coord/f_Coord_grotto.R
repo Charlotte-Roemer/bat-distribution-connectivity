@@ -154,6 +154,9 @@ Coord_Grotto <- function(points, names_coord, bs, bm, bl, layer){
 
   Reseau <- data.frame(cbind(st_coordinates(OccSL_WGS84),
                              as.data.frame(OccSL_ARajouter)))
+                             
+  Reseau <- Reseau %>%
+      select(-geometry) 
 
   NewName <- paste0(FOccSL, "_Grottes.csv")
 
