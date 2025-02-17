@@ -1,3 +1,4 @@
+.gitignore
 *~
 variables.R
 data/GIS/
@@ -12,3 +13,4 @@ __pycache__/
 TEST*
 in_the*
 f_combin*
+plot*
