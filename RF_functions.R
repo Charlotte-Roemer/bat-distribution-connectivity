@@ -161,8 +161,7 @@ check_moran <- function(in_data, tested_variable) {
   print("Running Inverse distance...")
   wt <- sfdep::st_inverse_distance(nb, geo, 500) # we work at 500m distance (is it pertinent ?)
 
-  dest <- in_data[, colnames(in_data) == tested_variable] %>%
-    sf::st_drop_geometry()
+  dest <- in_data$nb_contacts # j’aurais préféré mettre tested_variable, mais trop de bugs
 
   print(paste("dest : ", length(dest))) # prints in case of length pb
   print(paste("nb : ", length(nb)))
@@ -170,7 +169,7 @@ check_moran <- function(in_data, tested_variable) {
 
   global_moran <- sfdep::global_moran(dest, nb, wt)
 
-  print(paste("Global Moran : ", globar_moran))
+  print(paste("Global Moran : ", global_moran))
 
   return(global_moran$I)
 }
