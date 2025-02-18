@@ -119,17 +119,18 @@ fitvalpred_rf <- function(covariates,
 
 
 check_moran <- function(in_data, tested_variable) {
+  print(head(in_data[, tested_variable]))
   in_data <- sf::st_as_sf(in_data, coords = c("longitude", "latitude"), crs = 4326) %>%
     sf::st_transform(2154)
 
   in_data$x_l93 <- sf::st_coordinates(in_data)[, 1]
   in_data$y_l93 <- sf::st_coordinates(in_data)[, 2]
 
+  print(head(in_data[, tested_variable]))
   in_data <- sf::st_drop_geometry(in_data)
 
   # moran won’t work with no in_data in tested variable
   in_data <- subset(in_data, !is.na(in_data[, tested_variable]))
-  print(head(in_data[, tested_variable]))
 
   # in order to mesure moran we need to avoid duplicates in locations
   # by adding more or less 1m to the longitude randomly we won’t have such
