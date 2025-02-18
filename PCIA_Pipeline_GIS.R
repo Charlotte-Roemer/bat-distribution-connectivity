@@ -101,9 +101,11 @@ if (opt$mode == "train" && loc_train_exists == FALSE) {
   ## Load file with "latitude" "longitude" and "Nuit" (date) columns
   ## CRS must be 4326
   print("Loading observations")
-  nuits_obs_file <- file.path(data_folder,
-                              "observations",
-                              "parti_unique_non_confi.csv")
+  nuits_obs_file <- file.path(
+    data_folder,
+    "observations",
+    "parti_unique_non_confi.csv"
+  )
   nuits_obs <- read.csv2(nuits_obs_file)
   print("Observations loaded")
 
@@ -115,7 +117,7 @@ if (opt$mode == "train" && loc_train_exists == FALSE) {
 
   locs <- locs[zone, ]
   ## long
-  ## locs_intersects <- sf::st_intersection(locs, zone)  
+  ## locs_intersects <- sf::st_intersection(locs, zone)
 
   locs <- locs %>% dplyr::select(X, Y, Nuit)
   locs$FID <- 1:nrow(locs)
@@ -123,25 +125,28 @@ if (opt$mode == "train" && loc_train_exists == FALSE) {
   print("Setting fortnight code")
   locs$fortnight <-
     ifelse(as.integer(format(as.Date(locs$Nuit), "%d")) <= 15,
-    as.integer(format(as.Date(locs$Nuit), "%m")) * 2 - 1,
-    as.integer(format(as.Date(locs$Nuit), "%m")) * 2
+      as.integer(format(as.Date(locs$Nuit), "%m")) * 2 - 1,
+      as.integer(format(as.Date(locs$Nuit), "%m")) * 2
+    )
+  locs$fortnight_year <- paste0(
+    locs$fortnight,
+    "_",
+    format(as.Date(locs$Nuit), "%Y")
   )
-  locs$fortnight_year <- paste0(locs$fortnight,
-                                "_",
-                                format(as.Date(locs$Nuit), "%Y")
-                                )
 
   locs_etrs89 <- locs %>% sf::st_transform(3035)
 
-  grid_file <- file.path(data_folder,
-                         "GIS",
-                         paste0("SysGrid_500m_de_cote_",
-                                opt$region,
-                                ".csv"
-                                )
-                         )
+  grid_file <- file.path(
+    data_folder,
+    "GIS",
+    paste0(
+      "SysGrid_500m_de_cote_",
+      opt$region,
+      ".csv"
+    )
+  )
   study_area <- zone
-  # buffer size is to be adapted depending on the study region 
+  # buffer size is to be adapted depending on the study region
   study_area_m <- st_transform(study_area, 3035)
   study_area_m_buf <- st_buffer(study_area_m, 250)
 
@@ -197,9 +202,8 @@ if (opt$mode == "train" && loc_train_exists == FALSE) {
   FCoord <- file.path(obs_vars_folder, paste0("loc_train_", opt$region))
   print(paste0("FCoord = ", FCoord))
   GridName <- basename(FCoord)
-
 } else if (opt$mode == "predict") {
-  FCoord <- file.path(pred_vars_folder, paste0("SysGrid_", opt$size,"m_de_cote_", opt$region))
+  FCoord <- file.path(pred_vars_folder, paste0("SysGrid_", opt$size, "m_de_cote_", opt$region))
   GridName <- basename(FCoord)
 }
 
@@ -248,123 +252,123 @@ for (i in 1:length(listfun))
 }
 
 # Bioclim ###
-print("Bioclim")
-Coord_BioclimLocal(
- points = FCoord,
- names_coord = Coord_Headers,
- layer_folder = bioclim_folder,
- layCorr = layer_bioclim_gross
-)
+# print("Bioclim")
+# Coord_BioclimLocal(
+#  points = FCoord,
+#  names_coord = Coord_Headers,
+#  layer_folder = bioclim_folder,
+#  layCorr = layer_bioclim_gross
+# )
+#
 
-
-## ALAN ###
+##  ALAN ###
 print("ALAN")
 Coord_ALAN(
- points = FCoord,
- names_coord = c(Coord_Headers, "Nuit"),
- bm = BM,
- bl = BL,
-layers = folder_alan
+  points = FCoord,
+  names_coord = c(Coord_Headers, "Nuit"),
+  bm = BM,
+  bl = BL,
+  layers = folder_alan
 )
 
 ## Grotto ###
-print("Grotto")
-Coord_Grotto(
-  points = FCoord,
-  names_coord = Coord_Headers,
-  bs = BS,
-  bm = BM,
-  bl = BL,
-  layer = layer_grotto
-)
-
-## VCF ###
-print("VCF")
-Coord_VCF(
- points = FCoord,
- names_coord = c(Coord_Headers, "Nuit"),
- bs = BS,
- bm = BM,
- bl = BL,
- layers = folder_vcf
-)
-
-## ALTI ####
-print("Altitude & slope")
-Coord_Alti(
- points = FCoord,
- names_coord = Coord_Headers,
- bs = BS,
- bm = BM,
- bl = BL,
- layer = layer_alti
-)
-
- ## Wind Turbines ###
- print("Wind Turbines")
- Coord_eol(points = FCoord,
-          names_coord = Coord_Headers,
-          bs = BS,
-          bm = BM,
-          bl = BL,
-          layer = layer_wind_turbines
-          )
-
-## CARTHAGE (eau) ####
-print("Water")
-Coord_Carthage(
- points = FCoord,
- names_coord = Coord_Headers,
- bs = BS,
- bm = BM,
- bl = BL,
- carthagep = Layer_Carthage_P,
- carthagec = Layer_Carthage_C
-)
-
-
-## CLC Corine Land Cover (Habitat) ####
-print("CLC")
-Coord_CLCraster(
- points = FCoord,
- names_coord = c(Coord_Headers, "Nuit"),
- bm = BM,
- bl = BL,
- layer = folder_CLC
-)
-
-
-## CESBIO (Habitat) ####
-print("OCS OSO")
-Coord_OCS_OSO(
- points = FCoord,
- names_coord = c(Coord_Headers, "Nuit"),
- bs = BS,
- bm = BM
- # Buffer Large is not done because was too long in Pipeline V1, and
- # at this scale, Corine Land Cover is sufficient anyway
- , layer = Layer_OCS
-)
-
-
-## ROADS and TRAINS ####
-print("Roads and trains")
-Coord_Route(
- points = FCoord,
- names_coord = Coord_Headers,
- bs = BS,
- bm = BM,
- bl = BL,
- folder = folder_route
-)
-
-print("Meteo")
-Coord_Meteo(
-  points = FCoord,
-temp = layer_temp,
-prec = layer_precip,
-wind = layer_wind
-)
+# print("Grotto")
+# Coord_Grotto(
+#   points = FCoord,
+#   names_coord = Coord_Headers,
+#   bs = BS,
+#   bm = BM,
+#   bl = BL,
+#   layer = layer_grotto
+# )
+#
+# ## VCF ###
+# print("VCF")
+# Coord_VCF(
+#  points = FCoord,
+#  names_coord = c(Coord_Headers, "Nuit"),
+#  bs = BS,
+#  bm = BM,
+#  bl = BL,
+#  layers = folder_vcf
+# )
+#
+# ## ALTI ####
+# print("Altitude & slope")
+# Coord_Alti(
+#  points = FCoord,
+#  names_coord = Coord_Headers,
+#  bs = BS,
+#  bm = BM,
+#  bl = BL,
+#  layer = layer_alti
+# )
+#
+#  ## Wind Turbines ###
+#  print("Wind Turbines")
+#  Coord_eol(points = FCoord,
+#           names_coord = Coord_Headers,
+#           bs = BS,
+#           bm = BM,
+#           bl = BL,
+#           layer = layer_wind_turbines
+#           )
+#
+# ## CARTHAGE (eau) ####
+# print("Water")
+# Coord_Carthage(
+#  points = FCoord,
+#  names_coord = Coord_Headers,
+#  bs = BS,
+#  bm = BM,
+#  bl = BL,
+#  carthagep = Layer_Carthage_P,
+#  carthagec = Layer_Carthage_C
+# )
+#
+#
+# ## CLC Corine Land Cover (Habitat) ####
+# print("CLC")
+# Coord_CLCraster(
+#  points = FCoord,
+#  names_coord = c(Coord_Headers, "Nuit"),
+#  bm = BM,
+#  bl = BL,
+#  layer = folder_CLC
+# )
+#
+#
+# ## CESBIO (Habitat) ####
+# print("OCS OSO")
+# Coord_OCS_OSO(
+#  points = FCoord,
+#  names_coord = c(Coord_Headers, "Nuit"),
+#  bs = BS,
+#  bm = BM
+#  # Buffer Large is not done because was too long in Pipeline V1, and
+#  # at this scale, Corine Land Cover is sufficient anyway
+#  , layer = Layer_OCS
+# )
+#
+#
+# ## ROADS and TRAINS ####
+# print("Roads and trains")
+# Coord_Route(
+#  points = FCoord,
+#  names_coord = Coord_Headers,
+#  bs = BS,
+#  bm = BM,
+#  bl = BL,
+#  folder = folder_route
+# )
+#
+# print("Meteo")
+# Coord_Meteo(
+#   points = FCoord,
+# temp = layer_temp,
+# prec = layer_precip,
+# wind = layer_wind
+# )
 
 ## loc_data <- file.path(loc, "data")
 
