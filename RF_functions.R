@@ -163,9 +163,9 @@ check_moran <- function(in_data, tested_variable) {
 
   dest <- sf::st_drop_geometry(in_data[, colnames(in_data) == tested_variable])[, 1]
 
-  ## print(paste("dest : ", length(dest))) # prints in case of length pb
-  ## print(paste("nb : ", length(nb)))
-  ## print(paste("wt : ", length(wt)))
+  print(paste("dest : ", length(dest))) # prints in case of length pb
+  print(paste("nb : ", length(nb)))
+  print(paste("wt : ", length(wt)))
 
   global_moran <- sfdep::global_moran(dest, nb, wt)
 
