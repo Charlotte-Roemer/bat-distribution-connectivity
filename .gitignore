@@ -1,4 +1,5 @@
 .gitignore
+extract*
 *~
 variables.R
 data/GIS/

@@ -199,7 +199,7 @@ if (opt$mode == "train" && loc_train_exists == FALSE) {
   GridName <- basename(FCoord)
 
 } else if (opt$mode == "predict") {
-  FCoord <- file.path(pred_vars_folder, paste0("SysGrid_", opt$size,"_de_cote_", opt$region))
+  FCoord <- file.path(pred_vars_folder, paste0("SysGrid_", opt$size,"m_de_cote_", opt$region))
   GridName <- basename(FCoord)
 }
 
@@ -247,46 +247,47 @@ for (i in 1:length(listfun))
   source(listfun[i])
 }
 
-# ## Bioclim ###
-# print("Bioclim")
-# Coord_BioclimLocal(
-#   points = FCoord,
-#   names_coord = Coord_Headers,
-#   layer_folder = bioclim_folder,
-#   layCorr = layer_bioclim_gross
-# )
-# 
-# ## ALAN ###
-# print("ALAN")
-# Coord_ALAN(
-#  points = FCoord,
-#  names_coord = c(Coord_Headers, "Nuit"),
-#  bm = BM,
-#  bl = BL,
-# layers = folder_alan
-# )
-# 
-# ## Grotto ###
-# print("Grotto")
-# Coord_Grotto(
-#   points = FCoord,
-#   names_coord = Coord_Headers,
-#   bs = BS,
-#   bm = BM,
-#   bl = BL,
-#   layer = layer_grotto
-# )
-# 
-# ## VCF ###
-# print("VCF")
-# Coord_VCF(
-#  points = FCoord,
-#  names_coord = c(Coord_Headers, "Nuit"),
-#  bs = BS,
-#  bm = BM,
-#  bl = BL,
-#  layers = folder_vcf
-# )
+# Bioclim ###
+print("Bioclim")
+Coord_BioclimLocal(
+ points = FCoord,
+ names_coord = Coord_Headers,
+ layer_folder = bioclim_folder,
+ layCorr = layer_bioclim_gross
+)
+
+
+## ALAN ###
+print("ALAN")
+Coord_ALAN(
+ points = FCoord,
+ names_coord = c(Coord_Headers, "Nuit"),
+ bm = BM,
+ bl = BL,
+layers = folder_alan
+)
+
+## Grotto ###
+print("Grotto")
+Coord_Grotto(
+  points = FCoord,
+  names_coord = Coord_Headers,
+  bs = BS,
+  bm = BM,
+  bl = BL,
+  layer = layer_grotto
+)
+
+## VCF ###
+print("VCF")
+Coord_VCF(
+ points = FCoord,
+ names_coord = c(Coord_Headers, "Nuit"),
+ bs = BS,
+ bm = BM,
+ bl = BL,
+ layers = folder_vcf
+)
 
 ## ALTI ####
 print("Altitude & slope")
@@ -299,15 +300,15 @@ Coord_Alti(
  layer = layer_alti
 )
 
-## ## Wind Turbines ###
-## print("Wind Turbines")
-## Coord_eol(points = FCoord,
-##          names_coord = Coord_Headers,
-##          bs = BS,
-##          bm = BM,
-##          bl = BL,
-##          layer = layer_wind_turbines
-##          )
+ ## Wind Turbines ###
+ print("Wind Turbines")
+ Coord_eol(points = FCoord,
+          names_coord = Coord_Headers,
+          bs = BS,
+          bm = BM,
+          bl = BL,
+          layer = layer_wind_turbines
+          )
 
 ## CARTHAGE (eau) ####
 print("Water")
@@ -333,17 +334,17 @@ Coord_CLCraster(
 )
 
 
-## ## CESBIO (Habitat) ####
-## print("OCS OSO")
-## Coord_OCS_OSO(
-##  points = FCoord,
-##  names_coord = c(Coord_Headers, "Nuit"),
-##  bs = BS,
-##  bm = BM
-##  # Buffer Large is not done because was too long in Pipeline V1, and
-##  # at this scale, Corine Land Cover is sufficient anyway
-##  , layer = Layer_OCS
-## )
+## CESBIO (Habitat) ####
+print("OCS OSO")
+Coord_OCS_OSO(
+ points = FCoord,
+ names_coord = c(Coord_Headers, "Nuit"),
+ bs = BS,
+ bm = BM
+ # Buffer Large is not done because was too long in Pipeline V1, and
+ # at this scale, Corine Land Cover is sufficient anyway
+ , layer = Layer_OCS
+)
 
 
 ## ROADS and TRAINS ####
@@ -357,13 +358,13 @@ Coord_Route(
  folder = folder_route
 )
 
-## print("Meteo")
-## Coord_Meteo(
-##   points = FCoord,
-## temp = layer_temp,
-## prec = layer_precip,
-## wind = layer_wind
-## )
+print("Meteo")
+Coord_Meteo(
+  points = FCoord,
+temp = layer_temp,
+prec = layer_precip,
+wind = layer_wind
+)
 
 ## loc_data <- file.path(loc, "data")
 

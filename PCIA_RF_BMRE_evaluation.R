@@ -52,8 +52,8 @@ option_list <- list(
   )
 )
 # Parse options to opt object
-opt_parser <- OptionParser(option_list = option_list)
-opt <- parse_args(opt_parser)
+opt_parser <- optparse::OptionParser(option_list = option_list)
+opt <- optparse::parse_args(opt_parser)
 
 
 #### Options ####--------------------------------------------------------
@@ -341,7 +341,7 @@ DataSaison <- DataSaison[DataSaison$nb_contacts <= quant, ]
     END <- Sys.time()
     print(END - START) # 1 to 1.4 hours
     # beep(2)
-    saveRDS(sfolds, sfolds_source))
+    saveRDS(sfolds, sfolds_source)
   } else {
     sfolds <- readRDS(sfolds_sfolds_source)
   }
