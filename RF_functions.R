@@ -129,6 +129,7 @@ check_moran <- function(in_data, tested_variable) {
 
   # moran won’t work with no in_data in tested variable
   in_data <- subset(in_data, !is.na(in_data[, tested_variable]))
+  print(head(in_data[, tested_variable]))
 
   # in order to mesure moran we need to avoid duplicates in locations
   # by adding more or less 1m to the longitude randomly we won’t have such
