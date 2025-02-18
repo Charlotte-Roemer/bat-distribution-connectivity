@@ -261,6 +261,7 @@ for (i in 1:length(ListSp))
 
   # filtering excessive values
   quant <- quantile(DataSaison$nb_contacts, probs = 0.98)
+  print(head(DataSaison[, "nb_contacts"]))
 
 DataSaison <- DataSaison[DataSaison$nb_contacts <= quant, ]
 
