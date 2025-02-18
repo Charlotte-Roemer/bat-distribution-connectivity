@@ -126,7 +126,6 @@ check_moran <- function(in_data, tested_variable) {
   in_data$x_l93 <- sf::st_coordinates(in_data)[, 1]
   in_data$y_l93 <- sf::st_coordinates(in_data)[, 2]
 
-  print(head(in_data[, tested_variable]))
   in_data <- sf::st_drop_geometry(in_data)
 
   # moran won’t work with no in_data in tested variable
@@ -140,6 +139,7 @@ check_moran <- function(in_data, tested_variable) {
   # summary(in_data$x_l93) # used to check longitude before adding random value
 
   in_data$x_l93 <- in_data$x_l93 + rand_value
+  print("Data ready for Moran’s I")
 
   #  summary(in_data_l93$x_l93) # results are very close
 
@@ -151,7 +151,11 @@ check_moran <- function(in_data, tested_variable) {
 
   geo <- sf::st_geometry(in_data)
 
+  print("Running knn...")
+
   nb <- sfdep::st_knn(geo, k = 150)
+
+  print("Running Inverse distance...")
   wt <- sfdep::st_inverse_distance(nb, geo, 500) # we work at 500m distance (is it pertinent ?)
 
   dest <- sf::st_drop_geometry(in_data[, colnames(in_data) == tested_variable])[, 1]
@@ -161,6 +165,8 @@ check_moran <- function(in_data, tested_variable) {
   ## print(paste("wt : ", length(wt)))
 
   global_moran <- sfdep::global_moran(dest, nb, wt)
+
+  print(paste("Global Moran : ", globar_moran))
 
   return(global_moran$I)
 }
