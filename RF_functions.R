@@ -161,7 +161,8 @@ check_moran <- function(in_data, tested_variable) {
   print("Running Inverse distance...")
   wt <- sfdep::st_inverse_distance(nb, geo, 500) # we work at 500m distance (is it pertinent ?)
 
-  dest <- sf::st_drop_geometry(in_data[, colnames(in_data) == tested_variable])[, 1]
+  dest <- in_data[, colnames(in_data) == tested_variable] %>%
+    sf::st_drop_geometry()
 
   print(paste("dest : ", length(dest))) # prints in case of length pb
   print(paste("nb : ", length(nb)))
