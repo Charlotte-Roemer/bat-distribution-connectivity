@@ -119,7 +119,7 @@ fitvalpred_rf <- function(covariates,
 
 
 check_moran <- function(in_data, tested_variable) {
-  print(head(in_data[, tested_variable]))
+  print(paste("Variable testée :", tested_variable))
   in_data <- sf::st_as_sf(in_data, coords = c("longitude", "latitude"), crs = 4326) %>%
     sf::st_transform(2154)
 
