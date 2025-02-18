@@ -112,9 +112,10 @@ best_ntrees <- results[results$R2 == max(results$R2), ]$ntrees
 
 
 check_moran <- function(in_data, tested_variable) {
-  if (sf::st_crs(in_data) != 'EPSG:2154'){
-    in_data <- in_data %>% st_transform(2154)
-  } 
+  in_data_sf <- sf::st_as_sf(in_data, coords = c("longitude", "latitude"), crs = 4326)
+  ## if (sf::st_crs(in_data) != 'EPSG:2154'){
+  ##   in_data <- in_data %>% st_transform(2154)
+  ## } 
 
   in_data$x_l93 <- sf::st_coordinates(in_data)[, 1]
   in_data$y_l93 <- sf::st_coordinates(in_data)[, 2]
