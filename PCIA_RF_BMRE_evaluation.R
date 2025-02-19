@@ -304,7 +304,7 @@ DataSaison <- DataSaison[DataSaison$nb_contacts <= quant, ]
           ListSp[i]
         )
       )
-      fwrite(errorlog, file.path(Output, paste0(ListSp[i], "_", Tag, "_log.txt")))
+      fwrite(errorlog, (Output, "/", ListSp[i], "_", Tag, "_log.txt"))
     } else {
       formula.Boruta <- getConfirmedFormula(ModRFTemp.Boruta)
       names.Boruta <- getSelectedAttributes(ModRFTemp.Boruta)
@@ -322,7 +322,8 @@ DataSaison <- DataSaison[DataSaison$nb_contacts <= quant, ]
                              paste0("VC",
                                     ThresholdSort,
                                     "_",
-                                    ListSp[i],
+                                    ListSp[i]
+                                    ),
                              "_temp_sfolds.rds") # quezaco?
 
   if (!file.exists(sfolds_source)) {
@@ -342,7 +343,6 @@ DataSaison <- DataSaison[DataSaison$nb_contacts <= quant, ]
     print(END - START) # 1 to 1.4 hours
     # beep(2)
     saveRDS(sfolds, sfolds_source)
-  } else {
     sfolds <- readRDS(sfolds_source)
   }
 
