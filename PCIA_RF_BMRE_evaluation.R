@@ -360,7 +360,7 @@ for (i in 1:length(ListSp))
           ListSp[i]
         )
       )
-      fwrite(errorlog, file.path(Output, ListSp[i], "_", Tag, "_log.txt"))
+      fwrite(errorlog, file.path(Output, paste0(ListSp[i], "_", Tag, "_log.txt")))
     } else {
       formula.Boruta <- getConfirmedFormula(ModRFTemp.Boruta)
       names.Boruta <- getSelectedAttributes(ModRFTemp.Boruta)
@@ -377,9 +377,8 @@ for (i in 1:length(ListSp))
     paste0("VC",
       ThresholdSort,
       "_",
-      ListSp[i]
-    ),
-    "_temp_sfolds.rds") # quezaco?
+      ListSp[i],
+    "_temp_sfolds.rds")) # quezaco?
 
   if (!file.exists(sfolds_source)) {
     DataSaison_sf <- st_as_sf(DataSaison,
