@@ -32,7 +32,7 @@ option_list <- list(
   optparse::make_option(c("-r", "--region"),
     type = "character", default = "france_met",
     help = 'Set region of interest between "france_met" (default),
- "europe", "idf" or paca for testing purposes'
+    "europe", "idf" or paca for testing purposes'
   ),
   optparse::make_option(c("-t", "--threshold"),
     type = "character", default = "50",
@@ -67,16 +67,19 @@ print(paste("Threshold :", ThresholdSort))
 Sp <- opt$species # choose a species (e.g. "Pippip") or "all" or "paper"
 
 GroupSel <- "bat"
-# GroupSel=NA #sorting according to the group column of Specieslist (args[3), NA if no sorting
+# GroupSel=NA #sorting according to the group column of Specieslist
+# (args[3), NA if no sorting
 ListPaper <- c(
   "Minsch", "Barbar", "Nyclei", "Nycnoc", "Eptser", "Pipkuh", "Pipnat",
   "Pippip", "Pippyg", "Rhifer"
 )
 # Filter data by date?
-DateLimit <- Sys.Date() # e.g.as.Date("2021-12-31") to use only data before this date; default = Sys.Date()
+# e.g.as.Date("2021-12-31") only use  data before this date
 
+DateLimit <- Sys.Date()
 # Predictors and model specs
-CoordType <- "EDF" # Spatial proxies in predictors: "LongLat" = X + Y ; "EDF" = X + Y + Euclidian Distance Fields ;  "noCoord" = no coordinates
+CoordType <- "EDF" # Spatial proxies in predictors: "LongLat" = X + Y ;
+# "EDF" = X + Y + Euclidian Distance Fields ;  "noCoord" = no coordinates
 YearEffect <- TRUE # Add year?
 # MTRY = "default"  # "default" or "npred" or "2-3" for 2/3 of npred
 ## NTREE <- 500
@@ -84,24 +87,77 @@ YearEffect <- TRUE # Add year?
 # Do variable selection?
 DoBoruta <- opt$boruta
 
-#### Setting Directories ####--------------------------------------------------------
+#### Setting Directories ####--------------------------------------------------
 
 if (Place == "local") {
-  args <- file.path(data_path, "observations", "donnees_vigie_chiro",
-                    paste0("SpNuit2_", ThresholdSort, "_DataLP_PF_exportTot")) # bat activity table (not DI !! --> need the file where microphone quality is sorted out) . file without csv extension
-  args[2] <- file.path(data_path, "observations", "donnees_vigie_chiro", "GI_FR_sites_localites") # table with spatial variables (habitat and climate)
-  args[3] <- file.path(data_path, "observations", "donnees_vigie_chiro", "SpeciesList.csv") # Species list to build models
-  args[4] <- file.path(data_path, "GIS", "regions.gpkg") # france limits
-  Output <- file.path(data_path, "ModPred", paste0("VC", ThresholdSort, "_", Sys.Date())) # folder to copy models to (fichiers .learner), no "_" else bug !!!
-  Fpar <- file.path(data_path, "observations", "donnees_vigie_chiro", "p_export.csv") # the file with data about participations
-  Fsl <- file.path(data_path, "observations", "donnees_vigie_chiro", "sites_localites.txt") # the file with the data about localities
+  # bat activity table (not DI !! --> need the file where microphone
+  # quality is sorted out) . file without csv extension
+  args <- file.path(data_path,
+    "observations",
+    "donnees_vigie_chiro",
+    paste0("SpNuit2_",
+      ThresholdSort,
+      "_DataLP_PF_exportTot"
+    )
+  )
+
+  # table with spatial variables (habitat and climate) :
+  args[2] <- file.path(data_path,
+    "observations",
+    "donnees_vigie_chiro",
+    "GI_FR_sites_localites"
+  )
+
+  # Species list to build models :
+  args[3] <- file.path(data_path,
+    "observations",
+    "donnees_vigie_chiro",
+    "SpeciesList.csv"
+  )
+
+  # Study area limits file :
+  args[4] <- file.path(data_path,
+    "GIS",
+    "regions.gpkg"
+  )
+
+  # folder to copy models to (fichiers .learner), no "_" else bug !!! :
+  Output <- file.path(data_path,
+    "ModPred",
+    paste0("VC",
+      ThresholdSort,
+      "_",
+      Sys.Date()
+    )
+  )
+
+  # the file with data about participations :
+  Fpar <- file.path(data_path,
+    "observations",
+    "donnees_vigie_chiro",
+    "p_export.csv"
+  )
+
+  # the file with the data about localities :
+  Fsl <- file.path(data_path,
+    "observations",
+    "donnees_vigie_chiro",
+    "sites_localites.txt"
+  )
 }
+
 args[6] <- "participation" # name of sampling event
 args[7] <- "localite" # name of locality in CoordSIG (if DataLoc=T)
 args[8] <- "participation" # name of participation (=sampling event)
-args[10] <- "nb_contacts_nd" # the name of the parameter which gives the metric to predict
-Tag <- paste0("VC", ThresholdSort) # tag which will be written in the filename, no "_", else bug !!!
-CoordinateNames <- c("X", "Y") # name of columns with coordinates in the locality table (sites_localites.txt)
+
+# the name of the parameter which gives the metric to predict:
+args[10] <- "nb_contacts_nd" 
+
+# tag which will be written in the filename, no "_", else bug !!! :
+Tag <- paste0("VC", ThresholdSort) 
+
+# name of columns with coordinates in the locality table (sites_localites.txt) :
+CoordinateNames <- c("X", "Y")
 
 dir.create(Output)
 
@@ -203,32 +259,32 @@ for (i in 1:length(ListSp))
     DataSaison$SpYear <- year(Date1)
   }
 
-    DataSaison_sf <- st_as_sf(DataSaison, coords = c(x = "longitude", y = "latitude"), crs = 4326) %>%
-      st_transform(2154)
+  DataSaison_sf <- st_as_sf(DataSaison, coords = c(x = "longitude", y = "latitude"), crs = 4326) %>%
+    st_transform(2154)
 
-    coords <- as.data.frame(st_coordinates(DataSaison_sf))
+  coords <- as.data.frame(st_coordinates(DataSaison_sf))
 
-    # sf object with 5 points: the bounding box of the grid of points + the center
-    EDF <- rbind(
-      st_sf(geom = st_sfc(st_point(c(min(coords$X), min(coords$Y))))),
-      st_sf(geom = st_sfc(st_point(c(min(coords$X), max(coords$Y))))),
-      st_sf(geom = st_sfc(st_point(c(max(coords$X), min(coords$Y))))),
-      st_sf(geom = st_sfc(st_point(c(max(coords$X), max(coords$Y))))),
-      st_sf(geom = st_sfc(st_point(c(median(coords$X), median(coords$Y)))))
-    )
-    EDF <- st_set_crs(EDF, st_crs(DataSaison_sf))
-    EDF <- st_distance(DataSaison_sf, EDF) / 1000 # calculate distance between the point and each of these 5 points
-    EDF <- units::drop_units(EDF)
-    EDF <- as.data.frame(EDF)
-    names(EDF) <- paste0("EDF", 1:5)
-    DataSaison$SpEDF1 <- EDF$EDF1
-    DataSaison$SpEDF2 <- EDF$EDF2
-    DataSaison$SpEDF3 <- EDF$EDF3
-    DataSaison$SpEDF4 <- EDF$EDF4
-    DataSaison$SpEDF5 <- EDF$EDF5
+  # sf object with 5 points: the bounding box of the grid of points + the center
+  EDF <- rbind(
+    st_sf(geom = st_sfc(st_point(c(min(coords$X), min(coords$Y))))),
+    st_sf(geom = st_sfc(st_point(c(min(coords$X), max(coords$Y))))),
+    st_sf(geom = st_sfc(st_point(c(max(coords$X), min(coords$Y))))),
+    st_sf(geom = st_sfc(st_point(c(max(coords$X), max(coords$Y))))),
+    st_sf(geom = st_sfc(st_point(c(median(coords$X), median(coords$Y)))))
+  )
+  EDF <- st_set_crs(EDF, st_crs(DataSaison_sf))
+  EDF <- st_distance(DataSaison_sf, EDF) / 1000 # calculate distance between the point and each of these 5 points
+  EDF <- units::drop_units(EDF)
+  EDF <- as.data.frame(EDF)
+  names(EDF) <- paste0("EDF", 1:5)
+  DataSaison$SpEDF1 <- EDF$EDF1
+  DataSaison$SpEDF2 <- EDF$EDF2
+  DataSaison$SpEDF3 <- EDF$EDF3
+  DataSaison$SpEDF4 <- EDF$EDF4
+  DataSaison$SpEDF5 <- EDF$EDF5
 
-    DataSaison$Splatitude <- DataSaison$latitude
-    DataSaison$Splongitude <- DataSaison$longitude
+  DataSaison$Splatitude <- DataSaison$latitude
+  DataSaison$Splongitude <- DataSaison$longitude
 
   # Add material as predictor
   DataSaison$SpRecorder <- DataSaison$detecteur_enregistreur_type
@@ -263,10 +319,10 @@ for (i in 1:length(ListSp))
   quant <- quantile(DataSaison$nb_contacts, probs = 0.98)
   print(head(DataSaison[, "nb_contacts"]))
 
-DataSaison <- DataSaison[DataSaison$nb_contacts <= quant, ]
+  DataSaison <- DataSaison[DataSaison$nb_contacts <= quant, ]
 
   moran <- check_moran(DataSaison, "nb_contacts")
- 
+
   print("Predictors identified")
 
   # Statistics for paper
@@ -318,23 +374,23 @@ DataSaison <- DataSaison[DataSaison$nb_contacts <= quant, ]
 
   # Prepare random and spatial cross-validation indices
   sfolds_source <- file.path(Output,
-                             paste0("VC",
-                                    ThresholdSort,
-                                    "_",
-                                    ListSp[i]
-                                    ),
-                             "_temp_sfolds.rds") # quezaco?
+    paste0("VC",
+      ThresholdSort,
+      "_",
+      ListSp[i]
+    ),
+    "_temp_sfolds.rds") # quezaco?
 
   if (!file.exists(sfolds_source)) {
     DataSaison_sf <- st_as_sf(DataSaison,
-                              coords = c(x = "longitude", y = "latitude"),
-                              crs = 4326) %>%
+      coords = c(x = "longitude", y = "latitude"),
+      crs = 4326) %>%
       st_transform(2154)
-  aoi <- sf::read_sf(
-  dsn = args[4],
-  layer = opt$region
-) %>%
-  st_transform(2154)
+    aoi <- sf::read_sf(
+      dsn = args[4],
+      layer = opt$region
+    ) %>%
+      st_transform(2154)
     set.seed(123)
     START <- Sys.time()
     sfolds <- knndm(DataSaison_sf, aoi, k = 10, maxp = 0.5) # k = number of folds
@@ -346,228 +402,232 @@ DataSaison <- DataSaison[DataSaison$nb_contacts <= quant, ]
     sfolds <- readRDS(sfolds_source)
   }
 
-DataSaison$sfold <- sfolds$clusters
-sindx <- CreateSpacetimeFolds(DataSaison,
-                              spacevar = "sfold",
-                              ## timevar = "fortnight",
-                              k = 10)
+  DataSaison$sfold <- sfolds$clusters
+  sindx <- CreateSpacetimeFolds(DataSaison,
+    spacevar = "sfold",
+    ## timevar = "fortnight",
+    k = 10
+  )
   print("sindx :")
   print(head(sindx))
-  sctrl <- caret::trainControl(method = "cv", index = sindx$index, savePredictions = "final")
-print("sctrl :")
-print(head(sctrl))
+  sctrl <- caret::trainControl(method = "cv",
+    index = sindx$index,
+    savePredictions = "final"
+  )
+  print("sctrl :")
+  print(head(sctrl))
 
-print("Cross-validation indices prepared")
+  print("Cross-validation indices prepared")
 
-# EDF model
+  # EDF model
 
-set.seed(123)
-EDFmod <- fitvalpred_rf(
-  names.Boruta,
-  # rctrl,
-  sctrl,
-  DataSaison,
-  NTREE # ,
-  # tempstack[[c(basecovs, proxycovs)]]
-)
+  set.seed(123)
+  EDFmod <- fitvalpred_rf(
+    names.Boruta,
+    # rctrl,
+    sctrl,
+    DataSaison,
+    NTREE # ,
+    # tempstack[[c(basecovs, proxycovs)]]
+  )
 
-print("Model done")
+  print("Model done")
 
-#### Save ####----------------------------------------------------------------
+  #### Save ####----------------------------------------------------------------
 
-if (DoBoruta == T) {
-  suffix <- paste0("_Boruta_", "EDF", "_", ListSp[i])
-} else {
-  suffix <- paste0("EDF", "_", ListSp[i])
-}
-write.csv(
-  EDFmod$tab,
-  file.path(
-    Output,
-    paste0(
-      "Evaluation_",
-      ListSp[i],
-      Tag, "_",
-      DateLimit,
-      "_",
-      suffix,
-      ".csv"
+  if (DoBoruta == TRUE) {
+    suffix <- paste0("_Boruta_", "EDF", "_", ListSp[i])
+  } else {
+    suffix <- paste0("EDF", "_", ListSp[i])
+  }
+  write.csv(
+    EDFmod$tab,
+    file.path(
+      Output,
+      paste0(
+        "Evaluation_",
+        ListSp[i],
+        Tag, "_",
+        DateLimit,
+        "_",
+        suffix,
+        ".csv"
+      )
     )
   )
-)
 
 
-ggsave(paste0(output, "_", suffix, ".png"),
-  plot = EDFmod$graphmod
-)
+  ggsave(paste0(output, "_", suffix, ".png"),
+    plot = EDFmod$graphmod
+  )
 
-write(ListSp[1], paste0(output, ".txt"))
-write("----", paste0(output, ".txt"), append = TRUE)
-write("Moran :", paste0(output, ".txt"), append = TRUE)
-write(moran, paste0(output, ".txt"), append = TRUE)
-write("EDF", paste0(output, ".txt"), append = TRUE)
-write(EDFmod$patmod, paste0(output, ".txt"), append = TRUE)
+  write(ListSp[1], paste0(output, ".txt"))
+  write("----", paste0(output, ".txt"), append = TRUE)
+  write("Moran :", paste0(output, ".txt"), append = TRUE)
+  write(moran, paste0(output, ".txt"), append = TRUE)
+  write("EDF", paste0(output, ".txt"), append = TRUE)
+  write(EDFmod$patmod, paste0(output, ".txt"), append = TRUE)
 
   # saveRDS(EDFmod$tunemod, paste0(Output, "/RFtune_", ListSp[i]
   #                                ,Tag,"_", DateLimit
   #                                ,"_", suffix, ".rds"))
-saveRDS(
-  EDFmod$spatmod,
-  file.path(
-    Output,
-    paste0(
-      "RFspat_",
-      ListSp[i],
-      Tag,
-      "_",
-      DateLimit,
-      "_",
-      suffix,
-      ".rds"
+  saveRDS(
+    EDFmod$spatmod,
+    file.path(
+      Output,
+      paste0(
+        "RFspat_",
+        ListSp[i],
+        Tag,
+        "_",
+        DateLimit,
+        "_",
+        suffix,
+        ".rds"
+      )
     )
   )
-)
   rm("EDFmod")
 
-## LatLong model
+  ## LatLong model
 
 
-# remove EDF variables from names.boruta
-testPred <- substr(names.Boruta, 1, 5) != "SpEDF"
-names.Boruta <- names.Boruta[testPred]
+  # remove EDF variables from names.boruta
+  testPred <- substr(names.Boruta, 1, 5) != "SpEDF"
+  names.Boruta <- names.Boruta[testPred]
 
-LatLongmod <- fitvalpred_rf(
-  names.Boruta,
-  # rctrl,
-  sctrl,
-  DataSaison,
-  NTREE # ,
-  # tempstack[[c(basecovs, proxycovs)]]
-)
+  LatLongmod <- fitvalpred_rf(
+    names.Boruta,
+    # rctrl,
+    sctrl,
+    DataSaison,
+    NTREE # ,
+    # tempstack[[c(basecovs, proxycovs)]]
+  )
 
-print("Model done")
+  print("Model done")
 
-#### Save ####----------------------------------------------------------------
+  #### Save ####----------------------------------------------------------------
 
-if (DoBoruta == T) {
-  suffix <- paste0("_Boruta_", "LatLong", "_", ListSp[i])
-} else {
-  suffix <- paste0("LatLong", "_", ListSp[i])
-}
+  if (DoBoruta == T) {
+    suffix <- paste0("_Boruta_", "LatLong", "_", ListSp[i])
+  } else {
+    suffix <- paste0("LatLong", "_", ListSp[i])
+  }
 
-write.csv(
-  LatLongmod$tab,
-  file.path(
-    Output,
-    paste0(
-      "Evaluation_",
-      ListSp[i],
-      Tag, "_",
-      DateLimit,
-      "_",
-      suffix,
-      ".csv"
+  write.csv(
+    LatLongmod$tab,
+    file.path(
+      Output,
+      paste0(
+        "Evaluation_",
+        ListSp[i],
+        Tag, "_",
+        DateLimit,
+        "_",
+        suffix,
+        ".csv"
+      )
     )
   )
-)
 
 
-ggsave(paste0(output, "_", suffix, ".png"),
-  plot = LatLongmod$graphmod
-)
+  ggsave(paste0(output, "_", suffix, ".png"),
+    plot = LatLongmod$graphmod
+  )
 
-write("LatLong", paste0(output, ".txt"), append = TRUE)
-write(EDFmod$patmod, paste0(output, ".txt"), append = TRUE)
+  write("LatLong", paste0(output, ".txt"), append = TRUE)
+  write(EDFmod$patmod, paste0(output, ".txt"), append = TRUE)
 
   # saveRDS(EDFmod$tunemod, paste0(Output, "/RFtune_", ListSp[i]
   #                                ,Tag,"_", DateLimit
   #                                ,"_", suffix, ".rds"))
-saveRDS(
-  LatLongmod$spatmod,
-  file.path(
-    Output,
-    paste0(
-      "RFspat_",
-      ListSp[i],
-      Tag,
-      "_",
-      DateLimit,
-      "_",
-      suffix,
-      ".rds"
+  saveRDS(
+    LatLongmod$spatmod,
+    file.path(
+      Output,
+      paste0(
+        "RFspat_",
+        ListSp[i],
+        Tag,
+        "_",
+        DateLimit,
+        "_",
+        suffix,
+        ".rds"
+      )
     )
   )
-)
   rm("LatLongmod")
 
-# remove EDF variables from names.boruta
-testPred <- substr(names.Boruta, 1, 5) != "Splat"
-names.Boruta <- names.Boruta[testPred]
-testPred <- substr(names.Boruta, 1, 5) != "Splon"
-names.Boruta <- names.Boruta[testPred]
+  # remove EDF variables from names.boruta
+  testPred <- substr(names.Boruta, 1, 5) != "Splat"
+  names.Boruta <- names.Boruta[testPred]
+  testPred <- substr(names.Boruta, 1, 5) != "Splon"
+  names.Boruta <- names.Boruta[testPred]
 
-noSpacemod <- fitvalpred_rf(
-  names.Boruta,
-  # rctrl,
-  sctrl,
-  DataSaison,
-  NTREE # ,
-  # tempstack[[c(basecovs, proxycovs)]]
-)
+  noSpacemod <- fitvalpred_rf(
+    names.Boruta,
+    # rctrl,
+    sctrl,
+    DataSaison,
+    NTREE # ,
+    # tempstack[[c(basecovs, proxycovs)]]
+  )
 
-print("Model done")
+  print("Model done")
 
-#### Save ####----------------------------------------------------------------
+  #### Save ####----------------------------------------------------------------
 
-if (DoBoruta == T) {
-  suffix <- paste0("_Boruta_", "noSpace", "_", ListSp[i])
-} else {
-  suffix <- paste0("noSpace", "_", ListSp[i])
-}
+  if (DoBoruta == T) {
+    suffix <- paste0("_Boruta_", "noSpace", "_", ListSp[i])
+  } else {
+    suffix <- paste0("noSpace", "_", ListSp[i])
+  }
 
-write.csv(
-  noSpacemod$tab,
-  file.path(
-    Output,
-    paste0(
-      "Evaluation_",
-      ListSp[i],
-      Tag, "_",
-      DateLimit,
-      "_",
-      suffix,
-      ".csv"
+  write.csv(
+    noSpacemod$tab,
+    file.path(
+      Output,
+      paste0(
+        "Evaluation_",
+        ListSp[i],
+        Tag, "_",
+        DateLimit,
+        "_",
+        suffix,
+        ".csv"
+      )
     )
   )
-)
 
 
-ggsave(paste0(output, "_", suffix, ".png"),
-  plot = noSpacemod$graphmod
-)
+  ggsave(paste0(output, "_", suffix, ".png"),
+    plot = noSpacemod$graphmod
+  )
 
-write("noSpace", paste0(output, ".txt"), append = TRUE)
-write(noSpacemod$patmod, paste0(output, ".txt"), append = TRUE)
+  write("noSpace", paste0(output, ".txt"), append = TRUE)
+  write(noSpacemod$patmod, paste0(output, ".txt"), append = TRUE)
 
   # saveRDS(EDFmod$tunemod, paste0(Output, "/RFtune_", ListSp[i]
   #                                ,Tag,"_", DateLimit
   #                                ,"_", suffix, ".rds"))
-saveRDS(
-  noSpacemod$spatmod,
-  file.path(
-    Output,
-    paste0(
-      "RFspat_",
-      ListSp[i],
-      Tag,
-      "_",
-      DateLimit,
-      "_",
-      suffix,
-      ".rds"
+  saveRDS(
+    noSpacemod$spatmod,
+    file.path(
+      Output,
+      paste0(
+        "RFspat_",
+        ListSp[i],
+        Tag,
+        "_",
+        DateLimit,
+        "_",
+        suffix,
+        ".rds"
+      )
     )
   )
-)
   rm("noSpacemod")
 
 
