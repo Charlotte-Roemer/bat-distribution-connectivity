@@ -107,7 +107,7 @@ dir.create(Output)
 
 
 
-#### Prepare general dataset ####----------------------------------------------------
+#### Prepare general dataset ####-----------------------------------------------
 
 List_data_prepared <- prepare_data(args, Fpar, Fsl)
 
@@ -304,7 +304,7 @@ DataSaison <- DataSaison[DataSaison$nb_contacts <= quant, ]
           ListSp[i]
         )
       )
-      fwrite(errorlog, paste0(Output, "/", ListSp[i], "_", Tag, "_log.txt"))
+      fwrite(errorlog, file.path(Output, paste0(ListSp[i], "_", Tag, "_log.txt")))
     } else {
       formula.Boruta <- getConfirmedFormula(ModRFTemp.Boruta)
       names.Boruta <- getSelectedAttributes(ModRFTemp.Boruta)
@@ -322,9 +322,8 @@ DataSaison <- DataSaison[DataSaison$nb_contacts <= quant, ]
                              paste0("VC",
                                     ThresholdSort,
                                     "_",
-                                    ListSp[i]
-                                    ),
-                             "_temp_sfolds.rds") # quezaco?
+                                    ListSp[i],
+                             "_temp_sfolds.rds")) # quezaco?
 
   if (!file.exists(sfolds_source)) {
     DataSaison_sf <- st_as_sf(DataSaison,
