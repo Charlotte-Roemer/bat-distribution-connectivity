@@ -55,6 +55,7 @@ fitvalpred_rf <- function(covariates,
     mtry = as.factor(unlist(params)),
     ntrees = as.factor(unlist(ntrees))
   )
+  print("sorti de la boucle tuning")
 
   best_mtry <- results[results$R2 == max(results$R2), ]$mtry
   best_ntrees <- results[results$R2 == max(results$R2), ]$ntrees
@@ -72,7 +73,7 @@ fitvalpred_rf <- function(covariates,
   A <- Sys.time()
   spatial_mod <- caret::train(
     x = as.data.frame(traindf)[c(covariates, proxies)], # train model
-    y = as.data.frame(traindf)[, "ActLog10"],
+    y = as.data.frame(traindf)[, "nb_contacts"],
     method = "rf",
     importance = FALSE,
     trControl = spatial_ctrl,
