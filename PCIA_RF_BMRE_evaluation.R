@@ -304,7 +304,7 @@ DataSaison <- DataSaison[DataSaison$nb_contacts <= quant, ]
           ListSp[i]
         )
       )
-      fwrite(errorlog, (Output, "/", ListSp[i], "_", Tag, "_log.txt"))
+      fwrite(errorlog, file.path(Output, "/", ListSp[i], "_", Tag, "_log.txt"))
     } else {
       formula.Boruta <- getConfirmedFormula(ModRFTemp.Boruta)
       names.Boruta <- getSelectedAttributes(ModRFTemp.Boruta)
