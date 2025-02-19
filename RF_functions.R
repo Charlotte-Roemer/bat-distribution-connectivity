@@ -35,7 +35,7 @@ fitvalpred_rf <- function(covariates,
       method = "rf",
       importance = TRUE,
       trControl = tune_ctrl,
-      ntree = n_tree,
+      ntree = tree,
       tuneGrid = tune_grid
     )
     error <- append(error, tune_mod$results$RMSE)
