@@ -323,7 +323,7 @@ DataSaison <- DataSaison[DataSaison$nb_contacts <= quant, ]
                                     ThresholdSort,
                                     "_",
                                     ListSp[i],
-                             "_temp_sfolds.rds")) # quezaco?
+                             "_temp_sfolds.rds") # quezaco?
 
   if (!file.exists(sfolds_source)) {
     DataSaison_sf <- st_as_sf(DataSaison,
@@ -343,7 +343,7 @@ DataSaison <- DataSaison[DataSaison$nb_contacts <= quant, ]
     # beep(2)
     saveRDS(sfolds, sfolds_source)
   } else {
-    sfolds <- readRDS(sfolds_sfolds_source)
+    sfolds <- readRDS(sfolds_source)
   }
 
 DataSaison$sfold <- sfolds$clusters
