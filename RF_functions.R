@@ -75,7 +75,8 @@ fitvalpred_rf <- function(covariates,
     importance = TRUE,
     trControl = spatial_ctrl,
     ntree = best_ntrees,
-    tuneGrid = spatial_grid
+    # tuneGrid = spatial_grid
+    mtry = best_mtry
   )
 
   B <- Sys.time()
