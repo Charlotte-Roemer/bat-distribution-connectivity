@@ -413,14 +413,10 @@ for (i in 1:length(ListSp))
     ## timevar = "fortnight",
     k = 10
   )
-  print("sindx :")
-  print(head(sindx))
   sctrl <- caret::trainControl(method = "cv",
     index = sindx$index,
     savePredictions = "final"
   )
-  print("sctrl :")
-  print(head(sctrl))
 
   print("Cross-validation indices prepared")
 
