@@ -16,7 +16,7 @@ fitvalpred_rf <- function(covariates,
   tune_ctrl <- caret::trainControl(method = "oob")
   cl <- parallel::makeCluster(10)
   doParallel::registerDoParallel(cl)
-  ntree <- c(10, 15, 20) # (150, 500, 1500, 6000)
+  ntree <- c(5, 10, 15) # (150, 500, 1500, 6000)
   print("starting RF tuning")
   error <- list()
   params <- list()
@@ -52,7 +52,12 @@ fitvalpred_rf <- function(covariates,
   print("sorti de la boucle tuning")
 
   best_mtry <- results[results$R2 == max(results$R2), ]$mtry
+  cat("Best tuning mtry", best_mtry, fill = TRUE)
   best_ntrees <- results[results$R2 == max(results$R2), ]$ntrees
+  cat("Best tuning ntree", best_ntrees, fill = TRUE)
+  cat("Best tuning r2", max(results$R2), fill = TRUE)
+  cat("Best tuning r2", min(results$RMSE), fill = TRUE)
+
   best_params_graph <- ggplot2::ggplot(
     data = results,
     aes(x = ntrees, y = mtry, fill = R2)
