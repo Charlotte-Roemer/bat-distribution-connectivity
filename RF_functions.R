@@ -18,11 +18,11 @@ fitvalpred_rf <- function(covariates,
 ) {
   # # 1. Tune (find the best mtry)
   print("tuning model")
-  tune_grid <- expand.grid(mtry = c(17, 75, 150, 200))
+  tune_grid <- expand.grid(mtry = c(17, 75, 150)) # removed 200
   tune_ctrl <- caret::trainControl(method = "oob")
-  cl <- parallel::makeCluster(20)
+  cl <- parallel::makeCluster(10)
   doParallel::registerDoParallel(cl)
-  ntree <- c(150, 500, 1500, 6000)
+  ntree <- c(10, 15, 20) #(150, 500, 1500, 6000)
   print("starting RF tuning")
   error <- list()
   params <- list()
@@ -71,6 +71,9 @@ fitvalpred_rf <- function(covariates,
   # spatial_grid <- data.frame(mtry = round(length(covariates)*2/3))
   print("building model")
   A <- Sys.time()
+  cl <- parallel::makeCluster(10)
+  doParallel::registerDoParallel(cl)
+
   spatial_mod <- caret::train(
     x = as.data.frame(traindf)[c(covariates, proxies)], # train model
     y = as.data.frame(traindf)[, "nb_contacts"],
@@ -83,6 +86,7 @@ fitvalpred_rf <- function(covariates,
   B <- Sys.time()
   print(B - A)
   print("model built, calculating RMSE and R²")
+  parallel::stopCluster(cl)
   spatial_stats <- global_validation(spatial_mod)[c("RMSE", "Rsquared")]
   names(spatial_stats) <- paste0("kNNDM_", names(spatial_stats))
 
