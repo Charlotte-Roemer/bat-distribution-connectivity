@@ -22,6 +22,7 @@ fitvalpred_rf <- function(covariates,
   params <- list()
   R2 <- list()
   ntrees <- list()
+  A <- Sys.time()
   for (tree in ntree) {
     tune_mod <- caret::train(
       x = as.data.frame(traindf)[, covariates],
@@ -42,6 +43,8 @@ fitvalpred_rf <- function(covariates,
   # AOA <- suppressMessages(aoa(rstack, tune_mod))
   # AOA <- as.numeric(global(AOA$AOA, na.rm=TRUE))
   # names(AOA) <- "AOA"
+  B <- Sys.time()
+  print(B - A)
 
   results <- data.frame(
     R2 = unlist(R2),
@@ -49,6 +52,8 @@ fitvalpred_rf <- function(covariates,
     mtry = as.factor(unlist(params)),
     ntrees = as.factor(unlist(ntrees))
   )
+
+  print(results)
   print("sorti de la boucle tuning")
 
   best_mtry <- results[results$R2 == max(results$R2), ]$mtry
@@ -56,7 +61,7 @@ fitvalpred_rf <- function(covariates,
   best_ntrees <- results[results$R2 == max(results$R2), ]$ntrees
   cat("Best tuning ntree", best_ntrees, fill = TRUE)
   cat("Best tuning r2", max(results$R2), fill = TRUE)
-  cat("Best tuning r2", min(results$RMSE), fill = TRUE)
+  cat("Best tuning rmse", min(results$RMSE), fill = TRUE)
 
   best_params_graph <- ggplot2::ggplot(
     data = results,
