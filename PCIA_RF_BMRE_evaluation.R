@@ -426,7 +426,7 @@ for (i in 1:length(ListSp))
   EDFmod <- fitvalpred_rf(
     names.Boruta,
     sctrl,
-    DataSaison,
+    DataSaison
   )
 
   print("Model done")
