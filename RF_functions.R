@@ -20,7 +20,7 @@ fitvalpred_rf <- function(covariates,
   print("tuning model")
   tune_grid <- expand.grid(mtry = c(17, 75, 150)) # removed 200
   tune_ctrl <- caret::trainControl(method = "oob")
-  cl <- parallel::makeCluster(16)
+  cl <- parallel::makeCluster(10)
   doParallel::registerDoParallel(cl)
   ntree <- c(10, 15, 20) #(150, 500, 1500, 6000)
   print("starting RF tuning")
@@ -71,7 +71,7 @@ fitvalpred_rf <- function(covariates,
   # spatial_grid <- data.frame(mtry = round(length(covariates)*2/3))
   print("building model")
   A <- Sys.time()
-  cl <- parallel::makeCluster(16)
+  cl <- parallel::makeCluster(10)
   doParallel::registerDoParallel(cl)
 
   spatial_mod <- caret::train(
