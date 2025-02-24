@@ -2,8 +2,9 @@
 
 #SBATCH --job-name=extract_data_bmre
 #SBATCH --mem=100G
-#SBATCH --partition=type_2
+#SBATCH --partition=high_mem
 #SBATCH --time=10-00:00:00
+#SBATCH --cpus-per-task=16
 
 module load userspace/tr17.10
 module load biology
