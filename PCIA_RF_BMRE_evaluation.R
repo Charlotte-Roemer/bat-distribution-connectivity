@@ -309,6 +309,9 @@ for (i in 1:length(ListSp))
   )
   Prednames <- Prednames[which(!Prednames %in% ListSpeciesDistribution)]
 
+  # select only one value per 500m square :
+  # ... add code here
+
   Predictors <- DataSaison[, ..Prednames]
   PredictorsLatLong <- DataSaison[, ..PrednamesLatLong]
 
