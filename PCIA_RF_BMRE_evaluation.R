@@ -425,11 +425,8 @@ for (i in 1:length(ListSp))
   set.seed(123)
   EDFmod <- fitvalpred_rf(
     names.Boruta,
-    # rctrl,
     sctrl,
     DataSaison,
-    NTREE # ,
-    # tempstack[[c(basecovs, proxycovs)]]
   )
 
   print("Model done")

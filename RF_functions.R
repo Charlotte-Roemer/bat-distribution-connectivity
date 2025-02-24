@@ -3,26 +3,20 @@
 #------------------------------------------------------------------------------#
 
 # covariates <- Prednames
-# proxies <- proxycovs
 # spatial_ctrl <- sctrl
 # traindf <- DataSaison
 # n_tree = NTREE
 
 fitvalpred_rf <- function(covariates,
-                          ## proxies=NULL,
-                          # random_ctrl,
                           spatial_ctrl,
-                          traindf,
-                          n_tree
-                          # ,rstack
-) {
+                          traindf) {
   # # 1. Tune (find the best mtry)
   print("tuning model")
   tune_grid <- expand.grid(mtry = c(17, 75, 150)) # removed 200
   tune_ctrl <- caret::trainControl(method = "oob")
   cl <- parallel::makeCluster(10)
   doParallel::registerDoParallel(cl)
-  ntree <- c(10, 15, 20) #(150, 500, 1500, 6000)
+  ntree <- c(10, 15, 20) # (150, 500, 1500, 6000)
   print("starting RF tuning")
   error <- list()
   params <- list()
@@ -75,7 +69,7 @@ fitvalpred_rf <- function(covariates,
   doParallel::registerDoParallel(cl)
 
   spatial_mod <- caret::train(
-    x = as.data.frame(traindf)[c(covariates, proxies)], # train model
+    x = as.data.frame(traindf)[, covariates], # train model
     y = as.data.frame(traindf)[, "nb_contacts"],
     method = "rf",
     importance = FALSE,
@@ -83,6 +77,7 @@ fitvalpred_rf <- function(covariates,
     ntree = best_ntrees,
     tuneGrid = spatial_grid
   )
+
   B <- Sys.time()
   print(B - A)
   print("model built, calculating RMSE and R²")
