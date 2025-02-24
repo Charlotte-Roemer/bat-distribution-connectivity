@@ -53,7 +53,7 @@ fitvalpred_rf <- function(covariates,
 
   best_mtry <- results[results$R2 == max(results$R2), ]$mtry
   best_ntrees <- results[results$R2 == max(results$R2), ]$ntrees
-  best_params_graph <- ggplot(
+  best_params_graph <- ggplot2::ggplot(
     data = results,
     aes(x = ntrees, y = mtry, fill = R2)
   ) +
@@ -72,7 +72,7 @@ fitvalpred_rf <- function(covariates,
     x = as.data.frame(traindf)[, covariates], # train model
     y = as.data.frame(traindf)[, "nb_contacts"],
     method = "rf",
-    importance = FALSE,
+    importance = TRUE,
     trControl = spatial_ctrl,
     ntree = best_ntrees,
     tuneGrid = spatial_grid

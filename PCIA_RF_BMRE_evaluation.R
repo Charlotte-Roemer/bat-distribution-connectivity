@@ -14,6 +14,7 @@ library(readr)
 library(sf)
 library(CAST)
 library(Boruta)
+library(ggplot2)
 # library(pgirmess)
 # library(sp)
 # library(rsample)
@@ -499,7 +500,6 @@ for (i in 1:length(ListSp))
     # rctrl,
     sctrl,
     DataSaison,
-    NTREE # ,
     # tempstack[[c(basecovs, proxycovs)]]
   )
 
@@ -569,7 +569,6 @@ for (i in 1:length(ListSp))
     # rctrl,
     sctrl,
     DataSaison,
-    NTREE # ,
     # tempstack[[c(basecovs, proxycovs)]]
   )
 
