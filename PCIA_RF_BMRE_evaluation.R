@@ -496,7 +496,7 @@ for (i in 1:length(ListSp))
     names.Boruta,
     # rctrl,
     sctrl,
-    DataSaison,
+    DataSaison
     # tempstack[[c(basecovs, proxycovs)]]
   )
 
@@ -563,7 +563,7 @@ for (i in 1:length(ListSp))
     names.Boruta,
     # rctrl,
     sctrl,
-    DataSaison,
+    DataSaison
     # tempstack[[c(basecovs, proxycovs)]]
   )
 
