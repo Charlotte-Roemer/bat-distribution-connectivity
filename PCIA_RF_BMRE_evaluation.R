@@ -455,16 +455,16 @@ for (i in 1:length(ListSp))
   )
 
 
-  ggsave(paste0(output, "_", suffix, ".png"),
+  ggsave(paste0(Output, "_", suffix, ".png"),
     plot = EDFmod$graphmod
   )
 
-  write(ListSp[1], paste0(output, ".txt"))
-  write("----", paste0(output, ".txt"), append = TRUE)
-  write("Moran :", paste0(output, ".txt"), append = TRUE)
-  write(moran, paste0(output, ".txt"), append = TRUE)
-  write("EDF", paste0(output, ".txt"), append = TRUE)
-  write(EDFmod$patmod, paste0(output, ".txt"), append = TRUE)
+  write(ListSp[1], paste0(Output, ".txt"))
+  write("----", paste0(Output, ".txt"), append = TRUE)
+  write("Moran :", paste0(Output, ".txt"), append = TRUE)
+  write(moran, paste0(Output, ".txt"), append = TRUE)
+  write("EDF", paste0(Output, ".txt"), append = TRUE)
+  write(EDFmod$patmod, paste0(Output, ".txt"), append = TRUE)
 
   # saveRDS(EDFmod$tunemod, paste0(Output, "/RFtune_", ListSp[i]
   #                                ,Tag,"_", DateLimit
@@ -529,12 +529,12 @@ for (i in 1:length(ListSp))
   )
 
 
-  ggsave(paste0(output, "_", suffix, ".png"),
+  ggsave(paste0(Output, "_", suffix, ".png"),
     plot = LatLongmod$graphmod
   )
 
-  write("LatLong", paste0(output, ".txt"), append = TRUE)
-  write(EDFmod$patmod, paste0(output, ".txt"), append = TRUE)
+  write("LatLong", paste0(Output, ".txt"), append = TRUE)
+  write(EDFmod$patmod, paste0(Output, ".txt"), append = TRUE)
 
   # saveRDS(EDFmod$tunemod, paste0(Output, "/RFtune_", ListSp[i]
   #                                ,Tag,"_", DateLimit
@@ -602,8 +602,8 @@ for (i in 1:length(ListSp))
     plot = noSpacemod$graphmod
   )
 
-  write("noSpace", paste0(output, ".txt"), append = TRUE)
-  write(noSpacemod$patmod, paste0(output, ".txt"), append = TRUE)
+  write("noSpace", paste0(Output, ".txt"), append = TRUE)
+  write(noSpacemod$patmod, paste0(Output, ".txt"), append = TRUE)
 
   # saveRDS(EDFmod$tunemod, paste0(Output, "/RFtune_", ListSp[i]
   #                                ,Tag,"_", DateLimit
