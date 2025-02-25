@@ -67,14 +67,14 @@ fitvalpred_rf <- function(covariates,
   results <- results %>%
     dplyr::arrange(ntrees)
 
-  best_params_graph <- ggplot2::ggplot(
-    data = results,
-    aes(x = ntrees, y = mtry, fill = R2)
-  ) +
-    geom_tile() +
-    coord_equal() +
-    scale_fill_viridis_c()
-
+  # best_params_graph <- ggplot2::ggplot(
+  #   data = results,
+  #   aes(x = ntrees, y = mtry, fill = R2)
+  # ) +
+  #   geom_tile() +
+  #   coord_equal() +
+  #   scale_fill_viridis_c()
+  #
   # 2. # build model and calculate RMSE and R² using the kNNDM cross-validation method
   spatial_grid <- data.frame(mtry = best_mtry)
   # spatial_grid <- data.frame(mtry = round(length(covariates)*2/3))
@@ -120,7 +120,7 @@ fitvalpred_rf <- function(covariates,
     # preds = preds,
     ## tunemod = tune_mod,
     spatmod = spatial_mod,
-    graphmod = best_params_graph
+    graphmod = results
   )
 }
 

@@ -455,9 +455,7 @@ for (i in 1:length(ListSp))
   )
 
 
-  ggsave(paste0(Output, "_", suffix, ".png"),
-    plot = EDFmod$graphmod
-  )
+  data.table::fwrite(EDFmod$graphmod, paste0(Output, "_", suffix, ".csv"))
 
   write(ListSp[1], paste0(Output, ".txt"))
   write("----", paste0(Output, ".txt"), append = TRUE)
@@ -529,9 +527,7 @@ for (i in 1:length(ListSp))
   )
 
 
-  ggsave(paste0(Output, "_", suffix, ".png"),
-    plot = LatLongmod$graphmod
-  )
+  data.table::fwrite(LatLongmod$graphmod, paste0(Output, "_", suffix, ".csv"))
 
   write("LatLong", paste0(Output, ".txt"), append = TRUE)
   write(EDFmod$patmod, paste0(Output, ".txt"), append = TRUE)
@@ -598,9 +594,7 @@ for (i in 1:length(ListSp))
   )
 
 
-  ggsave(paste0(output, "_", suffix, ".png"),
-    plot = noSpacemod$graphmod
-  )
+  data.table::fwrite(noSpacemod$graphmod, paste0(Output, "_", suffix, ".csv"))
 
   write("noSpace", paste0(Output, ".txt"), append = TRUE)
   write(noSpacemod$patmod, paste0(Output, ".txt"), append = TRUE)
