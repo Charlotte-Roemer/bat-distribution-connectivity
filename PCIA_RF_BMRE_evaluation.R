@@ -309,9 +309,6 @@ for (i in 1:length(ListSp))
   )
   Prednames <- Prednames[which(!Prednames %in% ListSpeciesDistribution)]
 
-  # select only one value per 500m square :
-  # ... add code here
-
   Predictors <- DataSaison[, ..Prednames]
   PredictorsLatLong <- DataSaison[, ..PrednamesLatLong]
 
@@ -319,11 +316,22 @@ for (i in 1:length(ListSp))
     drop_na(all_of(Prednames)) %>% # deletes rows without predictor (outdated GI table)
     drop_na(nb_contacts) # deletes rows without contacts (people did not upload their data)
 
-  # filtering excessive values
-  quant <- quantile(DataSaison$nb_contacts, probs = 0.98)
-  print(head(DataSaison[, "nb_contacts"]))
+  # select only one value per 500m square :
+  # ... add code here
+  print("Keeping only one night per 500sq/15days")
+  DataSaison <- DataSaison[!duplicated(DataSaison$code), ]
+  print("Rows in training dataset")
+  print(nrow(DataSaison))
+  DataTest <- DataSaison[duplicated(DataSaison$code), ]
 
-  DataSaison <- DataSaison[DataSaison$nb_contacts <= quant, ]
+  print("Rows removed")
+  print(nrow(DataTest))
+
+  # filtering excessive values
+  # quant <- quantile(DataSaison$nb_contacts, probs = 0.98)
+  # print(head(DataSaison[, "nb_contacts"]))
+
+  # DataSaison <- DataSaison[DataSaison$nb_contacts <= quant, ]
 
   moran <- check_moran(DataSaison, "nb_contacts")
 
@@ -438,10 +446,16 @@ for (i in 1:length(ListSp))
   } else {
     suffix <- paste0("EDF", "_", ListSp[i])
   }
+
+  write.csv(DataTest,
+    paste0(
+      Output, "_datatest.txt"
+    )
+  )
+
   write.csv(
     EDFmod$tab,
     file.path(
-      Output,
       paste0(
         "Evaluation_",
         ListSp[i],
