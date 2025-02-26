@@ -457,11 +457,11 @@ for (i in 1:length(ListSp))
 
   data.table::fwrite(EDFmod$graphmod, paste0(Output, "_", suffix, ".csv"))
 
-  write(ListSp[1], paste0(Output, ".txt"))
-  write("----", paste0(Output, ".txt"), append = TRUE)
-  write("Moran :", paste0(Output, ".txt"), append = TRUE)
-  write(moran, paste0(Output, ".txt"), append = TRUE)
-  write("EDF", paste0(Output, ".txt"), append = TRUE)
+  write(ListSp[1], paste0(Output, "_", suffix, ".txt"))
+  write("----", paste0(Output, "_", suffix, ".txt"), append = TRUE)
+  write("Moran :", paste0(Output, "_", suffix, ".txt"), append = TRUE)
+  write(moran, paste0(Output, "_", suffix, ".txt"), append = TRUE)
+  write("EDF", paste0(Output, "_", suffix, ".txt"), append = TRUE)
   edf <- print(EDFmod$spatmod)
   write(edf, paste0(Output, ".txt"), append = TRUE)
 
@@ -530,9 +530,9 @@ for (i in 1:length(ListSp))
 
   data.table::fwrite(LatLongmod$graphmod, paste0(Output, "_", suffix, ".csv"))
 
-  write("LatLong", paste0(Output, ".txt"), append = TRUE)
+  write("LatLong", paste0(Output, "_", suffix, ".txt"), append = TRUE)
   latlng <- print(LatLongmod$spatmod)
-  write(latlng, paste0(Output, ".txt"), append = TRUE)
+  write(latlng, paste0(Output, "_", suffix, ".txt"), append = TRUE)
 
   # saveRDS(EDFmod$tunemod, paste0(Output, "/RFtune_", ListSp[i]
   #                                ,Tag,"_", DateLimit
@@ -598,10 +598,10 @@ for (i in 1:length(ListSp))
 
   data.table::fwrite(noSpacemod$graphmod, paste0(Output, "_", suffix, ".csv"))
 
-  write("noSpace", paste0(Output, ".txt"), append = TRUE)
+  write("noSpace", paste0(Output, "_", suffix, ".txt"), append = TRUE)
   nosp <- print(noSpacemod$spatmod)
 
-  write(nosp, paste0(Output, ".txt"), append = TRUE)
+  write(nosp, paste0(Output, "_", suffix, ".txt"), append = TRUE)
 
   # saveRDS(EDFmod$tunemod, paste0(Output, "/RFtune_", ListSp[i]
   #                                ,Tag,"_", DateLimit
