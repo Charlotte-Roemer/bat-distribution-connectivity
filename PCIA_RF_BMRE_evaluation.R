@@ -456,6 +456,7 @@ for (i in 1:length(ListSp))
   write.csv(
     EDFmod$tab,
     file.path(
+      Output,
       paste0(
         "Evaluation_",
         ListSp[i],
@@ -467,7 +468,6 @@ for (i in 1:length(ListSp))
       )
     )
   )
-
 
   data.table::fwrite(EDFmod$graphmod, paste0(Output, "_", suffix, ".csv"))
 
@@ -641,6 +641,7 @@ for (i in 1:length(ListSp))
 
   END1 <- Sys.time()
   print(END1 - START1)
+  print(paste("Model done for", ListSp[i]))
 
 }
 
