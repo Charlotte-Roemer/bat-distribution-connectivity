@@ -319,10 +319,10 @@ for (i in 1:length(ListSp))
   # select only one value per 500m square :
   # ... add code here
   print("Keeping only one night per 500sq/15days")
+  DataTest <- DataSaison[duplicated(DataSaison$code), ]
   DataSaison <- DataSaison[!duplicated(DataSaison$code), ]
   print("Rows in training dataset")
   print(nrow(DataSaison))
-  DataTest <- DataSaison[duplicated(DataSaison$code), ]
 
   print("Rows removed")
   print(nrow(DataTest))
