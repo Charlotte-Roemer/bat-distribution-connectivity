@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=grow_forests_with_barbastelles
+#SBATCH --job-name=grow_forests_with_minio
 #SBATCH --mem=1200G
 #SBATCH --partition=high_mem
 #SBATCH --time=3-00:00:00
@@ -18,4 +18,4 @@ module load gdal
 module load udunits
 module load R/4.3.1
 
-Rscript PCIA_RF_BMRE_evaluation.R  -s "Barbar"
+Rscript PCIA_RF_BMRE_evaluation.R  -s "Minsch"
