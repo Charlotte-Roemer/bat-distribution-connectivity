@@ -18,4 +18,4 @@ module load gdal
 module load udunits
 module load R/4.3.1
 
-Rscript PCIA_Pipeline_GIS.R -r france_met -s 500 -m "predict" -d '2024-06-08' 
+Rscript PCIA_Pipeline_GIS.R -r france_met -m "train" 

@@ -16,7 +16,7 @@ fitvalpred_rf <- function(covariates,
   tune_ctrl <- caret::trainControl(method = "oob")
   cl <- parallel::makeCluster(10)
   doParallel::registerDoParallel(cl)
-  ntree <- c(500, 1500) # (150, 500, 1500, 6000)
+  ntree <- c(5, 15) # (150, 500, 1500, 6000)
   print("starting RF tuning")
   error <- list()
   params <- list()
