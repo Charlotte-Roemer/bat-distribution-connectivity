@@ -155,6 +155,7 @@ Tag <- paste0("VC", ThresholdSort)
 
 # name of columns with coordinates in the locality table (sites_localites.txt) :
 coordinate_names <- c("X", "Y")
+args[12] <- coordinate_names
 
 dir.create(Output)
 
