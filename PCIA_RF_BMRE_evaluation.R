@@ -70,7 +70,7 @@ ListPaper <- c(
 # Filter data by date?
 # e.g.as.Date("2021-12-31") only use  data before this date
 
-DateLimit <- Sys.Date()
+date_limit <- Sys.Date()
 # Predictors and model specs
 CoordType <- "EDF" # Spatial proxies in predictors: "LongLat" = X + Y ;
 # "EDF" = X + Y + Euclidian Distance Fields ;  "noCoord" = no coordinates
@@ -147,11 +147,14 @@ args[8] <- "participation" # name of participation (=sampling event)
 # the name of the parameter which gives the metric to predict:
 args[10] <- "nb_contacts_nd" 
 
+# pass the limit date as argument
+args[11] <- date_limit
+
 # tag which will be written in the filename, no "_", else bug !!! :
 Tag <- paste0("VC", ThresholdSort) 
 
 # name of columns with coordinates in the locality table (sites_localites.txt) :
-CoordinateNames <- c("X", "Y")
+coordinate_names <- c("X", "Y")
 
 dir.create(Output)
 
@@ -454,7 +457,7 @@ for (i in 1:length(ListSp))
         "Evaluation_",
         ListSp[i],
         Tag, "_",
-        DateLimit,
+        date_limit,
         "_",
         suffix,
         ".csv"
@@ -473,7 +476,7 @@ for (i in 1:length(ListSp))
   write(edf, paste0(Output, ".txt"), append = TRUE)
 
   # saveRDS(EDFmod$tunemod, paste0(Output, "/RFtune_", ListSp[i]
-  #                                ,Tag,"_", DateLimit
+  #                                ,Tag,"_", date_limit
   #                                ,"_", suffix, ".rds"))
   saveRDS(
     EDFmod$spatmod,
@@ -484,7 +487,7 @@ for (i in 1:length(ListSp))
         ListSp[i],
         Tag,
         "_",
-        DateLimit,
+        date_limit,
         "_",
         suffix,
         ".rds"
@@ -526,7 +529,7 @@ for (i in 1:length(ListSp))
         "Evaluation_",
         ListSp[i],
         Tag, "_",
-        DateLimit,
+        date_limit,
         "_",
         suffix,
         ".csv"
@@ -542,7 +545,7 @@ for (i in 1:length(ListSp))
   write(latlng, paste0(Output, "_", suffix, ".txt"), append = TRUE)
 
   # saveRDS(EDFmod$tunemod, paste0(Output, "/RFtune_", ListSp[i]
-  #                                ,Tag,"_", DateLimit
+  #                                ,Tag,"_", date_limit
   #                                ,"_", suffix, ".rds"))
   saveRDS(
     LatLongmod$spatmod,
@@ -553,7 +556,7 @@ for (i in 1:length(ListSp))
         ListSp[i],
         Tag,
         "_",
-        DateLimit,
+        date_limit,
         "_",
         suffix,
         ".rds"
@@ -594,7 +597,7 @@ for (i in 1:length(ListSp))
         "Evaluation_",
         ListSp[i],
         Tag, "_",
-        DateLimit,
+        date_limit,
         "_",
         suffix,
         ".csv"
@@ -611,7 +614,7 @@ for (i in 1:length(ListSp))
   write(nosp, paste0(Output, "_", suffix, ".txt"), append = TRUE)
 
   # saveRDS(EDFmod$tunemod, paste0(Output, "/RFtune_", ListSp[i]
-  #                                ,Tag,"_", DateLimit
+  #                                ,Tag,"_", date_limit
   #                                ,"_", suffix, ".rds"))
   saveRDS(
     noSpacemod$spatmod,
@@ -622,7 +625,7 @@ for (i in 1:length(ListSp))
         ListSp[i],
         Tag,
         "_",
-        DateLimit,
+        date_limit,
         "_",
         suffix,
         ".rds"

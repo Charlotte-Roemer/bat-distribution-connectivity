@@ -2,32 +2,33 @@
 #                      Function to prepare data                                #
 #------------------------------------------------------------------------------#
 
-prepare_data <- function(ARGS, FPAR, FSL) {
+prepare_data <- function(args, fpar, fsl) {
+  library(dplyr)
   # Read bat activity data
   cat("Reading data")
-  DataCPL2 <- fread(paste0(ARGS[1], ".csv"))
-  DataCPL2$Nuit <- as.Date(DataCPL2$Nuit)
-  DataCPL3 <- DataCPL2 %>%
-    dplyr::filter(Nuit < DateLimit)
+  data_cpl2 <- data.table::fread(paste0(args[1L], ".csv")) # SpNuit2
+  data_cpl2$Nuit <- as.Date(data_cpl2$Nuit)
+  data_cpl3 <- dplyr::filter(data_cpl2, Nuit < args[11])
+  rm(data_cpl2)
 
-  # Read predictor table
-  CoordSIG <- fread(paste0(ARGS[2], ".csv"))
-  CoordSIG <- CoordSIG %>%
-    rename(
-      longitude = CoordinateNames[1],
-      latitude = CoordinateNames[2]
-    )
+  # Read predictor table :
+  coord_sig <- data.table::fread(paste0(args[2L], ".csv")) # GI_FR sites_loc (variables)
+  coord_sig <- rename(coord_sig,
+    longitude = args[12L][1L],
+    latitude = args[12L][2L]
+  )
 
-  CoordSIG <- CoordSIG %>%
+  # cleaning data in case duplicated columns remains :
+  coord_sig <- coord_sig %>%
     rename_all(~ str_replace_all(., "\\.x", ""))
-  CoordSIG <- CoordSIG %>%
+  coord_sig <- coord_sig %>%
     select(-contains(".y"))
 
   # Read participation and locality data
   cat("Reading participations...")
-  Particip <- read_delim(FPAR, delim = ";")
+  particip <- readr::read_delim(fpar, delim = ";")
   cat("Reading locations...")
-  SiteLoc <- fread(FSL)
+  site_loc <- data.table::fread(fsl) # sites_localites.txt
 
   # Identifies sites recorded near bat roosts !!! Remove these sites ???
   cat("Identifying shelters")
@@ -35,51 +36,51 @@ prepare_data <- function(ARGS, FPAR, FSL) {
     function(x, y) {
       ((grepl(paste0(y, "="), x)) | (grepl(paste0(y, " ="), x)))
     },
-    SiteLoc$commentaire,
-    SiteLoc$localite
+    site_loc$commentaire,
+    site_loc$localite
   )
-  SiteLoc$SpGite <- as.numeric(Gite)
-  SiteLoc <- SiteLoc %>%
+  site_loc$SpGite <- as.numeric(Gite)
+  site_loc <- site_loc %>%
     mutate_at(
       .vars = c("longitude", "latitude"),
-      .fun = function(x) as.numeric(gsub(",", "\\.", x))
+      .fun = function(x) as.numeric(gsub(",", "\\.", x, fixed = TRUE))
     )
 
   # List coordinates existing in bat activity data to help add 0 in nb_contacts later
   cat("Listing unique locations") # Là il faut peut-être discuter
-  ListPar <- levels(as.factor(DataCPL3$participation))
-  SelPar <- subset(Particip, Particip$participation %in% ListPar)
-  SelPar <- unique(SelPar)
-  SiteLoc <- unique(SiteLoc)
+  list_par <- levels(as.factor(data_cpl3$participation))
+  sel_par <- subset(particip, particip$participation %in% list_par)
+  sel_par <- unique(sel_par)
+  site_loc <- unique(site_loc)
   cat("Merging Site locations and participations")
-  SelParSL <- merge(SiteLoc, SelPar, by.x = c("site", "nom"), by.y = c("site", "point"))
+  sel_par_sl <- merge(site_loc, sel_par, by.x = c("site", "nom"), by.y = c("site", "point"))
   cat("Merge done")
-  CoordPar <- aggregate(SelParSL$participation,
+  coord_par <- aggregate(sel_par_sl$participation,
     by = c(
-      list("longitude" = SelParSL$longitude),
-      list("latitude" = SelParSL$latitude),
-      list("participation" = SelParSL$participation)
+      list("longitude" = sel_par_sl$longitude),
+      list("latitude" = sel_par_sl$latitude),
+      list("participation" = sel_par_sl$participation)
     ),
     FUN = length
   )
-  CoordPar$x <- NULL
+  coord_par$x <- NULL
 
   # Merge list of coordinates with environmental variables
   cat("Merging Coordinates")
-  CoordPS <- merge(CoordPar, CoordSIG, by = c("longitude", "latitude"))
+  coord_ps <- merge(coord_par, coord_sig, by = c("longitude", "latitude", "Nuit"))
   cat("Merged")
-  CoordPS[is.na(CoordPS)] <- 0
-  testPar <- grepl(ARGS[6], names(CoordPS))
+  coord_ps[is.na(coord_ps)] <- 0
+  testPar <- grepl(args[6L], names(coord_ps))
   cat("Subseting data")
-  numPar <- subset(c(1:length(testPar)), testPar)
+  numPar <- subset(c(1L:length(testPar)), testPar)
   cat("data subseted")
-  cat(numPar[1])
-  CoordPS$participation <- as.data.frame(CoordPS)[, numPar[1]]
+  cat(numPar[1L])
+  coord_ps$participation <- as.data.frame(coord_ps)[, numPar[1L]]
 
   cat("Done... ready to return data")
   return(list(
-    CoordPS, # environmental variables
-    DataCPL3, # bat activity (without absence data)
-    SelParSL # list of sampling sessions to know when to add absence data
+    coord_ps, # environmental variables
+    data_cpl3, # bat activity (without absence data)
+    sel_par_sl # list of sampling sessions to know when to add absence data
   ))
 }
