@@ -55,6 +55,7 @@ opt <- optparse::parse_args(opt_parser)
 # Sorting threshold (weighted, 0, 50, 90)
 ThresholdSort <- opt$threshold
 
+opt$species <- "Barbar"
 print(paste("Threshold :", ThresholdSort))
 
 # Species to model
@@ -148,14 +149,15 @@ args[8] <- "participation" # name of participation (=sampling event)
 args[10] <- "nb_contacts_nd" 
 
 # pass the limit date as argument
-args[11] <- date_limit
+args[11L] <- as.character(date_limit)
 
 # tag which will be written in the filename, no "_", else bug !!! :
 Tag <- paste0("VC", ThresholdSort) 
 
 # name of columns with coordinates in the locality table (sites_localites.txt) :
 coordinate_names <- c("X", "Y")
-args[12] <- coordinate_names
+args[12] <- coordinate_names[1]
+args[13] <- coordinate_names[2]
 
 dir.create(Output)
 
@@ -353,8 +355,11 @@ for (i in 1:length(ListSp))
   print(summary(testNA2))
   Sys.time()
 
+  cat("Boruta", fill = TRUE)
+
   # Find Boruta formula (variable)
   if (DoBoruta == T) {
+    cat("yes", fill = TRUE)
     Dataset.Boruta <- data.frame("ActLog10" = DataSaison$ActLog10, DataSaison[, ..Prednames])
     ModRFTemp.Boruta <- Boruta(formula("ActLog10 ~."), # Build model
       data = Dataset.Boruta,
@@ -376,12 +381,14 @@ for (i in 1:length(ListSp))
     }
     print("Formula found")
   } else {
+    cat("no", fill = TRUE)
     formula.Boruta <- formula("ActLog10 ~.")
     names.Boruta <- Prednames
   }
   #### Modelling ####-----------------------------------------------------------
 
   # Prepare random and spatial cross-validation indices
+  cat("Preparing cross-validation indices", fill = TRUE)
   sfolds_source <- file.path(Output,
     paste0("VC",
       ThresholdSort,
