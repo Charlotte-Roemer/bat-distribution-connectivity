@@ -85,7 +85,7 @@ prepare_data <- function(args, fpar, fsl) {
   print(colnames(coord_sig))
   coord_ps <- merge(coord_par,
     coord_sig,
-    by = c("longitude", "latitude", "Nuit", "participation")
+    by = c("longitude", "latitude", "Nuit")
   )
   cat("Merged")
   coord_ps[is.na(coord_ps)] <- 0
