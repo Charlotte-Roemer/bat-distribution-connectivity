@@ -18,4 +18,4 @@ module load gdal
 module load udunits
 module load R/4.3.1
 
-Rscript PCIA_RF_BMRE_evaluation.R  -s "Barbar"
+Rscript PCIA_RF_BMRE_evaluation.R  -s "Minsch"
