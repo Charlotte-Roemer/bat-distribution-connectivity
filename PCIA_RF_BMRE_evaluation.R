@@ -208,8 +208,8 @@ for (i in 1:length(ListSp))
 
   # Adds 0 counts using the observation table (avoids user errors but makes the
   # assumption that this table always contains at least 1 species per night)
-  DataCPL3_unique <- DataCPL3 %>% # prepares the table of the complete set of sampled nights/sites
-    select(participation, Nuit, num_micro) %>%
+  DataCPL3_unique <- DataCPL3 |> # prepares the table of the complete set of sampled nights/sites
+    select(participation, Nuit, num_micro) |>
     unique()
   DataCPL3_unique$Nuit <- as.Date(DataCPL3_unique$Nuit)
 
@@ -258,8 +258,12 @@ for (i in 1:length(ListSp))
     DataSaison$SpYear <- year(Date1)
   }
 
-  DataSaison_sf <- st_as_sf(DataSaison, coords = c(x = "longitude", y = "latitude"), crs = 4326) %>%
-    st_transform(2154)
+  DataSaison_sf <- sf::st_as_sf(
+    DataSaison,
+    coords = c(x = "longitude", y = "latitude"),
+    crs = 4326L
+  ) |>
+    sf::st_transform(2154L)
 
   coords <- as.data.frame(st_coordinates(DataSaison_sf))
 
@@ -310,8 +314,8 @@ for (i in 1:length(ListSp))
   Predictors <- DataSaison[, ..Prednames]
   PredictorsLatLong <- DataSaison[, ..PrednamesLatLong]
 
-  DataSaison <- DataSaison %>%
-    drop_na(all_of(Prednames)) %>% # deletes rows without predictor (outdated GI table)
+  DataSaison <- DataSaison |>
+    drop_na(all_of(Prednames)) |> # deletes rows without predictor (outdated GI table)
     drop_na(nb_contacts) # deletes rows without contacts (people did not upload their data)
 
   # select only one value per 500m square :
@@ -336,8 +340,8 @@ for (i in 1:length(ListSp))
   print("Predictors identified")
 
   # Statistics for paper
-  Stat1 <- DataSaison %>%
-    group_by(latitude, longitude, nom) %>%
+  Stat1 <- DataSaison |>
+    group_by(latitude, longitude, nom) |>
     count()
   print(paste0(
     "N opportunistic sites = ", length(which(grepl("Z", Stat1$nom))),
@@ -400,12 +404,12 @@ for (i in 1:length(ListSp))
   if (!file.exists(sfolds_source)) {
     DataSaison_sf <- st_as_sf(DataSaison,
       coords = c(x = "longitude", y = "latitude"),
-      crs = 4326) %>%
+      crs = 4326) |>
       st_transform(2154)
     aoi <- sf::read_sf(
       dsn = args[4],
       layer = opt$region
-    ) %>%
+    ) |>
       st_transform(2154)
     set.seed(123)
     START <- Sys.time()
