@@ -55,7 +55,6 @@ opt <- optparse::parse_args(opt_parser)
 # Sorting threshold (weighted, 0, 50, 90)
 ThresholdSort <- opt$threshold
 
-opt$species <- "Barbar"
 print(paste("Threshold :", ThresholdSort))
 
 # Species to model
