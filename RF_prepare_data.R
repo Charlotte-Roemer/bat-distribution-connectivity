@@ -22,15 +22,16 @@ prepare_data <- function(args, fpar, fsl) {
   # Read predictor table :
   coord_sig <- data.table::fread(paste0(args[2L], ".csv")) # GI_FR_sites_loc (variables)
 
-  coord_sig <- rename(coord_sig,
+  coord_sig <- rename(
+    coord_sig,
     longitude = args[12L],
     latitude = args[13L]
   )
 
   # cleaning data in case duplicated columns remains :
-  coord_sig <- coord_sig %>%
+  coord_sig <- coord_sig |>
     rename_all(~ str_replace_all(., "\\.x", ""))
-  coord_sig <- coord_sig %>%
+  coord_sig <- coord_sig |>
     select(-contains(".y"))
 
   # Read participation and locality data
@@ -49,7 +50,7 @@ prepare_data <- function(args, fpar, fsl) {
     site_loc$localite
   )
   site_loc$SpGite <- as.numeric(Gite)
-  site_loc <- site_loc %>%
+  site_loc <- site_loc |>
     mutate_at(
       .vars = c("longitude", "latitude"),
       .fun = function(x) as.numeric(gsub(",", "\\.", x, fixed = TRUE))
