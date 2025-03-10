@@ -84,7 +84,8 @@ prepare_data <- function(args, fpar, fsl) {
   print(colnames(coord_par))
   cat("coord_sig")
   print(colnames(coord_sig))
-  coord_ps <- merge(coord_par,
+  coord_ps <- merge(
+    coord_par,
     coord_sig,
     by = c("longitude", "latitude", "Nuit")
   )
@@ -98,9 +99,9 @@ prepare_data <- function(args, fpar, fsl) {
   coord_ps$participation <- as.data.frame(coord_ps)[, numPar[1L]]
 
   cat("Done... ready to return data")
-  return(list(
+  list(
     coord_ps, # environmental variables
     data_cpl3, # bat activity (without absence data)
     sel_par_sl # list of sampling sessions to know when to add absence data
-  ))
+  )
 }
