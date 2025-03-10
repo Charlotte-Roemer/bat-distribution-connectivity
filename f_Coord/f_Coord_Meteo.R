@@ -7,7 +7,7 @@ Coord_Meteo <- function(points, temp, prec, wind) {
   if (opt$mode == "predict") {
     OccSL <- readr::read_delim(paste0(points, ".csv"), delim = ",") %>%
       select(c("X", "Y"))
-    OccSL$Nuit <- opt$date
+    # OccSL$Nuit <- opt$date # no need for date since it’s all 0s
     OccSL$Spwind <- 0
     OccSL$Sptemp <- 0
     OccSL$Spprecipitations <- 0
@@ -44,7 +44,7 @@ Coord_Meteo <- function(points, temp, prec, wind) {
 
     wind_norm <- terra::extract(wind_norms, OccSL, ID = FALSE)
     OccSL$wind_norm <- wind_norm[, 1]
-    
+
 
     for (month in unique_months) {
       print(paste0("Extracting climate norms for month : ", month))
@@ -52,7 +52,7 @@ Coord_Meteo <- function(points, temp, prec, wind) {
       index <- as.integer(month)
 
       temp_norm <- terra::extract(temperature_norms[[index]], tableau_month, ID = FALSE)
-      tableau_month$temp_norm <- temp_norm[,1]
+      tableau_month$temp_norm <- temp_norm[, 1]
       precip_norm <- terra::extract(precipitation_norms[[index]], tableau_month, ID = FALSE)
       tableau_month$precip_norm <- precip_norm[, 1]
       monthly_tables <- rlist::list.append(monthly_tables, tableau_month)

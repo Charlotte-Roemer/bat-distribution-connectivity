@@ -64,9 +64,10 @@ Coord_OCS_OSO <- function(points, names_coord, bs, bm, layer) {
       sapply(
         strsplit(
           tools::file_path_sans_ext(
-                   basename(ocs_files)
-                 ), "_"
-        ), "[", 2)
+            basename(ocs_files)
+          ), "_"
+        ), "[", 2
+      )
     )
   )
 
@@ -140,5 +141,10 @@ Coord_OCS_OSO <- function(points, names_coord, bs, bm, layer) {
   # colnames(OccSL_ARajouter)[colnames(OccSL_ARajouter) == 'latitude'] = "Y"
   # colnames(OccSL_ARajouter)[colnames(OccSL_ARajouter) == 'longitude'] = "X"
 
-  data.table::fwrite(OccSL_ARajouter, paste0(FOccSL, "_OCSraster.csv"))
+  if (opt$mode == "predict") {
+    year <- substr(date_pred, 1, 4)
+    data.table::fwrite(OccSL_ARajouter, paste0(FOccSL, "_", year, "_OCSraster.csv"))
+  } else {
+    data.table::fwrite(OccSL_ARajouter, paste0(FOccSL, "_OCSraster.csv"))
+  }
 }

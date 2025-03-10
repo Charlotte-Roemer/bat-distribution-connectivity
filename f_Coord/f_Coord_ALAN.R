@@ -1,6 +1,6 @@
 print("load ALAN")
 
-Coord_ALAN <- function(points, names_coord, bm, bl, layers){
+Coord_ALAN <- function(points, names_coord, bm, bl, layers) {
   print("ALAN")
   library(data.table)
   library(terra)
@@ -97,5 +97,11 @@ Coord_ALAN <- function(points, names_coord, bm, bl, layers){
   print("alanL")
   ALAN <- data.frame(cbind(tab$Nuit, tab$X, tab$Y, tab$SpALAN_M, tab$SpALAN_L))
   colnames(ALAN) <- c("Nuit", "X", "Y", "SpALAN_M", "SpALAN_L")
-  data.table::fwrite(ALAN, paste0(FOccSL, "_ALAN.csv"))
+
+  if (opt$mode == "predict") {
+    year <- substr(date_pred, 1, 4)
+    data.table::fwrite(ALAN, paste0(FOccSL, "_", year, "_ALAN.csv"))
+  } else {
+    data.table::fwrite(ALAN, paste0(FOccSL, "_ALAN.csv"))
+  }
 }

@@ -27,9 +27,9 @@ Coord_VCF <- function(points, names_coord, bs, bm, bl, layers) {
     CoordH <- names_coord
   } else {
     print("loading observations:")
-    OccSL <- read.csv(paste0(points, ".csv")) 
+    OccSL <- read.csv(paste0(points, ".csv"))
     print("observations loaded")
-    #OccSL <- points
+    # OccSL <- points
     OccSL$FID <- c(1:nrow(OccSL))
     OccSL <- OccSL %>%
       sf::st_as_sf(coords = c("X", "Y"), crs = 4326, remove = FALSE)
@@ -37,7 +37,6 @@ Coord_VCF <- function(points, names_coord, bs, bm, bl, layers) {
     OccSL_L93 <- OccSL %>%
       sf::st_transform(2154)
     CoordH <- names_coord
-   
   }
 
   OccSL_L93$year <- sapply(strsplit(OccSL_L93$Nuit, "-"), "[", 1)
@@ -45,9 +44,10 @@ Coord_VCF <- function(points, names_coord, bs, bm, bl, layers) {
 
   tableaux <- list()
   vcf_files <- list.files(folder_vcf,
-                          recursive = TRUE,
-                          pattern = "tif$",
-                          full.names = TRUE)
+    recursive = TRUE,
+    pattern = "tif$",
+    full.names = TRUE
+  )
   vcf_years <- as.vector(
     as.integer(
       substring(
@@ -62,10 +62,10 @@ Coord_VCF <- function(points, names_coord, bs, bm, bl, layers) {
     )
   )
 
-  for (year in unique_years){
+  for (year in unique_years) {
     print(paste0("Treating year : ", year))
     tableau_year <- OccSL_L93[OccSL_L93$year == year, ]
-    
+
     raster <- vcf_files[which.min(abs(vcf_years - as.integer(year)))]
 
     VCF <- terra::rast(raster)
@@ -97,13 +97,18 @@ Coord_VCF <- function(points, names_coord, bs, bm, bl, layers) {
   tab <- do.call("rbind", tableaux)
 
 
-  VCF <- data.frame(cbind(tab$Nuit, tab$X, tab$Y,tab$SpVCF_S, tab$SpVCF_M, tab$SpVCF_L))
-  colnames(VCF) <- c('Nuit', 'X', 'Y', 'SpVCF_S', 'SpVCF_M', 'SpVCF_L')
-  fwrite(VCF, paste0(FOccSL, "_VCF.csv"))
+  VCF <- data.frame(cbind(tab$Nuit, tab$X, tab$Y, tab$SpVCF_S, tab$SpVCF_M, tab$SpVCF_L))
+  colnames(VCF) <- c("Nuit", "X", "Y", "SpVCF_S", "SpVCF_M", "SpVCF_L")
+
+  if (opt$mode == "predict") {
+    year <- substr(date_pred, 1, 4)
+    fwrite(VCF, paste0(FOccSL, "_", year, "_VCF.csv"))
+  } else {
+    fwrite(VCF, paste0(FOccSL, "_VCF.csv"))
+  }
 
   # coordinates(ALAN) <- CoordH
 
   # SelCol=sample(c("SpALAN_M","SpALAN_L"),1)
   # spplot(ALAN,zcol=SelCol,main=SelCol)
 }
-

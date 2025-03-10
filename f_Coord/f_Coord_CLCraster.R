@@ -221,5 +221,10 @@ clc_annees <- as.vector(
   # colnames(OccSL_ARajouter)[colnames(OccSL_ARajouter) == 'latitude'] = "Y"
   # colnames(OccSL_ARajouter)[colnames(OccSL_ARajouter) == 'longitude'] = "X"
 
-  fwrite(OccSL_ARajouter, paste0(FOccSL, "_CLCraster.csv"))
+  if (opt$mode == "predict") {
+    year <- substr(date_pred, 1, 4)
+    fwrite(OccSL_ARajouter, paste0(FOccSL, "_", year, "_CLCraster.csv"))
+  } else {
+    fwrite(OccSL_ARajouter, paste0(FOccSL, "_CLCraster.csv"))
+  }
 }
