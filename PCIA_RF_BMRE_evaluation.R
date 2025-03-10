@@ -478,12 +478,12 @@ for (i in 1:length(ListSp))
   data.table::fwrite(EDFmod$graphmod, file.path(Output, paste0(suffix, ".csv")))
 
   write(ListSp[1L], file.path(Output, paste0(suffix, ".txt")))
-  write("----", file.path(Output, paste0(suffix, ".txt"), append = TRUE))
-  write("Moran :", file.path(Output, paste0(suffix, ".txt"), append = TRUE))
-  write(moran, file.path(Output, paste0(suffix, ".txt"), append = TRUE))
-  write("EDF", file.path(Output, paste0(suffix, ".txt"), append = TRUE))
+  write("----", file.path(Output, paste0(suffix, ".txt")), append = TRUE)
+  write("Moran :", file.path(Output, paste0(suffix, ".txt")), append = TRUE)
+  write(moran, file.path(Output, paste0(suffix, ".txt")), append = TRUE)
+  write("EDF", file.path(Output, paste0(suffix, ".txt")), append = TRUE)
   edf <- print(EDFmod$spatmod)
-  write(edf, file.path(Output, paste0(suffix, ".txt"), append = TRUE))
+  write(edf, file.path(Output, paste0(suffix, ".txt")), append = TRUE)
 
 
   # saveRDS(EDFmod$tunemod, paste0(Output, "/RFtune_", ListSp[i]
@@ -551,10 +551,10 @@ for (i in 1:length(ListSp))
 
   data.table::fwrite(LatLongmod$graphmod, file.path(Output, paste0(suffix, ".csv")))
 
-  write("LatLong", file.path(Output, paste0(suffix, ".txt"), append = TRUE))
+  write("LatLong", file.path(Output, paste0(suffix, ".txt")), append = TRUE)
 
   latlng <- print(LatLongmod$spatmod)
-  write(latlng, file.path(Output, paste0(suffix, ".txt"), append = TRUE))
+  write(latlng, file.path(Output, paste0(suffix, ".txt")), append = TRUE)
 
   # saveRDS(EDFmod$tunemod, paste0(Output, "/RFtune_", ListSp[i]
   #                                ,Tag,"_", date_limit
@@ -620,10 +620,10 @@ for (i in 1:length(ListSp))
 
   data.table::fwrite(noSpacemod$graphmod, file.path(Output, paste0(suffix, ".csv")))
 
-  write("noSpace", file.path(Output, paste0(suffix, ".txt"), append = TRUE))
+  write("noSpace", file.path(Output, paste0(suffix, ".txt")), append = TRUE)
   nosp <- print(noSpacemod$spatmod)
 
-  write(nosp, file.path(Output, paste0(suffix, ".txt"), append = TRUE))
+  write(nosp, file.path(Output, paste0(suffix, ".txt")), append = TRUE)
 
   # saveRDS(EDFmod$tunemod, paste0(Output, "/RFtune_", ListSp[i]
   #                                ,Tag,"_", date_limit
