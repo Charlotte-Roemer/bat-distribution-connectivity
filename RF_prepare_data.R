@@ -79,17 +79,15 @@ prepare_data <- function(args, fpar, fsl) {
   coord_par$x <- NULL
 
   # Merge list of coordinates with environmental variables
-  cat("Merging Coordinates")
-  cat("coord_par")
-  print(colnames(coord_par))
-  cat("coord_sig")
-  print(colnames(coord_sig))
+  cat("Merging Coordinates", fill = TRUE)
+  cat("coord_par", fill = TRUE)
+  cat("coord_sig", fill = TRUE)
   coord_ps <- merge(
     coord_par,
     coord_sig,
     by = c("longitude", "latitude", "Nuit")
   )
-  cat("Merged")
+  cat("Merged", fill = TRUE)
   coord_ps[is.na(coord_ps)] <- 0
   testPar <- grepl(args[6L], names(coord_ps))
   cat("Subseting data", fill = TRUE)
