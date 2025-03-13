@@ -62,7 +62,7 @@ empty_raster <- terra::rast(empty_raster_file)
 
 model <- readRDS(model)
 
-str(mod_barbar_edf)
+str(model)
 
 pred_data_file <- file.path(
   data_path,
@@ -75,7 +75,7 @@ pred_data <- data.table::fread(pred_data_file)
 
 # ajouter colonnes nécessaires : spGite, spcosdaysinday
 
-train_names <- colnames(mod_barbar_edf$trainingData)
+train_names <- colnames(model$trainingData)
 pred_names <- colnames(pred_data)
 
 setdiff(train_names, pred_names) # pour connaitre les colonnes à ajouter
