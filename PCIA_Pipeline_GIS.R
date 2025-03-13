@@ -272,27 +272,27 @@ for (i in 1:length(listfun))
 #)
 
 ## Grotto ###
-print("Grotto")
-Coord_Grotto(
-  points = FCoord,
-  names_coord = Coord_Headers,
-  bs = BS,
-  bm = BM,
-  bl = BL,
-  layer = layer_grotto
-)
-
-###  VCF ###
-#print("VCF")
-#Coord_VCF(
+#print("Grotto")
+#Coord_Grotto(
 #  points = FCoord,
-#  names_coord = c(Coord_Headers, "Nuit"),
+#  names_coord = Coord_Headers,
 #  bs = BS,
 #  bm = BM,
 #  bl = BL,
-#  layers = folder_vcf
+#  layer = layer_grotto
 #)
-#
+
+##  VCF ###
+print("VCF")
+Coord_VCF(
+  points = FCoord,
+  names_coord = c(Coord_Headers, "Nuit"),
+  bs = BS,
+  bm = BM,
+  bl = BL,
+  layers = folder_vcf
+)
+
 ### ALTI ####
 #print("Altitude & slope")
 #Coord_Alti(
@@ -328,30 +328,30 @@ Coord_Grotto(
 #)
 #
 #
-### CLC Corine Land Cover (Habitat) ####
-#print("CLC")
-#Coord_CLCraster(
-#  points = FCoord,
-#  names_coord = c(Coord_Headers, "Nuit"),
-#  bm = BM,
-#  bl = BL,
-#  layer = folder_CLC
-#)
-#
-#
+## CLC Corine Land Cover (Habitat) ####
+print("CLC")
+Coord_CLCraster(
+  points = FCoord,
+  names_coord = c(Coord_Headers, "Nuit"),
+  bm = BM,
+  bl = BL,
+  layer = folder_CLC
+)
+
+
 ###  CESBIO (Habitat) ####
-#print("OCS OSO")
-#Coord_OCS_OSO(
-#  points = FCoord,
-#  names_coord = c(Coord_Headers, "Nuit"),
-#  bs = BS,
-#  bm = BM
-#  # Buffer Large is not done because was too long in Pipeline V1, and
-#  # at this scale, Corine Land Cover is sufficient anyway
-#  , layer = Layer_OCS
-#)
-#
-#
+print("OCS OSO")
+Coord_OCS_OSO(
+  points = FCoord,
+  names_coord = c(Coord_Headers, "Nuit"),
+  bs = BS,
+  bm = BM
+  # Buffer Large is not done because was too long in Pipeline V1, and
+  # at this scale, Corine Land Cover is sufficient anyway
+  , layer = Layer_OCS
+)
+
+
 ### ROADS and TRAINS ####
 #print("Roads and trains")
 #Coord_Route(
