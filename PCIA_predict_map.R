@@ -116,7 +116,7 @@ pred_data_sf$SpEDF4 <- EDF$EDF4
 pred_data_sf$SpEDF5 <- EDF$EDF5
 pred_data_sf$SpRecorder <- "SM2BAT+"
 
-X_pred <- pred_data |>
+X_pred <- pred_data_sf |>
   dplyr::select(dplyr::starts_with("Sp")) |>
   sf::st_drop_geometry()
 
