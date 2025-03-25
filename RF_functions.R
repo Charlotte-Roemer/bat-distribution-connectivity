@@ -12,11 +12,11 @@ fitvalpred_rf <- function(covariates,
                           traindf) {
   # # 1. Tune (find the best mtry)
   print("tuning model")
-  mtrys <- c(75, 150, 200) # removed 200
+  mtrys <- c(17, 75, 150) # removed 200
   tune_ctrl <- caret::trainControl(method = "oob")
   cl <- parallel::makeCluster(10)
   doParallel::registerDoParallel(cl)
-  ntree <- c(500, 1500, 3000) # (150, 500, 1500, 6000)
+  ntree <- c(800, 1500) # (150, 500, 1500, 6000)
   print("starting RF tuning")
   error <- list()
   params <- list()
