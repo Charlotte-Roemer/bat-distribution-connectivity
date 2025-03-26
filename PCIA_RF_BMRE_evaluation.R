@@ -43,6 +43,10 @@ option_list <- list(
   optparse::make_option(c("-c", "--cure"),
     type = "logical", default = FALSE,
     help = "Do you want to randomly remove close data (spatially and temporally) ?"
+  ),
+  optparse::make_option(c("-d", "--date"),
+    type = "character",
+    help = "Necessary : pass date when script is run with $(date +%Y-%m-%d)"
   )
 )
 # Parse options to opt object
@@ -70,7 +74,7 @@ ListPaper <- c(
 # Filter data by date?
 # e.g.as.Date("2021-12-31") only use  data before this date
 
-date_limit <- Sys.Date()
+date_limit <- opt$date
 # Predictors and model specs
 CoordType <- "EDF" # Spatial proxies in predictors: "LongLat" = X + Y ;
 # "EDF" = X + Y + Euclidian Distance Fields ;  "noCoord" = no coordinates
