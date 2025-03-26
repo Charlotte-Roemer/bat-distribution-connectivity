@@ -1,9 +1,9 @@
 #!/bin/bash
 
-#SBATCH --job-name=grow_forests_with_Rhifer
-#SBATCH --mem=180G
-#SBATCH --partition=type_2
-#SBATCH --time=3-00:00:00
+#SBATCH --job-name=grow_forests
+#SBATCH --mem=150G
+#SBATCH --partition=type_1
+#SBATCH --time=8-00:00:00
 #SBATCH --cpus-per-task=10
 
 module load userspace/tr17.10
@@ -18,4 +18,4 @@ module load gdal
 module load udunits
 module load R/4.3.1
 
-Rscript PCIA_RF_BMRE_evaluation.R  -s "Rhifer"
+Rscript PCIA_RF_BMRE_evaluation.R -s "Nyclei" -t "50" -d $(date +%Y-%m-%d)
