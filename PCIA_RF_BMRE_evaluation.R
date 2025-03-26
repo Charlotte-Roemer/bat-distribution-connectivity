@@ -297,9 +297,14 @@ for (i in 1:length(ListSp))
   DataSaison$SpRecorder <- DataSaison$detecteur_enregistreur_type
 
   # Identify predictors
-  testPred <- (substr(names(DataSaison), 1, 2) == "Sp")
+  DataSaison <- DataSaison |> # removing medium and large buffers
+    dplyr::select(!dplyr::ends_with("M"))
+  DataSaison <- DataSaison |>
+    dplyr::select(!dplyr::ends_with("L"))
+
+  testPred <- (substr(names(DataSaison), 1L, 2L) == "Sp")
   Prednames <- names(DataSaison)[testPred]
-  testPredLatLong <- substr(Prednames, 3, 5) != "EDF" 
+  testPredLatLong <- substr(Prednames, 3L, 5L) != "EDF"
   PrednamesLatLong <- Prednames[testPredLatLong] # for latlong only RF
 
   # Do not use species distribution area yet
