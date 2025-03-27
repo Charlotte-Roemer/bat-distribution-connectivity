@@ -372,14 +372,14 @@ for (i in 1:length(ListSp))
   # Find Boruta formula (variable)
   if (DoBoruta == T) {
     cat("yes", fill = TRUE)
-    Dataset.Boruta <- data.frame("ActLog10" = DataSaison$ActLog10, DataSaison[, ..Prednames])
-    ModRFTemp.Boruta <- Boruta(formula("ActLog10 ~."), # Build model
+    Dataset.Boruta <- data.frame("nb_contacts" = DataSaison$nb_contacts, DataSaison[, ..Prednames])
+    ModRFTemp.Boruta <- Boruta::Boruta(formula("nb_contacts ~."), # Build model
       data = Dataset.Boruta,
-      doTrace = 2, ntree = 500, maxRuns = 100
+      doTrace = 2L, ntree = 500L, maxRuns = 100L
     )
     formula.Boruta <- try(getConfirmedFormula(ModRFTemp.Boruta)) # retrieve formula of selected variables if at least one was selected (error if none is selected)
     if (inherits(formula.Boruta, "try-error")) {
-      formula.Boruta <- formula("ActLog10 ~.")
+      formula.Boruta <- formula("nb_contacts ~.")
       errorlog <- data.frame(
         "message" = paste0(
           "Boruta ended by not selecting any predictor for model ",
@@ -394,7 +394,7 @@ for (i in 1:length(ListSp))
     print("Formula found")
   } else {
     cat("no", fill = TRUE)
-    formula.Boruta <- formula("ActLog10 ~.")
+    formula.Boruta <- formula("nb_contacts ~.")
     names.Boruta <- Prednames
   }
   #### Modelling ####-----------------------------------------------------------
