@@ -298,7 +298,7 @@ for (i in 1:length(ListSp))
 
   # Identify predictors
   DataSaison <- DataSaison |> # removing medium and large buffers
-    dplyr::select(!dplyr::ends_with("M"))
+    dplyr::select(!dplyr::ends_with("S"))
   DataSaison <- DataSaison |>
     dplyr::select(!dplyr::ends_with("L"))
 
