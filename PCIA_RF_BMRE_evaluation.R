@@ -16,6 +16,7 @@ library(Boruta)
 library(caret)
 library(sfdep)
 source("variables.R")
+source("variables_sel.R")
 source("RF_prepare_data.R")
 source("RF_functions.R")
 
@@ -304,6 +305,11 @@ for (i in 1:length(ListSp))
   #
   testPred <- (substr(names(DataSaison), 1L, 2L) == "Sp")
   Prednames <- names(DataSaison)[testPred]
+
+  not_clc <- (substr(Prednames, 1L, 4L) != "SpHC")
+  Prednames <- Prednames[not_clc]
+  Prednames[!(Prednames %in% variables_a_exclure)]
+
   testPredLatLong <- substr(Prednames, 3L, 5L) != "EDF"
   PrednamesLatLong <- Prednames[testPredLatLong] # for latlong only RF
 
