@@ -124,9 +124,9 @@ if (opt$mode == "train" && loc_train_exists == FALSE) {
   # setting the fortnight number (1-24) :
   print("Setting fortnight code")
   locs$fortnight <-
-    ifelse(as.integer(format(as.Date(locs$Nuit), "%d")) <= 15,
-      as.integer(format(as.Date(locs$Nuit), "%m")) * 2 - 1,
-      as.integer(format(as.Date(locs$Nuit), "%m")) * 2
+    ifelse(as.integer(format(as.Date(locs$Nuit), "%d")) <= 15L,
+      as.integer(format(as.Date(locs$Nuit), "%m")) * 2L - 1L,
+      as.integer(format(as.Date(locs$Nuit), "%m")) * 2L
     )
   locs$fortnight_year <- paste0(
     locs$fortnight,
@@ -134,7 +134,7 @@ if (opt$mode == "train" && loc_train_exists == FALSE) {
     format(as.Date(locs$Nuit), "%Y")
   )
 
-  locs_etrs89 <- locs %>% sf::st_transform(3035)
+  locs_etrs89 <- locs %>% sf::st_transform(3035L)
 
   grid_file <- file.path(
     data_folder,
@@ -147,27 +147,27 @@ if (opt$mode == "train" && loc_train_exists == FALSE) {
   )
   study_area <- zone
   # buffer size is to be adapted depending on the study region
-  study_area_m <- st_transform(study_area, 3035)
-  study_area_m_buf <- st_buffer(study_area_m, 250)
+  study_area_m <- st_transform(study_area, 3035L)
+  study_area_m_buf <- st_buffer(study_area_m, 250L)
 
-  xmin <- st_bbox(study_area_m_buf)["xmin"] - 250
-  ymin <- st_bbox(study_area_m_buf)["ymin"] - 250
-  xmax <- st_bbox(study_area_m_buf)["xmax"] + 250
-  ymax <- st_bbox(study_area_m_buf)["ymax"] + 250
+  xmin <- st_bbox(study_area_m_buf)["xmin"] - 250L
+  ymin <- st_bbox(study_area_m_buf)["ymin"] - 250L
+  xmax <- st_bbox(study_area_m_buf)["xmax"] + 250L
+  ymax <- st_bbox(study_area_m_buf)["ymax"] + 250L
 
 
-  cols <- (xmax - xmin) / 500
-  rows <- (ymax - ymin) / 500
+  cols <- (xmax - xmin) / 500L
+  rows <- (ymax - ymin) / 500L
 
   print("Making grid over study area")
   grid_polyg <- st_make_grid(study_area_m_buf,
-    cellsize = c(500, 500),
+    cellsize = c(500L, 500L),
     offset = c(xmin, ymin),
     n = c(cols, rows)
   ) %>% st_as_sf()
 
   print("Setting grid IDs")
-  grid_polyg$grid_id <- seq(1, nrow(grid_polyg))
+  grid_polyg$grid_id <- seq(1L, nrow(grid_polyg))
 
   print("Attributing grid code to observations")
   locs_etrs89 <- st_join(locs_etrs89, grid_polyg, join = st_covered_by)
@@ -183,9 +183,12 @@ if (opt$mode == "train" && loc_train_exists == FALSE) {
 
 
   print("Getting codes from temp file, left joining them to locs")
-  codes <- locs_etrs89 %>% dplyr::select(FID, code)
-  codes <- codes %>% sf::st_drop_geometry()
-  locs <- locs %>% dplyr::left_join(codes, by = "FID")
+  codes <- locs_etrs89 %>%
+    dplyr::select(FID, code)
+  codes <- codes %>%
+    sf::st_drop_geometry()
+  locs <- locs %>%
+    dplyr::left_join(codes, by = "FID")
   locs <- locs %>%
     dplyr::select(-FID) %>%
     sf::st_drop_geometry()

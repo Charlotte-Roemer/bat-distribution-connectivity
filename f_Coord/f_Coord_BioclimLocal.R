@@ -18,10 +18,10 @@ Coord_BioclimLocal <- function(points, names_coord, layer_folder, layCorr) {
   OccSL <- read_delim(paste0(points, ".csv")) %>%
     select(names_coord)
 
-  OccSL$FID <- c(1:nrow(OccSL))
+  OccSL$FID <- c(1L:nrow(OccSL))
 
   OccSL <- OccSL %>%
-    sf::st_as_sf(coords = names_coord, crs = 4326, remove = FALSE)
+    sf::st_as_sf(coords = names_coord, crs = 4326L, remove = FALSE)
 
   # List bioclim rasters
   CoordH <- names_coord
@@ -32,11 +32,11 @@ Coord_BioclimLocal <- function(points, names_coord, layer_folder, layCorr) {
 
   print("extracting bioclim")
   # Extract all 19 Bioclim values for each grid point
-  for (i in 1:length(asc_files)) {
+  for (i in 1L:length(asc_files)) {
     rasti <- terra::rast(asc_files[i])
     Sys.time()
     SpBioci <- terra::extract(rasti, OccSL)
-    OccSL$SpBioci <- SpBioci[, 2]
+    OccSL$SpBioci <- SpBioci[, 2L]
 
     NumBioci <- data.table::tstrsplit(basename(asc_files[i]), split = "_")[[4]]
     NumBioci <- gsub(".tif", "", NumBioci)
