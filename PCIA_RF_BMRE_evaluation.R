@@ -349,6 +349,7 @@ for (i in 1:length(ListSp))
   print("Predictors identified")
 
   # Statistics for paper
+  print(colnames(DataSaison))
   Stat1 <- DataSaison |>
     group_by(latitude, longitude, nom) |>
     count()
