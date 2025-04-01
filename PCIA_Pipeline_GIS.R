@@ -182,7 +182,7 @@ if (opt$mode == "train" && loc_train_exists == FALSE) {
   )
 
 
-  print("Getting codes from temp file, left joining them to locs")
+  print("Getting codes from temp file, left joining them to locs")_year
   codes <- locs_etrs89 %>%
     dplyr::select(FID, code)
   codes <- codes %>%
