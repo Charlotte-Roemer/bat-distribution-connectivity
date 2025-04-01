@@ -173,12 +173,12 @@ if (opt$mode == "train" && loc_train_exists == FALSE) {
   locs_etrs89 <- st_join(locs_etrs89, grid_polyg, join = st_covered_by)
   width <- nchar(as.character(max(locs_etrs89$grid_id)))
 
-  print("Creating code from grid and fortnight")
+  print("Creating code from grid and fortnight_year")
 
   locs_etrs89$code <- paste0(
     str_pad(locs_etrs89$grid_id, width = width, pad = "0"),
     "-",
-    locs_etrs89$fortnight
+    locs_etrs89$fortnight_year
   )
 
 
