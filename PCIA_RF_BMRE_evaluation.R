@@ -470,13 +470,22 @@ for (i in 1:length(ListSp))
     suffix <- paste0("EDF", "_", ListSp[i])
   }
 
-  # write.csv(DataTest,
-  #   file.path(Output,
-  #     paste0(
-  #       ListSp[i], "_datatest.txt"
-  #     )
-  #   )
-  # )
+  write.csv(DataTest,
+    file.path(Output,
+      paste0(
+        ListSp[i], "_datatest.txt"
+      )
+    )
+  )
+
+  write.csv(DataSaison,
+    file.path(Output,
+      paste0(
+        ListSp[i], "_datatrain.txt"
+      )
+    )
+  )
+
 
   write.csv(
     EDFmod$tab,
