@@ -335,14 +335,14 @@ for (i in 1:length(ListSp))
 
   # select only one value per 500m square :
   # ... add code here
-  print("Keeping only one night per 500sq/15days")
-  DataTest <- DataSaison[duplicated(DataSaison$code), ]
-  DataSaison <- DataSaison[!duplicated(DataSaison$code), ]
-  print("Rows in training dataset")
-  print(nrow(DataSaison))
+  # print("Keeping only one night per 500sq/15days")
+  # DataTest <- DataSaison[duplicated(DataSaison$code), ]
+  # DataSaison <- DataSaison[!duplicated(DataSaison$code), ]
+  # print("Rows in training dataset")
+  # print(nrow(DataSaison))
 
-  print("Rows removed")
-  print(nrow(DataTest))
+  # print("Rows removed")
+  # print(nrow(DataTest))
 
   # filtering excessive values
   # quant <- quantile(DataSaison$nb_contacts, probs = 0.98)
@@ -470,14 +470,14 @@ for (i in 1:length(ListSp))
     suffix <- paste0("EDF", "_", ListSp[i])
   }
 
-  write.csv(DataTest,
-    file.path(Output,
-      paste0(
-        ListSp[i], "_datatest.txt"
-      )
-    )
-  )
-
+  # write.csv(DataTest,
+  #   file.path(Output,
+  #     paste0(
+  #       ListSp[i], "_datatest.txt"
+  #     )
+  #   )
+  # )
+  #
   write.csv(DataSaison,
     file.path(Output,
       paste0(
