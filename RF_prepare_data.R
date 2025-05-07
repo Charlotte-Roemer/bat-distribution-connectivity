@@ -97,7 +97,7 @@ prepare_data <- function(args, fpar, fsl) {
   # TEST
   write.csv(coord_ps, file.path(Output,
        paste0(
-         ListSp[i], "_coordps.txt"
+         "test_dat", "_coordps.txt"
        )
      )
 )
@@ -113,7 +113,7 @@ prepare_data <- function(args, fpar, fsl) {
 
   write.csv(numPar, file.path(Output,
        paste0(
-         ListSp[i], "_numpar.txt"
+         "test_dat", "_numpar.txt"
        )
      )
 )
