@@ -245,7 +245,7 @@ for (i in 1:length(ListSp))
   #      )
   #    )
   #
-  stop("fin du test data")
+  # stop("fin du test data")
   # Adds 0 counts using the observation table (avoids user errors but makes the
   # assumption that this table always contains at least 1 species per night)
   DataCPL3_unique <- DataCPL3 |> # prepares the table of the complete set of sampled nights/sites
