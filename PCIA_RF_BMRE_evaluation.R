@@ -263,7 +263,7 @@ write.csv(DataCPL3_unique,
 
   # performs a partial join (updates columns of DataSpSL_w0_2 with info of SelParSL)
   n <- names(SelParSL)
-  DataSpSL_w0_2 <- DataSpSL_w0_2[SelParSL, on = .(participation, Nuit, num_micro), (n) := mget(paste0("i.", n))]
+  DataSpSL_w0_2 <- DataSpSL_w0_2[SelParSL, on = .(participation, Nuit), (n) := mget(paste0("i.", n))]
 
 write.csv(DataSpSL_w0_2,
      file.path(Output,
