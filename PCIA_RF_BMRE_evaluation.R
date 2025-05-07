@@ -179,8 +179,26 @@ print("General dataset prepared")
 
 # Identify the variable to predict as nb_contacts
 DataCPL3$nb_contacts <- subset(DataCPL3, select = args[10])[, 1]
+# TEST
+
+write.csv(DataCPL3,
+     file.path(Output,
+       paste0(
+         ListSp[i], "_datacpl3.txt"
+       )
+     )
+   )
 test1 <- nrow(DataCPL3)
 DataCPL3 <- subset(DataCPL3, !is.na(DataCPL3$nb_contacts))
+
+# TEST
+write.csv(DataCPL3,
+     file.path(Output,
+       paste0(
+         ListSp[i], "_datacpl3cleaned.txt"
+       )
+     )
+   )
 test2 <- nrow(DataCPL3)
 ifelse(test1 == test2, print("ok"), stop("NA present in activity data!"))
 
@@ -211,12 +229,32 @@ for (i in 1:length(ListSp))
   print(ListSp[i])
   START1 <- Sys.time()
 
+  # TEST
+write.csv(DataSp,
+     file.path(Output,
+       paste0(
+         ListSp[i], "_datasp.txt"
+       )
+     )
+   )
+
+  stop("fin du test data")
   # Adds 0 counts using the observation table (avoids user errors but makes the
   # assumption that this table always contains at least 1 species per night)
   DataCPL3_unique <- DataCPL3 |> # prepares the table of the complete set of sampled nights/sites
     select(participation, Nuit, num_micro) |>
     unique()
+
   DataCPL3_unique$Nuit <- as.Date(DataCPL3_unique$Nuit)
+
+write.csv(DataCPL3_unique,
+     file.path(Output,
+       paste0(
+         ListSp[i], "_datacplunique.txt"
+       )
+     )
+   )
+
 
   DataSp$Nuit <- as.Date(DataSp$Nuit)
   DataCPL3$Nuit <- as.Date(DataCPL3$Nuit)

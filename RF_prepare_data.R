@@ -66,6 +66,13 @@ prepare_data <- function(args, fpar, fsl) {
   cat("Merging Site locations and participations", fill = TRUE)
   sel_par_sl <- merge(site_loc, sel_par, by.x = c("site", "nom"), by.y = c("site", "point"))
 
+  # TEST
+  write.csv(sel_par_sl, file.path(Output,
+       paste0(
+         ListSp[i], "_selparsl.txt"
+       )
+     )
+)
   cat("Merge done", fill = TRUE)
   coord_par <- aggregate(sel_par_sl$participation,
     by = c(
@@ -87,6 +94,13 @@ prepare_data <- function(args, fpar, fsl) {
     coord_sig,
     by = c("longitude", "latitude", "Nuit")
   )
+  # TEST
+  write.csv(coord_ps, file.path(Output,
+       paste0(
+         ListSp[i], "_coordps.txt"
+       )
+     )
+)
   cat("Merged", fill = TRUE)
   coord_ps[is.na(coord_ps)] <- 0
   testPar <- grepl(args[6L], names(coord_ps))
@@ -94,6 +108,15 @@ prepare_data <- function(args, fpar, fsl) {
   numPar <- subset(c(1L:length(testPar)), testPar)
   cat("data subseted", fill = TRUE)
   cat(numPar[1L], fill = TRUE)
+
+  # TEST
+
+  write.csv(numPar, file.path(Output,
+       paste0(
+         ListSp[i], "_numpar.txt"
+       )
+     )
+)
   coord_ps$participation <- as.data.frame(coord_ps)[, numPar[1L]]
 
   cat("Done... ready to return data")
