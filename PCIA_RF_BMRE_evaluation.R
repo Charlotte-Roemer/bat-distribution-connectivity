@@ -181,24 +181,24 @@ print("General dataset prepared")
 DataCPL3$nb_contacts <- subset(DataCPL3, select = args[10])[, 1]
 # TEST
 
-write.csv(DataCPL3,
-     file.path(Output,
-       paste0(
-         "test_dat", "_datacpl3.txt"
-       )
-     )
-   )
+# write.csv(DataCPL3,
+#      file.path(Output,
+#        paste0(
+#          "test_dat", "_datacpl3.txt"
+#        )
+#      )
+#    )
 test1 <- nrow(DataCPL3)
 DataCPL3 <- subset(DataCPL3, !is.na(DataCPL3$nb_contacts))
 
 # TEST
-write.csv(DataCPL3,
-     file.path(Output,
-       paste0(
-         "test_dat", "_datacpl3cleaned.txt"
-       )
-     )
-   )
+# write.csv(DataCPL3,
+#      file.path(Output,
+#        paste0(
+#          "test_dat", "_datacpl3cleaned.txt"
+#        )
+#      )
+#    )
 test2 <- nrow(DataCPL3)
 ifelse(test1 == test2, print("ok"), stop("NA present in activity data!"))
 
@@ -230,14 +230,14 @@ for (i in 1:length(ListSp))
   START1 <- Sys.time()
 
   # TEST
-write.csv(DataSp,
-     file.path(Output,
-       paste0(
-         ListSp[i], "_datasp.txt"
-       )
-     )
-   )
-
+# write.csv(DataSp,
+#      file.path(Output,
+#        paste0(
+#          ListSp[i], "_datasp.txt"
+#        )
+#      )
+#    )
+#
   stop("fin du test data")
   # Adds 0 counts using the observation table (avoids user errors but makes the
   # assumption that this table always contains at least 1 species per night)
@@ -265,8 +265,11 @@ write.csv(DataCPL3_unique,
   n <- names(SelParSL)
   DataSpSL_w0_2 <- DataSpSL_w0_2[SelParSL, on = .(participation), (n) := mget(paste0("i.", n))]
 
-  DataSpSL_w0_2$nb_contacts[is.na(DataSpSL_w0_2$nb_contacts)] <- 0
-  DataSpSL_w0_2$score_max[is.na(DataSpSL_w0_2$score_max)] <- 0
+  DataSpSL_w0_2$nb_contacts[is.na(DataSpSL_w0_2$nb_contacts)] <- 0L
+  DataSpSL_w0_2$score_max[is.na(DataSpSL_w0_2$score_max)] <- 0L
+  DataSpSL_w0_2$groupe[is.na(DataSpSL_w0_2$groupe)] <- "bat"
+  DataSpSL_w0_2$espece[is.na(DataSpSL_w0_2$espece)] = ListSp[i]
+
 
   # Exclude sites outside France limits (square) :
   DataSpSL_w0_2 <- subset(DataSpSL_w0_2, DataSpSL_w0_2$longitude < 10 & DataSpSL_w0_2$longitude > -6 &
