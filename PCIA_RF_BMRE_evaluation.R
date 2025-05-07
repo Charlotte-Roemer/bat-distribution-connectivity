@@ -54,8 +54,6 @@ option_list <- list(
 opt_parser <- optparse::OptionParser(option_list = option_list)
 opt <- optparse::parse_args(opt_parser)
 
-a=4
-
 #### Options ####--------------------------------------------------------
 
 # Sorting threshold (weighted, 0, 50, 90)
@@ -68,7 +66,7 @@ Sp <- opt$species # choose a species (e.g. "Pippip") or "all" or "paper"
 
 GroupSel <- "bat"
 # GroupSel=NA #sorting according to the group column of Specieslist
-# (args[3), NA if no sorting
+#  (args[3), NA if no sorting
 ListPaper <- c(
   "Minsch", "Barbar", "Nyclei", "Nycnoc", "Eptser", "Pipkuh", "Pipnat",
   "Pippip", "Pippyg", "Rhifer"
@@ -92,39 +90,46 @@ DoBoruta <- opt$boruta
 if (Place == "local") {
   # bat activity table (not DI !! --> need the file where microphone
   # quality is sorted out) . file without csv extension
-  args <- file.path(data_path,
+  args <- file.path(
+    data_path,
     "observations",
     "donnees_vigie_chiro",
-    paste0("SpNuit2_",
+    paste0(
+      "SpNuit2_",
       ThresholdSort,
       "_DataLP_PF_exportTot"
     )
   )
 
   # table with spatial variables (habitat and climate) :
-  args[2] <- file.path(data_path,
+  args[2] <- file.path(
+    data_path,
     "observations",
     "donnees_vigie_chiro",
     "GI_FR_sites_localites"
   )
 
   # Species list to build models :
-  args[3] <- file.path(data_path,
+  args[3] <- file.path(
+    data_path,
     "observations",
     "donnees_vigie_chiro",
     "SpeciesList.csv"
   )
 
   # Study area limits file :
-  args[4] <- file.path(data_path,
+  args[4] <- file.path(
+    data_path,
     "GIS",
     "regions.gpkg"
   )
 
   # folder to copy models to (fichiers .learner), no "_" else bug !!! :
-  Output <- file.path(data_path,
+  Output <- file.path(
+    data_path,
     "ModPred",
-    paste0("VC",
+    paste0(
+      "VC",
       ThresholdSort,
       "_",
       Sys.Date()
@@ -132,14 +137,16 @@ if (Place == "local") {
   )
 
   # the file with data about participations :
-  Fpar <- file.path(data_path,
+  Fpar <- file.path(
+    data_path,
     "observations",
     "donnees_vigie_chiro",
     "p_export.csv"
   )
 
   # the file with the data about localities :
-  Fsl <- file.path(data_path,
+  Fsl <- file.path(
+    data_path,
     "observations",
     "donnees_vigie_chiro",
     "sites_localites.txt"
@@ -151,13 +158,13 @@ args[7] <- "localite" # name of locality in CoordSIG (if DataLoc=T)
 args[8] <- "participation" # name of participation (=sampling event)
 
 # the name of the parameter which gives the metric to predict:
-args[10] <- "nb_contacts_nd" 
+args[10] <- "nb_contacts_nd"
 
 # pass the limit date as argument
 args[11L] <- as.character(date_limit)
 
 # tag which will be written in the filename, no "_", else bug !!! :
-Tag <- paste0("VC", ThresholdSort) 
+Tag <- paste0("VC", ThresholdSort)
 
 # name of columns with coordinates in the locality table (sites_localites.txt) :
 coordinate_names <- c("X", "Y")
@@ -165,7 +172,6 @@ args[12] <- coordinate_names[1]
 args[13] <- coordinate_names[2]
 
 dir.create(Output)
-
 
 
 #### Prepare general dataset ####-----------------------------------------------
@@ -231,14 +237,14 @@ for (i in 1:length(ListSp))
   START1 <- Sys.time()
 
   # TEST
-# write.csv(DataSp,
-#      file.path(Output,
-#        paste0(
-#          ListSp[i], "_datasp.txt"
-#        )
-#      )
-#    )
-#
+  # write.csv(DataSp,
+  #      file.path(Output,
+  #        paste0(
+  #          ListSp[i], "_datasp.txt"
+  #        )
+  #      )
+  #    )
+  #
   stop("fin du test data")
   # Adds 0 counts using the observation table (avoids user errors but makes the
   # assumption that this table always contains at least 1 species per night)
@@ -248,13 +254,15 @@ for (i in 1:length(ListSp))
 
   DataCPL3_unique$Nuit <- as.Date(DataCPL3_unique$Nuit)
 
-write.csv(DataCPL3_unique,
-     file.path(Output,
-       paste0(
-         ListSp[i], "_datacplunique.txt"
-       )
-     )
-   )
+  write.csv(
+    DataCPL3_unique,
+    file.path(
+      Output,
+      paste0(
+        ListSp[i], "_datacplunique.txt"
+      )
+    )
+  )
 
 
   DataSp$Nuit <- as.Date(DataSp$Nuit)
@@ -269,7 +277,7 @@ write.csv(DataCPL3_unique,
   DataSpSL_w0_2$nb_contacts[is.na(DataSpSL_w0_2$nb_contacts)] <- 0L
   DataSpSL_w0_2$score_max[is.na(DataSpSL_w0_2$score_max)] <- 0L
   DataSpSL_w0_2$groupe[is.na(DataSpSL_w0_2$groupe)] <- "bat"
-  DataSpSL_w0_2$espece[is.na(DataSpSL_w0_2$espece)] = ListSp[i]
+  DataSpSL_w0_2$espece[is.na(DataSpSL_w0_2$espece)] <- ListSp[i]
 
 
   # Exclude sites outside France limits (square) :
@@ -450,8 +458,10 @@ write.csv(DataCPL3_unique,
 
   # Prepare random and spatial cross-validation indices
   cat("Preparing cross-validation indices", fill = TRUE)
-  sfolds_source <- file.path(Output,
-    paste0("VC",
+  sfolds_source <- file.path(
+    Output,
+    paste0(
+      "VC",
       ThresholdSort,
       "_",
       ListSp[i],
@@ -462,7 +472,8 @@ write.csv(DataCPL3_unique,
   if (!file.exists(sfolds_source)) {
     DataSaison_sf <- st_as_sf(DataSaison,
       coords = c(x = "longitude", y = "latitude"),
-      crs = 4326) |>
+      crs = 4326
+    ) |>
       st_transform(2154)
     aoi <- sf::read_sf(
       dsn = args[4],
@@ -476,7 +487,7 @@ write.csv(DataCPL3_unique,
     print(END - START) # 1 to 1.4 hours
     # beep(2)
     saveRDS(sfolds, sfolds_source)
-  } else { 
+  } else {
     sfolds <- readRDS(sfolds_source)
   }
 
@@ -486,7 +497,8 @@ write.csv(DataCPL3_unique,
     ## timevar = "fortnight",
     k = 10
   )
-  sctrl <- caret::trainControl(method = "cv",
+  sctrl <- caret::trainControl(
+    method = "cv",
     index = sindx$index,
     savePredictions = "final"
   )
@@ -520,8 +532,10 @@ write.csv(DataCPL3_unique,
   #   )
   # )
   #
-  write.csv(DataSaison,
-    file.path(Output,
+  write.csv(
+    DataSaison,
+    file.path(
+      Output,
       paste0(
         ListSp[i], "_datatrain.txt"
       )
@@ -580,7 +594,7 @@ write.csv(DataCPL3_unique,
   ## LatLong model
 
 
-  # remove EDF variables from names.boruta
+  #  remove EDF variables from names.boruta
   testPred <- substr(names.Boruta, 1, 5) != "SpEDF"
   names.Boruta <- names.Boruta[testPred]
 
@@ -647,7 +661,7 @@ write.csv(DataCPL3_unique,
   )
   rm("LatLongmod")
 
-  # remove EDF variables from names.boruta
+  #  remove EDF variables from names.boruta
   testPred <- substr(names.Boruta, 1, 5) != "Splat"
   names.Boruta <- names.Boruta[testPred]
   testPred <- substr(names.Boruta, 1, 5) != "Splon"
@@ -720,7 +734,6 @@ write.csv(DataCPL3_unique,
   END1 <- Sys.time()
   print(END1 - START1)
   print(paste("Model done for", ListSp[i]))
-
 }
 
 
