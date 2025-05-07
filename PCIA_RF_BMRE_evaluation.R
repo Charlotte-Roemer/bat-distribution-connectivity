@@ -238,7 +238,7 @@ write.csv(DataSp,
      )
    )
 
-  stop("fin du test data")
+  # stop("fin du test data")
   # Adds 0 counts using the observation table (avoids user errors but makes the
   # assumption that this table always contains at least 1 species per night)
   DataCPL3_unique <- DataCPL3 |> # prepares the table of the complete set of sampled nights/sites
@@ -263,7 +263,17 @@ write.csv(DataCPL3_unique,
 
   # performs a partial join (updates columns of DataSpSL_w0_2 with info of SelParSL)
   n <- names(SelParSL)
-  DataSpSL_w0_2 <- DataSpSL_w0_2[SelParSL, on = .(participation), (n) := mget(paste0("i.", n))]
+  DataSpSL_w0_2 <- DataSpSL_w0_2[SelParSL, on = .(participation, Nuit, num_micro), (n) := mget(paste0("i.", n))]
+
+write.csv(DataSpSL_w0_2,
+     file.path(Output,
+       paste0(
+         ListSp[i], "_datacplunique.txt"
+       )
+     )
+   )
+# TEST
+  stop("end of datatest")
 
   DataSpSL_w0_2$nb_contacts[is.na(DataSpSL_w0_2$nb_contacts)] <- 0
   DataSpSL_w0_2$score_max[is.na(DataSpSL_w0_2$score_max)] <- 0
