@@ -184,7 +184,7 @@ DataCPL3$nb_contacts <- subset(DataCPL3, select = args[10])[, 1]
 write.csv(DataCPL3,
      file.path(Output,
        paste0(
-         ListSp[i], "_datacpl3.txt"
+         "test_dat", "_datacpl3.txt"
        )
      )
    )
@@ -195,7 +195,7 @@ DataCPL3 <- subset(DataCPL3, !is.na(DataCPL3$nb_contacts))
 write.csv(DataCPL3,
      file.path(Output,
        paste0(
-         ListSp[i], "_datacpl3cleaned.txt"
+         "test_dat", "_datacpl3cleaned.txt"
        )
      )
    )

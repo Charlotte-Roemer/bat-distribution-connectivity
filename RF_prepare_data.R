@@ -69,7 +69,7 @@ prepare_data <- function(args, fpar, fsl) {
   # TEST
   write.csv(sel_par_sl, file.path(Output,
        paste0(
-         ListSp[i], "_selparsl.txt"
+         "test_dat", "_selparsl.txt"
        )
      )
 )
