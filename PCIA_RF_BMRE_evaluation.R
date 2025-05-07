@@ -54,6 +54,7 @@ option_list <- list(
 opt_parser <- optparse::OptionParser(option_list = option_list)
 opt <- optparse::parse_args(opt_parser)
 
+a=4
 
 #### Options ####--------------------------------------------------------
 
