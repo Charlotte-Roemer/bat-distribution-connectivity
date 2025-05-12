@@ -61,7 +61,7 @@ pred_vars_folder <- file.path(data_folder, "observations", "pred_vars")
 ## loading study area
 # change to zone <− sf::st_read(zone_file, layer = opt$region) in production
 print("Loading study area...")
-zone <- sf::st_read(zone_file, layer = "france_met")
+zone <- sf::st_read(zone_file, layer = opt$region)
 print("Study area loaded.")
 
 
@@ -182,7 +182,7 @@ if (opt$mode == "train" && loc_train_exists == FALSE) {
   )
 
 
-  print("Getting codes from temp file, left joining them to locs")_year
+  print("Getting codes from temp file, left joining them to locs")
   codes <- locs_etrs89 %>%
     dplyr::select(FID, code)
   codes <- codes %>%
@@ -255,35 +255,35 @@ for (i in 1:length(listfun))
 }
 
 ## Bioclim ###
-#print("Bioclim")
-#Coord_BioclimLocal(
+# print("Bioclim")
+# Coord_BioclimLocal(
 #  points = FCoord,
 #  names_coord = Coord_Headers,
 #  layer_folder = bioclim_folder,
 #  layCorr = layer_bioclim_gross
-#)
+# )
 
 
 ###  ALAN ###
-#print("ALAN")
-#Coord_ALAN(
+# print("ALAN")
+# Coord_ALAN(
 #  points = FCoord,
 #  names_coord = c(Coord_Headers, "Nuit"),
 #  bm = BM,
 #  bl = BL,
 #  layers = folder_alan
-#)
+# )
 
 ## Grotto ###
-#print("Grotto")
-#Coord_Grotto(
+# print("Grotto")
+# Coord_Grotto(
 #  points = FCoord,
 #  names_coord = Coord_Headers,
 #  bs = BS,
 #  bm = BM,
 #  bl = BL,
 #  layer = layer_grotto
-#)
+# )
 
 ##  VCF ###
 print("VCF")
@@ -297,30 +297,30 @@ Coord_VCF(
 )
 
 ### ALTI ####
-#print("Altitude & slope")
-#Coord_Alti(
+# print("Altitude & slope")
+# Coord_Alti(
 #  points = FCoord,
 #  names_coord = Coord_Headers,
 #  bs = BS,
 #  bm = BM,
 #  bl = BL,
 #  layer = layer_alti
-#)
+# )
 #
 ###  Wind Turbines ###
-#print("Wind Turbines")
-#Coord_eol(
+# print("Wind Turbines")
+# Coord_eol(
 #  points = FCoord,
 #  names_coord = Coord_Headers,
 #  bs = BS,
 #  bm = BM,
 #  bl = BL,
 #  layer = layer_wind_turbines
-#)
+# )
 #
 ###  CARTHAGE (eau) ####
-#print("Water")
-#Coord_Carthage(
+# print("Water")
+# Coord_Carthage(
 #  points = FCoord,
 #  names_coord = Coord_Headers,
 #  bs = BS,
@@ -328,7 +328,7 @@ Coord_VCF(
 #  bl = BL,
 #  carthagep = Layer_Carthage_P,
 #  carthagec = Layer_Carthage_C
-#)
+# )
 #
 #
 ## CLC Corine Land Cover (Habitat) ####
@@ -356,23 +356,23 @@ Coord_OCS_OSO(
 
 
 ### ROADS and TRAINS ####
-#print("Roads and trains")
-#Coord_Route(
+# print("Roads and trains")
+# Coord_Route(
 #  points = FCoord,
 #  names_coord = Coord_Headers,
 #  bs = BS,
 #  bm = BM,
 #  bl = BL,
 #  folder = folder_route
-#)
+# )
 #
-#print("Meteo")
-#Coord_Meteo(
+# print("Meteo")
+# Coord_Meteo(
 #  points = FCoord,
 #  temp = layer_temp,
 #  prec = layer_precip,
 #  wind = layer_wind
-#)
+# )
 
 ## loc_data <- file.path(loc, "data")
 
