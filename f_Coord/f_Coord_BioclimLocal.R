@@ -46,17 +46,17 @@ Coord_BioclimLocal <- function(points, names_coord, layer_folder, layCorr) {
   }
 
   # multiplier par 10 : 1-2 4-11
-  # for back-compatibility with old-fashioned Bioclim in 1e-1�C
-  OccSL$SpBioC1 <- OccSL$SpBioC1 * 10
-  OccSL$SpBioC2 <- OccSL$SpBioC2 * 10
-  OccSL$SpBioC4 <- OccSL$SpBioC4 * 10
-  OccSL$SpBioC5 <- OccSL$SpBioC5 * 10
-  OccSL$SpBioC6 <- OccSL$SpBioC6 * 10
-  OccSL$SpBioC7 <- OccSL$SpBioC7 * 10
-  OccSL$SpBioC8 <- OccSL$SpBioC8 * 10
-  OccSL$SpBioC9 <- OccSL$SpBioC9 * 10
-  OccSL$SpBioC10 <- OccSL$SpBioC10 * 10
-  OccSL$SpBioC11 <- OccSL$SpBioC11 * 10
+  # for back-compatibility with old-fashioned Bioclim in 1e-10C
+  OccSL$SpBioC1 <- OccSL$SpBioC1 * 10L
+  OccSL$SpBioC2 <- OccSL$SpBioC2 * 10L
+  OccSL$SpBioC4 <- OccSL$SpBioC4 * 10L
+  OccSL$SpBioC5 <- OccSL$SpBioC5 * 10L
+  OccSL$SpBioC6 <- OccSL$SpBioC6 * 10L
+  OccSL$SpBioC7 <- OccSL$SpBioC7 * 10L
+  OccSL$SpBioC8 <- OccSL$SpBioC8 * 10L
+  OccSL$SpBioC9 <- OccSL$SpBioC9 * 10L
+  OccSL$SpBioC10 <- OccSL$SpBioC10 * 10L
+  OccSL$SpBioC11 <- OccSL$SpBioC11 * 10L
 
   OccSL_NA <- subset(OccSL, is.na(OccSL$SpBioC1))
 
