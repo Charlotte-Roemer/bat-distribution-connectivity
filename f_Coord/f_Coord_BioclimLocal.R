@@ -38,25 +38,25 @@ Coord_BioclimLocal <- function(points, names_coord, layer_folder, layCorr) {
     SpBioci <- terra::extract(rasti, OccSL)
     OccSL$SpBioci <- SpBioci[, 2L]
 
-    NumBioci <- data.table::tstrsplit(basename(asc_files[i]), split = "_")[[4]]
-    NumBioci <- gsub(".tif", "", NumBioci)
+    NumBioci <- data.table::tstrsplit(basename(asc_files[i]), split = "_")[[2]]
+    NumBioci <- gsub("bio", "", NumBioci)
     print(paste0("extracting : SpBioC", NumBioci))
 
     names(OccSL)[ncol(OccSL)] <- paste0("SpBioC", NumBioci)
   }
 
-  #multiplier par 10 : 1-2 4-11
-  #for back-compatibility with old-fashioned Bioclim in 1e-1�C
-  OccSL$SpBioC1 <- OccSL$SpBioC1*10
-  OccSL$SpBioC2 <- OccSL$SpBioC2*10
-  OccSL$SpBioC4 <- OccSL$SpBioC4*10
-  OccSL$SpBioC5 <- OccSL$SpBioC5*10
-  OccSL$SpBioC6 <- OccSL$SpBioC6*10
-  OccSL$SpBioC7 <- OccSL$SpBioC7*10
-  OccSL$SpBioC8 <- OccSL$SpBioC8*10
-  OccSL$SpBioC9 <- OccSL$SpBioC9*10
-  OccSL$SpBioC10 <- OccSL$SpBioC10*10
-  OccSL$SpBioC11 <- OccSL$SpBioC11*10
+  # multiplier par 10 : 1-2 4-11
+  # for back-compatibility with old-fashioned Bioclim in 1e-1�C
+  OccSL$SpBioC1 <- OccSL$SpBioC1 * 10
+  OccSL$SpBioC2 <- OccSL$SpBioC2 * 10
+  OccSL$SpBioC4 <- OccSL$SpBioC4 * 10
+  OccSL$SpBioC5 <- OccSL$SpBioC5 * 10
+  OccSL$SpBioC6 <- OccSL$SpBioC6 * 10
+  OccSL$SpBioC7 <- OccSL$SpBioC7 * 10
+  OccSL$SpBioC8 <- OccSL$SpBioC8 * 10
+  OccSL$SpBioC9 <- OccSL$SpBioC9 * 10
+  OccSL$SpBioC10 <- OccSL$SpBioC10 * 10
+  OccSL$SpBioC11 <- OccSL$SpBioC11 * 10
 
   OccSL_NA <- subset(OccSL, is.na(OccSL$SpBioC1))
 
@@ -66,8 +66,7 @@ Coord_BioclimLocal <- function(points, names_coord, layer_folder, layCorr) {
 
   # For points which had no correspondance with Bioblim, use the layer Bioclim Gross (extension at sea)
   if (nrow(OccSL_NA) > 0) {
-    
-    GrossBioclim = GrossBioclim   %>%
+    GrossBioclim <- GrossBioclim %>%
       st_transform(st_crs(OccSL_NA))
 
     # Extract GrossBioclim variables
@@ -86,7 +85,7 @@ Coord_BioclimLocal <- function(points, names_coord, layer_folder, layCorr) {
       select(!ID) %>%
       as.data.frame()
 
-    names(OccSL_NAdd)[names(OccSL_NAdd) == 'num.site'] <- "num site"
+    names(OccSL_NAdd)[names(OccSL_NAdd) == "num.site"] <- "num site"
 
     print("drop geometry a")
     OccSL_A <- sf::st_drop_geometry(OccSL_A)
@@ -103,7 +102,6 @@ Coord_BioclimLocal <- function(points, names_coord, layer_folder, layCorr) {
 
 
     OccSL_All <- rbind(OccSL_A, OccSL_NAdd)
-
   } else {
     OccSL_All <- as.data.frame(OccSL_A)
   }
@@ -111,8 +109,8 @@ Coord_BioclimLocal <- function(points, names_coord, layer_folder, layCorr) {
   OccSL_All <- OccSL_All %>%
     select(!c(FID))
 
-  colnames(OccSL_All)[colnames(OccSL_All) == 'latitude'] <- "Y"
-  colnames(OccSL_All)[colnames(OccSL_All) == 'longitude'] <- "X"
+  colnames(OccSL_All)[colnames(OccSL_All) == "latitude"] <- "Y"
+  colnames(OccSL_All)[colnames(OccSL_All) == "longitude"] <- "X"
 
   print(paste0("Writing file ", FOccSL, "_Bioclim.csv"))
   fwrite(OccSL_All, paste0(FOccSL, "_Bioclim.csv"))
