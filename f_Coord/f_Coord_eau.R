@@ -11,37 +11,32 @@ Coord_Eau <- function(points, names_coord, carthagep, carthagec) {
   # bl <- BL
   ## fin variable test
 
-  FOccSL <- points
 
   if (opt$mode == "predict") {
-    OccSL <- read.csv(paste0(points, ".csv")) %>%
+    OccSL <- read.csv(paste0(points, ".csv")) |>
       dplyr::select(c("X", "Y"))
 
-    OccSL$FID <- c(1:nrow(OccSL))
-    OccSL <- OccSL %>%
+    OccSL$FID <- c(1L:nrow(OccSL))
+    OccSL <- OccSL |>
       sf::st_as_sf(coords = c("X", "Y"), crs = 4326, remove = FALSE)
 
-    OccSL_L93 <- OccSL %>%
+    OccSL_L93 <- OccSL |>
       sf::st_transform(2154)
     OccSL_L93$Nuit <- date_pred
 
     CoordH <- names_coord
   } else {
-    OccSL <- read.csv(paste0(points, ".csv")) %>%
+    OccSL <- read.csv(paste0(points, ".csv")) |>
       dplyr::select(names_coord)
     OccSL$FID <- c(1:nrow(OccSL))
-    OccSL <- OccSL %>%
+    OccSL <- OccSL |>
       sf::st_as_sf(coords = c("X", "Y"), crs = 4326, remove = FALSE)
 
-    OccSL_L93 <- OccSL %>%
+    OccSL_L93 <- OccSL |>
       sf::st_transform(2154)
     CoordH <- names_coord
   }
 
-
-  BufferSmall <- bs
-  BufferMedium <- bm
-  BufferLarge <- bl
 
   # recuperation des donnees Carthage (eau)
   CarthageP <- sf::read_sf(
@@ -54,7 +49,7 @@ Coord_Eau <- function(points, names_coord, carthagep, carthagec) {
   ) # All "En service"
 
   # Split result before saving?
-  Split <- FALSE
+  # Split <- FALSE
   # Start=10001
   # End=20000
   # Start <- 270001L
@@ -63,216 +58,52 @@ Coord_Eau <- function(points, names_coord, carthagep, carthagec) {
   # OccSL <- OccSL[Start:(min(End, nrow(OccSL))), ]
   # }
 
-  OccSL_L93PP <- OccSL_L93
-    CarthagePP <- CarthageP
-
-    ##########################################
-    ##########################################
-    ########## water surface #################
-    ##########################################
-    ##########################################
-
-    ########
-    # Buffer S
-    ########
-
-    print("Buffer Small")
-
-    BufferS <- sf::st_buffer(OccSL_L93, dist = BufferSmall) %>%
-      sf::st_transform(sf::st_crs(CarthageP))
-
-    Sys.time()
-    BufferS$Water_surface_count <- sf::st_intersects(BufferS, CarthagePP) %>%
-      lengths()
-    Sys.time()
-
-    SpCarthagePP <- BufferS
-
-    if (is.null(BufferS$Water_surface_count)) {
-      OccSL_L93PP$SpWS_S <- 0
-    } else {
-      PC_50 <- aggregate(SpCarthagePP$Water_surface_count, by = list(SpCarthagePP$FID), FUN = sum)
-      print("ok")
-      names(PC_50)[ncol(PC_50)] <- "SpWS_S"
-      OccSL_L93PP <- merge(OccSL_L93PP, PC_50, by.x = "FID", by.y = "Group.1", all.x = T)
-      OccSL_L93PP$SpWS_S[is.na(OccSL_L93PP$SpWS_S)] <- 0
-    }
-    names(OccSL_L93PP)[names(OccSL_L93PP) == "SpWS_S"] <- paste0("SpWS", h, "S")
-
-    ########
-    # Buffer M
-    ########
-
-    print("Buffer Medium")
-
-    BufferM <- sf::st_buffer(OccSL_L93, dist = BufferMedium) %>%
-      sf::st_transform(st_crs(CarthageP))
-
-    Sys.time()
-    BufferM$Water_surface_count <- sf::st_intersects(BufferM, CarthagePP) %>%
-      lengths()
-    Sys.time()
-
-    SpCarthagePP <- BufferM
-
-    if (is.null(BufferM$Water_surface_count)) {
-      OccSL_L93PP$SpWS_M <- 0
-    } else {
-      PC_50 <- aggregate(SpCarthagePP$Water_surface_count, by = list(SpCarthagePP$FID), FUN = sum)
-      names(PC_50)[ncol(PC_50)] <- "SpWS_M"
-      OccSL_L93PP <- merge(OccSL_L93PP, PC_50, by.x = "FID", by.y = "Group.1", all.x = T)
-      OccSL_L93PP$SpWS_M[is.na(OccSL_L93PP$SpWS_M)] <- 0
-    }
-    names(OccSL_L93PP)[names(OccSL_L93PP) == "SpWS_M"] <- paste0("SpWS", h, "M")
-
-    ########
-    # Buffer L
-    ########
-
-    print("Buffer Large")
-
-    BufferL <- sf::st_buffer(OccSL_L93, dist = BufferLarge) %>%
-      sf::st_transform(sf::st_crs(CarthageP))
-
-    Sys.time()
-    BufferL$Water_surface_count <- sf::st_intersects(BufferL, CarthagePP) %>%
-      lengths()
-    Sys.time()
-
-    SpCarthagePP <- BufferL
-
-    if (is.null(BufferL$Water_surface_count)) {
-      OccSL_L93PP$SpWS_L <- 0
-    } else {
-      PC_50 <- aggregate(SpCarthagePP$Water_surface_count, by = list(SpCarthagePP$FID), FUN = sum)
-      names(PC_50)[ncol(PC_50)] <- "SpWS_L"
-      OccSL_L93PP <- merge(OccSL_L93PP, PC_50, by.x = "FID", by.y = "Group.1", all.x = T)
-      OccSL_L93PP$SpWS_L[is.na(OccSL_L93PP$SpWS_L)] <- 0
-    }
-    names(OccSL_L93PP)[names(OccSL_L93PP) == "SpWS_L"] <- paste0("SpWS", h, "L")
-  }
-
   ##########################################
   ##########################################
-  ########## water courses #################
+  ######## water surface distance ##########
   ##########################################
   ##########################################
 
-  ClassC <- unique(CarthageC$Persistanc)
-  ClassC <- ClassC[order(ClassC)]
-  CCd <- data.frame(ClassC, Code = c(1:length(ClassC)))
-  fwrite(CCd, "CarthageC_dictionary.csv", sep = ";")
+  nearest_p <- try(sf::st_nearest_feature(OccSL_L93, CarthageP))
+  water_dist_polyg <- st_distance(OccSL_L93,
+    CarthageP[nearest_p, ],
+    by_element = TRUE
+  )
+  OccSL_L93$water_dist_polyg <- water_dist_polyg
 
-  for (h in 1:length(ClassC))
-  {
-    CarthageCP <- CarthageC[CarthageC$Persistanc == ClassC[h], ]
-
-    print(ClassC[h])
-
-    ########
-    # Buffer S
-    ########
-
-    print("Buffer Small")
-
-    BufferS <- st_buffer(OccSL_L93, dist = BufferSmall) %>%
-      st_transform(st_crs(CarthageCP))
-
-    Sys.time()
-    BufferS$Water_course_count <- st_intersects(BufferS, CarthageCP) %>%
-      lengths()
-    Sys.time()
-
-    SpCarthagePC <- BufferS
-
-    if (is.null(BufferS$Water_course_count)) {
-      OccSL_L93PP$SpWC_S <- 0
-    } else {
-      PC_50 <- aggregate(SpCarthagePC$Water_course_count, by = list(SpCarthagePP$FID), FUN = sum)
-      names(PC_50)[ncol(PC_50)] <- "SpWC_S"
-      OccSL_L93PP <- merge(OccSL_L93PP, PC_50, by.x = "FID", by.y = "Group.1", all.x = T)
-      OccSL_L93PP$SpWC_S[is.na(OccSL_L93PP$SpWC_S)] <- 0
-    }
-    names(OccSL_L93PP)[names(OccSL_L93PP) == "SpWC_S"] <- paste0("SpCC", h, "S")
-
-    ########
-    # Buffer M
-    ########
-
-    print("Buffer Medium")
-
-    BufferM <- st_buffer(OccSL_L93, dist = BufferMedium) %>%
-      st_transform(st_crs(CarthageCP))
-
-    Sys.time()
-    BufferM$Water_course_count <- st_intersects(BufferM, CarthageCP) %>%
-      lengths()
-    Sys.time()
-
-    SpCarthagePC <- BufferM
-
-    if (is.null(BufferM$Water_course_count)) {
-      OccSL_L93PP$SpWC_M <- 0
-    } else {
-      PC_50 <- aggregate(SpCarthagePC$Water_course_count, by = list(SpCarthagePP$FID), FUN = sum)
-      names(PC_50)[ncol(PC_50)] <- "SpWC_M"
-      OccSL_L93PP <- merge(OccSL_L93PP, PC_50, by.x = "FID", by.y = "Group.1", all.x = T)
-      OccSL_L93PP$SpWC_M[is.na(OccSL_L93PP$SpWC_M)] <- 0
-    }
-    names(OccSL_L93PP)[names(OccSL_L93PP) == "SpWC_M"] <- paste0("SpCC", h, "M")
-
-
-    ########
-    # Buffer L
-    ########
-
-    print("Buffer Large")
-
-    BufferL <- st_buffer(OccSL_L93, dist = BufferLarge) %>%
-      st_transform(st_crs(CarthageCP))
-
-    Sys.time()
-    BufferL$Water_course_count <- st_intersects(BufferL, CarthageCP) %>%
-      lengths()
-    Sys.time()
-
-    SpCarthagePC <- BufferL
-
-    if (is.null(BufferL$Water_course_count)) {
-      OccSL_L93PP$SpWC_L <- 0
-    } else {
-      PC_50 <- aggregate(SpCarthagePC$Water_course_count, by = list(SpCarthagePP$FID), FUN = sum)
-      names(PC_50)[ncol(PC_50)] <- "SpWC_L"
-      OccSL_L93PP <- merge(OccSL_L93PP, PC_50, by.x = "FID", by.y = "Group.1", all.x = T)
-      OccSL_L93PP$SpWC_L[is.na(OccSL_L93PP$SpWC_L)] <- 0
-    }
-    names(OccSL_L93PP)[names(OccSL_L93PP) == "SpWC_L"] <- paste0("SpCC", h, "L")
-  }
+  nearest_l <- try(sf::st_nearest_feature(OccSL_L93, CarthageC))
+  water_dist_line <- st_distance(OccSL_L93,
+    CarthageP[nearest_l, ],
+    by_element = TRUE
+  )
+  OccSL_L93$water_dist_line <- water_dist_line
+  OccSL_L93$SpWD <- with(
+    OccSL_L93,
+    pmin(water_dist_line, water_dist_polyg)
+  )
 
 
   ######################################################################
   #################### Write ###########################################
   ######################################################################
 
-  OccSL_WGS84 <- OccSL_L93 %>%
-    st_transform(4326) # back transform to WGS84
+  OccSL_WGS84 <- OccSL_L93 |>
+    st_transform(4326L) # back transform to WGS84
 
-  OccSL_ARajouter <- subset(OccSL_L93PP, select = grepl("Sp", names(OccSL_L93PP)))
+  OccSL_ARajouter <- subset(OccSL_L93,
+    select = grepl("Sp", names(OccSL_L93), fixed = TRUE)
+  )
 
   Carthage <- data.frame(cbind(
     st_coordinates(OccSL_WGS84),
     as.data.frame(OccSL_ARajouter)
   ))
 
-  Carthage <- Carthage %>%
-    st_drop_geometry() %>%
+  Carthage <- Carthage |>
+    st_drop_geometry() |>
     select(!geometry)
 
-  if (Split) {
-    NewName <- paste0(FOccSL, "_Carthage_", Start, "_", End, ".csv")
-  } else {
-    NewName <- paste0(FOccSL, "_Carthage.csv")
-  }
+  NewName <- paste0(FOccSL, "_Carthage.csv")
 
   fwrite(Carthage, NewName)
 }
