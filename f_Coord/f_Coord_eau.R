@@ -73,7 +73,7 @@ Coord_Eau <- function(points, names_coord, carthagep, carthagec) {
 
   nearest_l <- try(sf::st_nearest_feature(OccSL_L93, CarthageC))
   water_dist_line <- st_distance(OccSL_L93,
-    CarthageP[nearest_l, ],
+    CarthageC[nearest_l, ],
     by_element = TRUE
   )
   OccSL_L93$water_dist_line <- water_dist_line
@@ -82,6 +82,27 @@ Coord_Eau <- function(points, names_coord, carthagep, carthagec) {
     pmin(water_dist_line, water_dist_polyg)
   )
 
+  CarthageCperm <- CarthageC[CarthageC$Persistanc == "permanent"]
+  CarthagePperm <- CarthageP[CarthageP$Persistanc == "permanent"]
+
+  nearest_pp <- try(sf::st_nearest_feature(OccSL_L93, CarthagePperm))
+  water_dist_polyg_perm <- st_distance(OccSL_L93,
+    CarthagePperm[nearest_pp, ],
+    by_element = TRUE
+  )
+  OccSL_L93$water_dist_polyg_perm <- water_dist_polyg_perm
+
+  nearest_lp <- try(sf::st_nearest_feature(OccSL_L93, CarthageCperm))
+  water_dist_line_perm <- st_distance(OccSL_L93,
+    CarthageCperm[nearest_lp, ],
+    by_element = TRUE
+  )
+  OccSL_L93$water_dist_line_perm <- water_dist_line_perm
+
+  OccSL_L93$SpWDp <- with(
+    OccSL_L93,
+    pmin(water_dist_line_perm, water_dist_polyg_perm)
+  )
 
   ######################################################################
   #################### Write ###########################################
