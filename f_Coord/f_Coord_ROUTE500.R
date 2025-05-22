@@ -30,26 +30,26 @@ Coord_Route <- function(points, names_coord, bs, bm, bl, folder) {
   # fin variable test
   FOccSL <- points
   if (opt$mode == "predict") {
-    OccSL <- read.csv(paste0(points, ".csv")) %>%
+    OccSL <- read.csv(paste0(points, ".csv")) |>
       dplyr::select(c("X", "Y"))
 
     OccSL$FID <- c(1:nrow(OccSL))
-    OccSL <- OccSL %>%
+    OccSL <- OccSL |>
       st_as_sf(coords = c("X", "Y"), crs = 4326, remove = FALSE)
 
-    OccSL_L93 <- OccSL %>%
+    OccSL_L93 <- OccSL |>
       st_transform(2154)
     OccSL_L93$Nuit <- date_pred
 
     CoordH <- names_coord
   } else {
-    OccSL <- read.csv(paste0(points, ".csv")) %>%
+    OccSL <- read.csv(paste0(points, ".csv")) |>
       select(names_coord)
     OccSL$FID <- c(1:nrow(OccSL))
-    OccSL <- OccSL %>%
+    OccSL <- OccSL |>
       st_as_sf(coords = c("X", "Y"), crs = 4326, remove = FALSE)
 
-    OccSL_L93 <- OccSL %>%
+    OccSL_L93 <- OccSL |>
       st_transform(2154)
     CoordH <- names_coord
   }
@@ -88,17 +88,17 @@ Coord_Route <- function(points, names_coord, bs, bm, bl, folder) {
     # Buffer S
     ########
 
-    BufferS <- st_buffer(OccSL_L93, dist = BufferSmall) %>%
+    BufferS <- st_buffer(OccSL_L93, dist = BufferSmall) |>
       st_transform(st_crs(ROUTE))
 
     Sys.time()
-    BufferS$Route_count <- st_intersects(BufferS, ROUTEP) %>%
+    BufferS$Route_count <- st_intersects(BufferS, ROUTEP) |>
       lengths()
     Sys.time()
 
     # library(viridis)
-    # BufferS %>%
-    #   st_crop(xmin=161290, xmax=211290 , ymin=6046796 , ymax=7109796) %>% #zoom in some area
+    # BufferS |>
+    #   st_crop(xmin=161290, xmax=211290 , ymin=6046796 , ymax=7109796) |> #zoom in some area
     #   ggplot( aes(fill=Route_count)) +
     #   geom_sf() +
     #   scale_fill_gradientn(colours=rev(magma(6)))
@@ -120,17 +120,17 @@ Coord_Route <- function(points, names_coord, bs, bm, bl, folder) {
     # Buffer M
     ########
 
-    BufferM <- st_buffer(OccSL_L93, dist = BufferMedium) %>%
+    BufferM <- st_buffer(OccSL_L93, dist = BufferMedium) |>
       st_transform(st_crs(ROUTE))
 
     Sys.time()
-    BufferM$Route_count <- st_intersects(BufferM, ROUTEP) %>%
+    BufferM$Route_count <- st_intersects(BufferM, ROUTEP) |>
       lengths()
     Sys.time()
 
     # library(viridis)
-    # BufferM %>%
-    #   st_crop(xmin=161290, xmax=211290 , ymin=6046796 , ymax=7109796) %>% #zoom in some area
+    # BufferM |>
+    #   st_crop(xmin=161290, xmax=211290 , ymin=6046796 , ymax=7109796) |> #zoom in some area
     #   ggplot( aes(fill=Route_count)) +
     #   geom_sf() +
     #   scale_fill_gradientn(colours=rev(magma(6)))
@@ -153,17 +153,17 @@ Coord_Route <- function(points, names_coord, bs, bm, bl, folder) {
     # Buffer L
     ########
 
-    BufferL <- st_buffer(OccSL_L93, dist = BufferLarge) %>%
+    BufferL <- st_buffer(OccSL_L93, dist = BufferLarge) |>
       st_transform(st_crs(ROUTE))
 
     Sys.time()
-    BufferL$Route_count <- st_intersects(BufferL, ROUTEP) %>%
+    BufferL$Route_count <- st_intersects(BufferL, ROUTEP) |>
       lengths()
     Sys.time()
 
     # library(viridis)
-    # BufferL %>%
-    #   st_crop(xmin=161290, xmax=211290 , ymin=6046796 , ymax=7109796) %>% #zoom in some area
+    # BufferL |>
+    #   st_crop(xmin=161290, xmax=211290 , ymin=6046796 , ymax=7109796) |> #zoom in some area
     #   ggplot( aes(fill=Route_count)) +
     #   geom_sf() +
     #   scale_fill_gradientn(colours=rev(magma(6)))
@@ -196,11 +196,11 @@ Coord_Route <- function(points, names_coord, bs, bm, bl, folder) {
 
   print("FerS")
 
-  BufferS <- st_buffer(OccSL_L93, dist = BufferSmall) %>%
+  BufferS <- st_buffer(OccSL_L93, dist = BufferSmall) |>
     st_transform(st_crs(FER))
 
   Sys.time()
-  BufferS$Fer_count <- st_intersects(BufferS, FER) %>%
+  BufferS$Fer_count <- st_intersects(BufferS, FER) |>
     lengths()
   Sys.time()
 
@@ -223,17 +223,17 @@ Coord_Route <- function(points, names_coord, bs, bm, bl, folder) {
 
   print("FerM")
 
-  BufferM <- st_buffer(OccSL_L93, dist = BufferMedium) %>%
+  BufferM <- st_buffer(OccSL_L93, dist = BufferMedium) |>
     st_transform(st_crs(FER))
 
   Sys.time()
-  BufferM$Fer_count <- st_intersects(BufferM, FER) %>%
+  BufferM$Fer_count <- st_intersects(BufferM, FER) |>
     lengths()
   Sys.time()
 
   # library(viridis)
-  # BufferM %>%
-  #   st_crop(xmin=161290, xmax=211290 , ymin=6046796 , ymax=7109796) %>% #zoom in some area
+  # BufferM |>
+  #   st_crop(xmin=161290, xmax=211290 , ymin=6046796 , ymax=7109796) |> #zoom in some area
   #   ggplot( aes(fill=Fer_count)) +
   #   geom_sf() +
   #   scale_fill_gradientn(colours=rev(magma(6)))
@@ -256,17 +256,17 @@ Coord_Route <- function(points, names_coord, bs, bm, bl, folder) {
 
   print("FerL")
 
-  BufferL <- st_buffer(OccSL_L93, dist = BufferLarge) %>%
+  BufferL <- st_buffer(OccSL_L93, dist = BufferLarge) |>
     st_transform(st_crs(FER))
 
   Sys.time()
-  BufferL$Fer_count <- st_intersects(BufferL, FER) %>%
+  BufferL$Fer_count <- st_intersects(BufferL, FER) |>
     lengths()
   Sys.time()
 
   # library(viridis)
-  # BufferL %>%
-  #   st_crop(xmin=161290, xmax=211290 , ymin=6046796 , ymax=7109796) %>% #zoom in some area
+  # BufferL |>
+  #   st_crop(xmin=161290, xmax=211290 , ymin=6046796 , ymax=7109796) |> #zoom in some area
   #   ggplot( aes(fill=Fer_count)) +
   #   geom_sf() +
   #   scale_fill_gradientn(colours=rev(magma(6)))
@@ -290,7 +290,7 @@ Coord_Route <- function(points, names_coord, bs, bm, bl, folder) {
   ##########################################
 
   #
-  OccSL_WGS84 <- OccSL_L93 %>%
+  OccSL_WGS84 <- OccSL_L93 |>
     st_transform(4326) # back transform to WGS84
 
   OccSL_ARajouter <- subset(OccSL_L93Re, select = grepl("Sp", names(OccSL_L93Re)))
@@ -300,8 +300,8 @@ Coord_Route <- function(points, names_coord, bs, bm, bl, folder) {
     as.data.frame(OccSL_ARajouter)
   ))
 
-  Reseau <- Reseau %>%
-    st_drop_geometry() %>%
+  Reseau <- Reseau |>
+    st_drop_geometry() |>
     select(!geometry)
 
 
