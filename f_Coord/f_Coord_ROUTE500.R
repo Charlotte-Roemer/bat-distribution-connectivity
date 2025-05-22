@@ -65,6 +65,12 @@ Coord_Route <- function(points, names_coord, bs, bm, bl, folder) {
   ##########################################
   ##########################################
 
+  nearest_r <- try(sf::st_nearest_feature(OccSL_L93, ROUTE))
+  road_dist <- st_distance(OccSL_L93,
+    ROUTE[nearest_r, ],
+    by_element = TRUE
+  )
+
   # Write dictionary
   ClassP <- unique(ROUTE$VOCATION)
   ClassP <- ClassP[order(ClassP)]
@@ -72,8 +78,7 @@ Coord_Route <- function(points, names_coord, bs, bm, bl, folder) {
   fwrite(CPd, "ROUTE500_dictionary.csv", sep = ";")
 
   OccSL_L93Re <- OccSL_L93
-  for (h in 1:length(ClassP))
-  {
+  for (h in 1L:length(ClassP)) {
     ROUTEP <- ROUTE[ROUTE$VOCATION == ClassP[h], ]
     print(ClassP[h])
     print(names(OccSL_L93Re))
@@ -176,6 +181,7 @@ Coord_Route <- function(points, names_coord, bs, bm, bl, folder) {
     }
     names(OccSL_L93Re)[names(OccSL_L93Re) == "SpRo_L"] <- paste0("SpRo", h, "L")
   }
+  OccSL_L93Re$SpRo_dist <- road_dist
 
   ##########################################
   ##########################################
