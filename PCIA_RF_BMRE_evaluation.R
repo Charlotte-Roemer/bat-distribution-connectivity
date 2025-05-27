@@ -254,17 +254,6 @@ for (i in 1:length(ListSp))
 
   DataCPL3_unique$Nuit <- as.Date(DataCPL3_unique$Nuit)
 
-  write.csv(
-    DataCPL3_unique,
-    file.path(
-      Output,
-      paste0(
-        ListSp[i], "_datacplunique.txt"
-      )
-    )
-  )
-
-
   DataSp$Nuit <- as.Date(DataSp$Nuit)
   DataCPL3$Nuit <- as.Date(DataCPL3$Nuit)
   DataSpSL_w0_2 <- full_join(DataSp, DataCPL3_unique) # Adds the nights with absence
@@ -294,6 +283,23 @@ for (i in 1:length(ListSp))
   print(Sys.time())
 
   print("Absence data added")
+  # lets add the "gites" information
+
+  data_gites <- read.csv2(file_gites)
+
+  data_gites <- data_gites |>
+    dplyr::select(participation, Nuit, num_micro, indice_gite)
+
+  DataSaison <- left_join(DataSaison, DataGite)
+
+  DataSaison$indice_gite <- as.numeric(DataSaison$indice_gite)
+  DataSaison$gite <- 0L
+  # DataSaison$gite[is.na(test$indice_gite)]  <- 0
+  DataSaison$gite[DataSaison$indice_gite > 0.5] <- 1L
+
+  # let’s remove data close to a potential colony
+  DataSaison <- DataSaison[DataSaison$gite == 0L, ]
+
 
   # add date of year
   if (grepl("/", DataSaison$Nuit[1])) {
