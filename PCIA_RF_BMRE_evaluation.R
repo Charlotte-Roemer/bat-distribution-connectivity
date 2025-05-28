@@ -290,6 +290,8 @@ for (i in 1:length(ListSp))
   data_gites <- data_gites |>
     dplyr::select(participation, Nuit, num_micro, indice_gite)
 
+  data_gites$Nuit <- as.Date(data_gites$Nuit)
+
   DataSaison <- left_join(DataSaison, data_gites)
 
   DataSaison$indice_gite <- as.numeric(DataSaison$indice_gite)
