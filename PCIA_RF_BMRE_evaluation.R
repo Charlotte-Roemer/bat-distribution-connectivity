@@ -290,7 +290,7 @@ for (i in 1:length(ListSp))
   data_gites <- data_gites |>
     dplyr::select(participation, Nuit, num_micro, indice_gite)
 
-  DataSaison <- left_join(DataSaison, DataGite)
+  DataSaison <- left_join(DataSaison, data_gites)
 
   DataSaison$indice_gite <- as.numeric(DataSaison$indice_gite)
   DataSaison$gite <- 0L
@@ -298,7 +298,7 @@ for (i in 1:length(ListSp))
   DataSaison$gite[DataSaison$indice_gite > 0.5] <- 1L
 
   # let’s remove data close to a potential colony
-  DataSaison <- DataSaison[DataSaison$gite == 0L, ]
+  DataSaison <- DataSaison[DataSaison$gite != 0L, ]
 
 
   # add date of year
