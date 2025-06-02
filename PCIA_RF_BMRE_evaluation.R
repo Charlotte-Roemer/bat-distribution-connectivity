@@ -63,7 +63,7 @@ opt <- optparse::parse_args(opt_parser)
 # Sorting threshold (weighted, 0, 50, 90)
 ThresholdSort <- opt$threshold
 
-print(paste("Threshold :", ThresholdSort))
+cat(paste("Threshold :", ThresholdSort), fill = TRUE)
 
 # Species to model
 Sp <- opt$species # choose a species (e.g. "Pippip") or "all" or "paper"
@@ -186,7 +186,7 @@ CoordPS <- List_data_prepared[[1]] # environmental variables
 DataCPL3 <- List_data_prepared[[2]] # bat activity (without absence data)
 SelParSL <- List_data_prepared[[3]] # list of sampling sessions to know when to add absence data
 
-print("General dataset prepared")
+cat("General dataset prepared", fill = TRUE)
 
 # Identify the variable to predict as nb_contacts
 DataCPL3$nb_contacts <- subset(DataCPL3, select = args[10])[, 1]
@@ -222,7 +222,7 @@ if (!is.na(GroupSel)) {
   ListSp <- subset(ListSp, ListSp %in% SpSel$Esp)
 }
 
-if (Sp == "all" | Sp == "All") {
+if (Sp == "all" || Sp == "All") {
   ListSp <- ListSp
 } else if (Sp == "paper") {
   ListSp <- ListPaper
@@ -233,7 +233,7 @@ if (Sp == "all" | Sp == "All") {
 #### Prepare dataset for each species ####------------------------------------------------------
 
 print(ListSp)
-for (i in 1:length(ListSp))
+for (i in seq_along(ListSp))
 {
   DataSp <- subset(DataCPL3, DataCPL3$espece == ListSp[i]) # subset species
   # DataSp=subset(DataCPL3,DataCPL3$espece==Sp) # subset species
@@ -274,8 +274,9 @@ for (i in 1:length(ListSp))
 
 
   # Exclude sites outside France limits (square) :
-  DataSpSL_w0_2 <- subset(DataSpSL_w0_2, DataSpSL_w0_2$longitude < 10 & DataSpSL_w0_2$longitude > -6 &
-    DataSpSL_w0_2$latitude < 52 & DataSpSL_w0_2$latitude > 41)
+  DataSpSL_w0_2 <- subset(DataSpSL_w0_2, DataSpSL_w0_2$longitude < 10L &
+    DataSpSL_w0_2$longitude > -6L &
+    DataSpSL_w0_2$latitude < 52L & DataSpSL_w0_2$latitude > 41L)
 
   # Exclude data with obvious wrong date (<2010)
   DataSpSL_w0_2 <- DataSpSL_w0_2[which(DataSpSL_w0_2$Nuit > as.Date("2010-01-01")), ]
@@ -286,7 +287,7 @@ for (i in 1:length(ListSp))
 
   print(Sys.time())
 
-  print("Absence data added")
+  cat("Absence data added", fill = TRUE)
   # lets add the "gites" information
 
   data_gites <- read.csv2(file_gites)
@@ -308,8 +309,8 @@ for (i in 1:length(ListSp))
 
 
   # add date of year
-  if (grepl("/", DataSaison$Nuit[1])) {
-    Date1 <- as.Date(substr(DataSaison$Nuit, 1, 10),
+  if (grepl("/", DataSaison$Nuit[1L], fixed = TRUE)) {
+    Date1 <- as.Date(substr(DataSaison$Nuit, 1L, 10L),
       format = "%Y/%m/%Y"
     )
   } else {
@@ -317,8 +318,8 @@ for (i in 1:length(ListSp))
   }
 
   SpFDate <- yday(Date1)
-  DataSaison$SpCDate <- cos(SpFDate / 365 * 2 * pi) # to create a circular variable for date
-  DataSaison$SpSDate <- sin(SpFDate / 365 * 2 * pi) # to create a circular variable for date
+  DataSaison$SpCDate <- cos(SpFDate / 365L * 2L * pi) # to create a circular variable for date
+  DataSaison$SpSDate <- sin(SpFDate / 365L * 2L * pi) # to create a circular variable for date
 
   # If year effect must be accounted for
   if (YearEffect) {
@@ -343,10 +344,10 @@ for (i in 1:length(ListSp))
     st_sf(geom = st_sfc(st_point(c(median(coords$X), median(coords$Y)))))
   )
   EDF <- st_set_crs(EDF, st_crs(DataSaison_sf))
-  EDF <- st_distance(DataSaison_sf, EDF) / 1000 # calculate distance between the point and each of these 5 points
+  EDF <- st_distance(DataSaison_sf, EDF) / 1000L # calculate distance between the point and each of these 5 points
   EDF <- units::drop_units(EDF)
   EDF <- as.data.frame(EDF)
-  names(EDF) <- paste0("EDF", 1:5)
+  names(EDF) <- paste0("EDF", 1L:5L)
   DataSaison$SpEDF1 <- EDF$EDF1
   DataSaison$SpEDF2 <- EDF$EDF2
   DataSaison$SpEDF3 <- EDF$EDF3
@@ -365,10 +366,10 @@ for (i in 1:length(ListSp))
   # DataSaison <- DataSaison |>
   #   dplyr::select(!dplyr::ends_with("L"))
   #
-  testPred <- (substr(names(DataSaison), 1L, 2L) == "Sp")
+  testPred <- startsWith(names(DataSaison), "Sp")
   Prednames <- names(DataSaison)[testPred]
 
-  not_clc <- (substr(Prednames, 1L, 4L) != "SpHC")
+  not_clc <- startsWith(Prednames, "SpHC")
   Prednames <- Prednames[not_clc]
   Prednames[!(Prednames %in% variables_a_exclure)]
 
@@ -395,7 +396,7 @@ for (i in 1:length(ListSp))
     drop_na(all_of(Prednames)) |> # deletes rows without predictor (outdated GI table)
     drop_na(nb_contacts) # deletes rows without contacts (people did not upload their data)
 
-  if (opt$keep == TRUE) {
+  if (opt$keep) {
     last_year <- max(DataSaison$SpYear)
     DataTest <- DataSaison[DataSaison$Year == last_year, ]
     DataSaison <- DataSaison[DataSaison$Year != last_year, ]
@@ -419,21 +420,27 @@ for (i in 1:length(ListSp))
 
   moran <- check_moran(DataSaison, "nb_contacts")
 
-  print("Predictors identified")
+  cat("Predictors identified", fill = TRUE)
 
   # Statistics for paper
   print(colnames(DataSaison))
   Stat1 <- DataSaison |>
     group_by(latitude, longitude, nom) |>
     count()
-  print(paste0(
-    "N opportunistic sites = ", length(which(grepl("Z", Stat1$nom))),
-    " over a total of ", nrow(Stat1), " sites"
-  ))
-  print(paste0(
-    "N opportunistic nights = ", length(which(grepl("Z", DataSaison$nom))),
-    " over a total of ", nrow(DataSaison), " nights"
-  ))
+  cat(
+    paste0(
+      "N opportunistic sites = ", length(which(grepl("Z", Stat1$nom))),
+      " over a total of ", nrow(Stat1), " sites"
+    ),
+    fill = TRUE
+  )
+  cat(
+    paste0(
+      "N opportunistic nights = ", length(which(grepl("Z", DataSaison$nom))),
+      " over a total of ", nrow(DataSaison), " nights"
+    ),
+    fill = TRUE
+  )
 
   testNA <- apply(Predictors, MARGIN = 2, FUN = function(x) sum(is.na(x)))
   print(summary(testNA))
@@ -465,7 +472,7 @@ for (i in 1:length(ListSp))
       formula.Boruta <- getConfirmedFormula(ModRFTemp.Boruta)
       names.Boruta <- getSelectedAttributes(ModRFTemp.Boruta)
     }
-    print("Formula found")
+    cat("Formula found", fill = TRUE)
   } else {
     cat("no", fill = TRUE)
     formula.Boruta <- formula("nb_contacts ~.")
@@ -486,7 +493,9 @@ for (i in 1:length(ListSp))
     )
   ) # quezaco?
 
-  if (!file.exists(sfolds_source)) {
+  if (file.exists(sfolds_source)) {
+    sfolds <- readRDS(sfolds_source)
+  } else {
     DataSaison_sf <- st_as_sf(DataSaison,
       coords = c(x = "longitude", y = "latitude"),
       crs = 4326
@@ -504,8 +513,6 @@ for (i in 1:length(ListSp))
     print(END - START) # 1 to 1.4 hours
     # beep(2)
     saveRDS(sfolds, sfolds_source)
-  } else {
-    sfolds <- readRDS(sfolds_source)
   }
 
   DataSaison$sfold <- sfolds$clusters
@@ -520,7 +527,7 @@ for (i in 1:length(ListSp))
     savePredictions = "final"
   )
 
-  print("Cross-validation indices prepared")
+  cat("Cross-validation indices prepared", fill = TRUE)
 
   # EDF model
 
@@ -531,11 +538,11 @@ for (i in 1:length(ListSp))
     DataSaison
   )
 
-  print("Model done")
+  cat("Model done", fill = TRUE)
 
   #### Save ####----------------------------------------------------------------
 
-  if (DoBoruta == TRUE) {
+  if (DoBoruta) {
     suffix <- paste0("_Boruta_", "EDF", "_", ListSp[i])
   } else {
     suffix <- paste0("EDF", "_", ListSp[i])
