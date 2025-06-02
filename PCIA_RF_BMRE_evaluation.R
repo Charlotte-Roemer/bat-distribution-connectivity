@@ -48,6 +48,10 @@ option_list <- list(
   optparse::make_option(c("-d", "--date"),
     type = "character",
     help = "Necessary : pass date when script is run with $(date +%Y-%m-%d)"
+  ),
+  optparse::make_option(c("-k", "--keep"),
+    type = "logical", default = FALSE,
+    help = "keep last year data as testing dataset and run tests"
   )
 )
 # Parse options to opt object
@@ -391,6 +395,11 @@ for (i in 1:length(ListSp))
     drop_na(all_of(Prednames)) |> # deletes rows without predictor (outdated GI table)
     drop_na(nb_contacts) # deletes rows without contacts (people did not upload their data)
 
+  if (opt$keep == TRUE) {
+    last_year <- max(DataSaison$SpYear)
+    DataTest <- DataSaison[DataSaison$Year == last_year, ]
+    DataSaison <- DataSaison[DataSaison$Year != last_year, ]
+  }
   # select only one value per 500m square :
   # ... add code here
   # print("Keeping only one night per 500sq/15days")
@@ -532,14 +541,16 @@ for (i in 1:length(ListSp))
     suffix <- paste0("EDF", "_", ListSp[i])
   }
 
-  # write.csv(DataTest,
-  #   file.path(Output,
-  #     paste0(
-  #       ListSp[i], "_datatest.txt"
-  #     )
-  #   )
-  # )
-  #
+  write.csv(
+    DataTest,
+    file.path(
+      Output,
+      paste0(
+        ListSp[i], "_datatest.csv"
+      )
+    )
+  )
+
   write.csv(
     DataSaison,
     file.path(
