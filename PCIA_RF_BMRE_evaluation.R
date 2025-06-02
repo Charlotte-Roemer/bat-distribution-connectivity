@@ -395,6 +395,7 @@ for (i in seq_along(ListSp))
   DataSaison <- DataSaison |>
     drop_na(all_of(Prednames)) |> # deletes rows without predictor (outdated GI table)
     drop_na(nb_contacts) # deletes rows without contacts (people did not upload their data)
+  DataSaison$SpGite <- NULL
 
   if (opt$keep) {
     last_year <- max(DataSaison$SpYear)
