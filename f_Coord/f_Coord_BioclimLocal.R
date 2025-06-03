@@ -1,4 +1,4 @@
-Coord_BioclimLocal <- function(points, names_coord, layer_folder, layCorr) {
+Coord_BioclimLocal <- function(points, names_coord, layer_folder) {
   library(data.table)
   library(terra)
   library(tidyverse)
@@ -29,8 +29,6 @@ Coord_BioclimLocal <- function(points, names_coord, layer_folder, layCorr) {
   CoordH <- names_coord
   asc_files <- list.files(layer_folder, pattern = ".tif$", full.names = TRUE)
 
-  # Load Bioclim values extended at sea
-  GrossBioclim <- read_sf(layCorr)
 
   print("extracting bioclim")
   # Extract all 19 Bioclim values for each grid point
@@ -66,47 +64,7 @@ Coord_BioclimLocal <- function(points, names_coord, layer_folder, layCorr) {
 
   print(nrow(OccSL_NA))
 
-  # For points which had no correspondance with Bioblim, use the layer Bioclim Gross (extension at sea)
-  if (nrow(OccSL_NA) > 0) {
-    GrossBioclim <- GrossBioclim %>%
-      st_transform(st_crs(OccSL_NA))
-
-    # Extract GrossBioclim variables
-    print("extracting bioclim for points at sea")
-
-    ## print(names(OccSL_NA))
-
-    OccSL_NA_pour_inter <- OccSL_NA %>%
-      select(-starts_with("SpBio"))
-
-    OccSL_Add <- st_intersection(OccSL_NA_pour_inter, GrossBioclim)
-    names(OccSL_Add) <- gsub("bio", "SpBioC", names(OccSL_Add))
-
-    # Paste coordinates and Bioclim Gross values
-    OccSL_NAdd <- OccSL_Add %>%
-      select(!ID) %>%
-      as.data.frame()
-
-    names(OccSL_NAdd)[names(OccSL_NAdd) == "num.site"] <- "num site"
-
-    print("drop geometry a")
-    OccSL_A <- sf::st_drop_geometry(OccSL_A)
-    ## OccSL_A <- OccSL_A %>%
-    ##     select(-geometry) %>%
-    ##     as.data.frame()
-
-    print("drop geometry nadd")
-
-    OccSL_NAdd <- sf::st_drop_geometry(OccSL_NAdd)
-    OccSL_NAdd <- OccSL_NAdd %>%
-      select(-geometry) %>%
-      as.data.frame()
-
-
-    OccSL_All <- rbind(OccSL_A, OccSL_NAdd)
-  } else {
-    OccSL_All <- as.data.frame(OccSL_A)
-  }
+  OccSL_All <- as.data.frame(OccSL_A)
 
   OccSL_All <- OccSL_All %>%
     select(!c(FID))

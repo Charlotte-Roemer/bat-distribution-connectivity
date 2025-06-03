@@ -260,8 +260,7 @@ print("Bioclim")
 Coord_BioclimLocal(
   points = FCoord,
   names_coord = Coord_Headers,
-  layer_folder = bioclim_folder,
-  layCorr = layer_bioclim_gross
+  layer_folder = bioclim_folder
 )
 
 
