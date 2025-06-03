@@ -2,8 +2,8 @@
 
 #SBATCH --job-name=grow_forests
 #SBATCH --mem=150G
-#SBATCH --partition=type_1
-#SBATCH --time=8-00:00:00
+#SBATCH --partition=type_2
+#SBATCH --time=4-12:00:00
 #SBATCH --cpus-per-task=10
 
 module load userspace/tr17.10
@@ -18,4 +18,4 @@ module load gdal
 module load udunits
 module load R/4.3.1
 
-Rscript PCIA_RF_BMRE_evaluation.R -s "Nyclei" -t "50" -d $(date +%Y-%m-%d)
+Rscript PCIA_RF_BMRE_evaluation.R -s "Barbar" -t "50" -d $(date +%Y-%m-%d) -r "france_met"
