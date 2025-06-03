@@ -38,8 +38,8 @@ Coord_BioclimLocal <- function(points, names_coord, layer_folder, layCorr) {
     SpBioci <- terra::extract(rasti, OccSL)
     OccSL$SpBioci <- SpBioci[, 2L]
 
-    NumBioci <- data.table::tstrsplit(basename(asc_files[i]), split = "_")[[2]]
-    NumBioci <- gsub("bio", "", NumBioci)
+    NumBioci <- data.table::tstrsplit(basename(asc_files[i]), split = "_")[[4]]
+    # NumBioci <- gsub("bio", "", NumBioci)
     print(paste0("extracting : SpBioC", NumBioci))
 
     names(OccSL)[ncol(OccSL)] <- paste0("SpBioC", NumBioci)
