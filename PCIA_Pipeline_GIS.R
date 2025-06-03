@@ -255,13 +255,13 @@ for (i in 1:length(listfun))
 }
 
 ## Bioclim ###
-print("Bioclim")
-Coord_BioclimLocal(
-  points = FCoord,
-  names_coord = Coord_Headers,
-  layer_folder = bioclim_folder,
-  layCorr = layer_bioclim_gross
-)
+# print("Bioclim")
+# Coord_BioclimLocal(
+#   points = FCoord,
+#   names_coord = Coord_Headers,
+#   layer_folder = bioclim_folder,
+#   layCorr = layer_bioclim_gross
+# )
 
 
 ###  ALAN ###
@@ -320,12 +320,12 @@ Coord_BioclimLocal(
 #
 ###  CARTHAGE (eau) ####
 # print("Water")
-Coord_Carthage(
+Coord_Eau(
   points = FCoord,
   names_coord = Coord_Headers,
-  bs = BS,
-  bm = BM,
-  bl = BL,
+  # bs = BS,
+  # bm = BM,
+  # bl = BL,
   carthagep = Layer_Carthage_P,
   carthagec = Layer_Carthage_C
 )
@@ -357,14 +357,14 @@ Coord_Carthage(
 
 ### ROADS and TRAINS ####
 # print("Roads and trains")
-Coord_Route(
-  points = FCoord,
-  names_coord = Coord_Headers,
-  bs = BS,
-  bm = BM,
-  bl = BL,
-  folder = folder_route
-)
+# Coord_Route(
+#   points = FCoord,
+#   names_coord = Coord_Headers,
+#   bs = BS,
+#   bm = BM,
+#   bl = BL,
+#   folder = folder_route
+# )
 #
 # print("Meteo")
 # Coord_Meteo(
