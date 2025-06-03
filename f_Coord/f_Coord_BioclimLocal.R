@@ -15,7 +15,9 @@ Coord_BioclimLocal <- function(points, names_coord, layer_folder, layCorr) {
   FOccSL <- points
 
   # Load grid points
-  OccSL <- read_delim(paste0(points, ".csv")) %>%
+  print(paste("names_coord =", names_coord))
+
+  OccSL <- read.csv(paste0(points, ".csv")) %>%
     select(names_coord)
 
   OccSL$FID <- c(1L:nrow(OccSL))
