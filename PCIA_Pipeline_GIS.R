@@ -321,15 +321,15 @@ for (i in 1:length(listfun))
 ###  CARTHAGE (eau) ####
 # print("Water")
 
-# Coord_Eau(
-#   points = FCoord,
-#   names_coord = Coord_Headers,
-#   # bs = BS,
-#   # bm = BM,
-#   # bl = BL,
-#   carthagep = Layer_Carthage_P,
-#   carthagec = Layer_Carthage_C
-# )
+Coord_Eau(
+  points = FCoord,
+  names_coord = Coord_Headers,
+  # bs = BS,
+  # bm = BM,
+  # bl = BL,
+  carthagep = Layer_Carthage_P,
+  carthagec = Layer_Carthage_C
+)
 #
 #
 ## CLC Corine Land Cover (Habitat) ####
@@ -358,14 +358,14 @@ for (i in 1:length(listfun))
 
 ### ROADS and TRAINS ####
 # print("Roads and trains")
-Coord_Route(
-  points = FCoord,
-  names_coord = Coord_Headers,
-  bs = BS,
-  bm = BM,
-  bl = BL,
-  folder = folder_route
-)
+# Coord_Route(
+#   points = FCoord,
+#   names_coord = Coord_Headers,
+#   bs = BS,
+#   bm = BM,
+#   bl = BL,
+#   folder = folder_route
+# )
 #
 # print("Meteo")
 # Coord_Meteo(
