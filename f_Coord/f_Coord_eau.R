@@ -124,7 +124,7 @@ Coord_Eau <- function(points, names_coord, carthagep, carthagec) {
     st_drop_geometry() |>
     select(!geometry)
 
-  NewName <- paste0(FOccSL, "_Carthage.csv")
+  NewName <- paste0(points, "_Carthage.csv")
 
   fwrite(Carthage, NewName)
 }
