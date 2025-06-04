@@ -82,8 +82,8 @@ Coord_Eau <- function(points, names_coord, carthagep, carthagec) {
     pmin(water_dist_line, water_dist_polyg)
   )
 
-  CarthageCperm <- CarthageC[CarthageC$Persistanc == "permanent"]
-  CarthagePperm <- CarthageP[CarthageP$Persistanc == "permanent"]
+  CarthageCperm <- CarthageC[CarthageC$Persistanc == "permanent", ]
+  CarthagePperm <- CarthageP[CarthageP$Persistanc == "permanent", ]
 
   nearest_pp <- try(sf::st_nearest_feature(OccSL_L93, CarthagePperm))
   water_dist_polyg_perm <- st_distance(OccSL_L93,
