@@ -67,7 +67,7 @@ Coord_BioclimLocal <- function(points, names_coord, layer_folder) {
   OccSL_All <- as.data.frame(OccSL_A)
 
   OccSL_All <- OccSL_All %>%
-    select(!c(FID))
+    dplyr::select(!c(FID, geometry))
 
   colnames(OccSL_All)[colnames(OccSL_All) == "latitude"] <- "Y"
   colnames(OccSL_All)[colnames(OccSL_All) == "longitude"] <- "X"
