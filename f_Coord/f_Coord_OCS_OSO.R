@@ -32,7 +32,8 @@ Coord_OCS_OSO <- function(points, names_coord, bs, bm, layer) {
 
     CoordH <- names_coord
   } else {
-    OccSL <- read.csv(paste0(points, ".csv"))
+    OccSL <- read.csv(paste0(points, ".csv")) |>
+      dplyr::select(c("X", "Y", "Nuit"))
     OccSL$FID <- c(1:nrow(OccSL))
     OccSL <- OccSL %>%
       sf::st_as_sf(coords = c("X", "Y"), crs = 4326, remove = FALSE)
