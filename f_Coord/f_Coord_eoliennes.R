@@ -11,17 +11,17 @@ library(tidyverse)
 # layer1 = Layer_eoliennes
 
 
-##########INPUTS################
-#layers : made by Charlotte ROEMER
+########## INPUTS################
+# layers : made by Charlotte ROEMER
 # points = the name of csv, with its path -> randomized (RandXXX) or non-randomized (SysSampleXXX) sampling points OR participation points (CoordWGS84)
 # bs,bm,bl = buffers in meters
 
 "extraction of data"
 
-Coord_eol <- function(points, names_coord, bs, bm, bl, layer){
+Coord_eol <- function(points, names_coord, bs, bm, bl, layer) {
   print("a")
   FOccSL <- points # grid points
-  OccSL = read_delim(paste0(FOccSL, ".csv")) %>%
+  OccSL <- read_delim(paste0(FOccSL, ".csv")) %>%
     select(names_coord)
   OccSL$FID <- c(1:nrow(OccSL))
 
@@ -47,7 +47,7 @@ Coord_eol <- function(points, names_coord, bs, bm, bl, layer){
   ##########################################
 
   ########
-  #Buffer S
+  # Buffer S
   ########
 
   print("c")
@@ -61,10 +61,10 @@ Coord_eol <- function(points, names_coord, bs, bm, bl, layer){
 
   SpEol <- BufferS
 
-  if (length(BufferS$pt_count) > 0){
+  if (length(BufferS$pt_count) > 0) {
     PC_50 <- aggregate(SpEol$pt_count, by = list(SpEol$FID), FUN = sum)
     names(PC_50)[ncol(PC_50)] <- "SpRo_S"
-    OccSL_Re <- merge(OccSL,PC_50, by.x = "FID", by.y = "Group.1", all.x = ,TRUE)
+    OccSL_Re <- merge(OccSL, PC_50, by.x = "FID", by.y = "Group.1", all.x = , TRUE)
     OccSL_Re$SpRo_S[is.na(OccSL_Re$SpRo_S)] <- 0
   } else {
     OccSL_Re <- OccSL
@@ -72,7 +72,7 @@ Coord_eol <- function(points, names_coord, bs, bm, bl, layer){
   }
 
   ########
-  #Buffer M
+  # Buffer M
   ########
 
   print("d")
@@ -92,19 +92,18 @@ Coord_eol <- function(points, names_coord, bs, bm, bl, layer){
 
   SpEol <- BufferM
 
-  if (length(BufferM$pt_count) > 0){
+  if (length(BufferM$pt_count) > 0) {
     Sys.time()
     PC_50 <- aggregate(SpEol$pt_count, by = list(SpEol$FID), FUN = sum)
     names(PC_50)[ncol(PC_50)] <- "SpRo_M"
-    OccSL_Re=merge(OccSL_Re,PC_50, by.x = "FID", by.y = "Group.1", all.x = TRUE)
+    OccSL_Re <- merge(OccSL_Re, PC_50, by.x = "FID", by.y = "Group.1", all.x = TRUE)
     OccSL_Re$SpRo_M[is.na(OccSL_Re$SpRo_M)] <- 0
-
   } else {
     OccSL_Re$SpRo_M <- 0
   }
 
   ########
-  #Buffer L
+  # Buffer L
   ########
 
   print("e")
@@ -121,14 +120,13 @@ Coord_eol <- function(points, names_coord, bs, bm, bl, layer){
   #   geom_sf() +
   #   scale_fill_gradientn(colours=rev(magma(6)))
 
-  SpEol=BufferL
+  SpEol <- BufferL
 
-  if (length(BufferL$pt_count) > 0){
+  if (length(BufferL$pt_count) > 0) {
     PC_50 <- aggregate(SpEol$pt_count, by = list(SpEol$FID), FUN = sum)
     names(PC_50)[ncol(PC_50)] <- "SpRo_L"
-    OccSL_Re <- merge(OccSL_Re,PC_50, by.x = "FID", by.y = "Group.1", all.x=TRUE)
+    OccSL_Re <- merge(OccSL_Re, PC_50, by.x = "FID", by.y = "Group.1", all.x = TRUE)
     OccSL_Re$SpRo_L[is.na(OccSL_Re$SpRo_L)] <- 0
-
   } else {
     OccSL_Re$SpRo_L <- 0
   }
@@ -150,24 +148,28 @@ Coord_eol <- function(points, names_coord, bs, bm, bl, layer){
     st_transform(4326) # back transform to WGS84
 
   OccSL_ARajouter <- subset(OccSL_Re_WGS84,
-                            select = grepl("Sp",
-                                           names(OccSL_Re_WGS84)))
+    select = grepl(
+      "Sp",
+      names(OccSL_Re_WGS84)
+    )
+  )
 
-  Reseau <- data.frame(cbind(st_coordinates(OccSL_WGS84),
-                             as.data.frame(OccSL_ARajouter)))
+  Reseau <- data.frame(cbind(
+    st_coordinates(OccSL_WGS84),
+    as.data.frame(OccSL_ARajouter)
+  ))
 
-                               
+
   Reseau <- Reseau %>%
-      select(-geometry) 
+    dplyr::select(!c(FID, geometry))
 
   NewName <- paste0(FOccSL, "_Reseau.csv")
 
-  fwrite(Reseau,NewName)
+  fwrite(Reseau, NewName)
 
-  #coordinates(Reseau) <- CoordH
+  # coordinates(Reseau) <- CoordH
 
-  #SelCol=sample(names(OccSL_ARajouter),1)
-  #spplot(Reseau,zcol=SelCol,main=SelCol)
-  #class(Reseau)
-
+  # SelCol=sample(names(OccSL_ARajouter),1)
+  # spplot(Reseau,zcol=SelCol,main=SelCol)
+  # class(Reseau)
 }
