@@ -530,25 +530,6 @@ for (i in seq_along(ListSp))
 
   cat("Cross-validation indices prepared", fill = TRUE)
 
-  # EDF model
-
-  set.seed(123)
-  EDFmod <- fitvalpred_rf(
-    names.Boruta,
-    sctrl,
-    DataSaison
-  )
-
-  cat("Model done", fill = TRUE)
-
-  #### Save ####----------------------------------------------------------------
-
-  if (DoBoruta) {
-    suffix <- paste0("_Boruta_", "EDF", "_", ListSp[i])
-  } else {
-    suffix <- paste0("EDF", "_", ListSp[i])
-  }
-
   write.csv(
     DataTest,
     file.path(
@@ -568,6 +549,24 @@ for (i in seq_along(ListSp))
       )
     )
   )
+  # EDF model
+
+  set.seed(123)
+  EDFmod <- fitvalpred_rf(
+    names.Boruta,
+    sctrl,
+    DataSaison
+  )
+
+  cat("Model done", fill = TRUE)
+
+  #### Save ####----------------------------------------------------------------
+
+  if (DoBoruta) {
+    suffix <- paste0("_Boruta_", "EDF", "_", ListSp[i])
+  } else {
+    suffix <- paste0("EDF", "_", ListSp[i])
+  }
 
 
   write.csv(
