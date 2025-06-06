@@ -545,7 +545,7 @@ for (i in seq_along(ListSp))
     file.path(
       Output,
       paste0(
-        ListSp[i], "_datatrain.txt"
+        ListSp[i], "_datatrain.csv"
       )
     )
   )
