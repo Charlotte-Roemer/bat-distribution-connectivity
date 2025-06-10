@@ -66,13 +66,13 @@ prepare_data <- function(args, fpar, fsl) {
   cat("Merging Site locations and participations", fill = TRUE)
   sel_par_sl <- merge(site_loc, sel_par, by.x = c("site", "nom"), by.y = c("site", "point"))
 
-  # TEST
-  write.csv(sel_par_sl, file.path(Output,
-       paste0(
-         "test_dat", "_selparsl.txt"
-       )
-     )
-)
+  #  TEST
+  write.csv(sel_par_sl, file.path(
+    Output,
+    paste0(
+      "test_dat", "_selparsl.txt"
+    )
+  ))
   cat("Merge done", fill = TRUE)
   coord_par <- aggregate(sel_par_sl$participation,
     by = c(
@@ -95,12 +95,12 @@ prepare_data <- function(args, fpar, fsl) {
     by = c("longitude", "latitude", "Nuit")
   )
   # TEST
-  write.csv(coord_ps, file.path(Output,
-       paste0(
-         "test_dat", "_coordps.txt"
-       )
-     )
-)
+  write.csv(coord_ps, file.path(
+    Output,
+    paste0(
+      "test_dat", "_coordps.txt"
+    )
+  ))
   cat("Merged", fill = TRUE)
   coord_ps[is.na(coord_ps)] <- 0
   testPar <- grepl(args[6L], names(coord_ps))
@@ -111,12 +111,12 @@ prepare_data <- function(args, fpar, fsl) {
 
   # TEST
 
-  write.csv(numPar, file.path(Output,
-       paste0(
-         "test_dat", "_numpar.txt"
-       )
-     )
-)
+  write.csv(numPar, file.path(
+    Output,
+    paste0(
+      "test_dat", "_numpar.txt"
+    )
+  ))
   coord_ps$participation <- as.data.frame(coord_ps)[, numPar[1L]]
 
   cat("Done... ready to return data")
@@ -125,4 +125,25 @@ prepare_data <- function(args, fpar, fsl) {
     data_cpl3, # bat activity (without absence data)
     sel_par_sl # list of sampling sessions to know when to add absence data
   )
+}
+
+#------------------------------------------------------------------------------#
+#                     Function to classify activity                            #
+#------------------------------------------------------------------------------#
+
+
+def_classes <- function(data) {
+  datano0 <- data[data$nb_contacts > 0, ]
+  quant <- quantile(
+    x = unlist(datano0$nb_contacts),
+    c(0.25, 0.75, 0.98),
+    na.rm = TRUE
+  )
+  data$acti_class[data$nb_contacts <= quant[1]] <- "Faible"
+  data$acti_class[data$nb_contacts == 0] <- "NoAct"
+  data$acti_class[data$nb_contacts > quant[1] & data$nb_contacts <= quant[2]] <- "Moyen"
+  data$acti_class[data$nb_contacts > quant[2] & data$nb_contacts <= quant[3]] <- "Fort"
+  data$acti_class[data$nb_contacts > quant[3]] <- "TresFort"
+  data$acti_class <- factor(data$acti_class, levels = c("NoAct", "Faible", "Moyen", "Fort", "TresFort"))
+  data$acti_class
 }

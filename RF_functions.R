@@ -130,6 +130,130 @@ fitvalpred_rf <- function(covariates,
   )
 }
 
+#------------------------------------------------------------------------------#
+#             Function to fit case study models   (classification)             #
+#------------------------------------------------------------------------------#
+
+
+fitvalpred_rf_cat <- function(covariates,
+                              spatial_ctrl,
+                              traindf) {
+  # # 1. Tune (find the best mtry)
+  print("tuning model")
+  mtrys <- c(17, 75, 100) # removed 200
+  tune_ctrl <- caret::trainControl(method = "oob")
+  cl <- parallel::makeCluster(10)
+  doParallel::registerDoParallel(cl)
+  ntree <- c(800, 1500) # (150, 500, 1500, 6000)
+  print("starting RF tuning")
+  params <- list()
+  R2 <- list()
+  ntrees <- list()
+  A <- Sys.time()
+
+  print("variable names :")
+  print(names.Boruta)
+
+  print("variable names :")
+  print(colnames(traindf))
+
+  for (tree in ntree) {
+    for (mtry in mtrys) {
+      tune_mod <- caret::train(
+        x = as.data.frame(traindf)[, names.Boruta],
+        y = as.data.frame(traindf)[, "acti_class"],
+        method = "rf",
+        importance = TRUE,
+        trControl = tune_ctrl,
+        ntree = tree,
+        tuneGrid = data.frame(mtry = mtry)
+      )
+      R2 <- append(R2, tune_mod$results$Rsquared)
+      params <- append(params, tune_mod$results$mtry)
+      ntrees <- append(ntrees, tree)
+    }
+  }
+
+  print("model tuned")
+  parallel::stopCluster(cl)
+  B <- Sys.time()
+  print(B - A)
+
+  results <- data.frame(
+    R2 = unlist(R2),
+    mtry = as.factor(unlist(params)),
+    ntrees = as.factor(unlist(ntrees))
+  )
+
+  best_mtry <- results[results$R2 == max(results$R2), ]$mtry
+  best_mtry <- as.numeric(as.character((best_mtry)))
+  cat("Best tuning mtry", best_mtry, fill = TRUE)
+
+  best_ntrees <- results[results$R2 == max(results$R2), ]$ntrees
+  best_ntrees <- as.numeric(as.character((best_ntrees)))
+  cat("Best tuning ntree", best_ntrees, fill = TRUE)
+
+  cat("Best tuning r2", max(results$R2), fill = TRUE)
+  results <- results %>%
+    dplyr::arrange(ntrees)
+
+  # best_params_graph <- ggplot2::ggplot(
+  #   data = results,
+  #   aes(x = ntrees, y = mtry, fill = R2)
+  # ) +
+  #   geom_tile() +
+  #   coord_equal() +
+  #   scale_fill_viridis_c()
+  #
+  # 2. # build model and calculate RMSE and R² using the kNNDM cross-validation method
+  spatial_grid <- data.frame(mtry = best_mtry)
+  # spatial_grid <- data.frame(mtry = round(length(covariates)*2/3))
+  print("building model")
+  A <- Sys.time()
+  cl <- parallel::makeCluster(10)
+  doParallel::registerDoParallel(cl)
+
+  spatial_mod <- caret::train(
+    x = as.data.frame(traindf)[, covariates], # train model
+    y = as.data.frame(traindf)[, "acti_class"],
+    method = "rf",
+    importance = TRUE,
+    trControl = spatial_ctrl,
+    ntree = best_ntrees,
+    tuneGrid = spatial_grid
+  )
+
+  B <- Sys.time()
+  print(B - A)
+  print("model built, calculating RMSE and R²")
+  parallel::stopCluster(cl)
+  spatial_stats <- global_validation(spatial_mod)[c("Rsquared")]
+  names(spatial_stats) <- paste0("kNNDM_", names(spatial_stats))
+
+  # 3. Surface predictions
+  # preds <- predict(rstack, spatial_mod, na.rm=TRUE)
+
+  # 4. Variable importance
+  impfeat <- randomForest::importance(spatial_mod$finalModel, type = 2)
+  impfeat <- sum(impfeat[row.names(impfeat) %in% covariates, 1]) / sum(impfeat[, 1]) * 100
+  names(impfeat) <- "impfeat"
+
+  # Tidy and return results
+  tabres <- as.data.frame(t(c( # random_stats,
+    spatial_stats,
+    # AOA,
+    impfeat
+  )))
+  # names(preds) <- c("prediction")
+  list(
+    tab = tabres,
+    # preds = preds,
+    ## tunemod = tune_mod,
+    spatmod = spatial_mod,
+    graphmod = results
+  )
+}
+
 
 #------------------------------------------------------------------------------#
 #       Function to calculate Moran’s I for a variable on a dataset            #
