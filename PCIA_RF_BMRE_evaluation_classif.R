@@ -506,27 +506,23 @@ for (i in seq_along(ListSp))
     )
   ) # quezaco?
 
-  if (file.exists(sfolds_source)) {
-    sfolds <- readRDS(sfolds_source)
-  } else {
-    DataSaison_sf <- st_as_sf(DataSaison,
-      coords = c(x = "longitude", y = "latitude"),
-      crs = 4326
-    ) |>
-      st_transform(2154)
-    aoi <- sf::read_sf(
-      dsn = args[4],
-      layer = opt$region
-    ) |>
-      st_transform(2154)
-    set.seed(123)
-    START <- Sys.time()
-    sfolds <- knndm(DataSaison_sf, aoi, k = 10, maxp = 0.5) # k = number of folds
-    END <- Sys.time()
-    print(END - START) # 1 to 1.4 hours
-    # beep(2)
-    saveRDS(sfolds, sfolds_source)
-  }
+  DataSaison_sf <- st_as_sf(DataSaison,
+    coords = c(x = "longitude", y = "latitude"),
+    crs = 4326
+  ) |>
+    st_transform(2154)
+  aoi <- sf::read_sf(
+    dsn = args[4],
+    layer = opt$region
+  ) |>
+    st_transform(2154)
+  set.seed(123)
+  START <- Sys.time()
+  sfolds <- knndm(DataSaison_sf, aoi, k = 10, maxp = 0.5) # k = number of folds
+  END <- Sys.time()
+  print(END - START) # 1 to 1.4 hours
+  # beep(2)
+  saveRDS(sfolds, sfolds_source)
 
   DataSaison$sfold <- sfolds$clusters
   sindx <- CreateSpacetimeFolds(DataSaison,
