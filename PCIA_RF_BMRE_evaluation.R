@@ -293,7 +293,7 @@ for (i in seq_along(ListSp))
 
   DataSpSL_w0_2$Nuit <- as.Date(DataSpSL_w0_2$Nuit)
   CoordPS$Nuit <- as.Date(CoordPS$Nuit)
-  DataSaison <- inner_join(DataSpSL_w0_2, CoordPS, by = c("longitute", "latitude", "Nuit", "num_micro")) # adds environmental variables to activity data
+  DataSaison <- inner_join(DataSpSL_w0_2, CoordPS, by = c("longitute", "latitude", "Nuit")) # adds environmental variables to activity data
 
   print(Sys.time())
 
