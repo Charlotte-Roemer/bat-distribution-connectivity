@@ -523,6 +523,7 @@ for (i in seq_along(ListSp))
   print(END - START) # 1 to 1.4 hours
   # beep(2)
   saveRDS(sfolds, sfolds_source)
+  print("sfolds written")
 
   DataSaison$sfold <- sfolds$clusters
   sindx <- CreateSpacetimeFolds(DataSaison,
