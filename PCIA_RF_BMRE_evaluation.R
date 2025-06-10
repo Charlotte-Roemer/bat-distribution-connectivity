@@ -186,6 +186,8 @@ CoordPS <- List_data_prepared[[1]] # environmental variables
 DataCPL3 <- List_data_prepared[[2]] # bat activity (without absence data)
 SelParSL <- List_data_prepared[[3]] # list of sampling sessions to know when to add absence data
 
+# remove na (if no better solution has been found)
+CoordPS <- na.omit(CoordPS)
 cat("General dataset prepared", fill = TRUE)
 
 # Identify the variable to predict as nb_contacts
