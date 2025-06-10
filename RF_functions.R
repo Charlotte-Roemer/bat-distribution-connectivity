@@ -24,6 +24,12 @@ fitvalpred_rf <- function(covariates,
   ntrees <- list()
   A <- Sys.time()
 
+  print("variable names :")
+  print(names.Boruta)
+
+  print("variable names :")
+  print(colnames(traindf))
+
   for (tree in ntree) {
     for (mtry in mtrys) {
       tune_mod <- caret::train(
@@ -137,7 +143,6 @@ check_moran <- function(in_data, tested_variable) {
   print(head(in_data[, ..tested_variable]))
   # moran won’t work with no in_data in tested variable
   # in_data <- subset(in_data, !is.na(in_data[, ..tested_variable]))
-
 
 
   print(paste("Variable testée :", tested_variable))
