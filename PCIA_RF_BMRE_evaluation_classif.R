@@ -431,7 +431,7 @@ for (i in seq_along(ListSp))
 
   # DataSaison <- DataSaison[DataSaison$nb_contacts <= quant, ]
 
-  moran <- check_moran(DataSaison, "nb_contacts")
+  # moran <- check_moran(DataSaison, "nb_contacts")
 
   cat("Predictors identified", fill = TRUE)
 
@@ -602,8 +602,8 @@ for (i in seq_along(ListSp))
 
   write(ListSp[1L], file.path(Output, paste0(suffix, ".txt")))
   write("----", file.path(Output, paste0(suffix, ".txt")), append = TRUE)
-  write("Moran :", file.path(Output, paste0(suffix, ".txt")), append = TRUE)
-  write(moran, file.path(Output, paste0(suffix, ".txt")), append = TRUE)
+  # write("Moran :", file.path(Output, paste0(suffix, ".txt")), append = TRUE)
+  # write(moran, file.path(Output, paste0(suffix, ".txt")), append = TRUE)
   write("EDF", file.path(Output, paste0(suffix, ".txt")), append = TRUE)
   edf <- print(EDFmod$spatmod)
   write(edf, file.path(Output, paste0(suffix, ".txt")), append = TRUE)
