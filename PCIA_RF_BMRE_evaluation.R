@@ -281,18 +281,19 @@ for (i in seq_along(ListSp))
   # Exclude data with obvious wrong date (<2010)
   DataSpSL_w0_2 <- DataSpSL_w0_2[which(DataSpSL_w0_2$Nuit > as.Date("2010-01-01")), ]
 
-  write.csv(
-    DataSpSL_w0_2,
-    file.path(
-      Output,
-      paste0(
-        "ListSp[i]", "_dataspslw0.csv"
-      )
-    )
-  )
+  # write.csv(
+  #   DataSpSL_w0_2,
+  #   file.path(
+  #     Output,
+  #     paste0(
+  #       "ListSp[i]", "_dataspslw0.csv"
+  #     )
+  #   )
+  # )
+
   DataSpSL_w0_2$Nuit <- as.Date(DataSpSL_w0_2$Nuit)
   CoordPS$Nuit <- as.Date(CoordPS$Nuit)
-  DataSaison <- inner_join(DataSpSL_w0_2, CoordPS) # adds environmental variables to activity data
+  DataSaison <- inner_join(DataSpSL_w0_2, CoordPS, by = c("longitute", "latitude", "Nuit", "num_micro")) # adds environmental variables to activity data
 
   print(Sys.time())
 
