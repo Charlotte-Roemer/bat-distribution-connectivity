@@ -505,7 +505,15 @@ for (i in seq_along(ListSp))
       "_temp_sfolds.rds"
     )
   ) # quezaco?
-
+  write.csv(
+    DataSaison,
+    file.path(
+      Output,
+      paste0(
+        ListSp[i], "_datatrainpreknndm.csv"
+      )
+    )
+  )
   print("Prep data saison as sf object :")
   DataSaison_sf <- st_as_sf(DataSaison,
     coords = c(x = "longitude", y = "latitude"),
@@ -520,6 +528,7 @@ for (i in seq_along(ListSp))
   ) |>
     st_transform(2154)
   set.seed(123)
+
 
   START <- Sys.time()
   print("Creating folds :")
