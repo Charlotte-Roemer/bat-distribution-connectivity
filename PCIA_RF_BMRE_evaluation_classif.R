@@ -318,9 +318,13 @@ for (i in seq_along(ListSp))
   DataSaison$gite <- 0L
   # DataSaison$gite[is.na(test$indice_gite)]  <- 0
   DataSaison$gite[DataSaison$indice_gite > 0.5] <- 1L
+  print("lignes datasaison apres gite :")
+  print(nrow(DataSaison))
 
   # let’s remove data close to a potential colony
   DataSaison <- DataSaison[DataSaison$gite != 0L, ]
+  print("lignes datasaison apres suppression gite :")
+  print(nrow(DataSaison))
 
 
   # add date of year
@@ -374,6 +378,9 @@ for (i in seq_along(ListSp))
 
   # Add material as predictor
   DataSaison$SpRecorder <- DataSaison$detecteur_enregistreur_type
+  print("lignes datasaison apres edf :")
+  print(nrow(DataSaison))
+
 
   # Identify predictors
   # DataSaison <- DataSaison |> # removing medium and large buffers
@@ -411,6 +418,9 @@ for (i in seq_along(ListSp))
     drop_na(all_of(Prednames)) |> # deletes rows without predictor (outdated GI table)
     drop_na(nb_contacts) # deletes rows without contacts (people did not upload their data)
   DataSaison$SpGite <- NULL
+  print("lignes datasaison apres nettoyage prednames :")
+  print(nrow(DataSaison))
+
 
   if (opt$keep) {
     last_year <- max(DataSaison$SpYear)
