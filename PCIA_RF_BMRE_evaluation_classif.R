@@ -560,9 +560,12 @@ for (i in seq_along(ListSp))
   print("sfolds written")
 
   DataSaison$sfold <- sfolds$clusters
+
+  DataSaison$acti_class <- def_classes(DataSaison)
   sindx <- CreateSpacetimeFolds(DataSaison,
     spacevar = "sfold",
     ## timevar = "fortnight",
+    class = acti_class,
     k = 10
   )
   sctrl <- caret::trainControl(
@@ -593,7 +596,6 @@ for (i in seq_along(ListSp))
     )
   )
   # EDF model
-  DataSaison$acti_class <- def_classes(DataSaison)
   print("colnames pb")
   print(!(Prednames %in% colnames(DataSaison)))
 

@@ -214,7 +214,7 @@ fitvalpred_rf_cat <- function(covariates,
     y = as.data.frame(traindf)[, "acti_class"],
     method = "rf",
     importance = TRUE,
-    # trControl = spatial_ctrl,
+    trControl = spatial_ctrl,
     ntree = best_ntrees,
     tuneGrid = spatial_grid
   )
