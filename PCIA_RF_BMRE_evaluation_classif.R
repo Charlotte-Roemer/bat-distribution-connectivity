@@ -506,19 +506,24 @@ for (i in seq_along(ListSp))
     )
   ) # quezaco?
 
+  print("Prep data saison as sf object :")
   DataSaison_sf <- st_as_sf(DataSaison,
     coords = c(x = "longitude", y = "latitude"),
     crs = 4326
   ) |>
     st_transform(2154)
+
+  print("Load Area of Interest:")
   aoi <- sf::read_sf(
     dsn = args[4],
     layer = opt$region
   ) |>
     st_transform(2154)
   set.seed(123)
+
   START <- Sys.time()
-  sfolds <- knndm(DataSaison_sf, aoi, k = 10, maxp = 0.5) # k = number of folds
+  print("Creating folds :")
+  sfolds <- CAST::knndm(DataSaison_sf, aoi, k = 10, maxp = 0.5) # k = number of folds
   END <- Sys.time()
   print(END - START) # 1 to 1.4 hours
   # beep(2)
