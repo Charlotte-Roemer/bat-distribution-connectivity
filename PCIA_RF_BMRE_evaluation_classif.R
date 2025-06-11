@@ -395,15 +395,12 @@ for (i in seq_along(ListSp))
   #
   testPred <- startsWith(names(DataSaison), "Sp")
   Prednames <- names(DataSaison)[testPred]
-  print(Prednames)
-  stop()
 
-
-  not_clc <- startsWith(Prednames, "SpHC")
-  Prednames <- Prednames[not_clc]
+  clc <- startsWith(Prednames, "SpHC")
+  Prednames <- Prednames[!not_clc]
   Prednames[!(Prednames %in% variables_a_exclure)]
+  print("prednames: ")
   print(Prednames)
-  stop()
 
   testPredLatLong <- substr(Prednames, 3L, 5L) != "EDF"
   PrednamesLatLong <- Prednames[testPredLatLong] # for latlong only RF
