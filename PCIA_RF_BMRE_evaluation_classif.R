@@ -398,7 +398,8 @@ for (i in seq_along(ListSp))
 
   clc <- startsWith(Prednames, "SpHC")
   Prednames <- Prednames[!clc]
-  Prednames[!(Prednames %in% variables_a_exclure)]
+  not_exc <- Prednames[!(Prednames %in% variables_a_exclure)]
+  Prednames <- Prednames[not_exc]
   print("prednames: ")
   print(Prednames)
 
@@ -534,8 +535,6 @@ for (i in seq_along(ListSp))
       )
     )
   )
-  print("prednames :")
-  print(Prednames)
   print("Prep data saison as sf object :")
   DataSaison_sf <- st_as_sf(DataSaison,
     coords = c(x = "longitude", y = "latitude"),
