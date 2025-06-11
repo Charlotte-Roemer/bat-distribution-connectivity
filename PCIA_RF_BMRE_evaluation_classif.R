@@ -308,13 +308,13 @@ for (i in seq_along(ListSp))
   data_gites <- read.csv2(file_gites)
 
   data_gites <- data_gites |>
-    dplyr::select(participation, Nuit, num_micro, indice_gite)
+    dplyr::select(participation, espece, Nuit, num_micro, indice_gite)
 
   data_gites$Nuit <- as.Date(data_gites$Nuit)
 
   DataSaison <- left_join(
-    DataSaison, data_gites,
-    by = c("participation", "Nuit", "num_micro")
+    DataSaison, data_gites
+    # by = c("participation", "Nuit", "num_micro")
   )
 
   DataSaison$indice_gite <- as.numeric(DataSaison$indice_gite)
