@@ -316,14 +316,14 @@ for (i in seq_along(ListSp))
     DataSaison, data_gites
     # by = c("participation", "Nuit", "num_micro")
   )
+  print("lignes datasaison apres gite :")
+  print(nrow(DataSaison))
+
 
   DataSaison$indice_gite <- as.numeric(DataSaison$indice_gite)
   DataSaison$gite <- 0L
   # DataSaison$gite[is.na(test$indice_gite)]  <- 0
   DataSaison$gite[DataSaison$indice_gite > 0.5] <- 1L
-  print("lignes datasaison apres gite :")
-  print(nrow(DataSaison))
-
   # let’s remove data close to a potential colony
   DataSaison <- DataSaison[DataSaison$gite != 0L, ]
   print("lignes datasaison apres suppression gite :")
