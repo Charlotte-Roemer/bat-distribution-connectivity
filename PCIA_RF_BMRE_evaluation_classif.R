@@ -323,13 +323,13 @@ for (i in seq_along(ListSp))
 
 
   DataSaison$indice_gite <- as.numeric(DataSaison$indice_gite)
-  DataSaison$gite <- 0L
+  DataSaison$SpGite <- 0L
   # DataSaison$gite[is.na(test$indice_gite)]  <- 0
-  DataSaison$gite[DataSaison$indice_gite > 0.5] <- 1L
+  DataSaison$SpGite[DataSaison$indice_gite > 0.5] <- 1L
   # let’s remove data close to a potential colony
-  DataSaison <- DataSaison[DataSaison$gite != 0L, ]
-  print("lignes datasaison apres suppression gite :")
-  print(nrow(DataSaison))
+  # DataSaison <- DataSaison[DataSaison$gite != 0L, ]
+  # print("lignes datasaison apres suppression gite :")
+  # print(nrow(DataSaison))
 
 
   # add date of year,
@@ -424,9 +424,9 @@ for (i in seq_along(ListSp))
   DataSaison <- DataSaison |>
     drop_na(all_of(Prednames)) |> # deletes rows without predictor (outdated GI table)
     drop_na(nb_contacts) # deletes rows without contacts (people did not upload their data)
-  DataSaison$SpGite <- NULL
-  print("lignes datasaison apres nettoyage prednames :")
-  print(nrow(DataSaison))
+  # DataSaison$SpGite <- NULL
+  # print("lignes datasaison apres nettoyage prednames :")
+  # print(nrow(DataSaison))
 
 
   if (opt$keep) {
