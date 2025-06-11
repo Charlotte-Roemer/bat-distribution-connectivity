@@ -295,7 +295,9 @@ for (i in seq_along(ListSp))
 
   DataSpSL_w0_2$Nuit <- as.Date(DataSpSL_w0_2$Nuit)
   CoordPS$Nuit <- as.Date(CoordPS$Nuit)
-  DataSaison <- inner_join(DataSpSL_w0_2, CoordPS, by = c("longitude", "latitude", "Nuit")) # adds environmental variables to activity data
+  DataSaison <- inner_join(DataSpSL_w0_2, CoordPS,
+    by = c("longitude", "latitude", "Nuit", "participation")
+  ) # adds environmental variables to activity data
   print("lignes datasaison :")
   print(nrow(DataSaison))
   print("colonnes datasaison")
@@ -311,8 +313,6 @@ for (i in seq_along(ListSp))
     dplyr::select(participation, espece, Nuit, num_micro, indice_gite)
 
   data_gites$Nuit <- as.Date(data_gites$Nuit)
-  print(colnames(DataSaison))
-  stop()
 
   DataSaison <- left_join(
     DataSaison, data_gites,
