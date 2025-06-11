@@ -313,8 +313,8 @@ for (i in seq_along(ListSp))
   data_gites$Nuit <- as.Date(data_gites$Nuit)
 
   DataSaison <- left_join(
-    DataSaison, data_gites
-    # by = c("participation", "Nuit", "num_micro")
+    DataSaison, data_gites,
+    by = c("participation", "Nuit", "num_micro", "espece")
   )
   print("lignes datasaison apres gite :")
   print(nrow(DataSaison))
