@@ -418,6 +418,7 @@ for (i in seq_along(ListSp))
   )
   Prednames <- Prednames[which(!Prednames %in% ListSpeciesDistribution)]
 
+  which(!Prednames %in% Colnames(DataSaison))
   Predictors <- DataSaison[, ..Prednames]
   PredictorsLatLong <- DataSaison[, ..PrednamesLatLong]
 
@@ -596,6 +597,7 @@ for (i in seq_along(ListSp))
   )
   # EDF model
   DataSaison$acti_class <- def_classes(DataSaison)
+  print(!(Prednames %in% colnames(DataSaison)))
 
   set.seed(123)
   EDFmod <- fitvalpred_rf_cat(
@@ -671,7 +673,7 @@ for (i in seq_along(ListSp))
   names.Boruta <- names.Boruta[testPred]
 
   LatLongmod <- fitvalpred_rf_cat(
-    Prednames,
+    names.Boruta,
     # rctrl,
     sctrl,
     DataSaison
