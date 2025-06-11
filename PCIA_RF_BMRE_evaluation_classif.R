@@ -395,6 +395,9 @@ for (i in seq_along(ListSp))
   #
   testPred <- startsWith(names(DataSaison), "Sp")
   Prednames <- names(DataSaison)[testPred]
+  print(Prednames)
+  stop()
+
 
   not_clc <- startsWith(Prednames, "SpHC")
   Prednames <- Prednames[not_clc]
