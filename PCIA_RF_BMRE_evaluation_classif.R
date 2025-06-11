@@ -399,6 +399,8 @@ for (i in seq_along(ListSp))
   not_clc <- startsWith(Prednames, "SpHC")
   Prednames <- Prednames[not_clc]
   Prednames[!(Prednames %in% variables_a_exclure)]
+  print(Prednames)
+  stop()
 
   testPredLatLong <- substr(Prednames, 3L, 5L) != "EDF"
   PrednamesLatLong <- Prednames[testPredLatLong] # for latlong only RF
@@ -669,7 +671,7 @@ for (i in seq_along(ListSp))
   names.Boruta <- names.Boruta[testPred]
 
   LatLongmod <- fitvalpred_rf_cat(
-    names.Boruta,
+    Prednames,
     # rctrl,
     sctrl,
     DataSaison
