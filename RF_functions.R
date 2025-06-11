@@ -169,7 +169,7 @@ fitvalpred_rf_cat <- function(covariates,
         tuneGrid = data.frame(mtry = mtry)
       )
       print("r2")
-      print(tune_mod$results$Rsquared)
+      print(tune_mod)
       R2 <- append(R2, tune_mod$results$Rsquared)
       params <- append(params, tune_mod$results$mtry)
       ntrees <- append(ntrees, tree)
