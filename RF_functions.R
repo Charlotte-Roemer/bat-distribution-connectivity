@@ -229,7 +229,7 @@ fitvalpred_rf_cat <- function(covariates,
   print(B - A)
   print("model built, calculating RMSE and R²")
   parallel::stopCluster(cl)
-  spatial_stats <- global_validation(spatial_mod)[c("Rsquared")]
+  spatial_stats <- CAST::global_validation(spatial_mod)[c("Accuracy")]
   names(spatial_stats) <- paste0("kNNDM_", names(spatial_stats))
 
   # 3. Surface predictions
