@@ -94,7 +94,7 @@ fitvalpred_rf <- function(covariates,
     y = as.data.frame(traindf)[, "nb_contacts"],
     method = "rf",
     importance = TRUE,
-    trControl = spatial_ctrl,
+    # trControl = spatial_ctrl,
     ntree = best_ntrees,
     tuneGrid = spatial_grid
   )
