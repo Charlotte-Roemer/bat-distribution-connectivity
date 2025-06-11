@@ -147,7 +147,7 @@ fitvalpred_rf_cat <- function(covariates,
   ntree <- c(800, 1500) # (150, 500, 1500, 6000)
   print("starting RF tuning")
   params <- list()
-  R2 <- list()
+  Accuracy <- list()
   ntrees <- list()
   A <- Sys.time()
 
@@ -164,7 +164,7 @@ fitvalpred_rf_cat <- function(covariates,
       )
       print("r2")
       print(str(tune_mod))
-      R2 <- append(R2, tune_mod$results$Accuracy)
+      Accuracy <- append(Accuracy, tune_mod$results$Accuracy)
       params <- append(params, tune_mod$results$mtry)
       ntrees <- append(ntrees, tree)
     }
@@ -176,20 +176,20 @@ fitvalpred_rf_cat <- function(covariates,
   print(B - A)
 
   results <- data.frame(
-    R2 = unlist(R2),
+    Accuracy = unlist(Accuracy),
     mtry = as.factor(unlist(params)),
     ntrees = as.factor(unlist(ntrees))
   )
 
-  best_mtry <- results[results$R2 == max(results$R2), ]$mtry
+  best_mtry <- results[results$Accuracy == max(results$Accuracy), ]$mtry
   best_mtry <- as.numeric(as.character((best_mtry)))
   cat("Best tuning mtry", best_mtry, fill = TRUE)
 
-  best_ntrees <- results[results$R2 == max(results$R2), ]$ntrees
+  best_ntrees <- results[results$Accuracy == max(results$Accuracy), ]$ntrees
   best_ntrees <- as.numeric(as.character((best_ntrees)))
   cat("Best tuning ntree", best_ntrees, fill = TRUE)
 
-  cat("Best tuning r2", max(results$R2), fill = TRUE)
+  cat("Best tuning r2", max(results$Accuracy), fill = TRUE)
   results <- results %>%
     dplyr::arrange(ntrees)
 
