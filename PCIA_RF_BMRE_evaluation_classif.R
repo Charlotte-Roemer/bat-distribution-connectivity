@@ -418,7 +418,6 @@ for (i in seq_along(ListSp))
   )
   Prednames <- Prednames[which(!Prednames %in% ListSpeciesDistribution)]
 
-  which(!Prednames %in% Colnames(DataSaison))
   Predictors <- DataSaison[, ..Prednames]
   PredictorsLatLong <- DataSaison[, ..PrednamesLatLong]
 
@@ -457,7 +456,7 @@ for (i in seq_along(ListSp))
   cat("Predictors identified", fill = TRUE)
 
   # Statistics for paper
-  print(colnames(DataSaison))
+
   Stat1 <- DataSaison |>
     group_by(latitude, longitude, nom) |>
     count()
@@ -597,6 +596,7 @@ for (i in seq_along(ListSp))
   )
   # EDF model
   DataSaison$acti_class <- def_classes(DataSaison)
+  print("colnames pb")
   print(!(Prednames %in% colnames(DataSaison)))
 
   set.seed(123)
