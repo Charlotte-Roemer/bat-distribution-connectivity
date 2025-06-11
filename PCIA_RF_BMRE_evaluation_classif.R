@@ -312,7 +312,10 @@ for (i in seq_along(ListSp))
 
   data_gites$Nuit <- as.Date(data_gites$Nuit)
 
-  DataSaison <- left_join(DataSaison, data_gites)
+  DataSaison <- left_join(
+    DataSaison, data_gites,
+    by = c("participation", "Nuit", "num_micro")
+  )
 
   DataSaison$indice_gite <- as.numeric(DataSaison$indice_gite)
   DataSaison$gite <- 0L
@@ -327,7 +330,7 @@ for (i in seq_along(ListSp))
   print(nrow(DataSaison))
 
 
-  # add date of year
+  # add date of year,
   if (grepl("/", DataSaison$Nuit[1L], fixed = TRUE)) {
     Date1 <- as.Date(substr(DataSaison$Nuit, 1L, 10L),
       format = "%Y/%m/%Y"
