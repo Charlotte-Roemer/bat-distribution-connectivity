@@ -532,6 +532,8 @@ for (i in seq_along(ListSp))
       )
     )
   )
+  print("prednames :")
+  print(Prednames)
   print("Prep data saison as sf object :")
   DataSaison_sf <- st_as_sf(DataSaison,
     coords = c(x = "longitude", y = "latitude"),
@@ -595,7 +597,7 @@ for (i in seq_along(ListSp))
 
   set.seed(123)
   EDFmod <- fitvalpred_rf_cat(
-    names.Boruta,
+    Prednames,
     sctrl,
     DataSaison
   )
