@@ -94,7 +94,7 @@ fitvalpred_rf <- function(covariates,
     y = as.data.frame(traindf)[, "nb_contacts"],
     method = "rf",
     importance = TRUE,
-    # trControl = spatial_ctrl,
+    trControl = spatial_ctrl,
     ntree = best_ntrees,
     tuneGrid = spatial_grid
   )
@@ -150,12 +150,6 @@ fitvalpred_rf_cat <- function(covariates,
   R2 <- list()
   ntrees <- list()
   A <- Sys.time()
-
-  print("variable names :")
-  print(covariates)
-
-  print("variable names :")
-  print(colnames(traindf))
 
   for (tree in ntree) {
     for (mtry in mtrys) {
@@ -220,7 +214,7 @@ fitvalpred_rf_cat <- function(covariates,
     y = as.data.frame(traindf)[, "acti_class"],
     method = "rf",
     importance = TRUE,
-    trControl = spatial_ctrl,
+    # trControl = spatial_ctrl,
     ntree = best_ntrees,
     tuneGrid = spatial_grid
   )
