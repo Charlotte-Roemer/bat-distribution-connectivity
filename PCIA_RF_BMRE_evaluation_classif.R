@@ -398,8 +398,7 @@ for (i in seq_along(ListSp))
 
   clc <- startsWith(Prednames, "SpHC")
   Prednames <- Prednames[!clc]
-  not_exc <- Prednames[!(Prednames %in% variables_a_exclure)]
-  Prednames <- Prednames[not_exc]
+  Prednames <- Prednames[!(Prednames %in% variables_a_exclure)]
   print("prednames: ")
   print(Prednames)
 
