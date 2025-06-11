@@ -562,10 +562,10 @@ for (i in seq_along(ListSp))
   DataSaison$sfold <- sfolds$clusters
 
   DataSaison$acti_class <- def_classes(DataSaison)
-  sindx <- CreateSpacetimeFolds(DataSaison,
+  sindx <- CAST::CreateSpacetimeFolds(DataSaison,
     spacevar = "sfold",
     ## timevar = "fortnight",
-    class = acti_class,
+    class = "acti_class",
     k = 10
   )
   sctrl <- caret::trainControl(

@@ -189,7 +189,7 @@ fitvalpred_rf_cat <- function(covariates,
   best_ntrees <- as.numeric(as.character((best_ntrees)))
   cat("Best tuning ntree", best_ntrees, fill = TRUE)
 
-  cat("Best tuning r2", max(results$Accuracy), fill = TRUE)
+  cat("Best tuning Accuracy", max(results$Accuracy), fill = TRUE)
   results <- results %>%
     dplyr::arrange(ntrees)
 
