@@ -174,6 +174,8 @@ fitvalpred_rf_cat <- function(covariates,
   parallel::stopCluster(cl)
   B <- Sys.time()
   print(B - A)
+  print("Accuracy")
+  print(Accuracy)
 
   results <- data.frame(
     Accuracy = unlist(Accuracy),
@@ -182,6 +184,7 @@ fitvalpred_rf_cat <- function(covariates,
   )
 
   best_mtry <- results[results$Accuracy == max(results$Accuracy), ]$mtry
+  print(results)
   best_mtry <- as.numeric(as.character((best_mtry)))
   cat("Best tuning mtry", best_mtry, fill = TRUE)
 
