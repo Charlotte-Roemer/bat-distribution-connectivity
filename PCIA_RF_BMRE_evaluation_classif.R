@@ -431,8 +431,8 @@ for (i in seq_along(ListSp))
 
   if (opt$keep) {
     last_year <- max(DataSaison$SpYear)
-    DataTest <- DataSaison[DataSaison$Year == last_year, ]
-    DataSaison <- DataSaison[DataSaison$Year != last_year, ]
+    DataTest <- DataSaison[DataSaison$SpYear == last_year, ]
+    DataSaison <- DataSaison[DataSaison$SpYear != last_year, ]
   }
   # select only one value per 500m square :
   # ... add code here
@@ -564,7 +564,7 @@ for (i in seq_along(ListSp))
   DataSaison$acti_class <- def_classes(DataSaison)
   sindx <- CAST::CreateSpacetimeFolds(DataSaison,
     spacevar = "sfold",
-    ## timevar = "fortnight",
+    timevar = "fortnight",
     class = "acti_class",
     k = 10
   )
@@ -576,15 +576,17 @@ for (i in seq_along(ListSp))
 
   cat("Cross-validation indices prepared", fill = TRUE)
 
-  # write.csv(
-  #   DataTest,
-  #   file.path(
-  #     Output,
-  #     paste0(
-  #       ListSp[i], "_datatest.csv"
-  #     )
-  #   )
-  # )
+  if (opt$keep) {
+    write.csv(
+      DataTest,
+      file.path(
+        Output,
+        paste0(
+          ListSp[i], "_datatest.csv"
+        )
+      )
+    )
+  }
 
   write.csv(
     DataSaison,
