@@ -161,7 +161,7 @@ Coord_eol <- function(points, names_coord, bs, bm, bl, layer) {
 
 
   Reseau <- Reseau %>%
-    dplyr::select(!c(ID, geometry))
+    dplyr::select(!c(geometry))
 
   NewName <- paste0(FOccSL, "_Reseau.csv")
 
