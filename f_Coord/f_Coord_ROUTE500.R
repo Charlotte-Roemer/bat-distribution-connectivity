@@ -300,6 +300,10 @@ Coord_Route <- function(points, names_coord, bs, bm, bl, folder) {
     as.data.frame(OccSL_ARajouter)
   ))
 
+  if (opt$mode == "predict") {
+	  Reseau$SpRo_dist <- 0
+  }
+
   Reseau <- Reseau |>
     st_drop_geometry() |>
     select(!geometry)

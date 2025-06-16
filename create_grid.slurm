@@ -19,4 +19,4 @@ module load gdal
 module load udunits
 module load R/4.3.1
 
-Rscript Create_empty_grid_V2.R -r france_met -s 500
+Rscript Create_empty_grid_V2.R -r idf -s 100
