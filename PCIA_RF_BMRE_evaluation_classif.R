@@ -430,9 +430,9 @@ for (i in seq_along(ListSp))
 
 
   if (opt$keep) {
-    last_year <- max(DataSaison$SpYear)
-    DataTest <- DataSaison[DataSaison$SpYear == last_year, ]
-    DataSaison <- DataSaison[DataSaison$SpYear != last_year, ]
+    # last_year <- max(DataSaison$SpYear)
+    DataTest <- DataSaison[DataSaison$SpYear == 2019, ]
+    DataSaison <- DataSaison[DataSaison$SpYear != 2019, ]
   }
   # select only one value per 500m square :
   # ... add code here

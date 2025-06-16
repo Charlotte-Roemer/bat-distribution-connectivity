@@ -410,9 +410,9 @@ for (i in seq_along(ListSp))
   DataSaison$SpGite <- NULL
 
   if (opt$keep) {
-    last_year <- max(DataSaison$SpYear)
-    DataTest <- DataSaison[DataSaison$Year == last_year, ]
-    DataSaison <- DataSaison[DataSaison$Year != last_year, ]
+    # last_year <- max(DataSaison$SpYear)
+    DataTest <- DataSaison[DataSaison$Year == 2019, ]
+    DataSaison <- DataSaison[DataSaison$Year != 2019, ]
   }
   # select only one value per 500m square :
   # ... add code here
