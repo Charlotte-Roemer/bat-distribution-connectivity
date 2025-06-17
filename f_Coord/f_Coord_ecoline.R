@@ -53,7 +53,7 @@ get_edge_length <- function(points, polyg, buffer) {
 }
 
 
-Coord_Eau <- function(points, names_coord, ecoline_vh, ecoline_vb) {
+Coord_Ecoline <- function(points, names_coord, ecoline_vh, ecoline_vb, buffer) {
   library(sf)
   library(data.table)
   library(tidyverse)
@@ -70,12 +70,12 @@ Coord_Eau <- function(points, names_coord, ecoline_vh, ecoline_vb) {
     OccSL <- read.csv(paste0(points, ".csv")) |>
       dplyr::select(c("X", "Y"))
 
-    OccSL$FID <- c(1L:nrow(OccSL))
+    OccSL$FID <- seq_len(nrow(OccSL))
     OccSL <- OccSL |>
-      sf::st_as_sf(coords = c("X", "Y"), crs = 4326, remove = FALSE)
+      sf::st_as_sf(coords = c("X", "Y"), crs = 4326L, remove = FALSE)
 
     OccSL_L93 <- OccSL |>
-      sf::st_transform(2154)
+      sf::st_transform(2154L)
     OccSL_L93$Nuit <- date_pred
 
     CoordH <- names_coord
@@ -92,75 +92,23 @@ Coord_Eau <- function(points, names_coord, ecoline_vh, ecoline_vb) {
   }
 
 
-  # recuperation des donnees Carthage (eau)
-  CarthageP <- sf::read_sf(
-    dsn = dirname(carthagep),
-    layer = basename(tools::file_path_sans_ext(carthagep))
+  # recuperation des donnees ecoline
+  Ecoline_VH <- sf::read_sf(
+    ecoline_vh
   )
-  CarthageC <- sf::read_sf(
-    dsn = dirname(carthagec),
-    layer = basename(tools::file_path_sans_ext(carthagec))
+  Ecoline_VB <- sf::read_sf(
+    ecoline_vb
   ) # All "En service"
 
-  # Split result before saving?
-  # Split <- FALSE
-  # Start=10001
-  # End=20000
-  # Start <- 270001L
-  # End <- 280194L
-  # if (Split) {
-  # OccSL <- OccSL[Start:(min(End, nrow(OccSL))), ]
-  # }
-
-  ##########################################
-  ##########################################
-  ######## water surface distance ##########
-  ##########################################
-  ##########################################
-
-  nearest_p <- try(sf::st_nearest_feature(OccSL_L93, CarthageP))
-  water_dist_polyg <- st_distance(OccSL_L93,
-    CarthageP[nearest_p, ],
-    by_element = TRUE
-  )
-  OccSL_L93$water_dist_polyg <- water_dist_polyg
-
-  nearest_l <- try(sf::st_nearest_feature(OccSL_L93, CarthageC))
-  water_dist_line <- st_distance(OccSL_L93,
-    CarthageC[nearest_l, ],
-    by_element = TRUE
-  )
-  OccSL_L93$water_dist_line <- water_dist_line
-  OccSL_L93$SpWD <- with(
-    OccSL_L93,
-    pmin(water_dist_line, water_dist_polyg)
-  )
-
-  CarthageCperm <- CarthageC[CarthageC$Persistanc == "permanent", ]
-  CarthagePperm <- CarthageP[CarthageP$Persistanc == "permanent", ]
-
-  nearest_pp <- try(sf::st_nearest_feature(OccSL_L93, CarthagePperm))
-  water_dist_polyg_perm <- st_distance(OccSL_L93,
-    CarthagePperm[nearest_pp, ],
-    by_element = TRUE
-  )
-  OccSL_L93$water_dist_polyg_perm <- water_dist_polyg_perm
-
-  nearest_lp <- try(sf::st_nearest_feature(OccSL_L93, CarthageCperm))
-  water_dist_line_perm <- st_distance(OccSL_L93,
-    CarthageCperm[nearest_lp, ],
-    by_element = TRUE
-  )
-  OccSL_L93$water_dist_line_perm <- water_dist_line_perm
-
-  OccSL_L93$SpWDp <- with(
-    OccSL_L93,
-    pmin(water_dist_line_perm, water_dist_polyg_perm)
-  )
+  ecoline_H <- get_edge_length(OccSL_L93, Ecoline_VH, buffer)
+  ecoline_B <- get_edge_length(OccSL_L93, Ecoline_VB, buffer)
+  OccSL_L93$Sp_ecolineh <- ecoline_H$edge_length
+  OccSL_L93$Sp_ecolineb <- ecoline_B$edge_length
 
   ######################################################################
   #################### Write ###########################################
   ######################################################################
+
 
   OccSL_WGS84 <- OccSL_L93 |>
     st_transform(4326L) # back transform to WGS84
@@ -178,7 +126,7 @@ Coord_Eau <- function(points, names_coord, ecoline_vh, ecoline_vb) {
     st_drop_geometry() |>
     select(!geometry)
 
-  NewName <- paste0(points, "_Carthage.csv")
+  NewName <- paste0(points, "_ecoline.csv")
 
   fwrite(Carthage, NewName)
 }
