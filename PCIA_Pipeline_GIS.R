@@ -223,8 +223,8 @@ if (opt$region %in% c("idf", "france_met")) {
   folder_alan <- file.path(data_folder, "GIS", "ALAN")
   folder_vcf <- file.path(data_folder, "GIS", "VCF")
   layer_alti <- file.path(data_folder, "GIS", "BDALTI")
-  Layer_Carthage_P <- file.path(data_folder, "GIS", "BD_TOPAGE_2023-shp", "SurfaceElementaire_FXX.shp")
-  Layer_Carthage_C <- file.path(data_folder, "GIS", "BD_TOPAGE_2023-shp", "TronconHydrographique_FXX.shp")
+  layer_Carthage_P <- file.path(data_folder, "GIS", "BD_TOPAGE_2023-shp", "SurfaceElementaire_FXX.shp")
+  layer_Carthage_C <- file.path(data_folder, "GIS", "BD_TOPAGE_2023-shp", "TronconHydrographique_FXX.shp")
   folder_CLC <- file.path(data_folder, "GIS", "CLC")
   folder_OCS <- file.path(data_folder, "GIS", "OCS_OSO")
   folder_route <- file.path(data_folder, "GIS", "ROUTE500_3-0__SHP_LAMB93_FXX_2021-11-03")
@@ -232,6 +232,9 @@ if (opt$region %in% c("idf", "france_met")) {
   layer_wind_turbines <- file.path(data_folder, "GIS", "wind_turbines", "Mats_service_TOTAL.shp")
   # bioclim_folder <- file.path(data_folder, "GIS", "worldclim")
   bioclim_folder <- file.path(data_folder, "GIS", "chelsav2_bio")
+  layer_ecoline_low <- file.path(data_folder, "GIS", "ecoline", "ecoline_vb_2017.shp")
+  layer_ecoline_high <- file.path(data_folder, "GIS", "ecoline", "ecoline_vh_2017.shp")
+
   # layer_bioclim_gross <- file.path(data_folder, "GIS", "BioclimGross", "GrossV.shp")
   layer_wind <- file.path(data_folder, "GIS", "WIND", "gwa3_250_windspeed_10m_europe.tif")
   layer_precip <- file.path(data_folder, "GIS", "CLIM_NORM", "chelsea_eur11_pr_norm_1981-2005_v1_1.tif")
@@ -327,9 +330,20 @@ Coord_Eau(
   # bs = BS,
   # bm = BM,
   # bl = BL,
-  carthagep = Layer_Carthage_P,
-  carthagec = Layer_Carthage_C
+  carthagep = layer_Carthage_P,
+  carthagec = layer_Carthage_C
 )
+
+
+## Ecoline (idf)
+Coord_Ecoline(
+  points = FCoord,
+  names_coord = Coord_Headers,
+  ecoline_vh = layer_ecoline_high,
+  ecoline_vb = layer_ecoline_low
+  buffer = BM
+)
+
 #
 #
 ## CLC Corine Land Cover (Habitat) ####
