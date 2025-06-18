@@ -1,1 +1,1 @@
-variables_a_exclure <- c("SpGite", "SpALAN_L", "SpAltiM", "SpAltiL", "SpPenM", "SpPenL")
+variables_a_exclure <- c("SpGite", "SpALAN_L", "SpAltiS", "SpAltiM", "SpAltiL", "SpPenM", "SpPenL")

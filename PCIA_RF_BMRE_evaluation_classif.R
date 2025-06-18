@@ -429,11 +429,6 @@ for (i in seq_along(ListSp))
   # print(nrow(DataSaison))
 
 
-  if (opt$keep) {
-    # last_year <- max(DataSaison$SpYear)
-    DataTest <- DataSaison[DataSaison$SpYear == 2019, ]
-    DataSaison <- DataSaison[DataSaison$SpYear != 2019, ]
-  }
   # select only one value per 500m square :
   # ... add code here
   # print("Keeping only one night per 500sq/15days")
@@ -562,6 +557,12 @@ for (i in seq_along(ListSp))
   DataSaison$sfold <- sfolds$clusters
 
   DataSaison$acti_class <- def_classes(DataSaison)
+  if (opt$keep) {
+    # last_year <- max(DataSaison$SpYear)
+    DataTest <- DataSaison[DataSaison$SpYear == 2019, ]
+    DataSaison <- DataSaison[DataSaison$SpYear != 2019, ]
+  }
+
   sindx <- CAST::CreateSpacetimeFolds(DataSaison,
     spacevar = "sfold",
     timevar = "fortnight",
