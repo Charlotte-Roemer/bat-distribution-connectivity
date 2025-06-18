@@ -146,22 +146,24 @@ if (opt$mode == "train" && loc_train_exists == FALSE) {
     )
   )
   study_area <- zone
+  size <- as.integer(opt$size)
+  size_decal <- size / 2L
   # buffer size is to be adapted depending on the study region
   study_area_m <- st_transform(study_area, 3035L)
-  study_area_m_buf <- st_buffer(study_area_m, 250L)
+  study_area_m_buf <- st_buffer(study_area_m, size_decal)
 
-  xmin <- st_bbox(study_area_m_buf)["xmin"] - 250L
-  ymin <- st_bbox(study_area_m_buf)["ymin"] - 250L
-  xmax <- st_bbox(study_area_m_buf)["xmax"] + 250L
-  ymax <- st_bbox(study_area_m_buf)["ymax"] + 250L
+  xmin <- st_bbox(study_area_m_buf)["xmin"] - size_decal
+  ymin <- st_bbox(study_area_m_buf)["ymin"] - size_decal
+  xmax <- st_bbox(study_area_m_buf)["xmax"] + size_decal
+  ymax <- st_bbox(study_area_m_buf)["ymax"] + size_decal
 
 
-  cols <- (xmax - xmin) / 500L
-  rows <- (ymax - ymin) / 500L
+  cols <- (xmax - xmin) / size
+  rows <- (ymax - ymin) / opt$size
 
   print("Making grid over study area")
   grid_polyg <- st_make_grid(study_area_m_buf,
-    cellsize = c(500L, 500L),
+    cellsize = c(size, size),
     offset = c(xmin, ymin),
     n = c(cols, rows)
   ) %>% st_as_sf()
