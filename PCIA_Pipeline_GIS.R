@@ -140,7 +140,7 @@ if (opt$mode == "train" && loc_train_exists == FALSE) {
     data_folder,
     "GIS",
     paste0(
-      "SysGrid_500m_de_cote_",
+      "SysGrid_", opt$size,  "m_de_cote_",
       opt$region,
       ".csv"
     )
