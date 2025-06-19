@@ -260,81 +260,81 @@ for (i in 1:length(listfun))
   source(listfun[i])
 }
 
-# Bioclim ###
-# print("Bioclim")
-# Coord_BioclimLocal(
-#   points = FCoord,
-#   names_coord = Coord_Headers,
-#   layer_folder = bioclim_folder
-# )
-#
-#
-# ###  ALAN ###
-# print("ALAN")
-# Coord_ALAN(
-#   points = FCoord,
-#   names_coord = c(Coord_Headers, "Nuit"),
-#   bm = BM,
-#   bl = BL,
-#   layers = folder_alan
-# )
-#
-# # Grotto ###
-# print("Grotto")
-# Coord_Grotto(
-#   points = FCoord,
-#   names_coord = Coord_Headers,
-#   bs = BS,
-#   bm = BM,
-#   bl = BL,
-#   layer = layer_grotto
-# )
-#
-# #  VCF ###
-# print("VCF")
-# Coord_VCF(
-#   points = FCoord,
-#   names_coord = c(Coord_Headers, "Nuit"),
-#   bs = BS,
-#   bm = BM,
-#   bl = BL,
-#   layers = folder_vcf
-# )
-#
-# ## ALTI ####
-# print("Altitude & slope")
-# Coord_Alti(
-#   points = FCoord,
-#   names_coord = Coord_Headers,
-#   bs = BS,
-#   bm = BM,
-#   bl = BL,
-#   layer = layer_alti
-# )
-#
-# ##  Wind Turbines ###
-# print("Wind Turbines")
-# Coord_eol(
-#   points = FCoord,
-#   names_coord = Coord_Headers,
-#   bs = BS,
-#   bm = BM,
-#   bl = BL,
-#   layer = layer_wind_turbines
-# )
-#
-# ##  CARTHAGE (eau) ####
-# print("Water")
-#
-# Coord_Eau(
-#   points = FCoord,
-#   names_coord = Coord_Headers,
-#   # bs = BS,
-#   # bm = BM,
-#   # bl = BL,
-#   carthagep = layer_Carthage_P,
-#   carthagec = layer_Carthage_C
-# )
+Bioclim ###
+print("Bioclim")
+Coord_BioclimLocal(
+  points = FCoord,
+  names_coord = Coord_Headers,
+  layer_folder = bioclim_folder
+)
+
+
+###  ALAN ###
+print("ALAN")
+Coord_ALAN(
+  points = FCoord,
+  names_coord = c(Coord_Headers, "Nuit"),
+  bm = BM,
+  bl = BL,
+  layers = folder_alan
+)
+
+# Grotto ###
+print("Grotto")
+Coord_Grotto(
+  points = FCoord,
+  names_coord = Coord_Headers,
+  bs = BS,
+  bm = BM,
+  bl = BL,
+  layer = layer_grotto
+)
+
+#  VCF ###
+print("VCF")
+Coord_VCF(
+  points = FCoord,
+  names_coord = c(Coord_Headers, "Nuit"),
+  bs = BS,
+  bm = BM,
+  bl = BL,
+  layers = folder_vcf
+)
+
+## ALTI ####
+print("Altitude & slope")
+Coord_Alti(
+  points = FCoord,
+  names_coord = Coord_Headers,
+  bs = BS,
+  bm = BM,
+  bl = BL,
+  layer = layer_alti
+)
+
+##  Wind Turbines ###
+print("Wind Turbines")
+Coord_eol(
+  points = FCoord,
+  names_coord = Coord_Headers,
+  bs = BS,
+  bm = BM,
+  bl = BL,
+  layer = layer_wind_turbines
+)
+
+##  CARTHAGE (eau) ####
+print("Water")
+
+Coord_Eau(
+  points = FCoord,
+  names_coord = Coord_Headers,
+  # bs = BS,
+  # bm = BM,
+  # bl = BL,
+  carthagep = layer_Carthage_P,
+  carthagec = layer_Carthage_C
+)
 
 
 ## Ecoline (idf)
@@ -382,14 +382,14 @@ Coord_Route(
   bl = BL,
   folder = folder_route
 )
-#
-# print("Meteo")
-# Coord_Meteo(
-#   points = FCoord,
-#   temp = layer_temp,
-#   prec = layer_precip,
-#   wind = layer_wind
-# )
+
+print("Meteo")
+Coord_Meteo(
+  points = FCoord,
+  temp = layer_temp,
+  prec = layer_precip,
+  wind = layer_wind
+)
 
 ## loc_data <- file.path(loc, "data")
 
