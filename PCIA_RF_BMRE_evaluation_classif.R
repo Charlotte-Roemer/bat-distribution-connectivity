@@ -561,17 +561,17 @@ for (i in seq_along(ListSp))
   ) |>
     st_transform(2154)
   DataSaison_sf <- DataSaison_sf[aoi, ]
-  DataSaison <- DataSaison_sf |>
-    st_drop_geometry()
-
-  set.seed(123)
-
   DataSaison$acti_class <- def_classes(DataSaison)
+
   if (opt$keep) {
     # last_year <- max(DataSaison$SpYear)
     DataTest <- DataSaison[DataSaison$SpYear == 2019, ]
     DataSaison <- DataSaison[DataSaison$SpYear != 2019, ]
   }
+  DataSaison <- DataSaison_sf |>
+    st_drop_geometry()
+
+  set.seed(123)
 
 
   START <- Sys.time()
