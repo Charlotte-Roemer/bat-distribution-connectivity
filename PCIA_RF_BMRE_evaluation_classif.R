@@ -106,12 +106,29 @@ if (Place == "local") {
   )
 
   # table with spatial variables (habitat and climate) :
-  args[2] <- file.path(
-    data_path,
-    "observations",
-    "donnees_vigie_chiro",
-    "GI_FR_sites_localites"
-  )
+  if (opt$region == "france_met") {
+    args[2] <- file.path(
+      data_path,
+      "observations",
+      "donnees_vigie_chiro",
+      "GI_FR_sites_localites"
+    )
+  } else if (opt$region == "idf") {
+    args[2] <- file.path(
+      data_path,
+      "observations",
+      "donnees_vigie_chiro",
+      "GI_idf_sites_localites"
+    )
+  } else if (opt$region == "europe") {
+    args[2] <- file.path(
+      data_path,
+      "observations",
+      "donnees_vigie_chiro",
+      "GI_europe_sites_localites"
+    )
+  }
+
 
   # Species list to build models :
   args[3] <- file.path(
