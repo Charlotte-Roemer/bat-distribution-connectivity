@@ -106,28 +106,28 @@ if (Place == "local") {
   )
 
   # table with spatial variables (habitat and climate) :
-  if (opt$region == "france_met") {
-    args[2] <- file.path(
-      data_path,
-      "observations",
-      "donnees_vigie_chiro",
-      "GI_FR_sites_localites"
-    )
-  } else if (opt$region == "idf") {
-    args[2] <- file.path(
-      data_path,
-      "observations",
-      "donnees_vigie_chiro",
-      "GI_idf_sites_localites"
-    )
-  } else if (opt$region == "europe") {
-    args[2] <- file.path(
-      data_path,
-      "observations",
-      "donnees_vigie_chiro",
-      "GI_europe_sites_localites"
-    )
-  }
+  # if (opt$region == "france_met") {
+  args[2] <- file.path(
+    data_path,
+    "observations",
+    "donnees_vigie_chiro",
+    "GI_FR_sites_localites"
+  )
+  # } else if (opt$region == "idf") {
+  #   args[2] <- file.path(
+  #     data_path,
+  #     "observations",
+  #     "donnees_vigie_chiro",
+  #     "GI_idf_sites_localites"
+  #   )
+  # } else if (opt$region == "europe") {
+  #   args[2] <- file.path(
+  #     data_path,
+  #     "observations",
+  #     "donnees_vigie_chiro",
+  #     "GI_europe_sites_localites"
+  #   )
+  # }
 
 
   # Species list to build models :
@@ -546,20 +546,32 @@ for (i in seq_along(ListSp))
       )
     )
   )
-  print("Prep data saison as sf object :")
-  DataSaison_sf <- st_as_sf(DataSaison,
-    coords = c(x = "longitude", y = "latitude"),
-    crs = 4326
-  ) |>
-    st_transform(2154)
-
   print("Load Area of Interest:")
   aoi <- sf::read_sf(
     dsn = args[4],
     layer = opt$region
   ) |>
     st_transform(2154)
+
+  print("Prep data saison as sf object :")
+  DataSaison_sf <- st_as_sf(DataSaison,
+    coords = c(x = "longitude", y = "latitude"),
+    remove = FALSE,
+    crs = 4326
+  ) |>
+    st_transform(2154)
+  DataSaison_sf <- DataSaison_sf[aoi, ]
+  DataSaison <- DataSaison_sf |>
+    st_drop_geometry()
+
   set.seed(123)
+
+  DataSaison$acti_class <- def_classes(DataSaison)
+  if (opt$keep) {
+    # last_year <- max(DataSaison$SpYear)
+    DataTest <- DataSaison[DataSaison$SpYear == 2019, ]
+    DataSaison <- DataSaison[DataSaison$SpYear != 2019, ]
+  }
 
 
   START <- Sys.time()
@@ -572,13 +584,6 @@ for (i in seq_along(ListSp))
   print("sfolds written")
 
   DataSaison$sfold <- sfolds$clusters
-
-  DataSaison$acti_class <- def_classes(DataSaison)
-  if (opt$keep) {
-    # last_year <- max(DataSaison$SpYear)
-    DataTest <- DataSaison[DataSaison$SpYear == 2019, ]
-    DataSaison <- DataSaison[DataSaison$SpYear != 2019, ]
-  }
 
   sindx <- CAST::CreateSpacetimeFolds(DataSaison,
     spacevar = "sfold",
