@@ -585,6 +585,15 @@ for (i in seq_along(ListSp))
 
   DataSaison$sfold <- sfolds$clusters
 
+
+  if ("acti_class" %in% colnames(DataSaison)) {
+    print("acticlass ok")
+  }
+
+  if ("sfold" %in% colnames(DataSaison)) {
+    print("sfold ok")
+  }
+
   sindx <- CAST::CreateSpacetimeFolds(DataSaison,
     spacevar = "sfold",
     # timevar = "fortnight",
