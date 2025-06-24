@@ -584,6 +584,7 @@ for (i in seq_along(ListSp))
   print("sfolds written")
 
   DataSaison$sfold <- sfolds$clusters
+  print("checkpoint")
 
   sindx <- CAST::CreateSpacetimeFolds(DataSaison,
     spacevar = "sfold",
