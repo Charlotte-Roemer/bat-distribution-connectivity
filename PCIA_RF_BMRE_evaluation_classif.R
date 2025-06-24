@@ -584,7 +584,6 @@ for (i in seq_along(ListSp))
   print("sfolds written")
 
   DataSaison$sfold <- sfolds$clusters
-  print("checkpoint")
 
   sindx <- CAST::CreateSpacetimeFolds(DataSaison,
     spacevar = "sfold",
@@ -592,12 +591,14 @@ for (i in seq_along(ListSp))
     class = "acti_class",
     k = 10
   )
+  print("checkpoint1")
   sctrl <- caret::trainControl(
     method = "cv",
     index = sindx$index,
     savePredictions = "final"
   )
 
+  print("checkpoint2")
   cat("Cross-validation indices prepared", fill = TRUE)
 
   if (opt$keep) {
