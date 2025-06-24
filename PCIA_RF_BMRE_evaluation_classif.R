@@ -587,7 +587,7 @@ for (i in seq_along(ListSp))
 
   sindx <- CAST::CreateSpacetimeFolds(DataSaison,
     spacevar = "sfold",
-    timevar = "fortnight",
+    # timevar = "fortnight",
     class = "acti_class",
     k = 10
   )
