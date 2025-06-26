@@ -780,7 +780,9 @@ for (i in seq_along(ListSp))
   names.Boruta <- names.Boruta[testPred]
   testPred <- substr(names.Boruta, 1, 5) != "Splon"
   names.Boruta <- names.Boruta[testPred]
-  names.Boruta <- get_prednames(DataSaison, names.Boruta, "nb_contacts")
+  DataSaison$acti_class <- factor(DataSaison$acti_class, levels = c("Faible", "Moyen", "Fort", "TresFort"))
+
+  names.Boruta <- get_prednames(DataSaison, names.Boruta, "acti_class")
 
   noSpacemod <- fitvalpred_rf_cat(
     names.Boruta,
