@@ -147,3 +147,21 @@ def_classes <- function(data) {
   data$acti_class <- factor(data$acti_class, levels = c("Faible", "Moyen", "Fort", "TresFort"))
   data$acti_class
 }
+
+#------------------------------------------------------------------------------#
+#            Function to select best predictors with VSURF                     #
+#------------------------------------------------------------------------------#
+
+get_prednames <- function(df, prednames, response_var) {
+  predictors <- df |>
+    dplyr::select(all_of(prednames))
+  response <- df |>
+    dplyr::select(response_var)
+
+  vsurf <- VSURF(predictors,
+    response,
+    parallel = TRUE
+  )
+
+  vsurf$varselect.pred
+}
