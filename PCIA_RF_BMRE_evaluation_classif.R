@@ -782,7 +782,7 @@ for (i in seq_along(ListSp))
   names.Boruta <- names.Boruta[testPred]
   DataSaison$acti_class <- factor(DataSaison$acti_class, levels = c("Faible", "Moyen", "Fort", "TresFort"))
 
-  names.Boruta <- get_prednames(DataSaison, names.Boruta, "acti_class")
+  names.Boruta <- get_prednames(DataSaison, names.Boruta, DataSaison$acti_class)
 
   noSpacemod <- fitvalpred_rf_cat(
     names.Boruta,
