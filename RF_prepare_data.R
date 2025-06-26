@@ -67,12 +67,12 @@ prepare_data <- function(args, fpar, fsl) {
   sel_par_sl <- merge(site_loc, sel_par, by.x = c("site", "nom"), by.y = c("site", "point"))
 
   #  TEST
-  write.csv(sel_par_sl, file.path(
-    Output,
-    paste0(
-      "test_dat", "_selparsl.txt"
-    )
-  ))
+  # write.csv(sel_par_sl, file.path(
+  #   Output,
+  #   paste0(
+  #     "test_dat", "_selparsl.txt"
+  #   )
+  # ))
   cat("Merge done", fill = TRUE)
   coord_par <- aggregate(sel_par_sl$participation,
     by = c(
@@ -95,12 +95,12 @@ prepare_data <- function(args, fpar, fsl) {
     by = c("longitude", "latitude", "Nuit")
   )
   # TEST
-  write.csv(coord_ps, file.path(
-    Output,
-    paste0(
-      "test_dat", "_coordps.txt"
-    )
-  ))
+  # write.csv(coord_ps, file.path(
+  #   Output,
+  #   paste0(
+  #     "test_dat", "_coordps.txt"
+  #   )
+  # ))
   cat("Merged", fill = TRUE)
   coord_ps[is.na(coord_ps)] <- 0
   testPar <- grepl(args[6L], names(coord_ps))
@@ -111,12 +111,12 @@ prepare_data <- function(args, fpar, fsl) {
 
   # TEST
 
-  write.csv(numPar, file.path(
-    Output,
-    paste0(
-      "test_dat", "_numpar.txt"
-    )
-  ))
+  # write.csv(numPar, file.path(
+  #   Output,
+  #   paste0(
+  #     "test_dat", "_numpar.txt"
+  #   )
+  # ))
   coord_ps$participation <- as.data.frame(coord_ps)[, numPar[1L]]
 
   cat("Done... ready to return data")
