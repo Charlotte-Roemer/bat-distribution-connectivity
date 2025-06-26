@@ -139,11 +139,11 @@ def_classes <- function(data) {
     c(0.25, 0.75, 0.98),
     na.rm = TRUE
   )
-  data$acti_class[data$nb_contacts <= quant[1]] <- "Faible"
+  data$acti_class[data$nb_contacts < quant[1]] <- "Faible"
   # data$acti_class[data$nb_contacts == 0] <- "NoAct"
-  data$acti_class[data$nb_contacts > quant[1] & data$nb_contacts <= quant[2]] <- "Moyen"
-  data$acti_class[data$nb_contacts > quant[2] & data$nb_contacts <= quant[3]] <- "Fort"
-  data$acti_class[data$nb_contacts > quant[3]] <- "TresFort"
-  data$acti_class <- factor(data$acti_class, levels = c("NoAct", "Faible", "Moyen", "Fort", "TresFort"))
+  data$acti_class[data$nb_contacts >= quant[1] & data$nb_contacts < quant[2]] <- "Moyen"
+  data$acti_class[data$nb_contacts >= quant[2] & data$nb_contacts < quant[3]] <- "Fort"
+  data$acti_class[data$nb_contacts >= quant[3]] <- "TresFort"
+  data$acti_class <- factor(data$acti_class, levels = c("Faible", "Moyen", "Fort", "TresFort"))
   data$acti_class
 }
