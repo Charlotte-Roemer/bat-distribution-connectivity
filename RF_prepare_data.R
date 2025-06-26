@@ -133,14 +133,14 @@ prepare_data <- function(args, fpar, fsl) {
 
 
 def_classes <- function(data) {
-  datano0 <- data[data$nb_contacts > 0, ]
+  # data <- data[data$nb_contacts > 0, ]
   quant <- quantile(
-    x = unlist(datano0$nb_contacts),
+    x = unlist(data$nb_contacts),
     c(0.25, 0.75, 0.98),
     na.rm = TRUE
   )
   data$acti_class[data$nb_contacts <= quant[1]] <- "Faible"
-  data$acti_class[data$nb_contacts == 0] <- "NoAct"
+  # data$acti_class[data$nb_contacts == 0] <- "NoAct"
   data$acti_class[data$nb_contacts > quant[1] & data$nb_contacts <= quant[2]] <- "Moyen"
   data$acti_class[data$nb_contacts > quant[2] & data$nb_contacts <= quant[3]] <- "Fort"
   data$acti_class[data$nb_contacts > quant[3]] <- "TresFort"
