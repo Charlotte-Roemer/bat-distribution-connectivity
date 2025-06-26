@@ -537,15 +537,15 @@ for (i in seq_along(ListSp))
       "_temp_sfolds.rds"
     )
   ) # quezaco?
-  write.csv(
-    DataSaison,
-    file.path(
-      Output,
-      paste0(
-        ListSp[i], "_datatrainpreknndm.csv"
-      )
-    )
-  )
+  # write.csv(
+  #   DataSaison,
+  #   file.path(
+  #     Output,
+  #     paste0(
+  #       ListSp[i], "_datatrainpreknndm.csv"
+  #     )
+  #   )
+  # )
   print("Load Area of Interest:")
   aoi <- sf::read_sf(
     dsn = args[4],
@@ -634,150 +634,153 @@ for (i in seq_along(ListSp))
     )
   )
   # EDF model
-  print("colnames pb")
-  print(!(Prednames %in% colnames(DataSaison)))
+  # print("colnames pb")
+  # print(!(Prednames %in% colnames(DataSaison)))
 
-  set.seed(123)
-  EDFmod <- fitvalpred_rf_cat(
-    Prednames,
-    sctrl,
-    DataSaison
-  )
-
-  cat("Model done", fill = TRUE)
-
-  #### Save ####----------------------------------------------------------------
-
-  if (DoBoruta) {
-    suffix <- paste0("_Boruta_", "EDF", "_", ListSp[i])
-  } else {
-    suffix <- paste0("EDF", "_", ListSp[i])
-  }
-
-
-  write.csv(
-    EDFmod$tab,
-    file.path(
-      Output,
-      paste0(
-        "Evaluation_",
-        ListSp[i],
-        Tag, "_",
-        date_limit,
-        "_",
-        suffix,
-        ".csv"
-      )
-    )
-  )
-
-  data.table::fwrite(EDFmod$graphmod, file.path(Output, paste0(suffix, ".csv")))
-
-  write(ListSp[1L], file.path(Output, paste0(suffix, ".txt")))
-  write("----", file.path(Output, paste0(suffix, ".txt")), append = TRUE)
-  # write("Moran :", file.path(Output, paste0(suffix, ".txt")), append = TRUE)
-  # write(moran, file.path(Output, paste0(suffix, ".txt")), append = TRUE)
-  write("EDF", file.path(Output, paste0(suffix, ".txt")), append = TRUE)
-  edf <- print(EDFmod$spatmod)
-  write(edf, file.path(Output, paste0(suffix, ".txt")), append = TRUE)
-
-
-  # saveRDS(EDFmod$tunemod, paste0(Output, "/RFtune_", ListSp[i]
-  #                                ,Tag,"_", date_limit
-  #                                ,"_", suffix, ".rds"))
-  saveRDS(
-    EDFmod$spatmod,
-    file.path(
-      Output,
-      paste0(
-        "RFspat_",
-        ListSp[i],
-        Tag,
-        "_",
-        date_limit,
-        "_",
-        suffix,
-        ".rds"
-      )
-    )
-  )
-  rm("EDFmod")
-
-  ## LatLong model
-
-
-  #  remove EDF variables from names.boruta
+  # set.seed(123)
+  # EDFmod <- fitvalpred_rf_cat(
+  #   Prednames,
+  #   sctrl,
+  #   DataSaison
+  # )
+  #
+  # cat("Model done", fill = TRUE)
+  #
+  # #### Save ####----------------------------------------------------------------
+  #
+  # if (DoBoruta) {
+  #   suffix <- paste0("_Boruta_", "EDF", "_", ListSp[i])
+  # } else {
+  #   suffix <- paste0("EDF", "_", ListSp[i])
+  # }
+  #
+  #
+  # write.csv(
+  #   EDFmod$tab,
+  #   file.path(
+  #     Output,
+  #     paste0(
+  #       "Evaluation_",
+  #       ListSp[i],
+  #       Tag, "_",
+  #       date_limit,
+  #       "_",
+  #       suffix,
+  #       ".csv"
+  #     )
+  #   )
+  # )
+  #
+  # data.table::fwrite(EDFmod$graphmod, file.path(Output, paste0(suffix, ".csv")))
+  #
+  # write(ListSp[1L], file.path(Output, paste0(suffix, ".txt")))
+  # write("----", file.path(Output, paste0(suffix, ".txt")), append = TRUE)
+  # # write("Moran :", file.path(Output, paste0(suffix, ".txt")), append = TRUE)
+  # # write(moran, file.path(Output, paste0(suffix, ".txt")), append = TRUE)
+  # write("EDF", file.path(Output, paste0(suffix, ".txt")), append = TRUE)
+  # edf <- print(EDFmod$spatmod)
+  # write(edf, file.path(Output, paste0(suffix, ".txt")), append = TRUE)
+  #
+  #
+  # # saveRDS(EDFmod$tunemod, paste0(Output, "/RFtune_", ListSp[i]
+  # #                                ,Tag,"_", date_limit
+  # #                                ,"_", suffix, ".rds"))
+  # saveRDS(
+  #   EDFmod$spatmod,
+  #   file.path(
+  #     Output,
+  #     paste0(
+  #       "RFspat_",
+  #       ListSp[i],
+  #       Tag,
+  #       "_",
+  #       date_limit,
+  #       "_",
+  #       suffix,
+  #       ".rds"
+  #     )
+  #   )
+  # )
+  # rm("EDFmod")
+  #
+  # ## LatLong model
+  #
+  #
+  # #  remove EDF variables from names.boruta
   testPred <- substr(names.Boruta, 1, 5) != "SpEDF"
   names.Boruta <- names.Boruta[testPred]
-
-  LatLongmod <- fitvalpred_rf_cat(
-    names.Boruta,
-    # rctrl,
-    sctrl,
-    DataSaison
-    # tempstack[[c(basecovs, proxycovs)]]
-  )
-
-  print("Model done")
-
-  #### Save ####----------------------------------------------------------------
-
-  if (DoBoruta == T) {
-    suffix <- paste0("_Boruta_", "LatLong", "_", ListSp[i])
-  } else {
-    suffix <- paste0("LatLong", "_", ListSp[i])
-  }
-
-  write.csv(
-    LatLongmod$tab,
-    file.path(
-      Output,
-      paste0(
-        "Evaluation_",
-        ListSp[i],
-        Tag, "_",
-        date_limit,
-        "_",
-        suffix,
-        ".csv"
-      )
-    )
-  )
-
-
-  data.table::fwrite(LatLongmod$graphmod, file.path(Output, paste0(suffix, ".csv")))
-
-  write("LatLong", file.path(Output, paste0(suffix, ".txt")), append = TRUE)
-
-  latlng <- print(LatLongmod$spatmod)
-  write(latlng, file.path(Output, paste0(suffix, ".txt")), append = TRUE)
-
-  # saveRDS(EDFmod$tunemod, paste0(Output, "/RFtune_", ListSp[i]
-  #                                ,Tag,"_", date_limit
-  #                                ,"_", suffix, ".rds"))
-  saveRDS(
-    LatLongmod$spatmod,
-    file.path(
-      Output,
-      paste0(
-        "RFspat_",
-        ListSp[i],
-        Tag,
-        "_",
-        date_limit,
-        "_",
-        suffix,
-        ".rds"
-      )
-    )
-  )
-  rm("LatLongmod")
+  #
+  # LatLongmod <- fitvalpred_rf_cat(
+  #   names.Boruta,
+  #   # rctrl,
+  #   sctrl,
+  #   DataSaison
+  #   # tempstack[[c(basecovs, proxycovs)]]
+  # )
+  #
+  # print("Model done")
+  #
+  # #### Save ####----------------------------------------------------------------
+  #
+  # if (DoBoruta == T) {
+  #   suffix <- paste0("_Boruta_", "LatLong", "_", ListSp[i])
+  # } else {
+  #   suffix <- paste0("LatLong", "_", ListSp[i])
+  # }
+  #
+  # write.csv(
+  #   LatLongmod$tab,
+  #   file.path(
+  #     Output,
+  #     paste0(
+  #       "Evaluation_",
+  #       ListSp[i],
+  #       Tag, "_",
+  #       date_limit,
+  #       "_",
+  #       suffix,
+  #       ".csv"
+  #     )
+  #   )
+  # )
+  #
+  #
+  # data.table::fwrite(LatLongmod$graphmod, file.path(Output, paste0(suffix, ".csv")))
+  #
+  # write("LatLong", file.path(Output, paste0(suffix, ".txt")), append = TRUE)
+  #
+  # latlng <- print(LatLongmod$spatmod)
+  # write(latlng, file.path(Output, paste0(suffix, ".txt")), append = TRUE)
+  #
+  # # saveRDS(EDFmod$tunemod, paste0(Output, "/RFtune_", ListSp[i]
+  # #                                ,Tag,"_", date_limit
+  # #                                ,"_", suffix, ".rds"))
+  # saveRDS(
+  #   LatLongmod$spatmod,
+  #   file.path(
+  #     Output,
+  #     paste0(
+  #       "RFspat_",
+  #       ListSp[i],
+  #       Tag,
+  #       "_",
+  #       date_limit,
+  #       "_",
+  #       suffix,
+  #       ".rds"
+  #     )
+  #   )
+  # )
+  # rm("LatLongmod")
+  #
 
   #  remove EDF variables from names.boruta
+
   testPred <- substr(names.Boruta, 1, 5) != "Splat"
   names.Boruta <- names.Boruta[testPred]
   testPred <- substr(names.Boruta, 1, 5) != "Splon"
   names.Boruta <- names.Boruta[testPred]
+  names.Boruta <- get_prednames(DataSaison, names.Boruta, "acti_class")
 
   noSpacemod <- fitvalpred_rf_cat(
     names.Boruta,
