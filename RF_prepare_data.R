@@ -155,6 +155,7 @@ def_classes <- function(data) {
 get_prednames <- function(df, prednames, response_var) {
   print("class :")
   print(class(df$acti_class))
+  print(unique(df$acti_class))
   print("ok")
   predictors <- df |>
     dplyr::select(all_of(prednames))
