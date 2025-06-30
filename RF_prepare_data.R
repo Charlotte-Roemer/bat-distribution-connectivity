@@ -166,7 +166,7 @@ get_prednames <- function(df, prednames, response_var) {
   print("resp before factor")
   print(response)
   # response <- factor(response, levels = c("Faible", "Moyen", "Fort", "TresFort"))
-  response <- as.factor(response)
+  response <- as.factor(as.vector(response), levels = c("Faible", "Moyen", "Fort", "TresFort"))
   print("resp after factor")
   print(response)
   print("unique")
