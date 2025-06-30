@@ -153,7 +153,6 @@ def_classes <- function(data) {
 #------------------------------------------------------------------------------#
 
 get_prednames <- function(df, prednames, response_var) {
-  df$acti_class <- factor(df$acti_class, levels = c("Faible", "Moyen", "Fort", "TresFort"))
   print("class :")
   print(class(df$acti_class))
   print("ok")
@@ -163,6 +162,7 @@ get_prednames <- function(df, prednames, response_var) {
   response <- df |>
     dplyr::select(all_of(response_var))
 
+  response <- factor(response, levels = c("Faible", "Moyen", "Fort", "TresFort"))
   print("response")
   print(head(response))
   print(is.factor(response))
