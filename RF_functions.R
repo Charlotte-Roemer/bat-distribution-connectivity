@@ -151,6 +151,10 @@ fitvalpred_rf_cat <- function(covariates,
   ntrees <- list()
   A <- Sys.time()
 
+
+  print("covariates :")
+  print(covariates)
+
   for (tree in ntree) {
     for (mtry in mtrys) {
       tune_mod <- caret::train(

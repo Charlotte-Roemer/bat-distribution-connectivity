@@ -785,6 +785,7 @@ for (i in seq_along(ListSp))
 
   names.Boruta <- get_prednames(DataSaison, names.Boruta, "acti_class")
 
+  print(names.Boruta)
   print("checkpoint4")
   noSpacemod <- fitvalpred_rf_cat(
     names.Boruta,

@@ -176,5 +176,6 @@ get_prednames <- function(df, prednames, response_var) {
     parallel = TRUE
   )
 
+  print(vsurf$varselect.pred)
   vsurf$varselect.pred
 }
