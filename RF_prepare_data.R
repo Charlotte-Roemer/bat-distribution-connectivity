@@ -162,7 +162,11 @@ get_prednames <- function(df, prednames, response_var) {
   response <- df |>
     dplyr::select(all_of(response_var))
 
+  print("resp before factor")
+  print(response)
   response <- factor(response, levels = c("Faible", "Moyen", "Fort", "TresFort"))
+  print("resp after factor")
+  print(response)
   print("unique")
   print(unique(response))
 
