@@ -783,9 +783,9 @@ for (i in seq_along(ListSp))
   print("checkpoint3")
   DataSaison$acti_class <- factor(DataSaison$acti_class, levels = c("Faible", "Moyen", "Fort", "TresFort"))
 
-  print("checkpoint4")
   names.Boruta <- get_prednames(DataSaison, names.Boruta, DataSaison$acti_class)
 
+  print("checkpoint4")
   noSpacemod <- fitvalpred_rf_cat(
     names.Boruta,
     # rctrl,
