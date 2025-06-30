@@ -783,7 +783,8 @@ for (i in seq_along(ListSp))
   print("checkpoint3")
   DataSaison$acti_class <- factor(DataSaison$acti_class, levels = c("Faible", "Moyen", "Fort", "TresFort"))
 
-  names.Boruta <- get_prednames(DataSaison, names.Boruta, "acti_class")
+  selected_index <- get_prednames(DataSaison, names.Boruta, "acti_class")
+  names.Boruta <- names.Boruta[selected_index]
 
   print(names.Boruta)
   print("checkpoint4")
