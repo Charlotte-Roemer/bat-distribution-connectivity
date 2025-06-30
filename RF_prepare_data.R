@@ -163,7 +163,11 @@ get_prednames <- function(df, prednames, response_var) {
   response <- df |>
     dplyr::select(all_of(response_var))
 
+  print("response")
   print(head(response))
+
+  print("predictors")
+  print(head(predictors))
 
   vsurf <- VSURF::VSURF(predictors,
     response,
