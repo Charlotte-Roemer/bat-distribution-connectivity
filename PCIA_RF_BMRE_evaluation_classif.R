@@ -335,6 +335,7 @@ for (i in seq_along(ListSp))
     DataSaison, data_gites,
     by = c("participation", "Nuit", "num_micro", "espece")
   )
+
   print("lignes datasaison apres gite :")
   print(nrow(DataSaison))
 
