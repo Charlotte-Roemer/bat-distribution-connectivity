@@ -165,6 +165,7 @@ get_prednames <- function(df, prednames, response_var) {
 
   print("response")
   print(head(response))
+  print(is.factor(response))
 
   print("predictors")
   print(head(predictors))
