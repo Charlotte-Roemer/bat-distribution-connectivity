@@ -153,26 +153,11 @@ def_classes <- function(data) {
 #------------------------------------------------------------------------------#
 
 get_prednames <- function(df, prednames, response_var) {
-  print("class :")
-  print(class(df$acti_class))
-  print(unique(df$acti_class))
-  print("ok")
   predictors <- df |>
     dplyr::select(all_of(prednames))
 
-  # response <- df |>
-  # dplyr::select(all_of(response_var))
-
-  # print("resp before factor")
-  # response <- factor(response, levels = c("Faible", "Moyen", "Fort", "TresFort"))
-  # response <- as.factor(as.vector(response), levels = c("Faible", "Moyen", "Fort", "TresFort"))
-  # print(is.factor(response))
-  # print("unique")
-  # print(unique(response))
-
-
   vsurf <- VSURF::VSURF(predictors,
-    df$acti_class,
+    df[response_var],
     parallel = TRUE
   )
 
