@@ -153,10 +153,11 @@ def_classes <- function(data) {
 #------------------------------------------------------------------------------#
 
 get_prednames <- function(df, prednames, response_var) {
+  df$acti_class <- factor(df$acti_class, levels = c("Faible", "Moyen", "Fort", "TresFort"))
   predictors <- df |>
     dplyr::select(all_of(prednames))
   response <- df |>
-    dplyr::select(response_var)
+    dplyr::select(all_of(response_var))
 
   vsurf <- VSURF::VSURF(predictors,
     response,
