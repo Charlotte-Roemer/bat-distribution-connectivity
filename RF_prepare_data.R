@@ -154,6 +154,7 @@ def_classes <- function(data) {
 
 get_prednames <- function(df, prednames, response_var) {
   df$acti_class <- factor(df$acti_class, levels = c("Faible", "Moyen", "Fort", "TresFort"))
+  class(df$acti_class)
   predictors <- df |>
     dplyr::select(all_of(prednames))
   response <- df |>
