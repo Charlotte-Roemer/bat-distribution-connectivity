@@ -163,12 +163,9 @@ get_prednames <- function(df, prednames, response_var) {
     dplyr::select(all_of(response_var))
 
   response <- factor(response, levels = c("Faible", "Moyen", "Fort", "TresFort"))
-  print("response")
-  print(head(response))
-  print(is.factor(response))
+  print("unique")
+  print(unique(response))
 
-  print("predictors")
-  print(head(predictors))
 
   vsurf <- VSURF::VSURF(predictors,
     response,
