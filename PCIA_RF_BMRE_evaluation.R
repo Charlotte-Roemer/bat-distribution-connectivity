@@ -299,8 +299,8 @@ for (i in seq_along(ListSp))
     CoordPS,
     by = c("longitude", "latitude", "Nuit", "participation")
   ) # adds environmental variables to activity data ("participation added")
-  print("lignes datasaison :")
-  print(nrow(DataSaison))
+  print("lignes datasaison nb_contacts :")
+  print(nrow(DataSaison$nb_contacts))
   print("colonnes datasaison")
   print(ncol(DataSaison))
 
