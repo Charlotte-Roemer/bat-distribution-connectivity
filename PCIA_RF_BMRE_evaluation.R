@@ -740,7 +740,7 @@ for (i in seq_along(ListSp))
   names.Boruta <- names.Boruta[testPred]
 
   print("rows datasaison")
-  print(nrow(DataSaison))
+  print(nrow(DataSaison$nb_contacts))
   selected_index <- get_prednames(DataSaison, names.Boruta, "nb_contacts")
   names.Boruta <- names.Boruta[selected_index]
 
