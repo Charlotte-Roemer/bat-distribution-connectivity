@@ -157,7 +157,7 @@ get_prednames <- function(df, prednames, response_var) {
     dplyr::select(all_of(prednames))
 
   vsurf <- VSURF::VSURF(predictors,
-    df[response_var],
+    as.vector(df[response_var]),
     parallel = TRUE
   )
 
