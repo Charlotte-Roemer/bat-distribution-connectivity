@@ -156,11 +156,19 @@ get_prednames <- function(df, prednames, response_var) {
   predictors <- df |>
     dplyr::select(all_of(prednames))
 
-  vsurf <- VSURF::VSURF(predictors,
-    as.vector(df[response_var]),
-    parallel = TRUE
-  )
+  if (response_var == "acti_class") {
+    vsurf <- VSURF::VSURF(predictors,
+      df$acti_class,
+      parallel = TRUE
+    )
+  } else {
+    response <- df$nb_contacts
 
+    vsurf <- VSURF::VSURF(predictors,
+      response,
+      parallel = TRUE
+    )
+  }
   print(vsurf$varselect.pred)
   vsurf$varselect.pred
 }
