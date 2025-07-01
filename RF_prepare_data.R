@@ -163,8 +163,8 @@ get_prednames <- function(df, prednames, response_var) {
     )
   } else {
     response <- df$nb_contacts
-    print("nrow response :")
-    print(nrow(response))
+    print("response :")
+    print(response)
 
     vsurf <- VSURF::VSURF(predictors,
       response,

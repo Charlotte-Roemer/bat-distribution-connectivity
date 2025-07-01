@@ -300,7 +300,7 @@ for (i in seq_along(ListSp))
     by = c("longitude", "latitude", "Nuit", "participation")
   ) # adds environmental variables to activity data ("participation added")
   print("lignes datasaison nb_contacts :")
-  print(nrow(DataSaison$nb_contacts))
+  print(length(DataSaison$nb_contacts))
   print("colonnes datasaison")
   print(ncol(DataSaison))
 
