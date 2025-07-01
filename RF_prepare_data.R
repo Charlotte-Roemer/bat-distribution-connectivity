@@ -163,7 +163,7 @@ get_prednames <- function(df, prednames, response_var) {
       parallel = TRUE
     )
   } else {
-    response <- df$nb_contacts
+    response <- as.vector(df$nb_contacts)
 
     vsurf <- VSURF::VSURF(predictors,
       response,
