@@ -739,6 +739,8 @@ for (i in seq_along(ListSp))
   testPred <- substr(names.Boruta, 1, 5) != "Splon"
   names.Boruta <- names.Boruta[testPred]
 
+  print("rows datasaison")
+  print(nrow(DataSaison))
   selected_index <- get_prednames(DataSaison, names.Boruta, "nb_contacts")
   names.Boruta <- names.Boruta[selected_index]
 
