@@ -528,6 +528,9 @@ for (i in seq_along(ListSp))
   DataSaison_sf <- DataSaison_sf[aoi, ]
   # DataSaison_sf$acti_class <- def_classesgcc(DataSaison_sf)
 
+  print("rows datasaison 1")
+  print(nrow(DataSaison$nb_contacts))
+
   if (opt$keep) {
     # last_year <- max(DataSaison$SpYear)
     DataTest_sf <- DataSaison_sf[DataSaison_sf$SpYear == 2019, ]
@@ -541,14 +544,18 @@ for (i in seq_along(ListSp))
   set.seed(123)
 
 
-  START <- Sys.time()
-  print("Creating folds :")
-  sfolds <- CAST::knndm(DataSaison_sf, aoi, k = 10, maxp = 0.5) # k = number of folds
-  END <- Sys.time()
-  print(END - START) # 1 to 1.4 hours
-  # beep(2)
-  saveRDS(sfolds, sfolds_source)
-  print("sfolds written")
+  if (file.exists(sfolds_source)) {
+    sfolds <- readRDS(sfolds_source)
+  } else {
+    START <- Sys.time()
+    print("Creating folds :")
+    sfolds <- CAST::knndm(DataSaison_sf, aoi, k = 10, maxp = 0.5) # k = number of folds
+    END <- Sys.time()
+    print(END - START) # 1 to 1.4 hours
+    # beep(2)
+    saveRDS(sfolds, sfolds_source)
+    print("sfolds written")
+  }
 
 
   DataSaison$sfold <- sfolds$clusters
