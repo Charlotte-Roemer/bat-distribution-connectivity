@@ -149,6 +149,27 @@ def_classes <- function(data) {
 }
 
 #------------------------------------------------------------------------------#
+#                     Function to classify activity                            #
+#------------------------------------------------------------------------------#
+
+
+def_int_classes <- function(data) {
+  # data <- data[data$nb_contacts > 0, ]
+  quant <- quantile(
+    x = unlist(data$nb_contacts),
+    c(0.25, 0.75, 0.98),
+    na.rm = TRUE
+  )
+  data$acti_class[data$nb_contacts <= quant[1]] <- 1
+  data$acti_class[data$nb_contacts == 0] <- 0
+  data$acti_class[data$nb_contacts > quant[1] & data$nb_contacts <= quant[2]] <- 2
+  data$acti_class[data$nb_contacts > quant[2] & data$nb_contacts < quant[3]] <- 3
+  data$acti_class[data$nb_contacts >= quant[3]] <- 4
+  data$acti_class
+}
+
+
+#------------------------------------------------------------------------------#
 #            Function to select best predictors with VSURF                     #
 #------------------------------------------------------------------------------#
 
