@@ -498,6 +498,8 @@ for (i in seq_along(ListSp))
   } else {
     cat("no", fill = TRUE)
     formula.Boruta <- formula("nb_contacts ~.")
+    print("prednames")
+    print(Prednames)
     names.Boruta <- Prednames
   }
   #### Modelling ####-----------------------------------------------------------
@@ -679,6 +681,8 @@ for (i in seq_along(ListSp))
   #
   #
   #  remove EDF variables from names.boruta
+  print("names.boruta before spedf removal")
+  print(names.Boruta)
   testPred <- substr(names.Boruta, 1, 5) != "SpEDF"
   names.Boruta <- names.Boruta[testPred]
 
@@ -746,6 +750,9 @@ for (i in seq_along(ListSp))
   # rm("LatLongmod")
   #
   #  remove EDF variables from names.boruta
+
+  print("names before splatlon removal")
+  print(names.Boruta)
   testPred <- substr(names.Boruta, 1, 5) != "Splat"
   names.Boruta <- names.Boruta[testPred]
   testPred <- substr(names.Boruta, 1, 5) != "Splon"
