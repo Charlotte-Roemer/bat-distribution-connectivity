@@ -155,7 +155,6 @@ def_classes <- function(data) {
 get_prednames <- function(df, prednames, response_var) {
   predictors <- df |>
     dplyr::select(all_of(prednames))
-  print(predictors)
 
   if (response_var == "acti_class") {
     vsurf <- VSURF::VSURF(predictors,

@@ -532,8 +532,9 @@ for (i in seq_along(ListSp))
   DataSaison_sf <- DataSaison_sf[aoi, ]
   # DataSaison_sf$acti_class <- def_classesgcc(DataSaison_sf)
 
+
   print("rows datasaison 1")
-  print(nrow(DataSaison$nb_contacts))
+  print(length(DataSaison$nb_contacts))
 
   if (opt$keep) {
     # last_year <- max(DataSaison$SpYear)
@@ -751,7 +752,8 @@ for (i in seq_along(ListSp))
   names.Boruta <- names.Boruta[testPred]
 
   print("rows datasaison")
-  print(nrow(DataSaison$nb_contacts))
+  print(nrow(DataSaison))
+  print(names.Boruta)
   selected_index <- get_prednames(DataSaison, names.Boruta, "nb_contacts")
 
   names.Boruta <- names.Boruta[selected_index]
