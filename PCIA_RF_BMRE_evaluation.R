@@ -299,8 +299,6 @@ for (i in seq_along(ListSp))
     CoordPS,
     by = c("longitude", "latitude", "Nuit", "participation")
   ) # adds environmental variables to activity data ("participation added")
-  print("lignes datasaison nb_contacts :")
-  print(length(DataSaison$nb_contacts))
   print("colonnes datasaison")
   print(ncol(DataSaison))
 
@@ -356,6 +354,8 @@ for (i in seq_along(ListSp))
     sf::st_transform(2154L)
 
   coords <- as.data.frame(st_coordinates(DataSaison_sf))
+  print("lignes datasaison nb_contacts 1 :")
+  print(length(DataSaison$nb_contacts))
 
   # sf object with 5 points: the bounding box of the grid of points + the center
   EDF <- rbind(
@@ -417,6 +417,10 @@ for (i in seq_along(ListSp))
   DataSaison <- DataSaison |>
     drop_na(all_of(Prednames)) |> # deletes rows without predictor (outdated GI table)
     drop_na(nb_contacts) # deletes rows without contacts (people did not upload their data)
+  print("lignes datasaison nb_contacts 2 :")
+  print(length(DataSaison$nb_contacts))
+
+
   # DataSaison$SpGite <- NULL
 
   # select only one value per 500m square :
