@@ -98,7 +98,11 @@ if (opt$mode == "predict") {
 
 print(paste0("MODE : ", opt$mode))
 
-loc_train_exists <- file.exists(file.path(obs_vars_folder, paste0("loc_train_", opt$region, ".csv")))
+if (exists("opt$csv")) {
+  loc_train_exists <- file.exists(file.path(obs_vars_folder, opt$csv, ".csv"))
+} else {
+  loc_train_exists <- file.exists(file.path(obs_vars_folder, paste0("loc_train_", opt$region, ".csv")))
+}
 
 ## To extract predictors on observation points :
 if (opt$mode == "train" && loc_train_exists == FALSE) {
@@ -208,11 +212,13 @@ if (opt$mode == "train" && loc_train_exists == FALSE) {
   rm(grid_polyg)
 } else if (opt$mode == "train" && loc_train_exists == TRUE) {
   print("train file existing already")
-  FCoord <- file.path(obs_vars_folder, paste0("loc_train_", opt$region))
-  print(paste0("FCoord = ", FCoord))
-  GridName <- basename(FCoord)
-} else if (exists("opt$csv")) {
-  FCoord <- file.path(pred_vars_folder, opt$csv)
+
+  if (exists(opt$csv)) {
+    FCoord <- file.path(obs_vars_folder, opt$csv)
+    FCoord <- file.path(obs_vars_folder, paste0("loc_train_", opt$region))
+    print(paste0("FCoord = ", FCoord))
+    GridName <- basename(FCoord)
+  }
 } else if (opt$mode == "predict") {
   FCoord <- file.path(pred_vars_folder, paste0("SysGrid_", opt$size, "m_de_cote_", opt$region))
   GridName <- basename(FCoord)
@@ -318,16 +324,16 @@ for (i in 1:length(listfun))
 #   layer = layer_alti
 # )
 #
-# ##  Wind Turbines ###
-# print("Wind Turbines")
-# Coord_eol(
-#   points = FCoord,
-#   names_coord = Coord_Headers,
-#   bs = BS,
-#   bm = BM,
-#   bl = BL,
-#   layer = layer_wind_turbines
-# )
+##  Wind Turbines ###
+print("Wind Turbines")
+Coord_eol(
+  points = FCoord,
+  names_coord = Coord_Headers,
+  bs = BS,
+  bm = BM,
+  bl = BL,
+  layer = layer_wind_turbines
+)
 #
 # ##  CARTHAGE (eau) ####
 # print("Water")
@@ -379,15 +385,15 @@ for (i in 1:length(listfun))
 #
 #
 # ## ROADS and TRAINS ####
-# print("Roads and trains")
-# Coord_Route(
-#   points = FCoord,
-#   names_coord = Coord_Headers,
-#   bs = BS,
-#   bm = BM,
-#   bl = BL,
-#   folder = folder_route
-# )
+print("Roads and trains")
+Coord_Route(
+  points = FCoord,
+  names_coord = Coord_Headers,
+  bs = BS,
+  bm = BM,
+  bl = BL,
+  folder = folder_route
+)
 
 print("Meteo")
 Coord_Meteo(
