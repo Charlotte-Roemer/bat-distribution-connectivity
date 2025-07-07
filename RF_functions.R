@@ -34,7 +34,7 @@ fitvalpred_rf <- function(covariates,
     for (mtry in mtrys) {
       tune_mod <- caret::train(
         x = as.data.frame(traindf)[, names.Boruta],
-        y = as.data.frame(traindf)[, "nb_contacts"],
+        y = as.data.frame(traindf)[, "acti_int_class"],
         method = "rf",
         importance = TRUE,
         trControl = tune_ctrl,
@@ -91,7 +91,7 @@ fitvalpred_rf <- function(covariates,
 
   spatial_mod <- caret::train(
     x = as.data.frame(traindf)[, covariates], # train model
-    y = as.data.frame(traindf)[, "nb_contacts"],
+    y = as.data.frame(traindf)[, "acti_int_class"],
     method = "rf",
     importance = TRUE,
     trControl = spatial_ctrl,
@@ -308,7 +308,7 @@ check_moran <- function(in_data, tested_variable) {
   print("Running Inverse distance...")
   wt <- sfdep::st_inverse_distance(nb, geo, 500) # we work at 500m distance (is it pertinent ?)
 
-  dest <- in_data$nb_contacts # j’aurais préféré mettre tested_variable, mais trop de bugs
+  dest <- in_data$acti_int_class # j’aurais préféré mettre tested_variable, mais trop de bugs
 
   print(paste("dest : ", length(dest))) # prints in case of length pb
   print(paste("nb : ", length(nb)))

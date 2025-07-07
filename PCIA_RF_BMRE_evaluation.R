@@ -540,7 +540,7 @@ for (i in seq_along(ListSp))
   ) |>
     st_transform(2154)
   DataSaison_sf <- DataSaison_sf[aoi, ]
-  # DataSaison_sf$acti_class <- def_classesgcc(DataSaison_sf)
+  DataSaison_sf$acti_int_class <- def_int_classes(DataSaison_sf)
 
 
   print("rows datasaison 1")
@@ -769,7 +769,7 @@ for (i in seq_along(ListSp))
   print("rows datasaison")
   print(nrow(DataSaison))
   print(names.Boruta)
-  selected_index <- get_prednames(DataSaison, names.Boruta, "nb_contacts")
+  selected_index <- get_prednames(DataSaison, names.Boruta, "acti_int_class")
 
   names.Boruta <- names.Boruta[selected_index]
 
