@@ -99,6 +99,7 @@ if (opt$mode == "predict") {
 print(paste0("MODE : ", opt$mode))
 
 if (exists("opt$csv")) {
+  print("autre")
   loc_train_exists <- file.exists(file.path(obs_vars_folder, opt$csv, ".csv"))
 } else {
   loc_train_exists <- file.exists(file.path(obs_vars_folder, paste0("loc_train_", opt$region, ".csv")))
@@ -215,9 +216,12 @@ if (opt$mode == "train" && loc_train_exists == FALSE) {
 
   if (exists(opt$csv)) {
     FCoord <- file.path(obs_vars_folder, opt$csv)
-    FCoord <- file.path(obs_vars_folder, paste0("loc_train_", opt$region))
     print(paste0("FCoord = ", FCoord))
     GridName <- basename(FCoord)
+  } else {
+    print(paste0("FCoord = ", FCoord))
+    GridName <- basename(FCoord)
+    FCoord <- file.path(obs_vars_folder, paste0("loc_train_", opt$region))
   }
 } else if (opt$mode == "predict") {
   FCoord <- file.path(pred_vars_folder, paste0("SysGrid_", opt$size, "m_de_cote_", opt$region))
