@@ -85,25 +85,12 @@ folderfun <- file.path(project_path, "f_Coord")
 
 # valid <- FALSE
 # train <- TRUE  #Si on veut entrainer le modèle, sinon predict
-
-# replace date setting with options
-# to be replaced
-if (opt$mode == "predict") {
-  print("predict mode")
-  # date_pred should be in fortnightnumber_year format fn_yyyy. Fortnight scales
-  # from 1 to 24 as there are two every month (ex : 2_2023)
-  date_pred <- opt$date
-}
 # end of replacement
 
 print(paste0("MODE : ", opt$mode))
 
-if (exists("opt$csv")) {
-  print("autre")
-  loc_train_exists <- file.exists(file.path(obs_vars_folder, opt$csv, ".csv"))
-} else {
-  loc_train_exists <- file.exists(file.path(obs_vars_folder, paste0("loc_train_", opt$region, ".csv")))
-}
+print("autre")
+loc_train_exists <- file.exists(file.path(obs_vars_folder, opt$csv, ".csv"))
 
 ## To extract predictors on observation points :
 if (opt$mode == "train" && loc_train_exists == FALSE) {
@@ -214,15 +201,9 @@ if (opt$mode == "train" && loc_train_exists == FALSE) {
 } else if (opt$mode == "train" && loc_train_exists == TRUE) {
   print("train file existing already")
 
-  if (exists(opt$csv)) {
-    FCoord <- file.path(obs_vars_folder, opt$csv)
-    print(paste0("FCoord = ", FCoord))
-    GridName <- basename(FCoord)
-  } else {
-    print(paste0("FCoord = ", FCoord))
-    GridName <- basename(FCoord)
-    FCoord <- file.path(obs_vars_folder, paste0("loc_train_", opt$region))
-  }
+  FCoord <- file.path(obs_vars_folder, opt$csv)
+  print(paste0("FCoord = ", FCoord))
+  GridName <- basename(FCoord)
 } else if (opt$mode == "predict") {
   FCoord <- file.path(pred_vars_folder, paste0("SysGrid_", opt$size, "m_de_cote_", opt$region))
   GridName <- basename(FCoord)
