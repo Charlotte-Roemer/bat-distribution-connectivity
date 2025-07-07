@@ -94,7 +94,6 @@ print(opt$csv)
 loc_train_exists <- file.exists(file.path(obs_vars_folder, paste0(opt$csv, ".csv")))
 print(loc_train_exists)
 
-stop()
 ## To extract predictors on observation points :
 if (opt$mode == "train" && loc_train_exists == FALSE) {
   ## Load file with "latitude" "longitude" and "Nuit" (date) columns
