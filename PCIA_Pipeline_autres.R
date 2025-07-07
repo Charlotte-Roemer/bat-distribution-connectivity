@@ -91,7 +91,7 @@ print(paste0("MODE : ", opt$mode))
 
 print("autre")
 print(opt$csv)
-loc_train_exists <- file.exists(file.path(obs_vars_folder, opt$csv, ".csv"))
+loc_train_exists <- file.exists(file.path(obs_vars_folder, paste0(opt$csv, ".csv")))
 print(loc_train_exists)
 
 stop()
