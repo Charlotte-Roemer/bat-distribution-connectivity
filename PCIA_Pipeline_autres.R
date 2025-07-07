@@ -90,6 +90,7 @@ folderfun <- file.path(project_path, "f_Coord")
 print(paste0("MODE : ", opt$mode))
 
 print("autre")
+print(opt$csv)
 loc_train_exists <- file.exists(file.path(obs_vars_folder, opt$csv, ".csv"))
 print(loc_train_exists)
 
