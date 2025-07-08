@@ -61,7 +61,7 @@ Coord_eol <- function(points, names_coord, bs, bm, bl, layer) {
   SpEol <- BufferS
 
   if (length(BufferS$pt_count) > 0) {
-    PC_50 <- aggregate(SpEol$pt_count, by = list(SpEol$ID), FUN = sum)
+    PC_50 <- aggregate(SpEol$pt_count, by = list(SpEol$FID), FUN = sum)
     names(PC_50)[ncol(PC_50)] <- "SpRo_S"
     OccSL_Re <- merge(OccSL, PC_50, by.x = "FID", by.y = "Group.1", all.x = , TRUE)
     OccSL_Re$SpRo_S[is.na(OccSL_Re$SpRo_S)] <- 0
@@ -93,7 +93,7 @@ Coord_eol <- function(points, names_coord, bs, bm, bl, layer) {
 
   if (length(BufferM$pt_count) > 0) {
     Sys.time()
-    PC_50 <- aggregate(SpEol$pt_count, by = list(SpEol$ID), FUN = sum)
+    PC_50 <- aggregate(SpEol$pt_count, by = list(SpEol$FID), FUN = sum)
     names(PC_50)[ncol(PC_50)] <- "SpRo_M"
     OccSL_Re <- merge(OccSL_Re, PC_50, by.x = "FID", by.y = "Group.1", all.x = TRUE)
     OccSL_Re$SpRo_M[is.na(OccSL_Re$SpRo_M)] <- 0
@@ -122,7 +122,7 @@ Coord_eol <- function(points, names_coord, bs, bm, bl, layer) {
   SpEol <- BufferL
 
   if (length(BufferL$pt_count) > 0) {
-    PC_50 <- aggregate(SpEol$pt_count, by = list(SpEol$ID), FUN = sum)
+    PC_50 <- aggregate(SpEol$pt_count, by = list(SpEol$FID), FUN = sum)
     names(PC_50)[ncol(PC_50)] <- "SpRo_L"
     OccSL_Re <- merge(OccSL_Re, PC_50, by.x = "FID", by.y = "Group.1", all.x = TRUE)
     OccSL_Re$SpRo_L[is.na(OccSL_Re$SpRo_L)] <- 0
