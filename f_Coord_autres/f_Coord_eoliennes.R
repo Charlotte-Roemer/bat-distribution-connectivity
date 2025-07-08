@@ -142,37 +142,13 @@ Coord_eol <- function(points, names_coord, bs, bm, bl, layer) {
     st_transform(4326) # back transform to WGS84
 
   print("g")
-  print("OccSL_Re_WGS84")
-  print(head(OccSL_Re_WGS84))
 
-  OccSL_WGS84 <- OccSL %>%
-    st_transform(4326) # back transform to WGS84
-
-  OccSL_ARajouter <- subset(OccSL_Re_WGS84,
-    select = grepl(
-      "Sp",
-      names(OccSL_Re_WGS84)
-    )
-  )
-  fid <- OccSL_Re_WGS84 |>
-    dplyr::select("FID")
-
-
-  Reseau <- data.frame(cbind(
-    st_coordinates(OccSL_WGS84),
-    as.data.frame(OccSL_ARajouter)
-  ))
-  Reseau$FID <- fid
-  print("reseau")
-
-  print(head(Reseau))
-
-  Reseau <- Reseau %>%
+  OccSL_Re_WGS84 <- OccSL_Re_WGS84 %>%
     dplyr::select(!c(geometry))
 
   NewName <- paste0(FOccSL, "_Reseau.csv")
 
-  fwrite(Reseau, NewName)
+  fwrite(OccSL_Re_WGS84, NewName)
 
   # coordinates(Reseau) <- CoordH
 
