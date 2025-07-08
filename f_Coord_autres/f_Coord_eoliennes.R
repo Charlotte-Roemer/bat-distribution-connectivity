@@ -22,8 +22,7 @@ Coord_eol <- function(points, names_coord, bs, bm, bl, layer) {
   print("a")
   FOccSL <- points # grid points
   OccSL <- read_delim(paste0(FOccSL, ".csv")) %>%
-    select(names_coord)
-  OccSL$ID <- c(1:nrow(OccSL))
+    select(c("FID", "X", "Y"))
 
   OccSL <- OccSL %>%
     st_as_sf(coords = names_coord, crs = 4326, remove = FALSE) %>%
@@ -64,7 +63,7 @@ Coord_eol <- function(points, names_coord, bs, bm, bl, layer) {
   if (length(BufferS$pt_count) > 0) {
     PC_50 <- aggregate(SpEol$pt_count, by = list(SpEol$ID), FUN = sum)
     names(PC_50)[ncol(PC_50)] <- "SpRo_S"
-    OccSL_Re <- merge(OccSL, PC_50, by.x = "ID", by.y = "Group.1", all.x = , TRUE)
+    OccSL_Re <- merge(OccSL, PC_50, by.x = "FID", by.y = "Group.1", all.x = , TRUE)
     OccSL_Re$SpRo_S[is.na(OccSL_Re$SpRo_S)] <- 0
   } else {
     OccSL_Re <- OccSL
@@ -96,7 +95,7 @@ Coord_eol <- function(points, names_coord, bs, bm, bl, layer) {
     Sys.time()
     PC_50 <- aggregate(SpEol$pt_count, by = list(SpEol$ID), FUN = sum)
     names(PC_50)[ncol(PC_50)] <- "SpRo_M"
-    OccSL_Re <- merge(OccSL_Re, PC_50, by.x = "ID", by.y = "Group.1", all.x = TRUE)
+    OccSL_Re <- merge(OccSL_Re, PC_50, by.x = "FID", by.y = "Group.1", all.x = TRUE)
     OccSL_Re$SpRo_M[is.na(OccSL_Re$SpRo_M)] <- 0
   } else {
     OccSL_Re$SpRo_M <- 0
@@ -125,7 +124,7 @@ Coord_eol <- function(points, names_coord, bs, bm, bl, layer) {
   if (length(BufferL$pt_count) > 0) {
     PC_50 <- aggregate(SpEol$pt_count, by = list(SpEol$ID), FUN = sum)
     names(PC_50)[ncol(PC_50)] <- "SpRo_L"
-    OccSL_Re <- merge(OccSL_Re, PC_50, by.x = "ID", by.y = "Group.1", all.x = TRUE)
+    OccSL_Re <- merge(OccSL_Re, PC_50, by.x = "FID", by.y = "Group.1", all.x = TRUE)
     OccSL_Re$SpRo_L[is.na(OccSL_Re$SpRo_L)] <- 0
   } else {
     OccSL_Re$SpRo_L <- 0
