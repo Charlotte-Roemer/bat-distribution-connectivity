@@ -142,6 +142,8 @@ Coord_eol <- function(points, names_coord, bs, bm, bl, layer) {
     st_transform(4326) # back transform to WGS84
 
   print("g")
+  print("OccSL_Re_WGS84")
+  print(head(OccSL_Re_WGS84))
 
   OccSL_WGS84 <- OccSL %>%
     st_transform(4326) # back transform to WGS84
@@ -161,7 +163,9 @@ Coord_eol <- function(points, names_coord, bs, bm, bl, layer) {
     as.data.frame(OccSL_ARajouter)
   ))
   Reseau$FID <- fid
+  print("reseau")
 
+  print(head(Reseau))
 
   Reseau <- Reseau %>%
     dplyr::select(!c(geometry))
