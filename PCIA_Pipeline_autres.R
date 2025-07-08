@@ -70,7 +70,7 @@ print("Study area loaded.")
 
 
 ## Function folder :
-folderfun <- file.path(project_path, "f_Coord")
+folderfun <- file.path(project_path, "f_Coord_autres")
 
 
 # for testing purposes
@@ -95,121 +95,11 @@ loc_train_exists <- file.exists(file.path(obs_vars_folder, paste0(opt$csv, ".csv
 print(loc_train_exists)
 
 ## To extract predictors on observation points :
-if (opt$mode == "train" && loc_train_exists == FALSE) {
-  ## Load file with "latitude" "longitude" and "Nuit" (date) columns
-  ## CRS must be 4326
-  print("Loading observations")
-  nuits_obs_file <- file.path(
-    data_folder,
-    "observations",
-    "parti_unique_non_confi.csv"
-  )
-  nuits_obs <- read.csv2(nuits_obs_file)
-  print("Observations loaded")
 
-  nuits_obs$X <- nuits_obs$longitude
-  nuits_obs$Y <- nuits_obs$latitude
+FCoord <- file.path(obs_vars_folder, opt$csv)
+print(paste0("FCoord = ", FCoord))
+GridName <- basename(FCoord)
 
-  locs <- sf::st_as_sf(nuits_obs, coords = c("X", "Y"), remove = FALSE, crs = 4326)
-  ## rapide
-
-  locs <- locs[zone, ]
-  ## long
-  ## locs_intersects <- sf::st_intersection(locs, zone)
-
-  locs <- locs %>% dplyr::select(X, Y, Nuit)
-  locs$FID <- 1:nrow(locs)
-  # setting the fortnight number (1-24) :
-  print("Setting fortnight code")
-  locs$fortnight <-
-    ifelse(as.integer(format(as.Date(locs$Nuit), "%d")) <= 15L,
-      as.integer(format(as.Date(locs$Nuit), "%m")) * 2L - 1L,
-      as.integer(format(as.Date(locs$Nuit), "%m")) * 2L
-    )
-  locs$fortnight_year <- paste0(
-    locs$fortnight,
-    "_",
-    format(as.Date(locs$Nuit), "%Y")
-  )
-
-  locs_etrs89 <- locs %>% sf::st_transform(3035L)
-
-  grid_file <- file.path(
-    data_folder,
-    "GIS",
-    paste0(
-      "SysGrid_", opt$size, "m_de_cote_",
-      opt$region,
-      ".csv"
-    )
-  )
-  study_area <- zone
-  size <- as.integer(opt$size)
-  size_decal <- size / 2L
-  # buffer size is to be adapted depending on the study region
-  study_area_m <- st_transform(study_area, 3035L)
-  study_area_m_buf <- st_buffer(study_area_m, size_decal)
-
-  xmin <- st_bbox(study_area_m_buf)["xmin"] - size_decal
-  ymin <- st_bbox(study_area_m_buf)["ymin"] - size_decal
-  xmax <- st_bbox(study_area_m_buf)["xmax"] + size_decal
-  ymax <- st_bbox(study_area_m_buf)["ymax"] + size_decal
-
-
-  cols <- (xmax - xmin) / size
-  rows <- (ymax - ymin) / opt$size
-
-  print("Making grid over study area")
-  grid_polyg <- st_make_grid(study_area_m_buf,
-    cellsize = c(size, size),
-    offset = c(xmin, ymin),
-    n = c(cols, rows)
-  ) %>% st_as_sf()
-
-  print("Setting grid IDs")
-  grid_polyg$grid_id <- seq(1L, nrow(grid_polyg))
-
-  print("Attributing grid code to observations")
-  locs_etrs89 <- st_join(locs_etrs89, grid_polyg, join = st_covered_by)
-  width <- nchar(as.character(max(locs_etrs89$grid_id)))
-
-  print("Creating code from grid and fortnight_year")
-
-  locs_etrs89$code <- paste0(
-    str_pad(locs_etrs89$grid_id, width = width, pad = "0"),
-    "-",
-    locs_etrs89$fortnight_year
-  )
-
-
-  print("Getting codes from temp file, left joining them to locs")
-  codes <- locs_etrs89 %>%
-    dplyr::select(FID, code)
-  codes <- codes %>%
-    sf::st_drop_geometry()
-  locs <- locs %>%
-    dplyr::left_join(codes, by = "FID")
-  locs <- locs %>%
-    dplyr::select(-FID) %>%
-    sf::st_drop_geometry()
-  ## locs$X <- locs$longitude
-  ## locs$Y <- locs$latitude
-  print("Writting observations with codes file")
-
-  FCoord <- file.path(obs_vars_folder, paste0("loc_train_", opt$region))
-  readr::write_delim(locs, paste0(FCoord, ".csv"), delim = ",")
-  GridName <- basename(FCoord)
-  rm(grid_polyg)
-} else if (opt$mode == "train" && loc_train_exists == TRUE) {
-  print("train file existing already")
-
-  FCoord <- file.path(obs_vars_folder, opt$csv)
-  print(paste0("FCoord = ", FCoord))
-  GridName <- basename(FCoord)
-} else if (opt$mode == "predict") {
-  FCoord <- file.path(pred_vars_folder, paste0("SysGrid_", opt$size, "m_de_cote_", opt$region))
-  GridName <- basename(FCoord)
-}
 
 Coord_Headers <- c("X", "Y") # long and lat
 
@@ -382,13 +272,13 @@ Coord_Route(
   folder = folder_route
 )
 #
-# print("Meteo")
-# Coord_Meteo(
-#   points = FCoord,
-#   temp = layer_temp,
-#   prec = layer_precip,
-#   wind = layer_wind
-# )
+print("Meteo")
+Coord_Meteo(
+  points = FCoord,
+  temp = layer_temp,
+  prec = layer_precip,
+  wind = layer_wind
+)
 #
 ## loc_data <- file.path(loc, "data")
 
