@@ -153,11 +153,15 @@ Coord_eol <- function(points, names_coord, bs, bm, bl, layer) {
       names(OccSL_Re_WGS84)
     )
   )
+  fid <- OccSL_ARajouter |>
+    dplyr::(select("FID"))
+
 
   Reseau <- data.frame(cbind(
     st_coordinates(OccSL_WGS84),
     as.data.frame(OccSL_ARajouter)
   ))
+  Reseau$FID <- fid
 
 
   Reseau <- Reseau %>%
