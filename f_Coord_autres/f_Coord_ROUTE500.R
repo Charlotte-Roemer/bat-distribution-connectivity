@@ -274,9 +274,9 @@ Coord_Route <- function(points, names_coord, bs, bm, bl, folder) {
   ##########################################
   ##########################################
 
+  print(head(OccSL_L93Re))
   Reseau <- OccSL_L93Re |>
-    st_drop_geometry() |>
-    select(!geometry)
+    st_drop_geometry()
 
 
   NewName <- paste0(FOccSL, "_Transports.csv")
