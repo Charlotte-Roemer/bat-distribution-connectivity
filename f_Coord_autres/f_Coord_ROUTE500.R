@@ -32,7 +32,7 @@ Coord_Route <- function(points, names_coord, bs, bm, bl, folder) {
 
   OccSL <- read.csv(paste0(points, ".csv")) |>
     select(c("X", "Y", "FID"))
-  OccSL$FID <- c(1:nrow(OccSL))
+  # OccSL$FID <- c(1:nrow(OccSL))
   OccSL <- OccSL |>
     st_as_sf(coords = c("X", "Y"), crs = 4326, remove = FALSE)
 
@@ -280,11 +280,14 @@ Coord_Route <- function(points, names_coord, bs, bm, bl, folder) {
     st_transform(4326) # back transform to WGS84
 
   OccSL_ARajouter <- subset(OccSL_L93Re, select = grepl("Sp", names(OccSL_L93Re)))
+  fid <- OccSL_ARajouter |>
+    dplyr::(select("FID"))
 
   Reseau <- data.frame(cbind(
     st_coordinates(OccSL_WGS84),
     as.data.frame(OccSL_ARajouter)
   ))
+  Reseau$FID <- fid
 
   if (opt$mode == "predict") {
     Reseau$SpRo_dist <- 0

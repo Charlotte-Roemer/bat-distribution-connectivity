@@ -62,13 +62,6 @@ pred_vars_folder <- file.path(data_folder, "observations", "pred_vars")
 # }
 # }
 
-## loading study area
-# change to zone <− sf::st_read(zone_file, layer = opt$region) in production
-print("Loading study area...")
-zone <- sf::st_read(zone_file, layer = opt$region)
-print("Study area loaded.")
-
-
 ## Function folder :
 folderfun <- file.path(project_path, "f_Coord_autres")
 
