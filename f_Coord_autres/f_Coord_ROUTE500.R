@@ -280,7 +280,8 @@ Coord_Route <- function(points, names_coord, bs, bm, bl, folder) {
     st_transform(4326) # back transform to WGS84
 
   OccSL_ARajouter <- subset(OccSL_L93Re, select = grepl("Sp", names(OccSL_L93Re)))
-  fid <- OccSL_ARajouter |>
+
+  fid <- OccSL_WGS84 |>
     dplyr::select("FID")
 
   Reseau <- data.frame(cbind(

@@ -153,7 +153,7 @@ Coord_eol <- function(points, names_coord, bs, bm, bl, layer) {
       names(OccSL_Re_WGS84)
     )
   )
-  fid <- OccSL_ARajouter |>
+  fid <- OccSL_Re_WGS84 |>
     dplyr::select("FID")
 
 
