@@ -214,8 +214,8 @@ if (opt$mode == "train" && loc_train_exists == FALSE) {
 Coord_Headers <- c("X", "Y") # long and lat
 
 # buffers distances :
-BS <- 50
-BM <- 500
+BS <- 100
+BM <- 1000
 BL <- 5000
 
 print("Setting layers")
@@ -381,15 +381,15 @@ Coord_Route(
   bl = BL,
   folder = folder_route
 )
-
-print("Meteo")
-Coord_Meteo(
-  points = FCoord,
-  temp = layer_temp,
-  prec = layer_precip,
-  wind = layer_wind
-)
-
+#
+# print("Meteo")
+# Coord_Meteo(
+#   points = FCoord,
+#   temp = layer_temp,
+#   prec = layer_precip,
+#   wind = layer_wind
+# )
+#
 ## loc_data <- file.path(loc, "data")
 
 
