@@ -38,7 +38,6 @@ Coord_Route <- function(points, names_coord, bs, bm, bl, folder) {
 
   OccSL_L93 <- OccSL |>
     st_transform(2154)
-  CoordH <- names_coord
 
   BufferSmall <- bs
   BufferMedium <- bm
@@ -281,8 +280,9 @@ Coord_Route <- function(points, names_coord, bs, bm, bl, folder) {
 
 
   OccSL_ARajouter <- subset(OccSL_L93Re, select = grepl("Sp", names(OccSL_L93Re)))
-  print("OccSL_ARajouter")
-  print(head(OccSL_ARajouter))
+  print("OccSL_L93Re")
+  print(head(OccSL_L93Re))
+  stop()
 
   fid <- OccSL_WGS84 |>
     dplyr::select("FID")
