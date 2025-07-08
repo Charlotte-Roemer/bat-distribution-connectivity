@@ -154,7 +154,7 @@ Coord_eol <- function(points, names_coord, bs, bm, bl, layer) {
     )
   )
   fid <- OccSL_ARajouter |>
-    dplyr::(select("FID"))
+    dplyr::select("FID")
 
 
   Reseau <- data.frame(cbind(

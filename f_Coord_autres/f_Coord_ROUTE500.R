@@ -281,7 +281,7 @@ Coord_Route <- function(points, names_coord, bs, bm, bl, folder) {
 
   OccSL_ARajouter <- subset(OccSL_L93Re, select = grepl("Sp", names(OccSL_L93Re)))
   fid <- OccSL_ARajouter |>
-    dplyr::(select("FID"))
+    dplyr::select("FID")
 
   Reseau <- data.frame(cbind(
     st_coordinates(OccSL_WGS84),
