@@ -49,7 +49,6 @@ filename = os.path.splitext(filename_ext)[0]
 csv_folder = os.path.dirname(csv_file)
 
 
-
 observations = pd.read_csv(csv_file, sep=",", parse_dates=["Nuit"])
 
 # csv_file = "../data/dependances_fixes/loc_train.csv"
@@ -66,7 +65,7 @@ data = gpd.GeoDataFrame(
 # (function split_get has to be modified)
 # data_weathered = fun.split_get(data, 500, m=monthly)
 
-data_filtered = data.query("Nuit >= '2013-01-01' and Nuit < '2024-12-09'")
+data_filtered = data.query("Nuit >= '2011-01-01' and Nuit < '2024-12-09'")
 
 data_weathered = fun.get_open_weather_api_key(data_filtered)
 
