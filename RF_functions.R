@@ -25,15 +25,12 @@ fitvalpred_rf <- function(covariates,
   A <- Sys.time()
 
   print("variable names :")
-  print(names.Boruta)
-
-  print("variable names :")
   print(colnames(traindf))
 
   for (tree in ntree) {
     for (mtry in mtrys) {
       tune_mod <- caret::train(
-        x = as.data.frame(traindf)[, names.Boruta],
+        x = as.data.frame(traindf)[, covariates],
         y = as.data.frame(traindf)[, "acti_int_class"],
         method = "rf",
         importance = TRUE,
