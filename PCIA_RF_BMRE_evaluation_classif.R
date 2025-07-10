@@ -12,7 +12,6 @@ library(dplyr)
 library(stringr)
 library(sf)
 library(CAST)
-library(Boruta)
 library(caret)
 library(sfdep)
 source("variables.R")
@@ -410,28 +409,6 @@ for (i in seq_along(ListSp))
   DataSaison <- DataSaison |>
     drop_na(all_of(Prednames)) |> # deletes rows without predictor (outdated GI table)
     drop_na(nb_contacts) # deletes rows without contacts (people did not upload their data)
-  # print("lignes datasaison apres nettoyage prednames :")
-  # print(nrow(DataSaison))
-
-
-  # select only one value per 500m square :
-  # ... add code here
-  # print("Keeping only one night per 500sq/15days")
-  # DataTest <- DataSaison[duplicated(DataSaison$code), ]
-  # DataSaison <- DataSaison[!duplicated(DataSaison$code), ]
-  # print("Rows in training dataset")
-  # print(nrow(DataSaison))
-
-  # print("Rows removed")
-  # print(nrow(DataTest))
-
-  # filtering excessive values
-  # quant <- quantile(DataSaison$nb_contacts, probs = 0.98)
-  # print(head(DataSaison[, "nb_contacts"]))
-
-  # DataSaison <- DataSaison[DataSaison$nb_contacts <= quant, ]
-
-  # moran <- check_moran(DataSaison, "nb_contacts")
 
   cat("Predictors identified", fill = TRUE)
 
@@ -461,7 +438,6 @@ for (i in seq_along(ListSp))
   print(summary(testNA2))
   Sys.time()
 
-  names.Boruta <- Prednames
   #### Modelling ####-----------------------------------------------------------
 
   # Prepare random and spatial cross-validation indices
@@ -475,16 +451,8 @@ for (i in seq_along(ListSp))
       ListSp[i],
       "_temp_sfolds.rds"
     )
-  ) # quezaco?
-  # write.csv(
-  #   DataSaison,
-  #   file.path(
-  #     Output,
-  #     paste0(
-  #       ListSp[i], "_datatrainpreknndm.csv"
-  #     )
-  #   )
-  # )
+  )
+
   print("Load Area of Interest:")
   aoi <- sf::read_sf(
     dsn = args[4],
@@ -499,6 +467,7 @@ for (i in seq_along(ListSp))
     crs = 4326
   ) |>
     st_transform(2154)
+
   DataSaison_sf <- DataSaison_sf[aoi, ]
   DataSaison_sf$acti_class <- def_classes(DataSaison_sf)
 
@@ -537,7 +506,6 @@ for (i in seq_along(ListSp))
 
   sindx <- CAST::CreateSpacetimeFolds(DataSaison,
     spacevar = "sfold",
-    # timevar = "fortnight",
     class = "acti_class",
     k = 10
   )
@@ -572,163 +540,14 @@ for (i in seq_along(ListSp))
       )
     )
   )
-  # EDF model
-  # print("colnames pb")
-  # print(!(Prednames %in% colnames(DataSaison)))
+  DataSaison$acti_class <- factor(DataSaison$acti_class, levels = c("NoAct", "Faible", "Moyen", "Fort", "TresFort"))
 
-  # set.seed(123)
-  # EDFmod <- fitvalpred_rf_cat(
-  #   Prednames,
-  #   sctrl,
-  #   DataSaison
-  # )
-  #
-  # cat("Model done", fill = TRUE)
-  #
-  # #### Save ####----------------------------------------------------------------
-  #
-  # if (DoBoruta) {
-  #   suffix <- paste0("_Boruta_", "EDF", "_", ListSp[i])
-  # } else {
-  #   suffix <- paste0("EDF", "_", ListSp[i])
-  # }
-  #
-  #
-  # write.csv(
-  #   EDFmod$tab,
-  #   file.path(
-  #     Output,
-  #     paste0(
-  #       "Evaluation_",
-  #       ListSp[i],
-  #       Tag, "_",
-  #       date_limit,
-  #       "_",
-  #       suffix,
-  #       ".csv"
-  #     )
-  #   )
-  # )
-  #
-  # data.table::fwrite(EDFmod$graphmod, file.path(Output, paste0(suffix, ".csv")))
-  #
-  # write(ListSp[1L], file.path(Output, paste0(suffix, ".txt")))
-  # write("----", file.path(Output, paste0(suffix, ".txt")), append = TRUE)
-  # # write("Moran :", file.path(Output, paste0(suffix, ".txt")), append = TRUE)
-  # # write(moran, file.path(Output, paste0(suffix, ".txt")), append = TRUE)
-  # write("EDF", file.path(Output, paste0(suffix, ".txt")), append = TRUE)
-  # edf <- print(EDFmod$spatmod)
-  # write(edf, file.path(Output, paste0(suffix, ".txt")), append = TRUE)
-  #
-  #
-  # # saveRDS(EDFmod$tunemod, paste0(Output, "/RFtune_", ListSp[i]
-  # #                                ,Tag,"_", date_limit
-  # #                                ,"_", suffix, ".rds"))
-  # saveRDS(
-  #   EDFmod$spatmod,
-  #   file.path(
-  #     Output,
-  #     paste0(
-  #       "RFspat_",
-  #       ListSp[i],
-  #       Tag,
-  #       "_",
-  #       date_limit,
-  #       "_",
-  #       suffix,
-  #       ".rds"
-  #     )
-  #   )
-  # )
-  # rm("EDFmod")
-  #
-  # ## LatLong model
-  #
-  #
-  # #  remove EDF variables from names.boruta
-  testPred <- substr(names.Boruta, 1, 5) != "SpEDF"
-  names.Boruta <- names.Boruta[testPred]
-  #
-  # LatLongmod <- fitvalpred_rf_cat(
-  #   names.Boruta,
-  #   # rctrl,
-  #   sctrl,
-  #   DataSaison
-  #   # tempstack[[c(basecovs, proxycovs)]]
-  # )
-  #
-  # print("Model done")
-  #
-  # #### Save ####----------------------------------------------------------------
-  #
-  # if (DoBoruta == T) {
-  #   suffix <- paste0("_Boruta_", "LatLong", "_", ListSp[i])
-  # } else {
-  #   suffix <- paste0("LatLong", "_", ListSp[i])
-  # }
-  #
-  # write.csv(
-  #   LatLongmod$tab,
-  #   file.path(
-  #     Output,
-  #     paste0(
-  #       "Evaluation_",
-  #       ListSp[i],
-  #       Tag, "_",
-  #       date_limit,
-  #       "_",
-  #       suffix,
-  #       ".csv"
-  #     )
-  #   )
-  # )
-  #
-  #
-  # data.table::fwrite(LatLongmod$graphmod, file.path(Output, paste0(suffix, ".csv")))
-  #
-  # write("LatLong", file.path(Output, paste0(suffix, ".txt")), append = TRUE)
-  #
-  # latlng <- print(LatLongmod$spatmod)
-  # write(latlng, file.path(Output, paste0(suffix, ".txt")), append = TRUE)
-  #
-  # # saveRDS(EDFmod$tunemod, paste0(Output, "/RFtune_", ListSp[i]
-  # #                                ,Tag,"_", date_limit
-  # #                                ,"_", suffix, ".rds"))
-  # saveRDS(
-  #   LatLongmod$spatmod,
-  #   file.path(
-  #     Output,
-  #     paste0(
-  #       "RFspat_",
-  #       ListSp[i],
-  #       Tag,
-  #       "_",
-  #       date_limit,
-  #       "_",
-  #       suffix,
-  #       ".rds"
-  #     )
-  #   )
-  # )
-  # rm("LatLongmod")
-  #
+  selected_index <- get_prednames(DataSaison, Prednames, "acti_class")
+  Prednames <- Prednames[selected_index]
 
-  #  remove EDF variables from names.boruta
-
-  testPred <- substr(names.Boruta, 1, 5) != "Splat"
-  names.Boruta <- names.Boruta[testPred]
-  testPred <- substr(names.Boruta, 1, 5) != "Splon"
-  names.Boruta <- names.Boruta[testPred]
-  print("checkpoint3")
-  DataSaison$acti_class <- factor(DataSaison$acti_class, levels = c("Faible", "Moyen", "Fort", "TresFort"))
-
-  selected_index <- get_prednames(DataSaison, names.Boruta, "acti_class")
-  names.Boruta <- names.Boruta[selected_index]
-
-  print(names.Boruta)
   print("checkpoint4")
   noSpacemod <- fitvalpred_rf_cat(
-    names.Boruta,
+    Prednames,
     # rctrl,
     sctrl,
     DataSaison
