@@ -341,14 +341,6 @@ for (i in seq_along(ListSp))
 
 
   DataSaison$indice_gite <- as.numeric(DataSaison$indice_gite)
-  DataSaison$SpGite <- 0L
-  # DataSaison$gite[is.na(test$indice_gite)]  <- 0
-  DataSaison$SpGite[DataSaison$indice_gite > 0.5] <- 1L
-  # let’s remove data close to a potential colony
-  # DataSaison <- DataSaison[DataSaison$gite != 0L, ]
-  # print("lignes datasaison apres suppression gite :")
-  # print(nrow(DataSaison))
-
 
   # add date of year,
   if (grepl("/", DataSaison$Nuit[1L], fixed = TRUE)) {
@@ -377,28 +369,6 @@ for (i in seq_along(ListSp))
 
   coords <- as.data.frame(st_coordinates(DataSaison_sf))
 
-  # sf object with 5 points: the bounding box of the grid of points + the center
-  EDF <- rbind(
-    st_sf(geom = st_sfc(st_point(c(min(coords$X), min(coords$Y))))),
-    st_sf(geom = st_sfc(st_point(c(min(coords$X), max(coords$Y))))),
-    st_sf(geom = st_sfc(st_point(c(max(coords$X), min(coords$Y))))),
-    st_sf(geom = st_sfc(st_point(c(max(coords$X), max(coords$Y))))),
-    st_sf(geom = st_sfc(st_point(c(median(coords$X), median(coords$Y)))))
-  )
-  EDF <- st_set_crs(EDF, st_crs(DataSaison_sf))
-  EDF <- st_distance(DataSaison_sf, EDF) / 1000L # calculate distance between the point and each of these 5 points
-  EDF <- units::drop_units(EDF)
-  EDF <- as.data.frame(EDF)
-  names(EDF) <- paste0("EDF", 1L:5L)
-  DataSaison$SpEDF1 <- EDF$EDF1
-  DataSaison$SpEDF2 <- EDF$EDF2
-  DataSaison$SpEDF3 <- EDF$EDF3
-  DataSaison$SpEDF4 <- EDF$EDF4
-  DataSaison$SpEDF5 <- EDF$EDF5
-
-  DataSaison$Splatitude <- DataSaison$latitude
-  DataSaison$Splongitude <- DataSaison$longitude
-
   # Add material as predictor
   DataSaison$SpRecorder <- DataSaison$detecteur_enregistreur_type
   print("lignes datasaison apres edf :")
@@ -420,8 +390,6 @@ for (i in seq_along(ListSp))
   print("prednames: ")
   print(Prednames)
 
-  testPredLatLong <- substr(Prednames, 3L, 5L) != "EDF"
-  PrednamesLatLong <- Prednames[testPredLatLong] # for latlong only RF
 
   # Do not use species distribution area yet
   ListSpeciesDistribution <- c(
@@ -442,7 +410,6 @@ for (i in seq_along(ListSp))
   DataSaison <- DataSaison |>
     drop_na(all_of(Prednames)) |> # deletes rows without predictor (outdated GI table)
     drop_na(nb_contacts) # deletes rows without contacts (people did not upload their data)
-  DataSaison$SpGite <- NULL
   # print("lignes datasaison apres nettoyage prednames :")
   # print(nrow(DataSaison))
 
@@ -494,36 +461,7 @@ for (i in seq_along(ListSp))
   print(summary(testNA2))
   Sys.time()
 
-  cat("Boruta", fill = TRUE)
-
-  # Find Boruta formula (variable)
-  if (DoBoruta == T) {
-    cat("yes", fill = TRUE)
-    Dataset.Boruta <- data.frame("nb_contacts" = DataSaison$nb_contacts, DataSaison[, ..Prednames])
-    ModRFTemp.Boruta <- Boruta::Boruta(formula("nb_contacts ~."), # Build model
-      data = Dataset.Boruta,
-      doTrace = 2L, ntree = 500L, maxRuns = 100L
-    )
-    formula.Boruta <- try(getConfirmedFormula(ModRFTemp.Boruta)) # retrieve formula of selected variables if at least one was selected (error if none is selected)
-    if (inherits(formula.Boruta, "try-error")) {
-      formula.Boruta <- formula("nb_contacts ~.")
-      errorlog <- data.frame(
-        "message" = paste0(
-          "Boruta ended by not selecting any predictor for model ",
-          ListSp[i]
-        )
-      )
-      fwrite(errorlog, file.path(Output, paste0(ListSp[i], "_", Tag, "_log.txt")))
-    } else {
-      formula.Boruta <- getConfirmedFormula(ModRFTemp.Boruta)
-      names.Boruta <- getSelectedAttributes(ModRFTemp.Boruta)
-    }
-    cat("Formula found", fill = TRUE)
-  } else {
-    cat("no", fill = TRUE)
-    formula.Boruta <- formula("nb_contacts ~.")
-    names.Boruta <- Prednames
-  }
+  names.Boruta <- Prednames
   #### Modelling ####-----------------------------------------------------------
 
   # Prepare random and spatial cross-validation indices
