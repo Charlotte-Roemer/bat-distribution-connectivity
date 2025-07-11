@@ -317,3 +317,72 @@ check_moran <- function(in_data, tested_variable) {
 
   return(global_moran$I)
 }
+
+
+#------------------------------------------------------------------------------#
+#       Function to calculate Moran’s I for a variable on a dataset            #
+#------------------------------------------------------------------------------#
+
+prepare_period_data <- function(saison,
+                                starting_fortnight,
+                                ending_fortnight,
+                                data,
+                                aoi,
+                                mode) {
+  # Prepare random and spatial cross-validation indices
+  cat("Preparing cross-validation indices", fill = TRUE)
+  sfolds_source <- file.path(
+    Output,
+    paste0(
+      "VC",
+      ThresholdSort,
+      "_",
+      ListSp[i],
+      "_temp_sfolds_",
+      saison,
+      ".rds"
+    )
+  )
+
+  data_period <- data[between(data$fortnight, starting_fortnight, ending_fortnight), ]
+  set.seed(123)
+  data_period_sf <- st_as_sf(data_period,
+    coords = c(x = "longitude", y = "latitude"),
+    remove = FALSE,
+    crs = 4326
+  )
+
+
+  cat("Creating folds :", fill = TRUE)
+
+  sfolds <- CAST::knndm(data_period_sf, aoi, k = 10L, maxp = 0.5) # k = number of folds
+
+  saveRDS(sfolds, sfolds_source)
+
+  cat("sfolds written", fill = TRUE)
+
+  data_period$sfold <- sfolds$clusters
+
+  if (mode == "classification") {
+    data_period$acti_class <- def_classes(data_period)
+  }
+
+  if (mode == "classification") {
+    sindx <- CAST::CreateSpacetimeFolds(data_period,
+      spacevar = "sfold",
+      class = "acti_class",
+      k = 10
+    )
+  } else {
+    sindx <- CAST::CreateSpacetimeFolds(data_period,
+      spacevar = "sfold",
+      k = 10
+    )
+  }
+
+  cat("Cross-validation indices prepared", fill = TRUE)
+  list(
+    data = data_period,
+    sindx = sindx
+  )
+}

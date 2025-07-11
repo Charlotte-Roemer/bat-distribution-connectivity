@@ -36,10 +36,6 @@ option_list <- list(
     type = "character", default = "paper",
     help = 'Set modelling species between "paper", "all" or a 6 character species code (e.g. "Pippip")'
   ),
-  optparse::make_option(c("-b", "--boruta"),
-    type = "logical", default = FALSE,
-    help = "Do you want to execute boruta feature selection ? Default no (FALSE) "
-  ),
   optparse::make_option(c("-c", "--cure"),
     type = "logical", default = FALSE,
     help = "Do you want to randomly remove close data (spatially and temporally) ?"
@@ -84,9 +80,6 @@ CoordType <- "EDF" # Spatial proxies in predictors: "LongLat" = X + Y ;
 YearEffect <- TRUE # Add year?
 # MTRY = "default"  # "default" or "npred" or "2-3" for 2/3 of npred
 ## NTREE <- 500
-
-# Do variable selection?
-DoBoruta <- opt$boruta
 
 #### Setting Directories ####--------------------------------------------------
 
@@ -231,338 +224,264 @@ DataCPL3 <- subset(DataCPL3, !is.na(DataCPL3$nb_contacts))
 test2 <- nrow(DataCPL3)
 ifelse(test1 == test2, print("ok"), stop("NA present in activity data!"))
 
-# List species to model
-SpeciesList <- fread(args[3]) # read species list
-ListSp <- levels(as.factor(DataCPL3$espece))
-ListSp <- subset(ListSp, ListSp %in% SpeciesList$Esp)
-if (!is.na(GroupSel)) {
-  SpSel <- subset(SpeciesList, SpeciesList$Group %in% GroupSel)
-  ListSp <- subset(ListSp, ListSp %in% SpSel$Esp)
-}
-
-if (Sp == "all" || Sp == "All") {
-  ListSp <- ListSp
-} else if (Sp == "paper") {
-  ListSp <- ListPaper
-} else {
-  ListSp <- Sp
-}
 
 #### Prepare dataset for each species ####------------------------------------------------------
 
-print(ListSp)
-for (i in seq_along(ListSp))
-{
-  DataSp <- subset(DataCPL3, DataCPL3$espece == ListSp[i]) # subset species
-  # DataSp=subset(DataCPL3,DataCPL3$espece==Sp) # subset species
-  print(ListSp[i])
-  START1 <- Sys.time()
+DataSp <- subset(DataCPL3, DataCPL3$espece == Sp) # subset species
+# DataSp=subset(DataCPL3,DataCPL3$espece==Sp) # subset species
+print(Sp)
+START1 <- Sys.time()
 
-  # TEST
-  # write.csv(DataSp,
-  #      file.path(Output,
-  #        paste0(
-  #          ListSp[i], "_datasp.txt"
-  #        )
-  #      )
-  #    )
-  #
-  # stop("fin du test data")
-  # Adds 0 counts using the observation table (avoids user errors but makes the
-  # assumption that this table always contains at least 1 species per night)
-  DataCPL3_unique <- DataCPL3 |> # prepares the table of the complete set of sampled nights/sites
-    select(participation, Nuit, num_micro) |>
-    unique()
+# Adds 0 counts using the observation table (avoids user errors but makes the
+# assumption that this table always contains at least 1 species per night)
 
-  DataCPL3_unique$Nuit <- as.Date(DataCPL3_unique$Nuit)
+DataCPL3_unique <- DataCPL3 |> # prepares the table of the complete set of sampled nights/sites
+  select(participation, Nuit, num_micro) |>
+  unique()
 
-  DataSp$Nuit <- as.Date(DataSp$Nuit)
-  DataCPL3$Nuit <- as.Date(DataCPL3$Nuit)
-  DataSpSL_w0_2 <- full_join(DataSp, DataCPL3_unique) # Adds the nights with absence
-  colnames(DataSpSL_w0_2)[which(colnames(DataSpSL_w0_2) == "point")] <- "nom"
+DataCPL3_unique$Nuit <- as.Date(DataCPL3_unique$Nuit)
 
-  # performs a partial join (updates columns of DataSpSL_w0_2 with info of SelParSL)
-  n <- names(SelParSL)
-  DataSpSL_w0_2 <- DataSpSL_w0_2[SelParSL, on = .(participation), (n) := mget(paste0("i.", n))]
+DataSp$Nuit <- as.Date(DataSp$Nuit)
+DataCPL3$Nuit <- as.Date(DataCPL3$Nuit)
+DataSpSL_w0_2 <- full_join(DataSp, DataCPL3_unique) # Adds the nights with absence
+colnames(DataSpSL_w0_2)[which(colnames(DataSpSL_w0_2) == "point")] <- "nom"
 
-  DataSpSL_w0_2$nb_contacts[is.na(DataSpSL_w0_2$nb_contacts)] <- 0L
-  DataSpSL_w0_2$score_max[is.na(DataSpSL_w0_2$score_max)] <- 0L
-  DataSpSL_w0_2$groupe[is.na(DataSpSL_w0_2$groupe)] <- "bat"
-  DataSpSL_w0_2$espece[is.na(DataSpSL_w0_2$espece)] <- ListSp[i]
+# performs a partial join (updates columns of DataSpSL_w0_2 with info of SelParSL)
+n <- names(SelParSL)
+DataSpSL_w0_2 <- DataSpSL_w0_2[SelParSL, on = .(participation), (n) := mget(paste0("i.", n))]
+
+DataSpSL_w0_2$nb_contacts[is.na(DataSpSL_w0_2$nb_contacts)] <- 0L
+DataSpSL_w0_2$score_max[is.na(DataSpSL_w0_2$score_max)] <- 0L
+DataSpSL_w0_2$groupe[is.na(DataSpSL_w0_2$groupe)] <- "bat"
+DataSpSL_w0_2$espece[is.na(DataSpSL_w0_2$espece)] <- Sp
 
 
-  # Exclude sites outside France limits (square) :
-  DataSpSL_w0_2 <- subset(DataSpSL_w0_2, DataSpSL_w0_2$longitude < 10L &
-    DataSpSL_w0_2$longitude > -6L &
-    DataSpSL_w0_2$latitude < 52L & DataSpSL_w0_2$latitude > 41L)
+# Exclude sites outside France limits (square) :
+DataSpSL_w0_2 <- subset(DataSpSL_w0_2, DataSpSL_w0_2$longitude < 10L &
+  DataSpSL_w0_2$longitude > -6L &
+  DataSpSL_w0_2$latitude < 52L & DataSpSL_w0_2$latitude > 41L)
 
-  # Exclude data with obvious wrong date (<2010)
-  DataSpSL_w0_2 <- DataSpSL_w0_2[which(DataSpSL_w0_2$Nuit > as.Date("2010-01-01")), ]
+# Exclude data with obvious wrong date (<2010)
+DataSpSL_w0_2 <- DataSpSL_w0_2[which(DataSpSL_w0_2$Nuit > as.Date("2010-01-01")), ]
+DataSpSL_w0_2$Nuit <- as.Date(DataSpSL_w0_2$Nuit)
 
-  # write.csv(
-  #   DataSpSL_w0_2,
-  #   file.path(
-  #     Output,
-  #     paste0(
-  #       "ListSp[i]", "_dataspslw0.csv"
-  #     )
-  #   )
-  # )
+CoordPS$Nuit <- as.Date(CoordPS$Nuit)
+DataSaison <- inner_join(DataSpSL_w0_2, CoordPS,
+  by = c("longitude", "latitude", "Nuit", "participation")
+) # adds environmental variables to activity data
 
-  DataSpSL_w0_2$Nuit <- as.Date(DataSpSL_w0_2$Nuit)
-  CoordPS$Nuit <- as.Date(CoordPS$Nuit)
-  DataSaison <- inner_join(DataSpSL_w0_2, CoordPS,
-    by = c("longitude", "latitude", "Nuit", "participation")
-  ) # adds environmental variables to activity data
-  print("lignes datasaison :")
-  print(nrow(DataSaison))
-  print("colonnes datasaison")
-  print(ncol(DataSaison))
-  print(Sys.time())
+print("lignes datasaison :")
+print(nrow(DataSaison))
+print("colonnes datasaison")
+print(ncol(DataSaison))
+print(Sys.time())
 
-  cat("Absence data added", fill = TRUE)
-  # lets add the "gites" information
+cat("Absence data added", fill = TRUE)
+# lets add the "gites" information
 
-  data_gites <- read.csv2(file_gites)
+data_gites <- read.csv2(file_gites)
 
-  data_gites <- data_gites |>
-    dplyr::select(participation, espece, Nuit, num_micro, indice_gite)
+data_gites <- data_gites |>
+  dplyr::select(participation, espece, Nuit, num_micro, indice_gite)
 
-  data_gites$Nuit <- as.Date(data_gites$Nuit)
+data_gites$Nuit <- as.Date(data_gites$Nuit)
 
-  DataSaison <- left_join(
-    DataSaison, data_gites,
-    by = c("participation", "Nuit", "num_micro", "espece")
+DataSaison <- left_join(
+  DataSaison, data_gites,
+  by = c("participation", "Nuit", "num_micro", "espece")
+)
+
+print("lignes datasaison apres gite :")
+print(nrow(DataSaison))
+
+
+DataSaison$indice_gite <- as.numeric(DataSaison$indice_gite)
+
+# add date of year,
+if (grepl("/", DataSaison$Nuit[1L], fixed = TRUE)) {
+  Date1 <- as.Date(substr(DataSaison$Nuit, 1L, 10L),
+    format = "%Y/%m/%Y"
   )
+} else {
+  Date1 <- as.Date(DataSaison$Nuit)
+}
 
-  print("lignes datasaison apres gite :")
-  print(nrow(DataSaison))
+SpFDate <- yday(Date1)
+DataSaison$SpCDate <- cos(SpFDate / 365L * 2L * pi) # to create a circular variable for date
+DataSaison$SpSDate <- sin(SpFDate / 365L * 2L * pi) # to create a circular variable for date
+
+# If year effect must be accounted for
+if (YearEffect) {
+  DataSaison$SpYear <- year(Date1)
+}
+
+DataSaison_sf <- sf::st_as_sf(
+  DataSaison,
+  coords = c(x = "longitude", y = "latitude"),
+  crs = 4326L
+) |>
+  sf::st_transform(2154L)
+
+coords <- as.data.frame(st_coordinates(DataSaison_sf))
+
+# Add material as predictor
+DataSaison$SpRecorder <- DataSaison$detecteur_enregistreur_type
+print("lignes datasaison apres edf :")
+print(nrow(DataSaison))
 
 
-  DataSaison$indice_gite <- as.numeric(DataSaison$indice_gite)
+# Identify predictors
+# DataSaison <- DataSaison |> # removing medium and large buffers
+#   dplyr::select(!dplyr::ends_with("S"))
+# DataSaison <- DataSaison |>
+#   dplyr::select(!dplyr::ends_with("L"))
+#
+testPred <- startsWith(names(DataSaison), "Sp")
+Prednames <- names(DataSaison)[testPred]
 
-  # add date of year,
-  if (grepl("/", DataSaison$Nuit[1L], fixed = TRUE)) {
-    Date1 <- as.Date(substr(DataSaison$Nuit, 1L, 10L),
-      format = "%Y/%m/%Y"
+clc <- startsWith(Prednames, "SpHC")
+Prednames <- Prednames[!clc]
+Prednames <- Prednames[!(Prednames %in% variables_a_exclure)]
+print("prednames: ")
+print(Prednames)
+
+
+# Do not use species distribution area yet
+ListSpeciesDistribution <- c(
+  "SpBarbar", "SpMinpal", "SpMinsch", "SpMyoalc", "SpMyobec", "SpMyobly",
+  "SpMyobra", "SpMyocap", "SpMyodas", "SpMyodau", "SpMyodav", "SpMyoema",
+  "SpMyoesc", "SpMyomyo", "SpMyomys", "SpMyonat", "SpMyopun", "SpMyosch",
+  "SpNyclas", "SpNyclei", "SpNycnoc", "SpPiphan", "SpPipkuh", "SpPipnat",
+  "SpPippip", "SpPippyg", "SpPleaur", "SpPleaus", "SpPlechr", "SpPlekol",
+  "SpPlemac", "SpPlesar", "SpRhibla", "SpRhieur", "SpRhifer", "SpRhihip",
+  "SpRhimeh", "SpTadten", "SpVesmur", "SpEptana", "SpEptbot", "SpEptisa",
+  "SpEptnil", "SpEptser", "SpHypsav"
+)
+Prednames <- Prednames[which(!Prednames %in% ListSpeciesDistribution)]
+
+Predictors <- DataSaison[, ..Prednames]
+
+DataSaison <- DataSaison |>
+  drop_na(all_of(Prednames)) |> # deletes rows without predictor (outdated GI table)
+  drop_na(nb_contacts) # deletes rows without contacts (people did not upload their data)
+
+cat("Predictors identified", fill = TRUE)
+
+# Statistics for paper
+
+Stat1 <- DataSaison |>
+  group_by(latitude, longitude, nom) |>
+  count()
+cat(
+  paste0(
+    "N opportunistic sites = ", length(which(grepl("Z", Stat1$nom))),
+    " over a total of ", nrow(Stat1), " sites"
+  ),
+  fill = TRUE
+)
+cat(
+  paste0(
+    "N opportunistic nights = ", length(which(grepl("Z", DataSaison$nom))),
+    " over a total of ", nrow(DataSaison), " nights"
+  ),
+  fill = TRUE
+)
+
+testNA <- apply(Predictors, MARGIN = 2, FUN = function(x) sum(is.na(x)))
+print(summary(testNA))
+testNA2 <- apply(Predictors, MARGIN = 1, FUN = function(x) sum(is.na(x)))
+print(summary(testNA2))
+Sys.time()
+
+#### Modelling ####-----------------------------------------------------------
+
+print("Load Area of Interest:")
+aoi <- sf::read_sf(
+  dsn = args[4],
+  layer = opt$region
+) |>
+  st_transform(2154)
+
+print("Prep data saison as sf object :")
+DataSaison_sf <- st_as_sf(DataSaison,
+  coords = c(x = "longitude", y = "latitude"),
+  remove = FALSE,
+  crs = 4326
+) |>
+  st_transform(2154)
+
+DataSaison_sf <- DataSaison_sf[aoi, ]
+
+if (opt$keep) {
+  DataTest_sf <- DataSaison_sf[DataSaison_sf$SpYear == 2019, ]
+  DataSaison_sf <- DataSaison_sf[DataSaison_sf$SpYear != 2019, ]
+  DataTest <- DataTest_sf |>
+    st_drop_geometry()
+}
+
+if (opt$keep) {
+  write.csv(
+    DataTest,
+    file.path(
+      Output,
+      paste0(
+        Sp, "_datatest.csv"
+      )
     )
-  } else {
-    Date1 <- as.Date(DataSaison$Nuit)
-  }
-
-  SpFDate <- yday(Date1)
-  DataSaison$SpCDate <- cos(SpFDate / 365L * 2L * pi) # to create a circular variable for date
-  DataSaison$SpSDate <- sin(SpFDate / 365L * 2L * pi) # to create a circular variable for date
-
-  # If year effect must be accounted for
-  if (YearEffect) {
-    DataSaison$SpYear <- year(Date1)
-  }
-
-  DataSaison_sf <- sf::st_as_sf(
-    DataSaison,
-    coords = c(x = "longitude", y = "latitude"),
-    crs = 4326L
-  ) |>
-    sf::st_transform(2154L)
-
-  coords <- as.data.frame(st_coordinates(DataSaison_sf))
-
-  # Add material as predictor
-  DataSaison$SpRecorder <- DataSaison$detecteur_enregistreur_type
-  print("lignes datasaison apres edf :")
-  print(nrow(DataSaison))
-
-
-  # Identify predictors
-  # DataSaison <- DataSaison |> # removing medium and large buffers
-  #   dplyr::select(!dplyr::ends_with("S"))
-  # DataSaison <- DataSaison |>
-  #   dplyr::select(!dplyr::ends_with("L"))
-  #
-  testPred <- startsWith(names(DataSaison), "Sp")
-  Prednames <- names(DataSaison)[testPred]
-
-  clc <- startsWith(Prednames, "SpHC")
-  Prednames <- Prednames[!clc]
-  Prednames <- Prednames[!(Prednames %in% variables_a_exclure)]
-  print("prednames: ")
-  print(Prednames)
-
-
-  # Do not use species distribution area yet
-  ListSpeciesDistribution <- c(
-    "SpBarbar", "SpMinpal", "SpMinsch", "SpMyoalc", "SpMyobec", "SpMyobly",
-    "SpMyobra", "SpMyocap", "SpMyodas", "SpMyodau", "SpMyodav", "SpMyoema",
-    "SpMyoesc", "SpMyomyo", "SpMyomys", "SpMyonat", "SpMyopun", "SpMyosch",
-    "SpNyclas", "SpNyclei", "SpNycnoc", "SpPiphan", "SpPipkuh", "SpPipnat",
-    "SpPippip", "SpPippyg", "SpPleaur", "SpPleaus", "SpPlechr", "SpPlekol",
-    "SpPlemac", "SpPlesar", "SpRhibla", "SpRhieur", "SpRhifer", "SpRhihip",
-    "SpRhimeh", "SpTadten", "SpVesmur", "SpEptana", "SpEptbot", "SpEptisa",
-    "SpEptnil", "SpEptser", "SpHypsav"
   )
-  Prednames <- Prednames[which(!Prednames %in% ListSpeciesDistribution)]
+}
 
-  Predictors <- DataSaison[, ..Prednames]
-  PredictorsLatLong <- DataSaison[, ..PrednamesLatLong]
-
-  DataSaison <- DataSaison |>
-    drop_na(all_of(Prednames)) |> # deletes rows without predictor (outdated GI table)
-    drop_na(nb_contacts) # deletes rows without contacts (people did not upload their data)
-
-  cat("Predictors identified", fill = TRUE)
-
-  # Statistics for paper
-
-  Stat1 <- DataSaison |>
-    group_by(latitude, longitude, nom) |>
-    count()
-  cat(
-    paste0(
-      "N opportunistic sites = ", length(which(grepl("Z", Stat1$nom))),
-      " over a total of ", nrow(Stat1), " sites"
-    ),
-    fill = TRUE
-  )
-  cat(
-    paste0(
-      "N opportunistic nights = ", length(which(grepl("Z", DataSaison$nom))),
-      " over a total of ", nrow(DataSaison), " nights"
-    ),
-    fill = TRUE
-  )
-
-  testNA <- apply(Predictors, MARGIN = 2, FUN = function(x) sum(is.na(x)))
-  print(summary(testNA))
-  testNA2 <- apply(Predictors, MARGIN = 1, FUN = function(x) sum(is.na(x)))
-  print(summary(testNA2))
-  Sys.time()
-
-  #### Modelling ####-----------------------------------------------------------
-
-  # Prepare random and spatial cross-validation indices
-  cat("Preparing cross-validation indices", fill = TRUE)
-  sfolds_source <- file.path(
+write.csv(
+  DataSaison,
+  file.path(
     Output,
     paste0(
-      "VC",
-      ThresholdSort,
-      "_",
-      ListSp[i],
-      "_temp_sfolds.rds"
+      Sp, "_datatrain.csv"
     )
   )
+)
 
-  print("Load Area of Interest:")
-  aoi <- sf::read_sf(
-    dsn = args[4],
-    layer = opt$region
-  ) |>
-    st_transform(2154)
-
-  print("Prep data saison as sf object :")
-  DataSaison_sf <- st_as_sf(DataSaison,
-    coords = c(x = "longitude", y = "latitude"),
-    remove = FALSE,
-    crs = 4326
-  ) |>
-    st_transform(2154)
-
-  DataSaison_sf <- DataSaison_sf[aoi, ]
-  DataSaison_sf$acti_class <- def_classes(DataSaison_sf)
-
-  if (opt$keep) {
-    # last_year <- max(DataSaison$SpYear)
-    DataTest_sf <- DataSaison_sf[DataSaison_sf$SpYear == 2019, ]
-    DataSaison_sf <- DataSaison_sf[DataSaison_sf$SpYear != 2019, ]
-    DataTest <- DataTest_sf |>
-      st_drop_geometry()
-  }
-  DataSaison <- DataSaison_sf |>
-    st_drop_geometry()
-
-  set.seed(123)
-
-
-  START <- Sys.time()
-  print("Creating folds :")
-  sfolds <- CAST::knndm(DataSaison_sf, aoi, k = 10, maxp = 0.5) # k = number of folds
-  END <- Sys.time()
-  print(END - START) # 1 to 1.4 hours
-  # beep(2)
-  saveRDS(sfolds, sfolds_source)
-  print("sfolds written")
-
-  DataSaison$sfold <- sfolds$clusters
-
-
-  if ("acti_class" %in% colnames(DataSaison)) {
-    print("acticlass ok")
-  }
-
-  if ("sfold" %in% colnames(DataSaison)) {
-    print("sfold ok")
-  }
-
-  sindx <- CAST::CreateSpacetimeFolds(DataSaison,
-    spacevar = "sfold",
-    class = "acti_class",
-    k = 10
+for (saison in c("spring", "summer", "autumn")) {
+  # Prepare random and spatial cross-validation indices
+  cat("Preparing cross-validation indices", fill = TRUE)
+  period <- prepare_period_data(
+    saison,
+    "start",
+    "end",
+    DataSaison,
+    aoi,
+    "classification"
   )
-  print("checkpoint1")
+
+  sindx <- period$sindx
+  data_period <- period$data
+
   sctrl <- caret::trainControl(
     method = "cv",
     index = sindx$index,
     savePredictions = "final"
   )
 
-  print("checkpoint2")
   cat("Cross-validation indices prepared", fill = TRUE)
 
-  if (opt$keep) {
-    write.csv(
-      DataTest,
-      file.path(
-        Output,
-        paste0(
-          ListSp[i], "_datatest.csv"
-        )
-      )
-    )
-  }
 
-  write.csv(
-    DataSaison,
-    file.path(
-      Output,
-      paste0(
-        ListSp[i], "_datatrain.csv"
-      )
-    )
-  )
-  DataSaison$acti_class <- factor(DataSaison$acti_class, levels = c("NoAct", "Faible", "Moyen", "Fort", "TresFort"))
+  data_period$acti_class <- factor(data_period$acti_class, levels = c("NoAct", "Faible", "Moyen", "Fort", "TresFort"))
 
-  selected_index <- get_prednames(DataSaison, Prednames, "acti_class")
+  selected_index <- get_prednames(data_period, Prednames, "acti_class")
   Prednames <- Prednames[selected_index]
 
   print("checkpoint4")
   noSpacemod <- fitvalpred_rf_cat(
     Prednames,
-    # rctrl,
     sctrl,
-    DataSaison
-    # tempstack[[c(basecovs, proxycovs)]]
+    data_period
   )
 
   print("Model done")
 
   #### Save ####----------------------------------------------------------------
 
-  if (DoBoruta == T) {
-    suffix <- paste0("_Boruta_", "noSpace", "_", ListSp[i])
-  } else {
-    suffix <- paste0("noSpace", "_", ListSp[i])
-  }
+  suffix <- paste0("noSpace", "_", saison, "_", Sp)
 
   write.csv(
     noSpacemod$tab,
@@ -570,7 +489,7 @@ for (i in seq_along(ListSp))
       Output,
       paste0(
         "Evaluation_",
-        ListSp[i],
+        Sp,
         Tag, "_",
         date_limit,
         "_",
@@ -588,7 +507,7 @@ for (i in seq_along(ListSp))
 
   write(nosp, file.path(Output, paste0(suffix, ".txt")), append = TRUE)
 
-  # saveRDS(EDFmod$tunemod, paste0(Output, "/RFtune_", ListSp[i]
+  # saveRDS(EDFmod$tunemod, paste0(Output, "/RFtune_", Sp
   #                                ,Tag,"_", date_limit
   #                                ,"_", suffix, ".rds"))
   saveRDS(
@@ -597,7 +516,7 @@ for (i in seq_along(ListSp))
       Output,
       paste0(
         "RFspat_",
-        ListSp[i],
+        Sp,
         Tag,
         "_",
         date_limit,
@@ -612,13 +531,5 @@ for (i in seq_along(ListSp))
 
   END1 <- Sys.time()
   print(END1 - START1)
-  print(paste("Model done for", ListSp[i]))
+  print(paste("Model done for", Sp))
 }
-
-
-## print(ListSp[i])
-## print(ThresholdSort)
-## if (DoBoruta) {
-##   print(paste0("Variables before selection = ", length(Predictors)))
-##   print(paste0("Variables after selection = ", length(names.Boruta)))
-## }
