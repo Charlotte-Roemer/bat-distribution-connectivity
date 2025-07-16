@@ -80,7 +80,6 @@ ListPaper <- c(
 
 date_limit <- opt$date
 # Predictors and model specs
-CoordType <- "EDF" # Spatial proxies in predictors: "LongLat" = X + Y ;
 # "EDF" = X + Y + Euclidian Distance Fields ;  "noCoord" = no coordinates
 YearEffect <- TRUE # Add year?
 # MTRY = "default"  # "default" or "npred" or "2-3" for 2/3 of npred
@@ -358,27 +357,6 @@ for (i in seq_along(ListSp))
   print(length(DataSaison$nb_contacts))
 
   # sf object with 5 points: the bounding box of the grid of points + the center
-  EDF <- rbind(
-    st_sf(geom = st_sfc(st_point(c(min(coords$X), min(coords$Y))))),
-    st_sf(geom = st_sfc(st_point(c(min(coords$X), max(coords$Y))))),
-    st_sf(geom = st_sfc(st_point(c(max(coords$X), min(coords$Y))))),
-    st_sf(geom = st_sfc(st_point(c(max(coords$X), max(coords$Y))))),
-    st_sf(geom = st_sfc(st_point(c(median(coords$X), median(coords$Y)))))
-  )
-  EDF <- st_set_crs(EDF, st_crs(DataSaison_sf))
-  EDF <- st_distance(DataSaison_sf, EDF) / 1000L # calculate distance between the point and each of these 5 points
-  EDF <- units::drop_units(EDF)
-  EDF <- as.data.frame(EDF)
-  names(EDF) <- paste0("EDF", 1L:5L)
-  DataSaison$SpEDF1 <- EDF$EDF1
-  DataSaison$SpEDF2 <- EDF$EDF2
-  DataSaison$SpEDF3 <- EDF$EDF3
-  DataSaison$SpEDF4 <- EDF$EDF4
-  DataSaison$SpEDF5 <- EDF$EDF5
-
-  DataSaison$Splatitude <- DataSaison$latitude
-  DataSaison$Splongitude <- DataSaison$longitude
-
   # Add material as predictor
   DataSaison$SpRecorder <- DataSaison$detecteur_enregistreur_type
 
@@ -403,9 +381,6 @@ for (i in seq_along(ListSp))
   print(Prednames)
 
 
-  testPredLatLong <- substr(Prednames, 3L, 5L) != "EDF"
-  PrednamesLatLong <- Prednames[testPredLatLong] # for latlong only RF
-
   # Do not use species distribution area yet
   ListSpeciesDistribution <- c(
     "SpBarbar", "SpMinpal", "SpMinsch", "SpMyoalc", "SpMyobec", "SpMyobly",
@@ -420,7 +395,6 @@ for (i in seq_along(ListSp))
   Prednames <- Prednames[which(!Prednames %in% ListSpeciesDistribution)]
 
   Predictors <- DataSaison[, ..Prednames]
-  PredictorsLatLong <- DataSaison[, ..PrednamesLatLong]
 
   DataSaison <- DataSaison |>
     drop_na(all_of(Prednames)) |> # deletes rows without predictor (outdated GI table)
@@ -691,8 +665,6 @@ for (i in seq_along(ListSp))
   #  remove EDF variables from names.boruta
   print("names.boruta before spedf removal")
   print(names.Boruta)
-  testPred <- substr(names.Boruta, 1, 5) != "SpEDF"
-  names.Boruta <- names.Boruta[testPred]
 
   # LatLongmod <- fitvalpred_rf(
   #   names.Boruta,
