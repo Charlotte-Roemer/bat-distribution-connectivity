@@ -539,7 +539,11 @@ for (i in seq_along(ListSp))
       )
     )
   )
-  DataSaison$acti_class <- factor(DataSaison$acti_class, levels = c("NoAct", "Faible", "Moyen", "Fort", "TresFort"))
+  if (!"faible" %in% unique(DataSaison$acti_class)) {
+    DataSaison$acti_class <- factor(DataSaison$acti_class, levels = c("NoAct", "Moyen", "Fort", "TresFort"))
+  } else {
+    DataSaison$acti_class <- factor(DataSaison$acti_class, levels = c("NoAct", "Faible", "Moyen", "Fort", "TresFort"))
+  }
   print("classes:")
   print(unique(DataSaison$acti_class))
 
