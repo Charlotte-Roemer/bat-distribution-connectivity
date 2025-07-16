@@ -518,6 +518,7 @@ for (i in seq_along(ListSp))
   cat("Cross-validation indices prepared", fill = TRUE)
 
   if (opt$keep) {
+    print("keep")
     write.csv(
       DataTest,
       file.path(
