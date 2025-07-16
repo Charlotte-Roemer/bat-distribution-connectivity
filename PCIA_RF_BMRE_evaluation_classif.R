@@ -540,6 +540,8 @@ for (i in seq_along(ListSp))
     )
   )
   DataSaison$acti_class <- factor(DataSaison$acti_class, levels = c("NoAct", "Faible", "Moyen", "Fort", "TresFort"))
+  print("classes:")
+  print(unique(DataSaison$acti_class))
 
   selected_index <- get_prednames(DataSaison, Prednames, "acti_class")
   Prednames <- Prednames[selected_index]
