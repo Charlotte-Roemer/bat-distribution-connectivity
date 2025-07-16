@@ -79,7 +79,6 @@ ListPaper <- c(
 
 date_limit <- opt$date
 # Predictors and model specs
-CoordType <- "EDF" # Spatial proxies in predictors: "LongLat" = X + Y ;
 # "EDF" = X + Y + Euclidian Distance Fields ;  "noCoord" = no coordinates
 YearEffect <- TRUE # Add year?
 # MTRY = "default"  # "default" or "npred" or "2-3" for 2/3 of npred
@@ -404,7 +403,6 @@ for (i in seq_along(ListSp))
   Prednames <- Prednames[which(!Prednames %in% ListSpeciesDistribution)]
 
   Predictors <- DataSaison[, ..Prednames]
-  PredictorsLatLong <- DataSaison[, ..PrednamesLatLong]
 
   DataSaison <- DataSaison |>
     drop_na(all_of(Prednames)) |> # deletes rows without predictor (outdated GI table)
