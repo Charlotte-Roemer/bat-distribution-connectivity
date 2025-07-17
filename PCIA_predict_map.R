@@ -29,6 +29,10 @@ option_list <- list(
   optparse::make_option(c("-r", "--region"),
     type = "character", default = "france_met",
     help = "Which area do you want to predict on ?"
+  ),
+  optparse::make_option(c("-g", "--grid"),
+    type = "character", default = "500",
+    help = "Which size is your grid in meters (500, 200, 100) ?"
   )
 )
 
@@ -57,7 +61,7 @@ model <- file.path(
 )
 
 # for france only right now more to come in opt$
-empty_raster_file <- file.path(data_path, "GIS", paste0(opt$region, "_500m_L93.tif"))
+empty_raster_file <- file.path(data_path, "GIS", paste0(opt$region, "_", opt$grid, "m_L93.tif"))
 empty_raster <- terra::rast(empty_raster_file)
 
 model <- readRDS(model)
