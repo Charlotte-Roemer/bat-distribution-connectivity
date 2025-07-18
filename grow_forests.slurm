@@ -18,4 +18,4 @@ module load gdal
 module load udunits
 module load R/4.3.1
 
-Rscript PCIA_RF_BMRE_evaluation.R -s "Minsch" -t "50" -d $(date +%Y-%m-%d) -r "france_met"
+Rscript PCIA_RF_BMRE_evaluation.R -s "Eptser" -t "50" -d $(date +%Y-%m-%d) -r "idf" -k FALSE 

@@ -137,6 +137,7 @@ map <- terra::rasterize(
 
 terra::writeRaster(
   x = map,
+  overwrite = TRUE,
   filename = file.path(model_location, paste0(
     "RFspat_",
     "VC",
