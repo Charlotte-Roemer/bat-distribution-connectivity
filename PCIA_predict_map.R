@@ -106,7 +106,9 @@ print("data ready")
 pred_data_sf <- st_as_sf(pred_data, coords = c(x = "X", y = "Y"), crs = 4326L) |>
   st_transform(2154)
 
-coords <- as.data.frame(st_coordinates(pred_data_sf))
+print("data_sf ok")
+
+# coords <- as.data.frame(st_coordinates(pred_data_sf))
 
 # sf object with 5 points: the bounding box of the grid of points + the center
 # EDF <- rbind(
@@ -133,6 +135,7 @@ X_pred <- pred_data_sf |>
   sf::st_drop_geometry()
 X_pred[is.na(X_pred)] <- 0
 
+print("X pred done")
 y_pred <- predict(model, X_pred)
 
 print("prediction done!")
