@@ -101,6 +101,7 @@ for (variable in missing_vars) {
   pred_data[[variable]] <- 0
 }
 
+print("data ready")
 
 pred_data_sf <- st_as_sf(pred_data, coords = c(x = "X", y = "Y"), crs = 4326L) |>
   st_transform(2154)
