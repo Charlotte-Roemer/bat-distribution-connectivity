@@ -135,6 +135,7 @@ X_pred[is.na(X_pred)] <- 0
 
 y_pred <- predict(model, X_pred)
 
+print("prediction done!")
 x_predict_map <- cbind(pred_data_sf, y_pred)
 
 map <- terra::rasterize(
@@ -142,6 +143,7 @@ map <- terra::rasterize(
   field = "y_pred",
   fun = "mean"
 )
+print("raster ready")
 
 terra::writeRaster(
   x = map,
@@ -161,3 +163,5 @@ terra::writeRaster(
     ".tif"
   ))
 )
+
+print("raster written")
