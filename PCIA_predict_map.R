@@ -66,7 +66,6 @@ empty_raster <- terra::rast(empty_raster_file)
 
 model <- readRDS(model)
 
-str(model)
 
 pred_data_file <- file.path(
   data_path,
@@ -95,6 +94,13 @@ pred_data$SpSDate <- sin(SpFDate / 365 * 2L * pi) # to create a circular variabl
 pred_data$SpYear <- lubridate::year(pred_data$Nuit)
 pred_data$Splongitude <- pred_data$X
 pred_data$Splatitude <- pred_data$Y
+missing_vars <- setdiff(train_names, pred_names) # pour connaitre les colonnes à ajouter
+
+# for predicting over paris with france data
+for (variable in missing_vars) {
+  pred_data[[variable]] <- 0
+}
+
 
 pred_data_sf <- st_as_sf(pred_data, coords = c(x = "X", y = "Y"), crs = 4326L) |>
   st_transform(2154)
