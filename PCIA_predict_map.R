@@ -77,6 +77,7 @@ pred_data_file <- file.path(
 
 pred_data <- data.table::fread(pred_data_file)
 
+pres_data$SpRecorder <- "SM4"
 # ajouter colonnes nécessaires : spGite, spcosdaysinday
 
 train_names <- colnames(model$trainingData)
