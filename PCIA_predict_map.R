@@ -148,6 +148,21 @@ map <- terra::rasterize(
 )
 print("raster ready")
 
+print("path")
+print(file.path(model_location, paste0(
+  "RFspat_",
+  "VC",
+  opt$threshold,
+  "_",
+  opt$date_trained,
+  "_",
+  opt$method,
+  "_",
+  opt$species,
+  "_",
+  opt$region,
+  ".tif"
+)))
 terra::writeRaster(
   x = map,
   overwrite = TRUE,
