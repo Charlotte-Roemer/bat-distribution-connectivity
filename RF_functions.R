@@ -134,7 +134,8 @@ fitvalpred_rf <- function(covariates,
 
 fitvalpred_rf_cat <- function(covariates,
                               spatial_ctrl,
-                              traindf) {
+                              traindf,
+                              samp_sizes) {
   # # 1. Tune (find the best mtry)
   print("tuning model")
   mtrys <- c(17, 75, 100) # removed 200
@@ -161,6 +162,8 @@ fitvalpred_rf_cat <- function(covariates,
         importance = TRUE,
         trControl = tune_ctrl,
         ntree = tree,
+        strata = traindf$acti_class,
+        sampsize = samp_sizes,
         tuneGrid = data.frame(mtry = mtry)
       )
       print("r2")

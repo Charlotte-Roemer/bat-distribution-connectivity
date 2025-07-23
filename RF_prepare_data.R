@@ -184,14 +184,15 @@ def_int_classes <- function(data) {
 #            Function to select best predictors with VSURF                     #
 #------------------------------------------------------------------------------#
 
-get_prednames <- function(df, prednames, response_var) {
+get_prednames <- function(df, prednames, response_var, samp_vector = NULL) {
   predictors <- df |>
     dplyr::select(all_of(prednames))
 
   if (response_var == "acti_class") {
     vsurf <- VSURF::VSURF(predictors,
       df$acti_class,
-      parallel = TRUE
+      parallel = TRUE,
+      sampsize = samp_vector
     )
   } else {
     response <- as.vector(df$nb_contacts)

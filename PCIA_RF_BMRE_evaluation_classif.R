@@ -207,27 +207,13 @@ cat("General dataset prepared", fill = TRUE)
 
 # Identify the variable to predict as nb_contacts
 DataCPL3$nb_contacts <- subset(DataCPL3, select = args[10])[, 1]
-# TEST
 
-# write.csv(DataCPL3,
-#      file.path(Output,
-#        paste0(
-#          "test_dat", "_datacpl3.txt"
-#        )
-#      )
-#    )
 test1 <- nrow(DataCPL3)
+
 DataCPL3 <- subset(DataCPL3, !is.na(DataCPL3$nb_contacts))
 
-# TEST
-# write.csv(DataCPL3,
-#      file.path(Output,
-#        paste0(
-#          "test_dat", "_datacpl3cleaned.txt"
-#        )
-#      )
-#    )
 test2 <- nrow(DataCPL3)
+
 ifelse(test1 == test2, print("ok"), stop("NA present in activity data!"))
 
 # List species to model
@@ -257,16 +243,6 @@ for (i in seq_along(ListSp))
   print(ListSp[i])
   START1 <- Sys.time()
 
-  # TEST
-  # write.csv(DataSp,
-  #      file.path(Output,
-  #        paste0(
-  #          ListSp[i], "_datasp.txt"
-  #        )
-  #      )
-  #    )
-  #
-  # stop("fin du test data")
   # Adds 0 counts using the observation table (avoids user errors but makes the
   # assumption that this table always contains at least 1 species per night)
   DataCPL3_unique <- DataCPL3 |> # prepares the table of the complete set of sampled nights/sites
@@ -298,15 +274,6 @@ for (i in seq_along(ListSp))
   # Exclude data with obvious wrong date (<2010)
   DataSpSL_w0_2 <- DataSpSL_w0_2[which(DataSpSL_w0_2$Nuit > as.Date("2010-01-01")), ]
 
-  # write.csv(
-  #   DataSpSL_w0_2,
-  #   file.path(
-  #     Output,
-  #     paste0(
-  #       "ListSp[i]", "_dataspslw0.csv"
-  #     )
-  #   )
-  # )
 
   DataSpSL_w0_2$Nuit <- as.Date(DataSpSL_w0_2$Nuit)
   CoordPS$Nuit <- as.Date(CoordPS$Nuit)
@@ -546,8 +513,9 @@ for (i in seq_along(ListSp))
   }
   print("classes:")
   print(unique(DataSaison$acti_class))
+  samp_sizes <- def_sample_vector(DataSaison, "acti_class", 0.66)
 
-  selected_index <- get_prednames(DataSaison, Prednames, "acti_class")
+  selected_index <- get_prednames(DataSaison, Prednames, "acti_class", samp_sizes)
   Prednames <- Prednames[selected_index]
 
   print("checkpoint4")
@@ -555,7 +523,8 @@ for (i in seq_along(ListSp))
     Prednames,
     # rctrl,
     sctrl,
-    DataSaison
+    DataSaison,
+    samp_sizes
     # tempstack[[c(basecovs, proxycovs)]]
   )
 
