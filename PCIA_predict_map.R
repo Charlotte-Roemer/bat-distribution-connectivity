@@ -178,6 +178,8 @@ terra::writeRaster(
     opt$species,
     "_",
     opt$region,
+    "_",
+    opt$date_to_predict,
     ".tif"
   ))
 )
