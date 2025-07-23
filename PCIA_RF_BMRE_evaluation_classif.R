@@ -433,6 +433,14 @@ for (i in seq_along(ListSp))
   ) |>
     st_transform(2154)
 
+  if (opt$keep) {
+    # last_year <- max(DataSaison$SpYear)
+    DataTest_sf <- DataSaison_sf[DataSaison_sf$SpYear == 2019, ]
+    DataSaison_sf <- DataSaison_sf[DataSaison_sf$SpYear != 2019, ]
+    DataTest <- DataTest_sf |>
+      st_drop_geometry()
+  }
+
   DataSaison_sf <- DataSaison_sf[aoi, ]
   DataSaison_sf$acti_class <- def_classes(DataSaison_sf)
 
