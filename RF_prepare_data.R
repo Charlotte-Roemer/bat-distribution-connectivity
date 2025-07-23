@@ -131,12 +131,11 @@ prepare_data <- function(args, fpar, fsl) {
 #                     Function to classify activity                            #
 #------------------------------------------------------------------------------#
 
-
 def_classes <- function(data) {
-  # data <- data[data$nb_contacts > 0, ]
+  data_no_zero <- data[data$nb_contacts > 0, ]
   quant <- quantile(
-    x = unlist(data$nb_contacts),
-    c(0.25, 0.75, 0.98),
+    x = unlist(data_no_zero$nb_contacts),
+    c(0.25, 0.50, 0.75),
     na.rm = TRUE
   )
   data$acti_class[data$nb_contacts <= quant[1]] <- "Faible"
@@ -148,16 +147,28 @@ def_classes <- function(data) {
   data$acti_class
 }
 
+
+
+
+#------------------------------------------------------------------------------#
+#           Function to produce equilibrate sample size vector                 #
+#------------------------------------------------------------------------------#
+
+def_sample_vector <- function(data, column, proportion) {
+  prop <- ceiling(proportion * min(summary(data[[column]])))
+  rep(prop, length(summary(data[[column]])))
+}
+
 #------------------------------------------------------------------------------#
 #                     Function to classify activity                            #
 #------------------------------------------------------------------------------#
 
 
 def_int_classes <- function(data) {
-  # data <- data[data$nb_contacts > 0, ]
+  data_no_zero <- data[data$nb_contacts > 0, ]
   quant <- quantile(
-    x = unlist(data$nb_contacts),
-    c(0.25, 0.75, 0.98),
+    x = unlist(data_no_zero$nb_contacts),
+    c(0.25, 0.50, 0.75),
     na.rm = TRUE
   )
   data$acti_class[data$nb_contacts <= quant[1]] <- 1
