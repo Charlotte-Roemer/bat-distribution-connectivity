@@ -161,6 +161,8 @@ print(file.path(model_location, paste0(
   opt$species,
   "_",
   opt$region,
+  "_",
+  opt$date_to_predict,
   ".tif"
 )))
 terra::writeRaster(
