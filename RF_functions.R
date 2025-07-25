@@ -88,7 +88,7 @@ fitvalpred_rf <- function(covariates,
 
   spatial_mod <- caret::train(
     x = as.data.frame(traindf)[, covariates], # train model
-    y = as.data.frame(traindf)[, "acti_int_class"],
+    y = as.data.frame(traindf)[, "nb_contacts"],
     method = "rf",
     importance = TRUE,
     trControl = spatial_ctrl,
