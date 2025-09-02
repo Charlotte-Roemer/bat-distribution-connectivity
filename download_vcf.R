@@ -12,15 +12,12 @@ region <- st_read(vector_data,
 source("/home/bbk9/Documents/asellia/Barba_2024/prep_data_chiros/scripts/_vars.R") # contains username, password for earthdata
 
 
-
 get_vcf <- function(year_start, year_end, chemin, variable_name,
                     custom_shape = NULL) {
-  if {
-    custom_shape <- if (is.character(custom_shape) == TRUE) {
-      read_sf(custom_shape)
-    } else {
-      custom_shape
-    }
+  custom_shape <- if (is.character(custom_shape) == TRUE) {
+    read_sf(custom_shape)
+  } else {
+    custom_shape
   }
   temp_folder <- file.path(chemin, "temp")
   if (!file.exists(chemin)) {
