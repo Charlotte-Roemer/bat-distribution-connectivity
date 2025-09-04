@@ -29,4 +29,9 @@ option.
 
 Needs EOSDIS access
 
-Then I made a script "download_modis" to get the rasters
+Then I made a script "download_modis" to get the rasters.
+It will download them with name format "MOD44B.061.2023.europe.tif" for yearly
+data. EPSG is 4326 but can be set differently
+
+TODO: transform nodata to 0 (no data is for water surfaces, so no vegetation
+cover)
