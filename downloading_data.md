@@ -15,7 +15,9 @@ AOI before sending them to in2p3.
 
 ## MODIS VCF
 
+install.packages('RcppArmadillo')
+install.packages('luna', repos='https://rspatial.r-universe.dev')
+
 published from 2017 to 2023, no  deprecated
-need to identify tile(s) to download and use download_vcf.R script.
 
 Needs EOSDIS access
