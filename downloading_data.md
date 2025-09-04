@@ -15,9 +15,18 @@ AOI before sending them to in2p3.
 
 ## MODIS VCF
 
-install.packages('RcppArmadillo')
-install.packages('luna', repos='https://rspatial.r-universe.dev')
+S2 is needed to install modisfast, installing it with apt was easier to me :
 
-published from 2017 to 2023, no  deprecated
+```bash
+sudo apt install r-cran-s2
+```
+```R
+devtools::install_github("ptaconet/modisfast")
+# as of today (2025-09-04 VCF is accessible only through the development version)
+```
+If this command asks for S2 updates, you can probably avoid it and select "none"
+option.
 
 Needs EOSDIS access
+
+Then I made a script "download_modis" to get the rasters

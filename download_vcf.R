@@ -5,7 +5,7 @@ library(dplyr)
 library(tidyr)
 library(rvest)
 
-vector_data <- "/home/bbk9/Nextcloud/tsevere/projet_git_BMRE/data/GIS/regions.gpkg"
+vector_data <- "/home/tsevere/Documents/mnhn/projet_git_BMRE/data/GIS/regions.gpkg"
 region <- st_read(vector_data,
   layer = "europe"
 )
