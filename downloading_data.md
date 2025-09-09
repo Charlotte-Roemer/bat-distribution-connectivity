@@ -33,3 +33,34 @@ Then I made a script "download_modis" to get the rasters.
 It will download them with name format "MOD44B.061.2023.europe.tif" for yearly
 data. EPSG is 4326 but can be set differently
 
+## BD ALTI (elevation)
+
+Can be downloaded using download_alti.R script
+
+## BD TOPAGE 2023
+
+water data to be downloaded [there](https://www.data.gouv.fr/api/1/datasets/r/ebbcbe0f-aabe-4c19-9a46-93ad55990223)
+
+## Corine Land Cover (landuse)
+
+Can be downloaded [there](https://land.copernicus.eu/en/products/corine-land-cover?tab=datasets), only 2012 and 2018 are needed.
+
+
+## OSO Land Cover
+
+Should eventualy appear [there](https://catalogue.theia.data-terra.org/).
+
+## Routes 500 (french Roads)
+
+Can be downloaded [there](https://data.geopf.fr/telechargement/download/ROUTE500/ROUTE500_3-0__SHP_LAMB93_FXX_2021-11-03/ROUTE500_3-0__SHP_LAMB93_FXX_2021-11-03.7z).
+
+
+## World clim and normals
+
+can be downloaded [there](https://envicloud.wsl.ch/#/?bucket=https%3A%2F%2Fos.zhdk.cloud.switch.ch%2Fchelsav2%2F&prefix=%2F)
+
+## Wind data
+
+Can be downloaded [there](https://globalwindatlas.info/en/download/gis-files)
+and then cropped to europe for limiting stockage.
+
