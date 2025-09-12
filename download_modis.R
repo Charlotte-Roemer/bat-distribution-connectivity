@@ -23,7 +23,7 @@ if (dir.exists(dl_path)) {
 
 # connection au service
 log <- mf_login(credentials = c(username, password))
-roi <- st_read(vector_data,
+roi <- st_read(roi,
   layer = region
 )
 
@@ -40,7 +40,6 @@ collection <- "MOD44B.061"
 # to get possible variables execute :  mf_list_variables(collection)
 
 variables <- "Percent_Tree_Cover"
-class(roi)
 
 urls <- mf_get_url(
   collection = collection,
