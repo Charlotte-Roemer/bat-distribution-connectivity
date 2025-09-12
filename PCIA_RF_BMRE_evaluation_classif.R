@@ -289,24 +289,24 @@ for (i in seq_along(ListSp))
   cat("Absence data added", fill = TRUE)
   # lets add the "gites" information
 
-  data_gites <- read.csv2(file_gites)
-
-  data_gites <- data_gites |>
-    dplyr::select(participation, espece, Nuit, num_micro, indice_gite)
-
-  data_gites$Nuit <- as.Date(data_gites$Nuit)
-
-  DataSaison <- left_join(
-    DataSaison, data_gites,
-    by = c("participation", "Nuit", "num_micro", "espece")
-  )
-
-  print("lignes datasaison apres gite :")
-  print(nrow(DataSaison))
-
-
-  DataSaison$indice_gite <- as.numeric(DataSaison$indice_gite)
-
+  # data_gites <- read.csv2(file_gites)
+  #
+  # data_gites <- data_gites |>
+  #   dplyr::select(participation, espece, Nuit, num_micro, indice_gite)
+  #
+  # data_gites$Nuit <- as.Date(data_gites$Nuit)
+  #
+  # DataSaison <- left_join(
+  #   DataSaison, data_gites,
+  #   by = c("participation", "Nuit", "num_micro", "espece")
+  # )
+  #
+  # print("lignes datasaison apres gite :")
+  # print(nrow(DataSaison))
+  #
+  #
+  # DataSaison$indice_gite <- as.numeric(DataSaison$indice_gite)
+  #
   # add date of year,
   if (grepl("/", DataSaison$Nuit[1L], fixed = TRUE)) {
     Date1 <- as.Date(substr(DataSaison$Nuit, 1L, 10L),
