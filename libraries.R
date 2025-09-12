@@ -1,4 +1,5 @@
 libs <- unique(c(
+  "VSURF",
   "gdata",
   "data.table",
   "sf",
