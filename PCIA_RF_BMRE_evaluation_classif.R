@@ -4,6 +4,7 @@
 
 # This script is adapted from Mila et al. (preprint)
 
+source("variables.R")
 library(data.table)
 library(randomForest)
 library(gdata)
@@ -14,7 +15,6 @@ library(sf)
 library(CAST)
 library(caret)
 library(sfdep)
-source("variables.R")
 source("variables_sel.R")
 source("RF_prepare_data.R")
 source("RF_functions.R")
