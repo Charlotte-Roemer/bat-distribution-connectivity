@@ -45,7 +45,7 @@ option_list <- list(
     help = "Do you want to randomly remove close data (spatially and temporally) ?"
   ),
   optparse::make_option(c("-d", "--date"),
-    type = "character",
+    type = "character", default = Sys.Date(),
     help = "Necessary : pass date when script is run with $(date +%Y-%m-%d)"
   ),
   optparse::make_option(c("-k", "--keep"),
