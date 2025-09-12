@@ -1,4 +1,6 @@
 libs <- unique(c(
+  "gdata",
+  "data.table",
   "sf",
   "sfdep",
   "caret",
