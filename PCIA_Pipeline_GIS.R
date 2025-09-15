@@ -1,9 +1,9 @@
+source("variables.R")
 library(exactextractr)
 library(optparse)
 library(dplyr)
 library(stringr)
 library(sf)
-source("variables.R")
 
 
 # Setup project folder (must contain folders scripts, data, outputs):
