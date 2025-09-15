@@ -229,6 +229,7 @@ if (opt$region %in% c("idf", "france_met")) {
   layer_Carthage_C <- file.path(data_folder, "GIS", "BD_TOPAGE_2023-shp", "TronconHydrographique_FXX.shp")
   folder_CLC <- file.path(data_folder, "GIS", "CLC")
   folder_OCS <- file.path(data_folder, "GIS", "OCS_OSO")
+  folder_MOS <- file.path(data_folder, "GIS", "MOS_OSO")
   folder_route <- file.path(data_folder, "GIS", "ROUTE500_3-0__SHP_LAMB93_FXX_2021-11-03")
   clim_norm_folder <- file.path(data_folder, "GIS", "CLIM_NORM")
   layer_wind_turbines <- file.path(data_folder, "GIS", "wind_turbines", "Mats_service_TOTAL.shp")
@@ -356,6 +357,17 @@ for (i in 1:length(listfun))
 #   bm = BM,
 #   bl = BL,
 #   layer = folder_CLC
+# )
+
+## MOS Land Cover ####
+# print("MOS")
+# Coord_MOSraster(
+#   points = FCoord,
+#   names_coord = c(Coord_Headers, "Nuit"),
+#   bs = BS,
+#   bm = BM,
+#   bl = BL,
+#   layer = folderMOS_
 # )
 
 #

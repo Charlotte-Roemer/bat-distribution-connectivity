@@ -1,7 +1,7 @@
-print("load CLCraster")
+print("load mosraster")
 
-Coord_CLCraster <- function(points, names_coord, bm, bl, layer) {
-  print("CLCraster")
+Coord_mosraster <- function(points, names_coord, bm, bl, layer) {
+  print("mosraster")
   print(points)
   library(data.table)
   library(dplyr)
@@ -42,37 +42,34 @@ Coord_CLCraster <- function(points, names_coord, bm, bl, layer) {
   OccSL_L93$year <- sapply(strsplit(OccSL_L93$Nuit, "-"), "[", 1)
   unique_years <- unique(OccSL_L93$year)
 
-
-  BufferMedium <- bm
-  BufferLarge <- bl
-
   # début ajout extraction nuit (à adapter)
   ## nuits_uniques <- unique(OccSL_L93$Nuit)
+  tableaux_s <- list()
   tableaux_m <- list()
   tableaux_l <- list()
-  clc_files <- list.files(folder_CLC,
+  mos_files <- list.files(layer,
     recursive = TRUE,
     pattern = "tif$",
     full.names = TRUE
   )
 
 
-clc_annees <- as.vector(
-  as.integer(
-    substring(
-      sapply(
-        strsplit(
-          tools::file_path_sans_ext(
-            basename(clc_files)
-          ), "_"
-        ), "[", 2
-      ), 4, 7
+  mos_annees <- as.vector(
+    as.integer(
+      substring(
+        sapply(
+          strsplit(
+            tools::file_path_sans_ext(
+              basename(mos_files)
+            ), "_"
+          ), "[", 2
+        ), 4, 7
+      )
     )
   )
-)
 
 
-  # extract CLC habitats
+  # extract mos habitats
   options(dplyr.summarise.inform = FALSE) # to quiet the message produced by the sumarize function below
 
   # test
@@ -85,18 +82,33 @@ clc_annees <- as.vector(
     tableau_year <- OccSL_L93[OccSL_L93$year == year, ]
     ## annee <- as.integer(strsplit(nuit, "-")[[1]][1])
 
-    # Determine which clc year is closest
-    clc_file <- clc_files[which.min(abs(clc_annees - as.integer(year)))]
+    # Determine which mos year is closest
+    mos_file <- mos_files[which.min(abs(mos_annees - as.integer(year)))]
 
-    CLC <- terra::rast(clc_file)
+    mos <- terra::rast(mos_file)
     # create a buffer around the points
+
+    tableau_BS <- st_buffer(tableau_year, bs) %>%
+      st_transform(3035)
     tableau_BM <- st_buffer(tableau_year, bm) %>%
       st_transform(3035)
     tableau_BL <- st_buffer(tableau_year, bl) %>%
       st_transform(3035)
 
+    # Extract values in small buffer
+    landcov_fracs_Small <- exact_extract(mos, tableau_BS, function(df) {
+      df %>%
+        mutate(frac_total = coverage_fraction / sum(coverage_fraction)) %>%
+        group_by(FID, value) %>%
+        summarize(freq = sum(frac_total))
+    }, summarize_df = TRUE, include_cols = "FID", progress = FALSE)
+
+    # Append small buffer list
+    tableaux_s <- rlist::list.append(tableaux_s, landcov_fracs_Small
+
+
     # Extract values in medium buffer
-    landcov_fracs_Medium <- exact_extract(CLC, tableau_BM, function(df) {
+    landcov_fracs_Medium <- exact_extract(mos, tableau_BM, function(df) {
       df %>%
         mutate(frac_total = coverage_fraction / sum(coverage_fraction)) %>%
         group_by(FID, value) %>%
@@ -107,7 +119,7 @@ clc_annees <- as.vector(
     tableaux_m <- rlist::list.append(tableaux_m, landcov_fracs_Medium)
 
     # Extract values in large buffer
-    landcov_fracs_Large <- exact_extract(CLC, tableau_BL, function(df) {
+    landcov_fracs_Large <- exact_extract(mos, tableau_BL, function(df) {
       df %>%
         mutate(frac_total = coverage_fraction / sum(coverage_fraction)) %>%
         group_by(FID, value) %>%
@@ -118,97 +130,28 @@ clc_annees <- as.vector(
     tableaux_l <- rlist::list.append(tableaux_l, landcov_fracs_Large)
   }
   # Concatenate lists of tibbles
+  tableaux_s_bind <- do.call("rbind", tableaux_s)
   tableaux_m_bind <- do.call("rbind", tableaux_m)
   tableaux_l_bind <- do.call("rbind", tableaux_l)
-  tableaux_m_nv2 <- tableaux_m_bind
-  tableaux_m_nv3 <- tableaux_m_bind
-  tableaux_l_nv2 <- tableaux_l_bind
-  tableaux_l_nv3 <- tableaux_l_bind
 
-  tableaux_m_nv2$valuenv2 <- round(tableaux_m_nv2$value / 10, 0)
-  nv2m <- tableaux_m_nv2 %>%
-    dplyr::select(c("FID", "valuenv2", "freq")) %>%
-    group_by(FID, valuenv2) %>%
-    summarize(freq = sum(freq))
+landcov_fracs_Small_pivot <- tableaux_s_bind %>%
+    tidyr::pivot_wider(names_from = "value", values_from = "freq") %>% # pivot to use mos values as column names
+    dplyr::rename_with(~ paste0("SpMOS", ., "S"), -FID) %>%
+    replace(is.na(.), 0)
 
-  tableaux_m_nv3$valuenv3 <- round(tableaux_m_nv3$value / 100, 0)
-  nv3m <- tableaux_m_nv3 %>%
-    dplyr::select(c("FID", "valuenv3", "freq")) %>%
-    group_by(FID, valuenv3) %>%
-    summarize(freq = sum(freq))
-
-  tableaux_l_nv2$valuenv2 <- round(tableaux_l_nv2$value / 10, 0)
-  nv2l <- tableaux_l_nv2 %>%
-    dplyr::select(c("FID", "valuenv2", "freq")) %>%
-    group_by(FID, valuenv2) %>%
-    summarize(freq = sum(freq))
-
-  tableaux_l_nv3$valuenv3 <- round(tableaux_l_nv3$value / 100, 0)
-  nv3l <- tableaux_l_nv3 %>%
-    dplyr::select(c("FID", "valuenv3", "freq")) %>%
-    group_by(FID, valuenv3) %>%
-    summarize(freq = sum(freq))
-
-
-
-  #  Pivot tibbles and rename columns
+ # Pivot tibbles and rename columns
   landcov_fracs_Medium_pivot <- tableaux_m_bind %>%
-    tidyr::pivot_wider(names_from = "value", values_from = "freq") %>% # pivot to use CLC values as column names
-    dplyr::rename_with(~ paste0("SpHC", ., "M"), -FID) %>%
+    tidyr::pivot_wider(names_from = "value", values_from = "freq") %>% # pivot to use mos values as column names
+    dplyr::rename_with(~ paste0("SpMOS", ., "M"), -FID) %>%
     replace(is.na(.), 0)
 
   landcov_fracs_Large_pivot <- tableaux_l_bind %>%
-    tidyr::pivot_wider(names_from = "value", values_from = "freq") %>% # pivot to use CLC values as column names
-    dplyr::rename_with(~ paste0("SpHC", ., "L"), -FID) %>%
-    replace(is.na(.), 0)
-
-  landcov_fracs_Medium_nv2_pivot <- nv2m %>%
-    tidyr::pivot_wider(names_from = "valuenv2", values_from = "freq") %>% # pivot to use CLC values as column names
-    dplyr::rename_with(~ paste0("SpHC", ., "M"), -FID) %>%
-    replace(is.na(.), 0)
-
-  landcov_fracs_Large_nv2_pivot <- nv2l %>%
-    tidyr::pivot_wider(names_from = "valuenv2", values_from = "freq") %>% # pivot to use CLC values as column names
-    dplyr::rename_with(~ paste0("SpHC", ., "L"), -FID) %>%
-    replace(is.na(.), 0)
-
-  landcov_fracs_Medium_nv3_pivot <- nv3m %>%
-    tidyr::pivot_wider(names_from = "valuenv3", values_from = "freq") %>% # pivot to use CLC values as column names
-    dplyr::rename_with(~ paste0("SpHC", ., "M"), -FID) %>%
-    replace(is.na(.), 0)
-
-  landcov_fracs_Large_nv3_pivot <- nv3l %>%
-    tidyr::pivot_wider(names_from = "valuenv3", values_from = "freq") %>% # pivot to use CLC values as column names
-    dplyr::rename_with(~ paste0("SpHC", ., "L"), -FID) %>%
+    tidyr::pivot_wider(names_from = "value", values_from = "freq") %>% # pivot to use mos values as column names
+    dplyr::rename_with(~ paste0("SpMOS", ., "L"), -FID) %>%
     replace(is.na(.), 0)
 
   HabufPropT_Tot <- dplyr::inner_join(landcov_fracs_Medium_pivot,
-    landcov_fracs_Medium_nv2_pivot,
-    by = c("FID")
-  ) %>%
-    as.data.frame()
-
-
-  HabufPropT_Tot <- dplyr::inner_join(HabufPropT_Tot,
-    landcov_fracs_Medium_nv3_pivot,
-    by = c("FID")
-  ) %>%
-    as.data.frame()
-
-  HabufPropT_Tot <- dplyr::inner_join(HabufPropT_Tot,
     landcov_fracs_Large_pivot,
-    by = c("FID")
-  ) %>%
-    as.data.frame()
-
-  HabufPropT_Tot <- dplyr::inner_join(HabufPropT_Tot,
-    landcov_fracs_Large_nv2_pivot,
-    by = c("FID")
-  ) %>%
-    as.data.frame()
-
-  HabufPropT_Tot <- dplyr::inner_join(HabufPropT_Tot,
-    landcov_fracs_Large_nv3_pivot,
     by = c("FID")
   ) %>%
     as.data.frame()
@@ -223,8 +166,8 @@ clc_annees <- as.vector(
 
   if (opt$mode == "predict") {
     year <- substr(date_pred, 1, 4)
-    fwrite(OccSL_ARajouter, paste0(FOccSL, "_", year, "_CLCraster.csv"))
+    fwrite(OccSL_ARajouter, paste0(FOccSL, "_", year, "_mosraster.csv"))
   } else {
-    fwrite(OccSL_ARajouter, paste0(FOccSL, "_CLCraster.csv"))
+    fwrite(OccSL_ARajouter, paste0(FOccSL, "_mosraster.csv"))
   }
 }
