@@ -1,22 +1,10 @@
 #!/bin/bash
 
 #SBATCH --job-name=grow_forests
-#SBATCH --mem=150G
-#SBATCH --partition=type_2
-#SBATCH --time=7-12:00:00
+#SBATCH --mem=20G
+#SBATCH --time=3-00:00:00
 #SBATCH --cpus-per-task=10
+#SBATCH --mail-user=thomas.severe@mnhn.fr
+#SBATCH --mail-type=END,FAIL
 
-module load userspace/tr17.10
-module load biology
-module load gcc/7.2.0        
-module load lapack/3.7.1
-module load blas/gcc72/3.7.1
-module load jags/gcc72/4.3.0
-module load proj/8.0.0     
-module load geos/3.11.2
-module load gdal
-module load udunits
-module load R/4.3.1
-
-Rscript PCIA_RF_BMRE_evaluation_classif.R -s "Eptnil" -t "50" -d $(date +%Y-%m-%d) -r
-"france_met" -k FALSE 
+Rscript PCIA_RF_BMRE_evaluation.R -s $1 -t $2 -d $(date +%Y-%m-%d) -r $3 -k FALSE 
