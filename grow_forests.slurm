@@ -1,6 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=grow_forests
+#SBATCH --output=%j-$1-$2-$3.out
 #SBATCH --mem=20G
 #SBATCH --time=3-00:00:00
 #SBATCH --cpus-per-task=10
