@@ -1,10 +1,12 @@
 #!/bin/bash
 
 #SBATCH --job-name=grow_forests
-#SBATCH --output=%j-$1-$2-$3.out
-#SBATCH --mem=20G
 #SBATCH --time=3-00:00:00
-#SBATCH --cpus-per-task=10
+#SBATCH --partition=hpc
+
+#SBATCH --ntasks=10
+#SBATCH --mem-per-cpu=12G
+#SBATCH --cpus-per-task=1
 #SBATCH --mail-user=thomas.severe@mnhn.fr
 #SBATCH --mail-type=END,FAIL
 
