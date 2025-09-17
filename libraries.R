@@ -1,4 +1,6 @@
 libs <- unique(c(
+  "tidyverse",
+  "rlist",
   "VSURF",
   "gdata",
   "data.table",

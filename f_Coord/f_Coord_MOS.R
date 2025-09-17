@@ -68,9 +68,6 @@ Coord_MOSraster <- function(points, names_coord, bs, bm, bl, layer) {
     )
   )
 
-  print(mos_annees)
-  stop()
-
 
   # extract mos habitats
   options(dplyr.summarise.inform = FALSE) # to quiet the message produced by the sumarize function below
