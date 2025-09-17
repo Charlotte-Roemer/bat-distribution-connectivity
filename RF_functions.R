@@ -140,7 +140,7 @@ fitvalpred_rf_cat <- function(covariates,
   print("tuning model")
   mtrys <- c(17, 75, 100) # removed 200
   tune_ctrl <- caret::trainControl(method = "oob")
-  cl <- parallel::makeCluster(10)
+  cl <- parallel::makeCluster(10, type = "MPI")
   doParallel::registerDoParallel(cl)
   ntree <- c(800, 1500, 3000) # (150, 500, 1500, 6000)
   print("starting RF tuning")
