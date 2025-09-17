@@ -62,11 +62,14 @@ Coord_mosraster <- function(points, names_coord, bm, bl, layer) {
             tools::file_path_sans_ext(
               basename(mos_files)
             ), "_"
-          ), "[", 2
+          ), "[", 1
         ), 4, 7
       )
     )
   )
+
+       print(mos_annees)
+       stop()
 
 
   # extract mos habitats
