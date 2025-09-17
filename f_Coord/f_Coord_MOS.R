@@ -68,8 +68,8 @@ Coord_mosraster <- function(points, names_coord, bm, bl, layer) {
     )
   )
 
-       print(mos_annees)
-       stop()
+  print(mos_annees)
+  stop()
 
 
   # extract mos habitats
@@ -104,7 +104,7 @@ Coord_mosraster <- function(points, names_coord, bm, bl, layer) {
     }, summarize_df = TRUE, include_cols = "FID", progress = FALSE)
 
     # Append small buffer list
-    tableaux_s <- rlist::list.append(tableaux_s, landcov_fracs_Small
+    tableaux_s <- rlist::list.append(tableaux_s, landcov_fracs_Small)
 
 
     # Extract values in medium buffer
@@ -134,12 +134,12 @@ Coord_mosraster <- function(points, names_coord, bm, bl, layer) {
   tableaux_m_bind <- do.call("rbind", tableaux_m)
   tableaux_l_bind <- do.call("rbind", tableaux_l)
 
-landcov_fracs_Small_pivot <- tableaux_s_bind %>%
+  landcov_fracs_Small_pivot <- tableaux_s_bind %>%
     tidyr::pivot_wider(names_from = "value", values_from = "freq") %>% # pivot to use mos values as column names
     dplyr::rename_with(~ paste0("SpMOS", ., "S"), -FID) %>%
     replace(is.na(.), 0)
 
- # Pivot tibbles and rename columns
+  # Pivot tibbles and rename columns
   landcov_fracs_Medium_pivot <- tableaux_m_bind %>%
     tidyr::pivot_wider(names_from = "value", values_from = "freq") %>% # pivot to use mos values as column names
     dplyr::rename_with(~ paste0("SpMOS", ., "M"), -FID) %>%
