@@ -91,12 +91,9 @@ Coord_mosraster <- function(points, names_coord, bm, bl, layer) {
     mos <- terra::rast(mos_file)
     # create a buffer around the points
 
-    tableau_BS <- st_buffer(tableau_year, bs) %>%
-      st_transform(3035)
-    tableau_BM <- st_buffer(tableau_year, bm) %>%
-      st_transform(3035)
-    tableau_BL <- st_buffer(tableau_year, bl) %>%
-      st_transform(3035)
+    tableau_BS <- st_buffer(tableau_year, bs)
+    tableau_BM <- st_buffer(tableau_year, bm)
+    tableau_BL <- st_buffer(tableau_year, bl)
 
     # Extract values in small buffer
     landcov_fracs_Small <- exact_extract(mos, tableau_BS, function(df) {
