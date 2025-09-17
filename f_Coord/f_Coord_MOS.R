@@ -1,6 +1,6 @@
 print("load mosraster")
 
-Coord_MOSraster <- function(points, names_coord, bm, bl, layer) {
+Coord_MOSraster <- function(points, names_coord, bs, bm, bl, layer) {
   print("mosraster")
   print(points)
   library(data.table)

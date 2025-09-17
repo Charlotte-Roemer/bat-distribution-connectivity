@@ -367,7 +367,7 @@ Coord_MOSraster(
   bs = BS,
   bm = BM,
   bl = BL,
-  layer = folderMOS_
+  layer = folder_MOS
 )
 
 #
