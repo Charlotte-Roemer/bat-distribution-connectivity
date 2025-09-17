@@ -229,7 +229,7 @@ if (opt$region %in% c("idf", "france_met")) {
   layer_Carthage_C <- file.path(data_folder, "GIS", "BD_TOPAGE_2023-shp", "TronconHydrographique_FXX.shp")
   folder_CLC <- file.path(data_folder, "GIS", "CLC")
   folder_OCS <- file.path(data_folder, "GIS", "OCS_OSO")
-  folder_MOS <- file.path(data_folder, "GIS", "MOS_OSO")
+  folder_MOS <- file.path(data_folder, "GIS", "MOS")
   folder_route <- file.path(data_folder, "GIS", "ROUTE500_3-0__SHP_LAMB93_FXX_2021-11-03")
   clim_norm_folder <- file.path(data_folder, "GIS", "CLIM_NORM")
   layer_wind_turbines <- file.path(data_folder, "GIS", "wind_turbines", "Mats_service_TOTAL.shp")
@@ -291,7 +291,7 @@ for (i in 1:length(listfun))
 #   layer = layer_grotto
 # )
 #
-# #  VCF ###
+# # VCF ###
 # print("VCF")
 # Coord_VCF(
 #   points = FCoord,
@@ -313,7 +313,7 @@ for (i in 1:length(listfun))
 #   layer = layer_alti
 # )
 #
-# ##  Wind Turbines ###
+# ## Wind Turbines ###
 # print("Wind Turbines")
 # Coord_eol(
 #   points = FCoord,
@@ -324,7 +324,7 @@ for (i in 1:length(listfun))
 #   layer = layer_wind_turbines
 # )
 #
-# ##  CARTHAGE (eau) ####
+# ## CARTHAGE (eau) ####
 # print("Water")
 #
 # Coord_Eau(
@@ -360,18 +360,18 @@ for (i in 1:length(listfun))
 # )
 
 ## MOS Land Cover ####
-# print("MOS")
-# Coord_MOSraster(
-#   points = FCoord,
-#   names_coord = c(Coord_Headers, "Nuit"),
-#   bs = BS,
-#   bm = BM,
-#   bl = BL,
-#   layer = folderMOS_
-# )
+print("MOS")
+Coord_MOSraster(
+  points = FCoord,
+  names_coord = c(Coord_Headers, "Nuit"),
+  bs = BS,
+  bm = BM,
+  bl = BL,
+  layer = folderMOS_
+)
 
 #
-# ##  CESBIO (Habitat) ####
+# ## CESBIO (Habitat) ####
 # print("OCS OSO")
 # Coord_OCS_OSO(
 #   points = FCoord,
@@ -394,14 +394,14 @@ for (i in 1:length(listfun))
 #   bl = BL,
 #   folder = folder_route
 # )
-
-print("Meteo")
-Coord_Meteo(
-  points = FCoord,
-  temp = layer_temp,
-  prec = layer_precip,
-  wind = layer_wind
-)
+#
+# print("Meteo")
+# Coord_Meteo(
+#   points = FCoord,
+#   temp = layer_temp,
+#   prec = layer_precip,
+#   wind = layer_wind
+# )
 
 ## loc_data <- file.path(loc, "data")
 
