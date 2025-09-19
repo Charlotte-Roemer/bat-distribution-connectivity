@@ -8,7 +8,7 @@ libs <- unique(c(
   "sfdep",
   "caret",
   "terra",
-  "gglot2",
+  "ggplot2",
   "tidyr",
   "dplyr",
   "randomForest",
