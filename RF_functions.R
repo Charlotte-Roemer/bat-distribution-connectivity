@@ -46,7 +46,7 @@ fitvalpred_rf <- function(covariates,
   }
 
   print("model tuned")
-  parallel::stopCluster(cl)
+  # parallel::stopCluster(cl)
   B <- Sys.time()
   print(B - A)
 
