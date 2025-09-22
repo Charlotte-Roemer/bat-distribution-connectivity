@@ -51,6 +51,10 @@ option_list <- list(
   optparse::make_option(c("-k", "--keep"),
     type = "logical", default = FALSE,
     help = "keep last year data as testing dataset and run tests"
+  ),
+  optparse::make_option(c("-p", "--period"),
+    type = "character", default = "spring",
+    help = "Which activity are you modelling spring, summer or autumn ?"
   )
 )
 # Parse options to opt object
