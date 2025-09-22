@@ -812,6 +812,8 @@ for (i in seq_along(ListSp))
   END1 <- Sys.time()
   print(END1 - START1)
   print(paste("Model done for", ListSp[i]))
+
+  parallel::stopCluster(cl)
 }
 
 
