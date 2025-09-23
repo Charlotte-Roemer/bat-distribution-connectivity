@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=grow_forests
-#SBATCH --time=3-00:00:00
+#SBATCH --time=05:00:00
 #SBATCH --partition=htc
 
 #SBATCH --ntasks=10
