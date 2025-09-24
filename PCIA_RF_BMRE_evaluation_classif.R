@@ -53,8 +53,8 @@ option_list <- list(
     help = "keep last year data as testing dataset and run tests"
   ),
   optparse::make_option(c("-p", "--period"),
-    type = "character", default = "printemps",
-    help = "Which activity are you modelling spring, summer or autumn"
+    type = "character", default = "year",
+    help = "Which activity are you modelling year, spring, summer or autumn"
   )
 )
 # Parse options to opt object
@@ -200,11 +200,13 @@ dir.create(Output)
 #### Set season limits ####-----------------------------------------------------
 
 p_start <- switch(period,
+  year = 1L,
   spring = 5L,
   summer = 9L,
   autumn = 16L
 )
 p_end <- switch(period,
+  year = 27,
   spring = 8L,
   summer = 15L,
   autumn = 20L
