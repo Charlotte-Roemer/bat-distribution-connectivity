@@ -515,7 +515,7 @@ for (i in seq_along(ListSp))
       file.path(
         Output,
         paste0(
-          ListSp[i], "_datatest.csv"
+          ListSp[i], "_", opt$period, "_datatest.csv"
         )
       )
     )
@@ -526,7 +526,7 @@ for (i in seq_along(ListSp))
     file.path(
       Output,
       paste0(
-        ListSp[i], "_datatrain.csv"
+        ListSp[i], "_", opt$period, "_datatrain.csv"
       )
     )
   )
@@ -555,9 +555,9 @@ for (i in seq_along(ListSp))
   #### Save ####----------------------------------------------------------------
 
   if (DoBoruta == T) {
-    suffix <- paste0("_Boruta_", "noSpace", "_", ListSp[i])
+    suffix <- paste0("_Boruta_", opt$period, "_noSpace", "_", ListSp[i])
   } else {
-    suffix <- paste0("noSpace", "_", ListSp[i])
+    suffix <- paste0(opt$period, "_noSpace", "_", ListSp[i])
   }
 
   write.csv(
@@ -567,6 +567,7 @@ for (i in seq_along(ListSp))
       paste0(
         "Evaluation_",
         ListSp[i],
+        "_",
         Tag, "_",
         date_limit,
         "_",
@@ -594,6 +595,7 @@ for (i in seq_along(ListSp))
       paste0(
         "RFspat_",
         ListSp[i],
+        "_",
         Tag,
         "_",
         date_limit,
