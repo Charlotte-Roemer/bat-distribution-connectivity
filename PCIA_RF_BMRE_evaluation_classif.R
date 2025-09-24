@@ -53,8 +53,8 @@ option_list <- list(
     help = "keep last year data as testing dataset and run tests"
   ),
   optparse::make_option(c("-p", "--period"),
-    type = "character", default = "spring",
-    help = "Which activity are you modelling spring, summer or autumn ?"
+    type = "character", default = "printemps",
+    help = "Which activity are you modelling spring, summer or autumn"
   )
 )
 # Parse options to opt object
@@ -197,6 +197,19 @@ args[13] <- coordinate_names[2]
 dir.create(Output)
 
 
+#### Set season limits ####-----------------------------------------------------
+
+p_start <- switch(period,
+  spring = 5L,
+  summer = 9L,
+  autumn = 16L
+)
+p_end <- switch(period,
+  spring = 8L,
+  summer = 15L,
+  autumn = 20L
+)
+
 #### Prepare general dataset ####-----------------------------------------------
 
 List_data_prepared <- prepare_data(args, Fpar, Fsl)
@@ -321,6 +334,7 @@ for (i in seq_along(ListSp))
   }
 
   SpFDate <- yday(Date1)
+
   DataSaison$SpCDate <- cos(SpFDate / 365L * 2L * pi) # to create a circular variable for date
   DataSaison$SpSDate <- sin(SpFDate / 365L * 2L * pi) # to create a circular variable for date
 
