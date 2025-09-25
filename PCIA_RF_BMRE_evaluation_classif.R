@@ -337,7 +337,10 @@ for (i in seq_along(ListSp))
 
   SpFDate <- yday(Date1)
 
+  print("DataSaison filtered for season")
   DataSaison <- DataSaison[dplyr::between(DataSaison$fortnight, p_start, p_end), ]
+
+  print("calculating sin/cos for date")
 
   DataSaison$SpCDate <- cos(SpFDate / 365L * 2L * pi) # to create a circular variable for date
   DataSaison$SpSDate <- sin(SpFDate / 365L * 2L * pi) # to create a circular variable for date
