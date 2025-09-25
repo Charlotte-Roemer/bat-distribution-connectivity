@@ -542,8 +542,8 @@ for (i in seq_along(ListSp))
   selected_index <- get_prednames(DataSaison, Prednames, "acti_class", samp_sizes)
   Prednames <- Prednames[selected_index]
 
-  print("end of test") # TODO: remove these two lines
-  stop()
+  # print("end of test") # TODO: remove these two lines
+  # stop()
   print("checkpoint4")
   noSpacemod <- fitvalpred_rf_cat(
     Prednames,
