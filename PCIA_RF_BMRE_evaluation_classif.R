@@ -327,6 +327,10 @@ for (i in seq_along(ListSp))
   # DataSaison$indice_gite <- as.numeric(DataSaison$indice_gite)
   #
   # add date of year,
+
+  print("DataSaison filtered for season")
+  DataSaison <- DataSaison[dplyr::between(DataSaison$fortnight, p_start, p_end), ]
+
   if (grepl("/", DataSaison$Nuit[1L], fixed = TRUE)) {
     Date1 <- as.Date(substr(DataSaison$Nuit, 1L, 10L),
       format = "%Y/%m/%Y"
@@ -336,9 +340,6 @@ for (i in seq_along(ListSp))
   }
 
   SpFDate <- yday(Date1)
-
-  print("DataSaison filtered for season")
-  DataSaison <- DataSaison[dplyr::between(DataSaison$fortnight, p_start, p_end), ]
 
   print("calculating sin/cos for date")
 
