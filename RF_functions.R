@@ -83,7 +83,7 @@ fitvalpred_rf <- function(covariates,
   # spatial_grid <- data.frame(mtry = round(length(covariates)*2/3))
   print("building model")
   A <- Sys.time()
-  cl <- parallel::makeCluster(10)
+  cl <- parallel::makeCluster(10, type = "MPI")
   doParallel::registerDoParallel(cl)
 
   spatial_mod <- caret::train(
@@ -99,7 +99,7 @@ fitvalpred_rf <- function(covariates,
   B <- Sys.time()
   print(B - A)
   print("model built, calculating RMSE and R²")
-  parallel::stopCluster(cl)
+  # parallel::stopCluster(cl)
   spatial_stats <- global_validation(spatial_mod)[c("RMSE", "Rsquared")]
   names(spatial_stats) <- paste0("kNNDM_", names(spatial_stats))
 
