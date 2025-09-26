@@ -175,7 +175,7 @@ fitvalpred_rf_cat <- function(covariates,
   }
 
   print("model tuned")
-  parallel::stopCluster(cl)
+  # parallel::stopCluster(cl)
   B <- Sys.time()
   print(B - A)
   print("Accuracy")
