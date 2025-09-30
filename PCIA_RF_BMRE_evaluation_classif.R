@@ -519,7 +519,7 @@ for (i in seq_along(ListSp))
       file.path(
         Output,
         paste0(
-          ListSp[i], "_", opt$period, "_datatest.csv"
+          ListSp[i], "_", opt$period, "_", opt$region, "_datatest.csv"
         )
       )
     )
@@ -530,7 +530,7 @@ for (i in seq_along(ListSp))
     file.path(
       Output,
       paste0(
-        ListSp[i], "_", opt$period, "_datatrain.csv"
+        ListSp[i], "_", opt$period, "_", opt$region, "_datatrain.csv"
       )
     )
   )

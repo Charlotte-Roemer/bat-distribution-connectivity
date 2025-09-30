@@ -52,6 +52,10 @@ option_list <- list(
   optparse::make_option(c("-k", "--keep"),
     type = "logical", default = FALSE,
     help = "keep last year data as testing dataset and run tests"
+  ),
+  optparse::make_option(c("-p", "--period"),
+    type = "character", default = "year",
+    help = "Which activity are you modelling year, spring, summer or autumn"
   )
 )
 # Parse options to opt object
@@ -176,6 +180,21 @@ args[13] <- coordinate_names[2]
 
 dir.create(Output)
 
+
+#### Set season limits ####-----------------------------------------------------
+
+p_start <- switch(opt$period,
+  year = 1L,
+  spring = 5L,
+  summer = 9L,
+  autumn = 16L
+)
+p_end <- switch(opt$period,
+  year = 27,
+  spring = 8L,
+  summer = 15L,
+  autumn = 20L
+)
 
 #### Prepare general dataset ####-----------------------------------------------
 
@@ -566,28 +585,18 @@ for (i in seq_along(ListSp))
       file.path(
         Output,
         paste0(
-          ListSp[i], "_datatest.csv"
+          ListSp[i], "_", opt$period, "_", opt$region, "_datatest.csv"
         )
       )
     )
   }
-
-  # write.csv(
-  #   DataTest,
-  #   file.path(
-  #     Output,
-  #     paste0(
-  #       ListSp[i], "_datatest.csv"
-  #     )
-  #   )
-  # )
 
   write.csv(
     DataSaison,
     file.path(
       Output,
       paste0(
-        ListSp[i], "_datatrain.csv"
+        ListSp[i], "_", opt$period, "_", opt$region, "_datatrain.csv"
       )
     )
   )
