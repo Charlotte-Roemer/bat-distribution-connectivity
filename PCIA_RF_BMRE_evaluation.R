@@ -113,7 +113,9 @@ if (Place == "local") {
     data_path,
     "observations",
     "donnees_vigie_chiro",
-    "GI_FR_sites_localites"
+    "GI_",
+    opt$region,
+    "_sites_localites"
   )
 
   # Species list to build models :
@@ -769,7 +771,7 @@ for (i in seq_along(ListSp))
   if (DoBoruta == T) {
     suffix <- paste0("_Boruta_", "noSpace", "_", ListSp[i])
   } else {
-    suffix <- paste0("noSpace", "_", ListSp[i])
+    suffix <- paste0(opt$period, "_", opt$region, "_noSpace", "_", ListSp[i])
   }
 
   write.csv(

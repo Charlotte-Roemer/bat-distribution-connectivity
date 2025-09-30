@@ -561,7 +561,7 @@ for (i in seq_along(ListSp))
   if (DoBoruta == T) {
     suffix <- paste0("_Boruta_", opt$period, "_noSpace", "_", ListSp[i])
   } else {
-    suffix <- paste0(opt$period, "_noSpace", "_", ListSp[i])
+    suffix <- paste0(opt$period, "_", opt$region, "_noSpace", "_", ListSp[i])
   }
 
   write.csv(
