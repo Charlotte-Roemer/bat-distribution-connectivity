@@ -113,9 +113,11 @@ if (Place == "local") {
     data_path,
     "observations",
     "donnees_vigie_chiro",
-    "GI_",
-    opt$region,
-    "_sites_localites"
+    paste0(
+      "GI_",
+      opt$region,
+      "_sites_localites"
+    )
   )
 
   # Species list to build models :

@@ -113,8 +113,14 @@ if (Place == "local") {
     data_path,
     "observations",
     "donnees_vigie_chiro",
-    "GI_FR_sites_localites"
+    paste0(
+      "GI_",
+      opt$region,
+      "_sites_localites"
+    )
   )
+
+
   # } else if (opt$region == "idf") {
   #   args[2] <- file.path(
   #     data_path,
