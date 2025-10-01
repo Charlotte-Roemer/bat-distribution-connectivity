@@ -2,7 +2,7 @@
 
 #SBATCH --job-name=grow_forests
 #SBATCH --time=3-00:00:00
-#SBATCH --partition=htc
+#SBATCH --partition=hpc
 
 #SBATCH --ntasks=10
 #SBATCH --mem-per-cpu=12G
