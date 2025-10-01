@@ -208,13 +208,13 @@ dir.create(Output)
 p_start <- switch(opt$period,
   year = 1L,
   spring = 5L,
-  summer = 9L,
-  autumn = 16L
+  summer = 11L,
+  autumn = 15L
 )
 p_end <- switch(opt$period,
   year = 27,
-  spring = 8L,
-  summer = 15L,
+  spring = 10L,
+  summer = 14L,
   autumn = 20L
 )
 
