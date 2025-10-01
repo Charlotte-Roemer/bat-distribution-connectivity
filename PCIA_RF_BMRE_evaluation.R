@@ -317,6 +317,8 @@ for (i in seq_along(ListSp))
 
   DataSpSL_w0_2$Nuit <- as.Date(DataSpSL_w0_2$Nuit)
   CoordPS$Nuit <- as.Date(CoordPS$Nuit)
+  DataSpSL_w0_2 <- unique(DataSpSL_w0_2)
+  CoordPS <- unique(CoordPS)
   DataSaison <- inner_join(DataSpSL_w0_2,
     CoordPS,
     by = c("longitude", "latitude", "Nuit", "participation")
