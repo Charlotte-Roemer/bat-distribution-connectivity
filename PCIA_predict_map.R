@@ -34,7 +34,7 @@ option_list <- list(
     type = "character", default = "500",
     help = "Which size is your grid in meters (500, 200, 100) ?"
   ),
-  optparse::make_option(c("-m", "--moment"),
+  optparse::make_option( "--period",
     type = "character", default = "year",
     help = "Is it a yearly model or a seasonal one ? (spring, summer, autumn)"
   )
