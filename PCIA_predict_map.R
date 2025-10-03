@@ -23,7 +23,7 @@ option_list <- list(
     help = "when was the model you want to use trained ?"
   ),
   optparse::make_option(c("-m", "--method"),
-    type = "character", default = "EDF",
+    type = "character", default = "noSpace",
     help = "Which spatialization method you want to use ? (EDF, LatLong, noSpace)"
   ),
   optparse::make_option(c("-r", "--region"),
