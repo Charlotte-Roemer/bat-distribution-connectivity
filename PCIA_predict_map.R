@@ -34,7 +34,7 @@ option_list <- list(
     type = "character", default = "500",
     help = "Which size is your grid in meters (500, 200, 100) ?"
   ),
-  optparse::make_option( "--period",
+  optparse::make_option("--period",
     type = "character", default = "year",
     help = "Is it a yearly model or a seasonal one ? (spring, summer, autumn)"
   )
@@ -44,7 +44,7 @@ option_list <- list(
 opt_parser <- optparse::OptionParser(option_list = option_list)
 opt <- optparse::parse_args(opt_parser)
 
-period <- opt$moment
+period <- opt$period
 
 
 # model <- "/media/tsevere/BBK/VC50_2025-02-28/RFspat_BarbarVC50_2025-02-28_EDF_Barbar.rds" # rds file
