@@ -81,7 +81,7 @@ pred_data_file <- file.path(
   data_path,
   "observations",
   "pred_vars",
-  paste0("data_pred", "_", opt$region, ".csv")
+  paste0("data_pred", "_", opt$region, "_", opt$date_to_predict, ".csv")
 )
 
 pred_data <- data.table::fread(pred_data_file)
