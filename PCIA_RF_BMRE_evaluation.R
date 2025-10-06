@@ -399,8 +399,10 @@ for (i in seq_along(ListSp))
   clc <- startsWith(Prednames, "SpHC")
   Prednames <- Prednames[!clc]
 
-  print("prednames not clc")
-  print(Prednames)
+  if (opt$region == "idf") {
+    ocs <- startsWith(Prednames, "SpHOCS")
+    Prednames <- Prednames[!ocs]
+  }
 
   Prednames[!(Prednames %in% variables_a_exclure)]
   print(Prednames)
