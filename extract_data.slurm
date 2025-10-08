@@ -8,4 +8,4 @@
 #SBATCH --mail-user=thomas.severe@mnhn.fr
 #SBATCH --mail-type=END,FAIL
 
-Rscript PCIA_Pipeline_GIS.R -r "idf" -m "train" 
+Rscript PCIA_Pipeline_GIS.R -r "idf" -m "pred" -d "2024-06-08"
