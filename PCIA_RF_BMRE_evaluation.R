@@ -352,6 +352,8 @@ for (i in seq_along(ListSp))
   # DataSaison <- DataSaison[DataSaison$gite != 0L, ]
 
 
+  DataSaison <- DataSaison[dplyr::between(DataSaison$fortnight, p_start, p_end), ]
+
   # add date of year
   if (grepl("/", DataSaison$Nuit[1L], fixed = TRUE)) {
     Date1 <- as.Date(substr(DataSaison$Nuit, 1L, 10L),
