@@ -148,8 +148,6 @@ def_classes <- function(data) {
 }
 
 
-
-
 #------------------------------------------------------------------------------#
 #           Function to produce equilibrate sample size vector                 #
 #------------------------------------------------------------------------------#
@@ -192,6 +190,7 @@ get_prednames <- function(df, prednames, response_var, samp_vector = NULL) {
     vsurf <- VSURF::VSURF(predictors,
       df$acti_class,
       parallel = TRUE,
+      clusterType = "MPI",
       sampsize = samp_vector
     )
   } else {
@@ -199,7 +198,8 @@ get_prednames <- function(df, prednames, response_var, samp_vector = NULL) {
 
     vsurf <- VSURF::VSURF(predictors,
       response,
-      parallel = TRUE
+      parallel = TRUE,
+      clusterType = "MPI"
     )
   }
   print(vsurf$varselect.pred)
