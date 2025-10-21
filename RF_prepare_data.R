@@ -190,6 +190,7 @@ get_prednames <- function(df, prednames, response_var, samp_vector = NULL) {
     vsurf <- VSURF::VSURF(predictors,
       df$acti_class,
       parallel = TRUE,
+      nmin = 0.5,
       clusterType = "MPI",
       sampsize = samp_vector
     )
