@@ -352,10 +352,10 @@ for (i in seq_along(ListSp))
   SpFDate <- yday(Date1)
 
   print("calculating sin/cos for date")
-
-  DataSaison$SpCDate <- cos(SpFDate / 365L * 2L * pi) # to create a circular variable for date
-  DataSaison$SpSDate <- sin(SpFDate / 365L * 2L * pi) # to create a circular variable for date
-
+  #
+  # DataSaison$SpCDate <- cos(SpFDate / 365L * 2L * pi) # to create a circular variable for date
+  # DataSaison$SpSDate <- sin(SpFDate / 365L * 2L * pi) # to create a circular variable for date
+  #
   # If year effect must be accounted for
   if (YearEffect) {
     DataSaison$SpYear <- year(Date1)
