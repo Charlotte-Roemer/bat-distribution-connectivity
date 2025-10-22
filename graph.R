@@ -1,69 +1,15 @@
 source("variables.R")
 library(ggplot2)
 library(data.table)
-library(randomForest)
-library(gdata)
-library(tidyr)
 library(dplyr)
 library(stringr)
-library(sf)
-library(CAST)
-# library(Boruta)
-# library(caret)
-# library(sfdep)
 source("variables_sel.R")
 source("RF_prepare_data.R")
-# source("RF_functions.R")
 
-# Place <- "local" # local, PCIA or IN2P3
 
 folder_img <- "/home/tsevere/Documents/mnhn/projet_git_BMRE/analyse_donnees"
-## Script is called with Rscript and options :
-# option_list <- list(
-#   optparse::make_option(c("-r", "--region"),
-#     type = "character", default = "france_met",
-#     help = 'Set region of interest between "france_met" (default),
-#     "europe", "idf" or paca for testing purposes'
-#   ),
-#   optparse::make_option(c("-t", "--threshold"),
-#     type = "character", default = "50",
-#     help = 'Set sorting threshold between values : "0", "50", "90" and "weighted'
-#   ),
-#   optparse::make_option(c("-s", "--species"),
-#     type = "character", default = "paper",
-#     help = 'Set modelling species between "paper", "all" or a 6 character species code (e.g. "Pippip")'
-#   ),
-#   optparse::make_option(c("-b", "--boruta"),
-#     type = "logical", default = FALSE,
-#     help = "Do you want to execute boruta feature selection ? Default no (FALSE) "
-#   ),
-#   optparse::make_option(c("-c", "--cure"),
-#     type = "logical", default = FALSE,
-#     help = "Do you want to randomly remove close data (spatially and temporally) ?"
-#   ),
-#   optparse::make_option(c("-d", "--date"),
-#     type = "character",
-#     help = "Necessary : pass date when script is run with $(date +%Y-%m-%d)"
-#   ),
-#   optparse::make_option(c("-k", "--keep"),
-#     type = "logical", default = FALSE,
-#     help = "keep last year data as testing dataset and run tests"
-#   ),
-#   optparse::make_option(c("-p", "--period"),
-#     type = "character", default = "year",
-#     help = "Which activity are you modelling year, spring, summer or autumn"
-#   )
-# )
-# # Parse options to opt object
-# opt_parser <- optparse::OptionParser(option_list = option_list)
-# opt <- optparse::parse_args(opt_parser)
-region <- "france_met"
-#
-# #### Options ####--------------------------------------------------------
-#
-# Sorting threshold (weighted, 0, 50, 90)
 
-ThresholdSort <- 50
+ThresholdSort <- "weighted"
 
 cat(paste("Threshold :", ThresholdSort), fill = TRUE)
 
@@ -76,93 +22,79 @@ ListPaper <- c(
 
 
 GroupSel <- "bat"
-# GroupSel=NA #sorting according to the group column of Specieslist
-# (args[3), NA if no sorting
-
-# Filter data by date?
-# e.g.as.Date("2021-12-31") only use  data before this date
 
 date_limit <- format(Sys.Date(), format = "%Y-%m-%d")
 
-# Predictors and model specs
-# "EDF" = X + Y + Euclidian Distance Fields ;  "noCoord" = no coordinates
 YearEffect <- TRUE # Add year?
-# MTRY = "default"  # "default" or "npred" or "2-3" for 2/3 of npred
-## NTREE <- 500
 
-# Do variable selection?
 
 #### Setting Directories ####--------------------------------------------------
 
-if (Place == "local") {
-  # bat activity table (not DI !! --> need the file where microphone
-  # quality is sorted out) . file without csv extension
-  args <- file.path(
-    data_path,
-    "observations",
-    "donnees_vigie_chiro",
-    paste0(
-      "SpNuit2_",
-      ThresholdSort,
-      "_DataLP_PF_exportTot"
-    )
+args <- file.path(
+  data_path,
+  "observations",
+  "donnees_vigie_chiro",
+  paste0(
+    "SpNuit2_",
+    ThresholdSort,
+    "_DataLP_PF_exportTot"
   )
+)
 
-  # table with spatial variables (habitat and climate) :
-  args[2] <- file.path(
-    data_path,
-    "observations",
-    "donnees_vigie_chiro",
-    paste0(
-      "GI_",
-      region,
-      "_sites_localites"
-    )
+# table with spatial variables (habitat and climate) :
+args[2] <- file.path(
+  data_path,
+  "observations",
+  "donnees_vigie_chiro",
+  paste0(
+    "GI_",
+    region,
+    "_sites_localites"
   )
+)
 
-  # Species list to build models :
-  args[3] <- file.path(
-    data_path,
-    "observations",
-    "donnees_vigie_chiro",
-    "SpeciesList.csv"
-  )
+# Species list to build models :
+args[3] <- file.path(
+  data_path,
+  "observations",
+  "donnees_vigie_chiro",
+  "SpeciesList.csv"
+)
 
-  # Study area limits file :
-  args[4] <- file.path(
-    data_path,
-    "GIS",
-    "regions.gpkg"
-  )
+# Study area limits file :
+args[4] <- file.path(
+  data_path,
+  "GIS",
+  "regions.gpkg"
+)
 
-  # folder to copy models to (fichiers .learner), no "_" else bug !!! :
-  Output <- file.path(
-    data_path,
-    "ModPred",
-    paste0(
-      "VC",
-      ThresholdSort,
-      "_",
-      Sys.Date()
-    )
+# folder to copy models to (fichiers .learner), no "_" else bug !!! :
+Output <- file.path(
+  data_path,
+  "ModPred",
+  paste0(
+    "VC",
+    ThresholdSort,
+    "_",
+    Sys.Date()
   )
+)
 
-  # the file with data about participations :
-  Fpar <- file.path(
-    data_path,
-    "observations",
-    "donnees_vigie_chiro",
-    "p_export.csv"
-  )
+# the file with data about participations :
+Fpar <- file.path(
+  data_path,
+  "observations",
+  "donnees_vigie_chiro",
+  "p_export.csv"
+)
 
-  # the file with the data about localities :
-  Fsl <- file.path(
-    data_path,
-    "observations",
-    "donnees_vigie_chiro",
-    "sites_localites.txt"
-  )
-}
+# the file with the data about localities :
+Fsl <- file.path(
+  data_path,
+  "observations",
+  "donnees_vigie_chiro",
+  "sites_localites.txt"
+)
 
 args[6] <- "participation" # name of sampling event
 args[7] <- "localite" # name of locality in CoordSIG (if DataLoc=T)
@@ -184,23 +116,6 @@ args[13] <- coordinate_names[2]
 
 dir.create(Output)
 
-
-#### Set season limits ####-----------------------------------------------------
-
-period <- "summer"
-p_start <- switch(period,
-  year = 1L,
-  spring = 5L,
-  summer = 11L,
-  autumn = 15L
-)
-p_end <- switch(period,
-  year = 27,
-  spring = 10L,
-  summer = 14L,
-  autumn = 20L
-)
-
 #### Prepare general dataset ####-----------------------------------------------
 
 List_data_prepared <- prepare_data(args, Fpar, Fsl)
@@ -215,51 +130,16 @@ cat("General dataset prepared", fill = TRUE)
 
 # Identify the variable to predict as nb_contacts
 DataCPL3$nb_contacts <- subset(DataCPL3, select = args[10])[, 1]
-# TEST
 
-# write.csv(DataCPL3,
-#      file.path(Output,
-#        paste0(
-#          "test_dat", "_datacpl3.txt"
-#        )
-#      )
-#    )
 test1 <- nrow(DataCPL3)
 DataCPL3 <- subset(DataCPL3, !is.na(DataCPL3$nb_contacts))
 
-# TEST
-# write.csv(DataCPL3,
-#      file.path(Output,
-#        paste0(
-#          "test_dat", "_datacpl3cleaned.txt"
-#        )
-#      )
-#    )
 test2 <- nrow(DataCPL3)
 ifelse(test1 == test2, print("ok"), stop("NA present in activity data!"))
 
-# List species to model
-SpeciesList <- fread(args[3]) # read species list
-ListSp <- levels(as.factor(DataCPL3$espece))
-ListSp <- subset(ListSp, ListSp %in% SpeciesList$Esp)
-if (!is.na(GroupSel)) {
-  SpSel <- subset(SpeciesList, SpeciesList$Group %in% GroupSel)
-  ListSp <- subset(ListSp, ListSp %in% SpSel$Esp)
-}
+### Prepare dataset for each species ####------------------------------------------------------
 
-if (Sp == "all" || Sp == "All") {
-  ListSp <- ListSp
-} else if (Sp == "paper") {
-  ListSp <- ListPaper
-} else {
-  ListSp <- Sp
-}
 
-#### Prepare dataset for each species ####------------------------------------------------------
-
-print(ListSp)
-
-ListPaper <- "Pipkuh"
 for (i in seq_along(ListPaper))
 {
   DataSp <- subset(DataCPL3, DataCPL3$espece == ListPaper[i]) # subset species
@@ -323,17 +203,6 @@ for (i in seq_along(ListPaper))
     DataActivite$logact,
     c(0.25, 0.50, 0.75)
   ))
-  #
-  # breaks <- unname(quantile(
-  #   DataActivite$nb_contacts,
-  #   c(0.25, 0.50, 0.75)
-  # ))
-
-  # RColorBrewer::brewer.pal(n = 3, name = "Dark2")
-  # scales::show_col(RColorBrewer::brewer.pal(n = 3, name = "Dark2"))
-
-  # colors <- c("#7FC97F", "#BEAED4", "#FDC086")  # Accent
-  # colors <- c("#1B9E77", "#7570B3", "#D95F02") # Dark2
 
   colors <- c("#4DAF4A", "#377EB8", "#E41A1C") # Set2
   text_color <- "black"
