@@ -19,6 +19,10 @@ ListPaper <- c(
   "Pippip", "Pippyg", "Rhifer"
 )
 
+region <- "france_met"
+
+ListPaper <- c("Nyclas")
+
 
 
 GroupSel <- "bat"
@@ -233,3 +237,42 @@ for (i in seq_along(ListPaper))
     filename = file.path(folder_img, paste0(ListPaper[i], "_", ThresholdSort, ".png"))
   )
 }
+
+
+def_classes_log <- function(data) {
+  data_no_zero <- data[data$logact > 1, ]
+  quant <- quantile(
+    x = unlist(data_no_zero$logact),
+    c(0.25, 0.50, 0.75),
+    na.rm = TRUE
+  )
+  data$acti_class[data$logact <= quant[1]] <- "Faible"
+  data$acti_class[data$logact == 0] <- "NoAct"
+  data$acti_class[data$logact > quant[1] & data$nb_contacts <= quant[2]] <- "Moyen"
+  data$acti_class[data$logact > quant[2] & data$nb_contacts < quant[3]] <- "Fort"
+  data$acti_class[data$logact > quant[3]] <- "TresFort"
+  data$acti_class <- factor(data$acti_class, levels = c("NoAct", "Faible", "Moyen", "Fort", "TresFort"))
+  data$acti_class
+}
+
+DataSaison$acti_class <- def_classes(DataSaison)
+DataSaison$logact_class <- def_classes_log(DataSaison)
+
+identical(DataSaison$acti_class, DataSaison$logact_class)
+
+table(DataSaison$acti_class[DataSaison$saison == "summer", ])
+table(DataSaison$logact_class)
+
+quant <- quantile(
+  x = unlist(DataSaison[DataSaison$nb_contacts > 0]$nb_contacts),
+  c(0.25, 0.50, 0.75),
+  na.rm = FALSE
+)
+
+quant
+DataSaison$nb_contacts
+
+
+table(DataSaison[DataSaison$saison == "summer", ]$logact_class)
+table(DataSaison[DataSaison$saison == "spring", ]$logact_class)
+table(DataSaison[DataSaison$saison == "autumn", ]$logact_class)
