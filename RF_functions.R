@@ -12,7 +12,14 @@ fitvalpred_rf <- function(covariates,
                           traindf) {
   # # 1. Tune (find the best mtry)
   print("tuning model")
-  mtrys <- c(17, 75, 100) # removed 200
+
+  # mtrys <- c(17, 75, 100) # removed 200
+  mtrys <- c(
+    floor(sqrt(length(covariates))),
+    floor(length(covariates) / 3),
+    floor(length(covariates) / 2)
+  )
+
   tune_ctrl <- caret::trainControl(method = "oob")
   cl <- parallel::makeCluster(10, type = "MPI")
   doParallel::registerDoParallel(cl)
