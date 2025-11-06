@@ -221,7 +221,7 @@ get_components <- function(predictors, prefix) {
   res <- FactoMineR::PCA(predictors, ncp = total_comp, graph = FALSE)
   pcent_variance <- res$eig[, 2L]
 
-  broken_stick <- brokenStick(1L:total_comp, total_comp)
+  broken_stick <- PCDimension::brokenStick(1L:total_comp, total_comp)
 
   nb_comp <- sum(pcent_variance > broken_stick * 100L)
   print(nb_comp)
