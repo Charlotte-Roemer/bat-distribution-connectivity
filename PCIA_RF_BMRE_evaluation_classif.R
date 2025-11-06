@@ -32,6 +32,10 @@ option_list <- list(
     type = "character", default = "50",
     help = 'Set sorting threshold between values : "0", "50", "90" and "weighted'
   ),
+  optparse::make_option(c("-v", "--variableselection"),
+    type = "character", default = "None",
+    help = 'Choose which variable selection you want to make between values : "None", "VSURF", "Indispensable", "PCA"'
+  ),
   optparse::make_option(c("-s", "--species"),
     type = "character", default = "paper",
     help = 'Set modelling species between "paper", "all" or a 6 character species code (e.g. "Pippip")'
@@ -61,6 +65,7 @@ option_list <- list(
 opt_parser <- optparse::OptionParser(option_list = option_list)
 opt <- optparse::parse_args(opt_parser)
 
+
 #### Options ####--------------------------------------------------------
 
 # Sorting threshold (weighted, 0, 50, 90)
@@ -70,10 +75,11 @@ cat(paste("Threshold :", ThresholdSort), fill = TRUE)
 
 # Species to model
 Sp <- opt$species # choose a species (e.g. "Pippip") or "all" or "paper"
+selection <- opt$variableselection
 
 GroupSel <- "bat"
 # GroupSel=NA #sorting according to the group column of Specieslist
-#  (args[3), NA if no sorting
+# (args[3), NA if no sorting
 ListPaper <- c(
   "Minsch", "Barbar", "Nyclei", "Nycnoc", "Eptser", "Pipkuh", "Pipnat",
   "Pippip", "Pippyg", "Rhifer"
@@ -551,9 +557,13 @@ for (i in seq_along(ListSp))
   print(unique(DataSaison$acti_class))
   samp_sizes <- def_sample_vector(DataSaison, "acti_class", 0.66)
 
-  selected_index <- get_prednames(DataSaison, Prednames, "acti_class", samp_sizes)
-  Prednames <- Prednames[selected_index]
-
+  if (selection == "ACP") {
+    small_vars <- endsWith(names(DataSaison), "S")
+    data <- data[, !small_vars]
+  } else if (selection == "VSURF") {
+    selected_index <- get_prednames(DataSaison, Prednames, "acti_class", samp_sizes)
+    Prednames <- Prednames[selected_index]
+  }
   # print("end of test") # TODO: remove these two lines
   # stop()
   print("checkpoint4")

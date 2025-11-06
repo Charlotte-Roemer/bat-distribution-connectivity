@@ -206,3 +206,32 @@ get_prednames <- function(df, prednames, response_var, samp_vector = NULL) {
   print(vsurf$varselect.pred)
   vsurf$varselect.pred
 }
+
+
+#------------------------------------------------------------------------------#
+#              Function to select best predictors with PCA                     #
+#------------------------------------------------------------------------------#
+
+get_components <- function(predictors, prefix) {
+  res <- FactoMineR::PCA(predictors, graph = FALSE)
+
+  # get number of components for brokenstick
+  total_comp <- nrow(res$eig)
+
+  res <- FactoMineR::PCA(predictors, ncp = total_comp, graph = FALSE)
+  pcent_variance <- res$eig[, 2L]
+
+  broken_stick <- brokenStick(1L:total_comp, total_comp)
+
+  nb_comp <- sum(pcent_variance > broken_stick * 100L)
+  print(nb_comp)
+
+  components <- data.frame(res$ind$coord[, 1L:nb_comp])
+  names(components) <- paste0(names(components), "_", prefix)
+
+  ret <- list()
+  ret[[1]] <- components
+  ret[[2]] <- res
+  names(ret) <- c("components", "acp")
+  ret
+}
