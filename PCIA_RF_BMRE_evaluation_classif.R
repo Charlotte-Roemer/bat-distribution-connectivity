@@ -90,7 +90,7 @@ ListPaper <- c(
 date_limit <- opt$date
 # Predictors and model specs
 # "EDF" = X + Y + Euclidian Distance Fields ;  "noCoord" = no coordinates
-YearEffect <- TRUE # Add year?
+YearEffect <- FALSE # Add year?
 # MTRY = "default"  # "default" or "npred" or "2-3" for 2/3 of npred
 ## NTREE <- 500
 
