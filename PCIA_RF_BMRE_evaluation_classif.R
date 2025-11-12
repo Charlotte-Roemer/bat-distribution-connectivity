@@ -568,9 +568,8 @@ for (i in seq_along(ListSp))
 
     saveRDS(acp$acp, file.path(Output, paste0("acp_", opt$period, ".rds")))
 
-    vars <- cbind(acp_pc_vars, bioclim_pc_vars, other_pc_vars)
-    DataSaison <- cbind(DataSaison, vars)
-    vars_names <- names(vars)
+    DataSaison <- cbind(DataSaison, acp_pc_vars)
+    vars_names <- names(acp_pc_vars)
     Prednames <- c(vars_names, vars_norm)
   } else if (selection == "PCA_decomp") {
     small_vars <- endsWith(names(DataSaison), "S")
