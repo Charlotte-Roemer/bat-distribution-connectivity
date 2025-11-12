@@ -72,3 +72,5 @@ variables_acp <- c(
   "SpWD",
   "SpWDp"
 )
+
+vars_norm <- c("SpRo_dist", "Spprecipitations", "Sptemp", "Spwind")

@@ -556,48 +556,23 @@ for (i in seq_along(ListSp))
   print("classes:")
   print(unique(DataSaison$acti_class))
   samp_sizes <- def_sample_vector(DataSaison, "acti_class", 0.66)
+  DataSaison$SpRoAddM <- DataSaison$SpRo1M + DataSaison$SpRo2M +
+    DataSaison$SpRo3M + DataSaison$SpRo4M
 
-  if (selection == "PCA_decomp") {
-    small_vars <- endsWith(names(DataSaison), "S")
-    data <- DataSaison[, !small_vars]
-
-    occsol_vars <- startsWith(names(data), "SpHOCS")
-    occsol_vars <- names(data)[occsolvars]
-
-    bioclim_vars <- startsWith(names(data), "SpBioC")
-    bioclim_vars <- names(data)[bioclimvars]
-
-    names_data <- names(data)
-    names_data <- names_data[!(names_data %in% bioclimvars)]
-    names_data <- names_data[!(names_data %in% occsolvars)]
-
-    other_vars <- startsWith(names_data, "Sp")
+  if (selection == "PCA") {
+    predictors <- DataSaison[, variables_acp]
 
 
-    other_vars <- names_data[other_vars]
+    acp <- get_components(predictors_bioc, "PCA")
+    acp_pc_vars <- acp$components
 
+    saveRDS(acp$acp, file.path(Output, paste0("acp_", opt$period, ".rds")))
 
-    predictors_occs <- data[, occsol_vars]
-    predictors_bioc <- data[, bioclim_vars]
-    predictors_other <- data[, other_vars]
-
-    bioclim <- get_components(predictors_bioc, "bioclim")
-    bioclim_pc_vars <- bioclim$components
-
-    occsol <- get_components(predictors_occs, "occsol")
-    occsol_pc_vars <- occsol$components
-
-    others <- get_components(predictors_other, "autres")
-    other_pc_vars <- others$components
-
-    saveRDS(bioclim$acp, file.path(Output, paste0("acp_bioclim_", opt$period, ".rds")))
-    saveRDS(occsol$acp, file.path(Output, paste0("acp_occsol_", opt$period, ".rds")))
-    saveRDS(others$acp, file.path(Output, paste0("acp_occsol_", opt$period, ".rds")))
-
-    vars <- cbind(occsol_pc_vars, bioclim_pc_vars, other_pc_vars)
+    vars <- cbind(acp_pc_vars, bioclim_pc_vars, other_pc_vars)
     DataSaison <- cbind(DataSaison, vars)
-    Prednames <- names(vars)
-  } else if (selection == "PCA") {
+    vars_names <- names(vars)
+    Prednames <- c(vars_names, vars_norm)
+  } else if (selection == "PCA_decomp") {
     small_vars <- endsWith(names(DataSaison), "S")
     data <- DataSaison[, !small_vars]
 
