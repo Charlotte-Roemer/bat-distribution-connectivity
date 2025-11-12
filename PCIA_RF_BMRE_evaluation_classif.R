@@ -34,7 +34,7 @@ option_list <- list(
   ),
   optparse::make_option(c("-v", "--variableselection"),
     type = "character", default = "None",
-    help = 'Choose which variable selection you want to make between values : "None", "VSURF", "Indispensable", "PCA"'
+    help = 'Choose which variable selection you want to make between values : "None", "VSURF", "Indispensable", "PCA", "PCA_decomp".'
   ),
   optparse::make_option(c("-s", "--species"),
     type = "character", default = "paper",
@@ -557,7 +557,47 @@ for (i in seq_along(ListSp))
   print(unique(DataSaison$acti_class))
   samp_sizes <- def_sample_vector(DataSaison, "acti_class", 0.66)
 
-  if (selection == "ACP") {
+  if (selection == "PCA_decomp") {
+    small_vars <- endsWith(names(DataSaison), "S")
+    data <- DataSaison[, !small_vars]
+
+    occsol_vars <- startsWith(names(data), "SpHOCS")
+    occsol_vars <- names(data)[occsolvars]
+
+    bioclim_vars <- startsWith(names(data), "SpBioC")
+    bioclim_vars <- names(data)[bioclimvars]
+
+    names_data <- names(data)
+    names_data <- names_data[!(names_data %in% bioclimvars)]
+    names_data <- names_data[!(names_data %in% occsolvars)]
+
+    other_vars <- startsWith(names_data, "Sp")
+
+
+    other_vars <- names_data[other_vars]
+
+
+    predictors_occs <- data[, occsol_vars]
+    predictors_bioc <- data[, bioclim_vars]
+    predictors_other <- data[, other_vars]
+
+    bioclim <- get_components(predictors_bioc, "bioclim")
+    bioclim_pc_vars <- bioclim$components
+
+    occsol <- get_components(predictors_occs, "occsol")
+    occsol_pc_vars <- occsol$components
+
+    others <- get_components(predictors_other, "autres")
+    other_pc_vars <- others$components
+
+    saveRDS(bioclim$acp, file.path(Output, paste0("acp_bioclim_", opt$period, ".rds")))
+    saveRDS(occsol$acp, file.path(Output, paste0("acp_occsol_", opt$period, ".rds")))
+    saveRDS(others$acp, file.path(Output, paste0("acp_occsol_", opt$period, ".rds")))
+
+    vars <- cbind(occsol_pc_vars, bioclim_pc_vars, other_pc_vars)
+    DataSaison <- cbind(DataSaison, vars)
+    Prednames <- names(vars)
+  } else if (selection == "PCA") {
     small_vars <- endsWith(names(DataSaison), "S")
     data <- DataSaison[, !small_vars]
 
