@@ -561,8 +561,9 @@ for (i in seq_along(ListSp))
     DataSaison$SpRo3M + DataSaison$SpRo4M
 
   if (selection == "PCA") {
+    print(variables_acp)
     cat("selection : PCA", fill = TRUE)
-    predictors <- DataSaison[, ..variables_acp]
+    predictors <- DataSaison[, variables_acp]
 
 
     acp <- get_components(predictors, "PCA")
