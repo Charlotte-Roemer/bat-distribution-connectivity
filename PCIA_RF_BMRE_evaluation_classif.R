@@ -582,11 +582,11 @@ for (i in seq_along(ListSp))
     occsol_vars <- names(data)[occsol_vars]
 
     bioclim_vars <- startsWith(names(data), "SpBioC")
-    bioclim_vars <- names(data)[bioclimvars]
+    bioclim_vars <- names(data)[bioclim_vars]
 
     names_data <- names(data)
-    names_data <- names_data[!(names_data %in% bioclimvars)]
-    names_data <- names_data[!(names_data %in% occsolvars)]
+    names_data <- names_data[!(names_data %in% bioclim_vars)]
+    names_data <- names_data[!(names_data %in% occsol_vars)]
 
     other_vars <- startsWith(names_data, "Sp")
 
