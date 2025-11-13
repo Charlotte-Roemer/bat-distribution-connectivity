@@ -256,5 +256,6 @@ filter_by_max_grid <- function(data, region) {
   grid_sf <- sf::st_as_sf(grid_d, coords = c("X", "Y"), crs = 4326)
   data <- sf::st_join(data, grid_sf, join = st_nearest_feature)
   data <- dplyr::slice_max(data, nb_contacts, by = "ID")
+  data <- st_transform(data, 2154)
   data
 }
