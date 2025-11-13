@@ -235,3 +235,25 @@ get_components <- function(predictors, prefix) {
   names(ret) <- c("components", "acp")
   ret
 }
+
+#------------------------------------------------------------------------------#
+#              Function to select highest activity by grid                     #
+#------------------------------------------------------------------------------#
+
+filter_by_max_grid <- function(data, region) {
+  grid_file <- intersect(
+    list.files(file.path(data_path, "observations"),
+      pattern = "SysGrid",
+      full.names = TRUE
+    ),
+    list.files(file.path(data_path, "observations"),
+      pattern = region,
+      full.names = TRUE
+    )
+  )
+  grid_d <- read.csv(grid_file)
+  grid_sf <- sf::st_as_sf(grid_d, coords = c("X", "Y"), crs = 4326)
+  data <- sf::st_join(data, grid_sf, join = st_nearest_feature)
+  data <- dplyr::slice_max(data, nb_contacts, by = "ID")
+  data
+}
