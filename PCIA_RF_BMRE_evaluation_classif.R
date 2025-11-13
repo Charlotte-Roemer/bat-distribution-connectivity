@@ -568,7 +568,7 @@ for (i in seq_along(ListSp))
     acp <- get_components(predictors, "PCA")
     acp_pc_vars <- acp$components
 
-    saveRDS(acp$acp, file.path(Output, paste0("acp_", opt$period, ".rds")))
+    saveRDS(acp$acp, file.path(Output, paste0("acp_", ListSp[i], "_", opt$period, ".rds")))
 
     DataSaison <- cbind(DataSaison, acp_pc_vars)
     vars_names <- names(acp_pc_vars)
@@ -607,9 +607,9 @@ for (i in seq_along(ListSp))
     others <- get_components(predictors_other, "autres")
     other_pc_vars <- others$components
 
-    saveRDS(bioclim$acp, file.path(Output, paste0("acp_bioclim_", opt$period, ".rds")))
-    saveRDS(occsol$acp, file.path(Output, paste0("acp_occsol_", opt$period, ".rds")))
-    saveRDS(others$acp, file.path(Output, paste0("acp_occsol_", opt$period, ".rds")))
+    saveRDS(bioclim$acp, file.path(Output, paste0("acp_bioclim_", ListSp[i], "_", opt$period, ".rds")))
+    saveRDS(occsol$acp, file.path(Output, paste0("acp_occsol_", ListSp[i], "_", opt$period, ".rds")))
+    saveRDS(others$acp, file.path(Output, paste0("acp_others_", ListSp[i], "_", opt$period, ".rds")))
 
     vars <- cbind(occsol_pc_vars, bioclim_pc_vars, other_pc_vars)
     DataSaison <- cbind(DataSaison, vars)
