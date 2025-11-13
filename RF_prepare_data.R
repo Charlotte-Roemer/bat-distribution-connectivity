@@ -251,6 +251,7 @@ filter_by_max_grid <- function(data, region) {
       full.names = TRUE
     )
   )
+  data <- st_transform(data, 4326)
   grid_d <- read.csv(grid_file)
   grid_sf <- sf::st_as_sf(grid_d, coords = c("X", "Y"), crs = 4326)
   data <- sf::st_join(data, grid_sf, join = st_nearest_feature)
