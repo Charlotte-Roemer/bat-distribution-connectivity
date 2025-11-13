@@ -374,7 +374,7 @@ for (i in seq_along(ListSp))
   coords <- as.data.frame(st_coordinates(DataSaison_sf))
 
   # Add material as predictor
-  DataSaison$SpRecorder <- DataSaison$detecteur_enregistreur_type
+  # DataSaison$SpRecorder <- DataSaison$detecteur_enregistreur_type
   print("lignes datasaison apres edf :")
   print(nrow(DataSaison))
 
