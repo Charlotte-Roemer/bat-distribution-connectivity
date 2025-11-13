@@ -561,6 +561,7 @@ for (i in seq_along(ListSp))
     DataSaison$SpRo3M + DataSaison$SpRo4M
 
   if (selection == "PCA") {
+    cat("selection : PCA", fill = TRUE)
     predictors <- DataSaison[, ..variables_acp]
 
 
@@ -573,11 +574,12 @@ for (i in seq_along(ListSp))
     vars_names <- names(acp_pc_vars)
     Prednames <- c(vars_names, vars_norm)
   } else if (selection == "PCA_decomp") {
+    cat("selection : PCA decomposée", fill = TRUE)
     small_vars <- endsWith(names(DataSaison), "S")
     data <- DataSaison[, !small_vars]
 
     occsol_vars <- startsWith(names(data), "SpHOCS")
-    occsol_vars <- names(data)[occsolvars]
+    occsol_vars <- names(data)[occsol_vars]
 
     bioclim_vars <- startsWith(names(data), "SpBioC")
     bioclim_vars <- names(data)[bioclimvars]
@@ -613,6 +615,7 @@ for (i in seq_along(ListSp))
     DataSaison <- cbind(DataSaison, vars)
     Prednames <- names(vars)
   } else if (selection == "VSURF") {
+    cat("selection : VSURF", fill = TRUE)
     selected_index <- get_prednames(DataSaison, Prednames, "acti_class", samp_sizes)
     Prednames <- Prednames[selected_index]
   } else if (selection == "bio") {
