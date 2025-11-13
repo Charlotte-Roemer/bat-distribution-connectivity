@@ -614,6 +614,8 @@ for (i in seq_along(ListSp))
   } else if (selection == "VSURF") {
     selected_index <- get_prednames(DataSaison, Prednames, "acti_class", samp_sizes)
     Prednames <- Prednames[selected_index]
+  } else if (selection == "bio") {
+    Prednames <- c(variables_bio, vars_norm)
   }
   # print("end of test") # TODO: remove these two lines
   # stop()
