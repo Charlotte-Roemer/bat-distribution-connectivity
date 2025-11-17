@@ -544,15 +544,6 @@ for (i in seq_along(ListSp))
     )
   }
 
-  write.csv(
-    DataSaison,
-    file.path(
-      Output,
-      paste0(
-        ListSp[i], "_", opt$period, "_", opt$region, "_datatrain.csv"
-      )
-    )
-  )
   DataSaison$acti_class <- factor(DataSaison$acti_class, levels = c("NoAct", "Faible", "Moyen", "Fort", "TresFort"))
   print("classes:")
   print(unique(DataSaison$acti_class))
@@ -571,7 +562,9 @@ for (i in seq_along(ListSp))
 
     saveRDS(acp$acp, file.path(Output, paste0("acp_", ListSp[i], "_", opt$period, ".rds")))
 
+
     DataSaison <- cbind(DataSaison, acp_pc_vars)
+
     vars_names <- names(acp_pc_vars)
     Prednames <- c(vars_names, vars_norm)
   } else if (selection == "PCA_decomp") {
@@ -622,6 +615,18 @@ for (i in seq_along(ListSp))
   } else if (selection == "bio") {
     Prednames <- c(variables_bio, vars_norm)
   }
+
+  write.csv(
+    DataSaison,
+    file.path(
+      Output,
+      paste0(
+        ListSp[i], "_", opt$period, "_", opt$region, "_datatrain.csv"
+      )
+    )
+  )
+
+
   # print("end of test") # TODO: remove these two lines
   # stop()
   print("checkpoint4")
