@@ -108,6 +108,12 @@ pred_data$Splatitude <- pred_data$Y
 pred_data$SpRoAddM <- pred_data$SpRo1M + pred_data$SpRo2M +
   pred_data$SpRo3M + pred_data$SpRo4M
 
+
+for (acp in acps) {
+  train_data_file <-
+    file.path(model_location, paste0(opt$species, "_", period, "_", opt$region, "_datatrain.csv"))
+  com_nb <- get_comp_nb(train_data_file, acp, model_location)
+}
 missing_vars <- setdiff(train_names, pred_names) # pour connaitre les colonnes à ajouter
 
 # for predicting over paris with france data
