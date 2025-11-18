@@ -198,7 +198,7 @@ cat("data_sf ok", fill = TRUE)
 # pred_data_sf$SpRecorder <- "SM2BAT+"
 #
 X_pred <- pred_data_sf |>
-  dplyr::select(dplyr::starts_with("Sp")) |>
+  # dplyr::select(dplyr::starts_with("Sp")) |>
   sf::st_drop_geometry()
 X_pred[is.na(X_pred)] <- 0
 
