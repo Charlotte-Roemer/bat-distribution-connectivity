@@ -166,6 +166,7 @@ for (variable in missing_vars) {
 }
 
 cat("data ready", fill = TRUE)
+pred_data <- as.data.frame(pred_data)
 
 pred_data_sf <- st_as_sf(pred_data, coords = c(x = "X", y = "Y"), crs = 4326L) |>
   st_transform(2154L)
