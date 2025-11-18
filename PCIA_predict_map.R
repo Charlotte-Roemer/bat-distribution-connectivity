@@ -72,7 +72,9 @@ acps <- list.files(model_location, pattern = "acp")
 acps <- grep(opt$species, acps, value = TRUE)
 acps <- grep(period, acps, value = TRUE)
 
-acps
+acp_names <- unique(t(as.data.frame(strsplit(acps, "_", fixed = TRUE)))[, 2L])
+
+print(acp_names)
 
 # for france only right now more to come in opt$
 empty_raster_file <- file.path(data_path, "GIS", paste0(opt$region, "_", opt$grid, "m_L93.tif"))
@@ -115,7 +117,7 @@ pred_data$SpRoAddM <- pred_data$SpRo1M + pred_data$SpRo2M +
 
 cat("Roads aggregated :", fill = TRUE)
 
-for (acp in acps) {
+for (acp in acp_names) {
   cat(paste("ACP name : ", acp))
   train_data_file <-
     file.path(
