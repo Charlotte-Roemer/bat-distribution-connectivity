@@ -259,3 +259,17 @@ filter_by_max_grid <- function(data, region) {
   data <- st_transform(data, 2154)
   data
 }
+
+#------------------------------------------------------------------------------#
+#            Function to get number of components selected in data             #
+#------------------------------------------------------------------------------#
+
+
+
+get_comp_nb <- function(data, name, data_path) {
+  train_data <- read.csv(data_path)
+  colonnes <- names(train_data)
+
+  search_pattern <- paste0("^Dim.*", name, "$")
+  sum(grepl(search_pattern, colonnes))
+}
