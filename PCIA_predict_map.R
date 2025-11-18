@@ -115,8 +115,15 @@ cat("Roads aggregated :", fill = TRUE)
 
 for (acp in acps) {
   train_data_file <-
-    file.path(model_location, paste0(opt$species, "_", period, "_", opt$region, "_datatrain.csv"))
+    file.path(
+      model_location,
+      paste0(
+        opt$species, "_", period, "_", opt$region, "_datatrain.csv"
+      )
+    )
+
   cat("Getting number of components :", fill = TRUE)
+
   comp_nb <- get_comp_nb(train_data_file, acp, model_location)
 
   cat(paste("Components : ", comp_nb), fill = TRUE)

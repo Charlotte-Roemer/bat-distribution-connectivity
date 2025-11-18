@@ -265,9 +265,8 @@ filter_by_max_grid <- function(data, region) {
 #------------------------------------------------------------------------------#
 
 
-
 get_comp_nb <- function(data, name, data_path) {
-  train_data <- read.csv(data_path)
+  train_data <- read.csv(data_)
   colonnes <- names(train_data)
 
   search_pattern <- paste0("^Dim.*", name, "$")
