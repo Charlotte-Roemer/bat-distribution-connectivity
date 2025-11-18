@@ -560,7 +560,7 @@ for (i in seq_along(ListSp))
     acp <- get_components(predictors, "PCA")
     acp_pc_vars <- acp$components
 
-    saveRDS(acp$acp, file.path(Output, paste0("acp_", ListSp[i], "_", opt$period, ".rds")))
+    saveRDS(acp$acp, file.path(Output, paste0("acp_globale_", ListSp[i], "_", opt$period, ".rds")))
 
 
     DataSaison <- cbind(DataSaison, acp_pc_vars)

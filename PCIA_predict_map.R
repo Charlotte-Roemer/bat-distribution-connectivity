@@ -66,6 +66,10 @@ model <- file.path(
   )
 )
 
+acps <- list.files(model_location, pattern = "acp")
+acps <- grep(opt$species, acps, value = TRUE)
+acps <- grep(period, acps, value = TRUE)
+
 # for france only right now more to come in opt$
 empty_raster_file <- file.path(data_path, "GIS", paste0(opt$region, "_", opt$grid, "m_L93.tif"))
 empty_raster <- terra::rast(empty_raster_file)
@@ -100,6 +104,10 @@ pred_data$SpSDate <- sin(SpFDate / 365 * 2L * pi) # to create a circular variabl
 pred_data$SpYear <- lubridate::year(pred_data$Nuit)
 pred_data$Splongitude <- pred_data$X
 pred_data$Splatitude <- pred_data$Y
+
+pred_data$SpRoAddM <- pred_data$SpRo1M + pred_data$SpRo2M +
+  pred_data$SpRo3M + pred_data$SpRo4M
+
 missing_vars <- setdiff(train_names, pred_names) # pour connaitre les colonnes à ajouter
 
 # for predicting over paris with france data
