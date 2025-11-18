@@ -3,6 +3,7 @@ library(randomForest)
 library(tidyr)
 library(sf)
 library(optparse)
+source("RF_prepare_data.R")
 source("variables.R")
 
 option_list <- list(
