@@ -113,6 +113,10 @@ pred_data$SpSDate <- sin(SpFDate / 365 * 2L * pi) # to create a circular variabl
 pred_data$SpYear <- lubridate::year(pred_data$Nuit)
 pred_data$Splongitude <- pred_data$X
 pred_data$Splatitude <- pred_data$Y
+pred_data$Spprecipitations <- 0
+pred_data$Sptemp <- 0
+pred_data$Spwind <- 0
+pred_data$SpRo_dist <- 0
 
 cat("Aggregating roads :", fill = TRUE)
 pred_data$SpRoAddM <- pred_data$SpRo1M + pred_data$SpRo2M +
