@@ -231,7 +231,7 @@ print(file.path(model_location, paste0(
   "_",
   opt$region,
   "_",
-  opt$date_to_predict,
+  period,
   ".tif"
 )))
 terra::writeRaster(
@@ -250,7 +250,7 @@ terra::writeRaster(
     "_",
     opt$region,
     "_",
-    opt$date_to_predict,
+    period
     ".tif"
   ))
 )
