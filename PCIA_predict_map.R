@@ -118,7 +118,7 @@ pred_data$SpRoAddM <- pred_data$SpRo1M + pred_data$SpRo2M +
 cat("Roads aggregated :", fill = TRUE)
 
 for (acp in acp_names) {
-  cat(paste("ACP name : ", acp))
+  cat(paste("ACP name : ", acp), fill = TRUE)
   train_data_file <-
     file.path(
       model_location,
@@ -141,6 +141,7 @@ for (acp in acp_names) {
   )
   cat("Reading PCA file", fill = TRUE)
   pca <- readRDS(pca_file)
+  pred_data <- as.data.frame(pred_data)
   comp <- predict(pca, pred_data)
   comp <- as.data.frame(comp$coord)
   comp <- comp[, 1L:comp_nb]
