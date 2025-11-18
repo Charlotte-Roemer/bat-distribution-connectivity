@@ -78,7 +78,6 @@ acps <- grep(period, acps, value = TRUE)
 
 acp_names <- unique(t(as.data.frame(strsplit(acps, "_", fixed = TRUE)))[, 2L])
 
-print(acp_names)
 
 # for france only right now more to come in opt$
 empty_raster_file <- file.path(data_path, "GIS", paste0(opt$region, "_", opt$grid, "m_L93.tif"))
@@ -146,6 +145,9 @@ for (acp in acp_names) {
   cat("Reading PCA file", fill = TRUE)
   pca <- readRDS(pca_file)
   pred_data <- as.data.frame(pred_data)
+  print(names(pred_data))
+
+  print(rownames(pca$var$coord))
   comp <- predict(pca, pred_data)
   comp <- as.data.frame(comp$coord)
   comp <- comp[, 1L:comp_nb]
