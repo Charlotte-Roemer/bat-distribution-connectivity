@@ -158,7 +158,10 @@ for (acp in acp_names) {
   names(comp) <- paste0(names(comp), "_", acp)
   pred_data <- c(pred_data, comp)
 }
+pred_data <- as.data.frame(pred_data)
+pred_names <- names(pred_data)
 missing_vars <- setdiff(train_names, pred_names) # pour connaitre les colonnes à ajouter
+cat(paste("missing vars : ", missing_vars))
 
 # for predicting over paris with france data
 for (variable in missing_vars) {
@@ -166,7 +169,6 @@ for (variable in missing_vars) {
 }
 
 cat("data ready", fill = TRUE)
-pred_data <- as.data.frame(pred_data)
 
 pred_data_sf <- st_as_sf(pred_data, coords = c(x = "X", y = "Y"), crs = 4326L) |>
   st_transform(2154L)
