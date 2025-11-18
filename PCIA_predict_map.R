@@ -112,7 +112,19 @@ pred_data$SpRoAddM <- pred_data$SpRo1M + pred_data$SpRo2M +
 for (acp in acps) {
   train_data_file <-
     file.path(model_location, paste0(opt$species, "_", period, "_", opt$region, "_datatrain.csv"))
-  com_nb <- get_comp_nb(train_data_file, acp, model_location)
+  comp_nb <- get_comp_nb(train_data_file, acp, model_location)
+  pca_file <- file.path(
+    model_location,
+    paste0(
+      "acp_", acp, "_", opt$species, "_", period, ".csv"
+    )
+  )
+  pca <- readRDS(pca_file)
+  comp <- predict(pca, pred_data)
+  comp <- as.data.frame(comp$coord)
+  comp <- comp[, 1L:comp_nb]
+  names(comp) <- paste0(names(comp), "_", acp)
+  pred_data <- c(pred_data, comp)
 }
 missing_vars <- setdiff(train_names, pred_names) # pour connaitre les colonnes à ajouter
 
@@ -121,12 +133,12 @@ for (variable in missing_vars) {
   pred_data[[variable]] <- 0
 }
 
-print("data ready")
+cat("data ready", fill = TRUE)
 
 pred_data_sf <- st_as_sf(pred_data, coords = c(x = "X", y = "Y"), crs = 4326L) |>
-  st_transform(2154)
+  st_transform(2154L)
 
-print("data_sf ok")
+cat("data_sf ok", fill = TRUE)
 
 # coords <- as.data.frame(st_coordinates(pred_data_sf))
 
