@@ -250,7 +250,7 @@ terra::writeRaster(
     "_",
     opt$region,
     "_",
-    period
+    period,
     ".tif"
   ))
 )
