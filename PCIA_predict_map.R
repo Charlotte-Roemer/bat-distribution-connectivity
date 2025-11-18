@@ -107,20 +107,27 @@ pred_data$SpYear <- lubridate::year(pred_data$Nuit)
 pred_data$Splongitude <- pred_data$X
 pred_data$Splatitude <- pred_data$Y
 
+cat("Aggregating roads :", fill = TRUE)
 pred_data$SpRoAddM <- pred_data$SpRo1M + pred_data$SpRo2M +
   pred_data$SpRo3M + pred_data$SpRo4M
 
+cat("Roads aggregated :", fill = TRUE)
 
 for (acp in acps) {
   train_data_file <-
     file.path(model_location, paste0(opt$species, "_", period, "_", opt$region, "_datatrain.csv"))
+  cat("Getting number of components :", fill = TRUE)
   comp_nb <- get_comp_nb(train_data_file, acp, model_location)
+
+  cat(paste("Components : ", comp_nb), fill = TRUE)
+
   pca_file <- file.path(
     model_location,
     paste0(
-      "acp_", acp, "_", opt$species, "_", period, ".csv"
+      "acp_", acp, "_", opt$species, "_", period, ".rds"
     )
   )
+  cat("Reading PCA file", fill = TRUE)
   pca <- readRDS(pca_file)
   comp <- predict(pca, pred_data)
   comp <- as.data.frame(comp$coord)
