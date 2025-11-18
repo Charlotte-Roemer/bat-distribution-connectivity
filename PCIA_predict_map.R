@@ -50,6 +50,7 @@ model <- file.path(
   paste0(
     "RFspat_",
     opt$species,
+    "_",
     "VC",
     opt$threshold,
     "_",
