@@ -18,10 +18,6 @@ option_list <- list(
     type = "character", default = "2025-03-10",
     help = "when was the model you want to use trained ?"
   ),
-  optparse::make_option(c("-p", "--date_to_predict"),
-    type = "character", default = "20240608",
-    help = "when was the model you want to use trained ?"
-  ),
   optparse::make_option(c("-m", "--method"),
     type = "character", default = "noSpace",
     help = "Which spatialization method you want to use ? (EDF, LatLong, noSpace)"
@@ -34,7 +30,7 @@ option_list <- list(
     type = "character", default = "500",
     help = "Which size is your grid in meters (500, 200, 100) ?"
   ),
-  optparse::make_option("--period",
+  optparse::make_option(c("-p", "--period"),
     type = "character", default = "year",
     help = "Is it a yearly model or a seasonal one ? (spring, summer, autumn)"
   )
@@ -81,7 +77,7 @@ pred_data_file <- file.path(
   data_path,
   "observations",
   "pred_vars",
-  paste0("data_pred", "_", opt$region, "_", opt$date_to_predict, ".csv")
+  paste0("data_pred", "_", opt$region, ".csv")
 )
 
 pred_data <- data.table::fread(pred_data_file)
