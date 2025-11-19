@@ -76,7 +76,11 @@ acps <- list.files(model_location, pattern = "acp")
 acps <- grep(opt$species, acps, value = TRUE)
 acps <- grep(period, acps, value = TRUE)
 
-acp_names <- unique(t(as.data.frame(strsplit(acps, "_", fixed = TRUE)))[, 2L])
+if (length(acps) > 0) {
+  acp_names <- unique(t(as.data.frame(strsplit(acps, "_", fixed = TRUE)))[, 2L])
+} else {
+  acp_names <- c()
+}
 
 
 # for france only right now more to come in opt$
