@@ -34,7 +34,7 @@ option_list <- list(
   ),
   optparse::make_option(c("-v", "--variableselection"),
     type = "character", default = "None",
-    help = 'Choose which variable selection you want to make between values : "None", "VSURF", "Indispensable", "PCA", "PCA_decomp".'
+    help = 'Choose which variable selection you want to make between values : "None", "VSURF", "indisp", "PCA", "PCA_decomp".'
   ),
   optparse::make_option(c("-s", "--species"),
     type = "character", default = "paper",
@@ -614,6 +614,8 @@ for (i in seq_along(ListSp))
     Prednames <- Prednames[selected_index]
   } else if (selection == "bio") {
     Prednames <- c(variables_bio, vars_norm)
+  } else if (selection == "indisp") {
+    Prednames <- variables_indisp
   }
 
   write.csv(
