@@ -118,6 +118,6 @@ variables_bio <- c(
   "SpHOCS6M",
   "SpHOCS7M",
   "SpHOCS8M",
-  "SpHOCS9M",
+  "SpHOCS9M"
 )
 vars_norm <- c("SpRo_dist", "Spprecipitations", "Sptemp", "Spwind")
