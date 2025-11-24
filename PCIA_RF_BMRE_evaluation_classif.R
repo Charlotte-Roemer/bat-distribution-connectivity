@@ -80,10 +80,10 @@ selection <- opt$variableselection
 GroupSel <- "bat"
 # GroupSel=NA #sorting according to the group column of Specieslist
 # (args[3), NA if no sorting
-ListPaper <- c(
-  "Minsch", "Barbar", "Nyclei", "Nycnoc", "Eptser", "Pipkuh", "Pipnat",
-  "Pippip", "Pippyg", "Rhifer"
-)
+# ListPaper <- c(
+#   "Minsch", "Barbar", "Nyclei", "Nycnoc", "Eptser", "Pipkuh", "Pipnat",
+#   "Pippip", "Pippyg", "Rhifer"
+# )
 # Filter data by date?
 # e.g.as.Date("2021-12-31") only use  data before this date
 
@@ -308,18 +308,13 @@ for (i in seq_along(ListSp))
 
   DataSpSL_w0_2$Nuit <- as.Date(DataSpSL_w0_2$Nuit)
   DataSpSL_w0_2 <- unique(DataSpSL_w0_2)
-  CoordPS <- unique(CoordPS)
 
+  CoordPS <- unique(CoordPS)
   CoordPS$Nuit <- as.Date(CoordPS$Nuit)
 
   DataSaison <- inner_join(DataSpSL_w0_2, CoordPS,
     by = c("longitude", "latitude", "Nuit", "participation")
   ) # adds environmental variables to activity data
-  print("lignes datasaison :")
-  print(nrow(DataSaison))
-  print("colonnes datasaison")
-  print(ncol(DataSaison))
-  print(Sys.time())
 
   cat("Absence data added", fill = TRUE)
   # lets add the "gites" information
@@ -354,8 +349,6 @@ for (i in seq_along(ListSp))
 
   SpFDate <- yday(Date1)
 
-  print("calculating sin/cos for date")
-  #
   # DataSaison$SpCDate <- cos(SpFDate / 365L * 2L * pi) # to create a circular variable for date
   # DataSaison$SpSDate <- sin(SpFDate / 365L * 2L * pi) # to create a circular variable for date
   #
@@ -375,8 +368,6 @@ for (i in seq_along(ListSp))
 
   # Add material as predictor
   # DataSaison$SpRecorder <- DataSaison$detecteur_enregistreur_type
-  print("lignes datasaison apres edf :")
-  print(nrow(DataSaison))
 
 
   # Identify predictors
@@ -390,9 +381,8 @@ for (i in seq_along(ListSp))
 
   clc <- startsWith(Prednames, "SpHC")
   Prednames <- Prednames[!clc]
+
   Prednames <- Prednames[!(Prednames %in% variables_a_exclure)]
-  print("prednames: ")
-  print(Prednames)
 
 
   # Do not use species distribution area yet
@@ -414,7 +404,6 @@ for (i in seq_along(ListSp))
     drop_na(all_of(Prednames)) |> # deletes rows without predictor (outdated GI table)
     drop_na(nb_contacts) # deletes rows without contacts (people did not upload their data)
 
-  cat("Predictors identified", fill = TRUE)
 
   # Statistics for paper
 
@@ -507,28 +496,18 @@ for (i in seq_along(ListSp))
 
   DataSaison$sfold <- sfolds$clusters
 
-
-  if ("acti_class" %in% colnames(DataSaison)) {
-    print("acticlass ok")
-  }
-
-  if ("sfold" %in% colnames(DataSaison)) {
-    print("sfold ok")
-  }
-
   sindx <- CAST::CreateSpacetimeFolds(DataSaison,
     spacevar = "sfold",
     class = "acti_class",
-    k = 10
+    k = 10L
   )
-  print("checkpoint1")
+
   sctrl <- caret::trainControl(
     method = "cv",
     index = sindx$index,
     savePredictions = "final"
   )
 
-  print("checkpoint2")
   cat("Cross-validation indices prepared", fill = TRUE)
 
   if (opt$keep) {
@@ -631,7 +610,7 @@ for (i in seq_along(ListSp))
 
   # print("end of test") # TODO: remove these two lines
   # stop()
-  print("checkpoint4")
+
   noSpacemod <- fitvalpred_rf_cat(
     Prednames,
     # rctrl,

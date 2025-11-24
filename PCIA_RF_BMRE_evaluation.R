@@ -13,7 +13,6 @@ library(dplyr)
 library(stringr)
 library(sf)
 library(CAST)
-# library(Boruta)
 library(caret)
 library(sfdep)
 source("variables_sel.R")
@@ -32,6 +31,10 @@ option_list <- list(
   optparse::make_option(c("-t", "--threshold"),
     type = "character", default = "50",
     help = 'Set sorting threshold between values : "0", "50", "90" and "weighted'
+  ),
+  optparse::make_option(c("-v", "--variableselection"),
+    type = "character", default = "None",
+    help = 'Choose which variable selection you want to make between values : "None", "VSURF", "indisp", "PCA", "PCA_decomp".'
   ),
   optparse::make_option(c("-s", "--species"),
     type = "character", default = "paper",
@@ -71,21 +74,22 @@ cat(paste("Threshold :", ThresholdSort), fill = TRUE)
 
 # Species to model
 Sp <- opt$species # choose a species (e.g. "Pippip") or "all" or "paper"
+selection <- opt$variableselection
 
 GroupSel <- "bat"
 # GroupSel=NA #sorting according to the group column of Specieslist
-#  (args[3), NA if no sorting
-ListPaper <- c(
-  "Minsch", "Barbar", "Nyclei", "Nycnoc", "Eptser", "Pipkuh", "Pipnat",
-  "Pippip", "Pippyg", "Rhifer"
-)
+# (args[3), NA if no sorting
+# ListPaper <- c(
+#   "Minsch", "Barbar", "Nyclei", "Nycnoc", "Eptser", "Pipkuh", "Pipnat",
+#   "Pippip", "Pippyg", "Rhifer"
+# )
 # Filter data by date?
 # e.g.as.Date("2021-12-31") only use  data before this date
 
 date_limit <- opt$date
 # Predictors and model specs
 # "EDF" = X + Y + Euclidian Distance Fields ;  "noCoord" = no coordinates
-YearEffect <- TRUE # Add year?
+YearEffect <- FALSE # Add year?
 # MTRY = "default"  # "default" or "npred" or "2-3" for 2/3 of npred
 ## NTREE <- 500
 
@@ -224,6 +228,7 @@ DataCPL3$nb_contacts <- subset(DataCPL3, select = args[10])[, 1]
 #      )
 #    )
 test1 <- nrow(DataCPL3)
+
 DataCPL3 <- subset(DataCPL3, !is.na(DataCPL3$nb_contacts))
 
 # TEST
@@ -235,6 +240,7 @@ DataCPL3 <- subset(DataCPL3, !is.na(DataCPL3$nb_contacts))
 #      )
 #    )
 test2 <- nrow(DataCPL3)
+
 ifelse(test1 == test2, print("ok"), stop("NA present in activity data!"))
 
 # List species to model
@@ -316,17 +322,16 @@ for (i in seq_along(ListSp))
   # )
 
   DataSpSL_w0_2$Nuit <- as.Date(DataSpSL_w0_2$Nuit)
-  CoordPS$Nuit <- as.Date(CoordPS$Nuit)
   DataSpSL_w0_2 <- unique(DataSpSL_w0_2)
+
   CoordPS <- unique(CoordPS)
+  CoordPS$Nuit <- as.Date(CoordPS$Nuit)
+
   DataSaison <- inner_join(DataSpSL_w0_2,
     CoordPS,
     by = c("longitude", "latitude", "Nuit", "participation")
   ) # adds environmental variables to activity data ("participation added")
-  print("colonnes datasaison")
-  print(ncol(DataSaison))
 
-  print(Sys.time())
 
   cat("Absence data added", fill = TRUE)
   # lets add the "gites" information
@@ -364,8 +369,8 @@ for (i in seq_along(ListSp))
   }
 
   SpFDate <- yday(Date1)
-  DataSaison$SpCDate <- cos(SpFDate / 365L * 2L * pi) # to create a circular variable for date
-  DataSaison$SpSDate <- sin(SpFDate / 365L * 2L * pi) # to create a circular variable for date
+  # DataSaison$SpCDate <- cos(SpFDate / 365L * 2L * pi) # to create a circular variable for date
+  # DataSaison$SpSDate <- sin(SpFDate / 365L * 2L * pi) # to create a circular variable for date
 
   # If year effect must be accounted for
   if (YearEffect) {
@@ -380,12 +385,11 @@ for (i in seq_along(ListSp))
     sf::st_transform(2154L)
 
   coords <- as.data.frame(st_coordinates(DataSaison_sf))
-  print("lignes datasaison nb_contacts 1 :")
-  print(length(DataSaison$nb_contacts))
+
 
   # sf object with 5 points: the bounding box of the grid of points + the center
   # Add material as predictor
-  DataSaison$SpRecorder <- DataSaison$detecteur_enregistreur_type
+  # DataSaison$SpRecorder <- DataSaison$detecteur_enregistreur_type
 
   # Identify predictors
   # DataSaison <- DataSaison |> # removing medium and large buffers
@@ -395,19 +399,17 @@ for (i in seq_along(ListSp))
   #
   testPred <- startsWith(names(DataSaison), "Sp")
   Prednames <- names(DataSaison)[testPred]
-  print("prednames1")
-  print(Prednames)
+
 
   clc <- startsWith(Prednames, "SpHC")
   Prednames <- Prednames[!clc]
+
+  Prednames <- Prednames[!(Prednames %in% variables_a_exclure)]
 
   if (opt$region == "idf") {
     ocs <- startsWith(Prednames, "SpHOCS")
     Prednames <- Prednames[!ocs]
   }
-
-  Prednames[!(Prednames %in% variables_a_exclure)]
-  print(Prednames)
 
 
   # Do not use species distribution area yet
@@ -428,8 +430,6 @@ for (i in seq_along(ListSp))
   DataSaison <- DataSaison |>
     drop_na(all_of(Prednames)) |> # deletes rows without predictor (outdated GI table)
     drop_na(nb_contacts) # deletes rows without contacts (people did not upload their data)
-  print("lignes datasaison nb_contacts 2 :")
-  print(length(DataSaison$nb_contacts))
 
 
   # DataSaison$SpGite <- NULL
@@ -453,7 +453,6 @@ for (i in seq_along(ListSp))
 
   # moran <- check_moran(DataSaison, "nb_contacts")
 
-  cat("Predictors identified", fill = TRUE)
 
   # Statistics for paper
 
@@ -481,38 +480,6 @@ for (i in seq_along(ListSp))
   print(summary(testNA2))
   Sys.time()
 
-  cat("Boruta", fill = TRUE)
-
-  # Find Boruta formula (variable)
-  if (DoBoruta == T) {
-    cat("yes", fill = TRUE)
-    Dataset.Boruta <- data.frame("nb_contacts" = DataSaison$nb_contacts, DataSaison[, ..Prednames])
-    ModRFTemp.Boruta <- Boruta::Boruta(formula("nb_contacts ~."), # Build model
-      data = Dataset.Boruta,
-      doTrace = 2L, ntree = 500L, maxRuns = 100L
-    )
-    formula.Boruta <- try(getConfirmedFormula(ModRFTemp.Boruta)) # retrieve formula of selected variables if at least one was selected (error if none is selected)
-    if (inherits(formula.Boruta, "try-error")) {
-      formula.Boruta <- formula("nb_contacts ~.")
-      errorlog <- data.frame(
-        "message" = paste0(
-          "Boruta ended by not selecting any predictor for model ",
-          ListSp[i]
-        )
-      )
-      fwrite(errorlog, file.path(Output, paste0(ListSp[i], "_", Tag, "_log.txt")))
-    } else {
-      formula.Boruta <- getConfirmedFormula(ModRFTemp.Boruta)
-      names.Boruta <- getSelectedAttributes(ModRFTemp.Boruta)
-    }
-    cat("Formula found", fill = TRUE)
-  } else {
-    cat("no", fill = TRUE)
-    formula.Boruta <- formula("nb_contacts ~.")
-    print("prednames")
-    print(Prednames)
-    names.Boruta <- Prednames
-  }
   #### Modelling ####-----------------------------------------------------------
 
   # Prepare random and spatial cross-validation indices
@@ -528,26 +495,20 @@ for (i in seq_along(ListSp))
     )
   ) # quezaco?
 
-  print("Load Area of Interest:")
+  cat("Load Area of Interest:", fill = TRUE)
   aoi <- sf::read_sf(
     dsn = args[4],
     layer = opt$region
   ) |>
-    st_transform(2154)
+    st_transform(2154L)
 
-  print("Prep data saison as sf object :")
+  cat("Prep data saison as sf object :", fill = TRUE)
   DataSaison_sf <- st_as_sf(DataSaison,
     coords = c(x = "longitude", y = "latitude"),
     remove = FALSE,
-    crs = 4326
+    crs = 4326L
   ) |>
-    st_transform(2154)
-  DataSaison_sf <- DataSaison_sf[aoi, ]
-  DataSaison_sf$acti_int_class <- def_int_classes(DataSaison_sf)
-
-
-  print("rows datasaison 1")
-  print(length(DataSaison$nb_contacts))
+    st_transform(2154L)
 
   if (opt$keep) {
     # last_year <- max(DataSaison$SpYear)
@@ -556,15 +517,22 @@ for (i in seq_along(ListSp))
     DataTest <- DataTest_sf |>
       st_drop_geometry()
   }
+
+  DataSaison_sf <- DataSaison_sf[aoi, ]
+  DataSaison_sf$acti_class <- def_classes(DataSaison_sf)
+  DataSaison_sf$acti_int_class <- def_int_classes(DataSaison_sf)
+
+  print("DataSaison filtered for season")
+
+  DataSaison_sf <- DataSaison_sf[dplyr::between(DataSaison_sf$fortnight, p_start, p_end), ]
+
+  DataSaison_sf <- filter_by_max_grid(DataSaison_sf, opt$region)
+
   DataSaison <- DataSaison_sf |>
     st_drop_geometry()
 
   set.seed(123)
 
-
-  # if (file.exists(sfolds_source)) {
-  #   sfolds <- readRDS(sfolds_source)
-  # } else {
   START <- Sys.time()
   print("Creating folds :")
   sfolds <- CAST::knndm(DataSaison_sf, aoi, k = 10, maxp = 0.5) # k = number of folds
@@ -573,15 +541,17 @@ for (i in seq_along(ListSp))
   # beep(2)
   saveRDS(sfolds, sfolds_source)
   print("sfolds written")
-  # }
 
 
   DataSaison$sfold <- sfolds$clusters
+
   sindx <- CreateSpacetimeFolds(DataSaison,
     spacevar = "sfold",
+    class = "acti_class",
     ## timevar = "fortnight",
-    k = 10
+    k = 10L
   )
+
   sctrl <- caret::trainControl(
     method = "cv",
     index = sindx$index,
@@ -601,6 +571,79 @@ for (i in seq_along(ListSp))
     )
   }
 
+  DataSaison$acti_class <- factor(DataSaison$acti_class, levels = c("NoAct", "Faible", "Moyen", "Fort", "TresFort"))
+
+  samp_sizes <- def_sample_vector(DataSaison, "acti_class", 0.66)
+  DataSaison$SpRoAddM <- DataSaison$SpRo1M + DataSaison$SpRo2M +
+    DataSaison$SpRo3M + DataSaison$SpRo4M
+
+  if (selection == "PCA") {
+    print(variables_acp)
+    cat("selection : PCA", fill = TRUE)
+    predictors <- DataSaison[, variables_acp]
+
+
+    acp <- get_components(predictors, "PCA")
+    acp_pc_vars <- acp$components
+
+    saveRDS(acp$acp, file.path(Output, paste0("acp_PCA_", ListSp[i], "_", opt$period, ".rds")))
+
+
+    DataSaison <- cbind(DataSaison, acp_pc_vars)
+
+    vars_names <- names(acp_pc_vars)
+    Prednames <- c(vars_names, vars_norm)
+  } else if (selection == "PCA_decomp") {
+    cat("selection : PCA decomposée", fill = TRUE)
+    small_vars <- endsWith(names(DataSaison), "S")
+    data <- DataSaison[, !small_vars]
+
+    occsol_vars <- startsWith(names(data), "SpHOCS")
+    occsol_vars <- names(data)[occsol_vars]
+
+    bioclim_vars <- startsWith(names(data), "SpBioC")
+    bioclim_vars <- names(data)[bioclim_vars]
+
+    names_data <- names(data)
+    names_data <- names_data[!(names_data %in% bioclim_vars)]
+    names_data <- names_data[!(names_data %in% occsol_vars)]
+
+    other_vars <- startsWith(names_data, "Sp")
+
+
+    other_vars <- names_data[other_vars]
+
+
+    predictors_occs <- data[, occsol_vars]
+    predictors_bioc <- data[, bioclim_vars]
+    predictors_other <- data[, other_vars]
+
+    bioclim <- get_components(predictors_bioc, "bioclim")
+    bioclim_pc_vars <- bioclim$components
+
+    occsol <- get_components(predictors_occs, "occsol")
+    occsol_pc_vars <- occsol$components
+
+    others <- get_components(predictors_other, "autres")
+    other_pc_vars <- others$components
+
+    saveRDS(bioclim$acp, file.path(Output, paste0("acp_bioclim_", ListSp[i], "_", opt$period, ".rds")))
+    saveRDS(occsol$acp, file.path(Output, paste0("acp_occsol_", ListSp[i], "_", opt$period, ".rds")))
+    saveRDS(others$acp, file.path(Output, paste0("acp_autres_", ListSp[i], "_", opt$period, ".rds")))
+
+    vars <- cbind(occsol_pc_vars, bioclim_pc_vars, other_pc_vars)
+    DataSaison <- cbind(DataSaison, vars)
+    Prednames <- names(vars)
+  } else if (selection == "VSURF") {
+    cat("selection : VSURF", fill = TRUE)
+    selected_index <- get_prednames(DataSaison, Prednames, "acti_class", samp_sizes)
+    Prednames <- Prednames[selected_index]
+  } else if (selection == "bio") {
+    Prednames <- c(variables_bio, vars_norm)
+  } else if (selection == "indisp") {
+    Prednames <- variables_indisp
+  }
+
   write.csv(
     DataSaison,
     file.path(
@@ -610,6 +653,8 @@ for (i in seq_along(ListSp))
       )
     )
   )
+
+
   # EDF model
 
   # set.seed(123)
@@ -681,9 +726,7 @@ for (i in seq_along(ListSp))
   # ## LatLong model
   #
   #
-  #  remove EDF variables from names.boruta
-  print("names.boruta before spedf removal")
-  print(names.Boruta)
+  # remove EDF variables from names.boruta
 
   # LatLongmod <- fitvalpred_rf(
   #   names.Boruta,
@@ -748,27 +791,28 @@ for (i in seq_along(ListSp))
   # )
   # rm("LatLongmod")
   #
-  #  remove EDF variables from names.boruta
-
-  print("names before splatlon removal")
-  print(names.Boruta)
-  testPred <- substr(names.Boruta, 1, 5) != "Splat"
-  names.Boruta <- names.Boruta[testPred]
-  testPred <- substr(names.Boruta, 1, 5) != "Splon"
-  names.Boruta <- names.Boruta[testPred]
-
-  print("rows datasaison")
-  print(nrow(DataSaison))
-  print(names.Boruta)
+  # remove EDF variables from names.boruta
+  #
+  # print("names before splatlon removal")
+  # print(names.Boruta)
+  # testPred <- substr(names.Boruta, 1, 5) != "Splat"
+  # names.Boruta <- names.Boruta[testPred]
+  # testPred <- substr(names.Boruta, 1, 5) != "Splon"
+  # names.Boruta <- names.Boruta[testPred]
+  #
+  # print("rows datasaison")
+  # print(nrow(DataSaison))
+  # print(names.Boruta)
   # selected_index <- get_prednames(DataSaison, names.Boruta, "nb_contacts")
 
   # names.Boruta <- names.Boruta[selected_index]
 
   noSpacemod <- fitvalpred_rf(
-    names.Boruta,
+    Prednames,
     # rctrl,
     sctrl,
-    DataSaison
+    DataSaison,
+    samp_sizes
     # tempstack[[c(basecovs, proxycovs)]]
   )
 

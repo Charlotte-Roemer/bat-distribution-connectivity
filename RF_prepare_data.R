@@ -172,8 +172,8 @@ def_int_classes <- function(data) {
   data$acti_class[data$nb_contacts <= quant[1]] <- 1
   data$acti_class[data$nb_contacts == 0] <- 0
   data$acti_class[data$nb_contacts > quant[1] & data$nb_contacts <= quant[2]] <- 2
-  data$acti_class[data$nb_contacts > quant[2] & data$nb_contacts < quant[3]] <- 3
-  data$acti_class[data$nb_contacts >= quant[3]] <- 4
+  data$acti_class[data$nb_contacts > quant[2] & data$nb_contacts <= quant[3]] <- 3
+  data$acti_class[data$nb_contacts > quant[3]] <- 4
   data$acti_class
 }
 
