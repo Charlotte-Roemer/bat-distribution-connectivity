@@ -811,8 +811,7 @@ for (i in seq_along(ListSp))
     Prednames,
     # rctrl,
     sctrl,
-    DataSaison,
-    samp_sizes
+    DataSaison
     # tempstack[[c(basecovs, proxycovs)]]
   )
 
