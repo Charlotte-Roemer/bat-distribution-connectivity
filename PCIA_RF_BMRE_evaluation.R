@@ -821,7 +821,7 @@ for (i in seq_along(ListSp))
   #### Save ####----------------------------------------------------------------
 
   if (DoBoruta == T) {
-    suffix <- paste0("_Boruta_", "noSpace", "_", ListSp[i])
+    suffix <- paste0("_Boruta_", opt$period, "_noSpace", "_", ListSp[i])
   } else {
     suffix <- paste0(opt$period, "_", opt$region, "_noSpace", "_", ListSp[i])
   }
@@ -833,6 +833,7 @@ for (i in seq_along(ListSp))
       paste0(
         "Evaluation_",
         ListSp[i],
+        "_",
         Tag, "_",
         date_limit,
         "_",
@@ -860,6 +861,7 @@ for (i in seq_along(ListSp))
       paste0(
         "RFspat_",
         ListSp[i],
+        "_",
         Tag,
         "_",
         date_limit,
@@ -876,7 +878,7 @@ for (i in seq_along(ListSp))
   print(END1 - START1)
   print(paste("Model done for", ListSp[i]))
 
-  parallel::stopCluster(cl)
+  # parallel::stopCluster(cl)
 }
 
 
