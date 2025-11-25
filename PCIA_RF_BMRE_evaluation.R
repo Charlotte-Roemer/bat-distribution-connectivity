@@ -521,6 +521,8 @@ for (i in seq_along(ListSp))
   DataSaison_sf <- DataSaison_sf[aoi, ]
   DataSaison_sf$acti_class <- def_classes(DataSaison_sf)
   DataSaison_sf$acti_int_class <- def_int_classes(DataSaison_sf)
+  cat("Acti_int_classes : ", fill = TRUE)
+  cat(unique(DataSaison_sf$acti_int_class), fill = TRUE)
 
   print("DataSaison filtered for season")
 
