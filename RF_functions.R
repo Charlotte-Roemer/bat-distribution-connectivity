@@ -38,7 +38,7 @@ fitvalpred_rf <- function(covariates,
     for (mtry in mtrys) {
       tune_mod <- caret::train(
         x = as.data.frame(traindf)[, covariates],
-        y = as.data.frame(traindf)[, "nb_contacts"],
+        y = as.data.frame(traindf)[, "acti_int_class"],
         method = "rf",
         importance = TRUE,
         trControl = tune_ctrl,
@@ -97,7 +97,7 @@ fitvalpred_rf <- function(covariates,
 
   spatial_mod <- caret::train(
     x = as.data.frame(traindf)[, covariates], # train model
-    y = as.data.frame(traindf)[, "nb_contacts"],
+    y = as.data.frame(traindf)[, "acti_int_class"],
     method = "rf",
     importance = TRUE,
     trControl = spatial_ctrl,
