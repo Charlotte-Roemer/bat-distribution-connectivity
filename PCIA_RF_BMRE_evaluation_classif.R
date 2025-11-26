@@ -211,16 +211,17 @@ dir.create(Output)
 
 #### Set season limits ####-----------------------------------------------------
 
-p_start <- switch(opt$period,
+p_start <- switch(opt$period, # à transformer en semaines :
   year = 1L,
   spring = 5L,
   summer = 11L,
-  autumn = 15L
+  autumn = 16L
 )
+
 p_end <- switch(opt$period,
-  year = 27,
+  year = 27L,
   spring = 10L,
-  summer = 14L,
+  summer = 15L,
   autumn = 20L
 )
 
