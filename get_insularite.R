@@ -13,7 +13,7 @@ france_file <- file.path(data_path, "GIS", "regions.gpkg")
 france <- vect(france_file, layer = "france_met_uniques")
 france <- project(france, crs(coastlines))
 
-insul_dist <- terra::distance(france, coastlines, rasterize = TRUE)
+insul_dist <- terra::distance(france, coastlines)
 
 france$insularite <- insul_dist
 
