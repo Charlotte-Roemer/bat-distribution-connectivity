@@ -38,6 +38,10 @@ option_list <- list(
   optparse::make_option(c("-p", "--period"),
     type = "character", default = "year",
     help = "Is it a yearly model or a seasonal one ? (spring, summer, autumn)"
+  ),
+  optparse::make_option(c("--predict_period"),
+    type = "character", default = NULL,
+    help = "Is it a yearly model or a seasonal one ? (spring, summer, autumn)"
   )
 )
 
@@ -121,6 +125,11 @@ pred_data$Spprecipitations <- 0
 pred_data$Sptemp <- 0
 pred_data$Spwind <- 0
 pred_data$SpRo_dist <- 0
+
+if (!is.null(opt$predict_period)) {
+  pred_data$SpSaison <- opt$predict_period
+}
+
 
 cat("Aggregating roads :", fill = TRUE)
 pred_data$SpRoAddM <- pred_data$SpRo1M + pred_data$SpRo2M +
