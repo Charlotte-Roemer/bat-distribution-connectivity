@@ -205,18 +205,26 @@ dir.create(Output)
 # )
 #
 # Bornes en semaines
-p_start <- switch(opt$period,
-  year = 10L,
-  spring = 10L,
-  summer = 22L,
-  autumn = 30L
-)
-p_end <- switch(opt$period,
-  year = 40L,
-  spring = 20L,
-  summer = 28L,
-  autumn = 40L
-)
+return_start <- function(period) {
+  switch(period,
+    year = 10L,
+    spring = 10L,
+    summer = 22L,
+    autumn = 30L
+  )
+}
+
+return_end <- function(period) {
+  switch(period,
+    year = 40L,
+    spring = 20L,
+    summer = 28L,
+    autumn = 40L
+  )
+}
+
+p_start <- return_start(opt$period)
+p_end <- return_end(opt$period)
 
 #### Prepare general dataset ####-----------------------------------------------
 
@@ -373,7 +381,24 @@ for (i in seq_along(ListSp))
 
   DataSaison$week <- as.integer(strftime(DataSaison$Nuit, format = "%V"))
 
-  DataSaison <- DataSaison[dplyr::between(DataSaison$week, p_start, p_end), ]
+  # DataSaison <- DataSaison[dplyr::between(DataSaison$week, p_start, p_end), ]
+
+  if (opt$period == "year") {
+    spring_start <- return_start("spring")
+    spring_end <- return_end("spring")
+    summer_start <- return_start("summer")
+    summer_end <- return_end("summer")
+    autumn_start <- return_start("autumn")
+    autumn_end <- return_end("autumn")
+
+    DataSaison <- DataSaison |> mutate(SpSaison = case_when(
+      between(week, spring_start, spring_end) ~ "spring",
+      between(week, summer_start, summer_end) ~ "summer",
+      between(week, autumn_start, autumn_end) ~ "autumn",
+      TRUE ~ "winter"
+    ))
+  }
+
 
   # DataSaison <- DataSaison[dplyr::between(DataSaison$fortnight, p_start, p_end), ]
 
