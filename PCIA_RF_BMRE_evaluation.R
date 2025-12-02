@@ -190,18 +190,32 @@ dir.create(Output)
 
 
 #### Set season limits ####-----------------------------------------------------
-
+# Bornes en quinzaines
+# p_start <- switch(opt$period,
+#   year = 1L,
+#   spring = 5L,
+#   summer = 11L,
+#   autumn = 15L
+# )
+# p_end <- switch(opt$period,
+#   year = 27,
+#   spring = 10L,
+#   summer = 14L,
+#   autumn = 20L
+# )
+#
+# Bornes en semaines
 p_start <- switch(opt$period,
-  year = 1L,
-  spring = 5L,
-  summer = 11L,
-  autumn = 15L
+  year = 10L,
+  spring = 10L,
+  summer = 22L,
+  autumn = 30L
 )
 p_end <- switch(opt$period,
-  year = 27,
-  spring = 10L,
-  summer = 14L,
-  autumn = 20L
+  year = 40L,
+  spring = 20L,
+  summer = 28L,
+  autumn = 40L
 )
 
 #### Prepare general dataset ####-----------------------------------------------
