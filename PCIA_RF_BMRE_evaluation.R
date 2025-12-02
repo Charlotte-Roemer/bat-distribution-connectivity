@@ -657,6 +657,7 @@ for (i in seq_along(ListSp))
 
 
     other_vars <- names_data[other_vars]
+    other_vars <- other_vars[other_vars != "SpSaison"]
 
 
     predictors_occs <- data[, occsol_vars]
