@@ -371,7 +371,11 @@ for (i in seq_along(ListSp))
   # DataSaison <- DataSaison[DataSaison$gite != 0L, ]
 
 
-  DataSaison <- DataSaison[dplyr::between(DataSaison$fortnight, p_start, p_end), ]
+  DataSaison$week <- as.integer(strftime(DataSaison$Nuit, format = "%V"))
+
+  DataSaison <- DataSaison[dplyr::between(DataSaison$week, p_start, p_end), ]
+
+  # DataSaison <- DataSaison[dplyr::between(DataSaison$fortnight, p_start, p_end), ]
 
   # add date of year
   if (grepl("/", DataSaison$Nuit[1L], fixed = TRUE)) {
