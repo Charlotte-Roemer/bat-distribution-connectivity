@@ -229,6 +229,7 @@ map <- terra::rasterize(
 print("raster ready")
 
 print("path")
+period <- opt$predict_period
 print(file.path(model_location, paste0(
   "RFspat_",
   "VC",
