@@ -851,6 +851,9 @@ for (i in seq_along(ListSp))
   # selected_index <- get_prednames(DataSaison, names.Boruta, "nb_contacts")
 
   # names.Boruta <- names.Boruta[selected_index]
+  if (opt$period == "year") {
+    Prednames <- c(Prednames, "SpSaison")
+  }
 
   noSpacemod <- fitvalpred_rf(
     Prednames,
