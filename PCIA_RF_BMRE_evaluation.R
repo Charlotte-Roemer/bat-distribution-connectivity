@@ -676,9 +676,9 @@ for (i in seq_along(ListSp))
     other_vars <- other_vars[other_vars != "SpSaison"]
 
 
-    predictors_occs <- data[, occsol_vars]
-    predictors_bioc <- data[, bioclim_vars]
-    predictors_other <- data[, other_vars]
+    predictors_occs <- data[, ..occsol_vars]
+    predictors_bioc <- data[, ..bioclim_vars]
+    predictors_other <- data[, ..other_vars]
 
     bioclim <- get_components(predictors_bioc, "bioclim")
     bioclim_pc_vars <- bioclim$components
