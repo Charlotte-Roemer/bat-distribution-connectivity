@@ -624,9 +624,6 @@ for (i in seq_along(ListSp))
   DataSaison$SpRoAddM <- DataSaison$SpRo1M + DataSaison$SpRo2M +
     DataSaison$SpRo3M + DataSaison$SpRo4M
 
-  print("variables : ")
-  print(names(DataSaison))
-
   if (selection == "PCA") {
     print(variables_acp)
     cat("selection : PCA", fill = TRUE)
@@ -647,7 +644,11 @@ for (i in seq_along(ListSp))
     cat("selection : PCA decomposée", fill = TRUE)
 
     small_vars <- endsWith(names(DataSaison), "S")
+    print("small_vars")
+    print(small_vars)
+
     data <- DataSaison[, !small_vars]
+    print(head(data))
 
     print(names(data))
     occsol_vars <- startsWith(names(data), "SpHOCS")
