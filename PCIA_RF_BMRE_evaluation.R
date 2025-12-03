@@ -646,6 +646,7 @@ for (i in seq_along(ListSp))
     small_vars <- endsWith(names(DataSaison), "S")
     data <- DataSaison[, !small_vars]
 
+    print(names(data))
     occsol_vars <- startsWith(names(data), "SpHOCS")
     occsol_vars <- names(data)[occsol_vars]
     print("a")
