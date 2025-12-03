@@ -261,6 +261,39 @@ filter_by_max_grid <- function(data, region) {
 }
 
 #------------------------------------------------------------------------------#
+#    Function to select median activity by grid grid cell for each season      #
+#------------------------------------------------------------------------------#
+
+
+filter_by_median_season_grid <- function(data, region) {
+  grid_file <- intersect(
+    list.files(file.path(data_path, "observations"),
+      pattern = "SysGrid",
+      full.names = TRUE
+    ),
+    list.files(file.path(data_path, "observations"),
+      pattern = region,
+      full.names = TRUE
+    )
+  )
+  data <- st_transform(data, 4326)
+
+  data <- data |> arrange(desc(nb_contacts))
+
+  grid_d <- read.csv(grid_file)
+  grid_sf <- sf::st_as_sf(grid_d, coords = c("X", "Y"), crs = 4326)
+
+  data <- sf::st_join(data, grid_sf, join = st_nearest_feature)
+  data <- ddply(data, .(ID, SpSaison), function(z) {
+    z[which.min(abs(z$nb_contacts - median(z$nb_contacts))), ]
+  })
+
+  data <- st_transform(data, 2154)
+  data
+}
+
+
+#------------------------------------------------------------------------------#
 #            Function to get number of components selected in data             #
 #------------------------------------------------------------------------------#
 
