@@ -644,6 +644,7 @@ for (i in seq_along(ListSp))
     print(head(DataSaison))
 
     small_vars <- endsWith(names(DataSaison), "S")
+    small_vars <- names(DataSaison)[small_vars]
 
     data <- DataSaison |>
       select(!all.of(small_vars))
