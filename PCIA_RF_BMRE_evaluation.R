@@ -642,19 +642,23 @@ for (i in seq_along(ListSp))
     Prednames <- c(vars_names, vars_norm)
   } else if (selection == "PCA_decomp") {
     cat("selection : PCA decomposée", fill = TRUE)
+
     small_vars <- endsWith(names(DataSaison), "S")
     data <- DataSaison[, !small_vars]
 
     occsol_vars <- startsWith(names(data), "SpHOCS")
     occsol_vars <- names(data)[occsol_vars]
+    print("a")
 
     bioclim_vars <- startsWith(names(data), "SpBioC")
     bioclim_vars <- names(data)[bioclim_vars]
 
+    print("b")
     names_data <- names(data)
     names_data <- names_data[!(names_data %in% bioclim_vars)]
     names_data <- names_data[!(names_data %in% occsol_vars)]
 
+    print("c")
     other_vars <- startsWith(names_data, "Sp")
 
 
