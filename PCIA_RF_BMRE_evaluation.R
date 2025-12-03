@@ -642,43 +642,43 @@ for (i in seq_along(ListSp))
     Prednames <- c(vars_names, vars_norm)
   } else if (selection == "PCA_decomp") {
     cat("selection : PCA decomposée", fill = TRUE)
-    print("datasaison: ")
+    print("data_pcasaison: ")
     print(head(DataSaison))
 
     small_vars <- endsWith(names(DataSaison), "S")
 
-    data <- DataSaison[, !small_vars]
+    data_pca <- DataSaison[, !small_vars]
 
-    print("data")
-    print(head(data))
-    print(class(data))
+    print("data_pca")
+    print(head(data_pca))
+    print(class(data_pca))
 
-    print("names data")
-    print(names(data))
+    print("names data_pca")
+    print(names(data_pca))
 
-    occsol_vars <- startsWith(names(data), "SpHOCS")
-    occsol_vars <- names(data)[occsol_vars]
+    occsol_vars <- startsWith(names(data_pca), "SpHOCS")
+    occsol_vars <- names(data_pca)[occsol_vars]
     print("a")
 
-    bioclim_vars <- startsWith(names(data), "SpBioC")
-    bioclim_vars <- names(data)[bioclim_vars]
+    bioclim_vars <- startsWith(names(data_pca), "SpBioC")
+    bioclim_vars <- names(data_pca)[bioclim_vars]
 
     print("b")
-    names_data <- names(data)
-    names_data <- names_data[!(names_data %in% bioclim_vars)]
-    names_data <- names_data[!(names_data %in% occsol_vars)]
+    names_data_pca <- names(data_pca)
+    names_data_pca <- names_data_pca[!(names_data_pca %in% bioclim_vars)]
+    names_data_pca <- names_data_pca[!(names_data_pca %in% occsol_vars)]
 
     print("c")
-    other_vars <- startsWith(names_data, "Sp")
+    other_vars <- startsWith(names_data_pca, "Sp")
 
 
-    other_vars <- names_data[other_vars]
+    other_vars <- names_data_pca[other_vars]
     other_vars <- other_vars[other_vars != "SpSaison"]
 
 
-    predictors_occs <- data[, occsol_vars]
-    predictors_bioc <- data[, bioclim_vars]
-    predictors_other <- data[, other_vars]
+    predictors_occs <- data_pca[, occsol_vars]
+    predictors_bioc <- data_pca[, bioclim_vars]
+    predictors_other <- data_pca[, other_vars]
 
     bioclim <- get_components(predictors_bioc, "bioclim")
     bioclim_pc_vars <- bioclim$components
