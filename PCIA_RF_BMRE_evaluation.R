@@ -648,16 +648,10 @@ for (i in seq_along(ListSp))
     small_vars <- endsWith(names(DataSaison), "S")
 
     data <- DataSaison[, !small_vars]
-    d <- DataSaison[!small_vars]
 
     print("data")
     print(head(data))
     print(class(data))
-
-    print("d")
-    print(head(d))
-    print(class(d))
-
 
     print("names data")
     print(names(data))
