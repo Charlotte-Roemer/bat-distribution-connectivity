@@ -648,7 +648,8 @@ for (i in seq_along(ListSp))
     print(small_vars)
 
     data <- DataSaison[, !small_vars]
-    print(head(data))
+    print(class(data))
+    data <- as.data.frame(data)
 
     print(names(data))
     occsol_vars <- startsWith(names(data), "SpHOCS")
