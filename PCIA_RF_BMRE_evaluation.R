@@ -383,21 +383,19 @@ for (i in seq_along(ListSp))
 
   # DataSaison <- DataSaison[dplyr::between(DataSaison$week, p_start, p_end), ]
 
-  if (opt$period == "year") {
-    spring_start <- return_start("spring")
-    spring_end <- return_end("spring")
-    summer_start <- return_start("summer")
-    summer_end <- return_end("summer")
-    autumn_start <- return_start("autumn")
-    autumn_end <- return_end("autumn")
+  spring_start <- return_start("spring")
+  spring_end <- return_end("spring")
+  summer_start <- return_start("summer")
+  summer_end <- return_end("summer")
+  autumn_start <- return_start("autumn")
+  autumn_end <- return_end("autumn")
 
-    DataSaison <- DataSaison |> mutate(SpSaison = case_when(
-      between(week, spring_start, spring_end) ~ "spring",
-      between(week, summer_start, summer_end) ~ "summer",
-      between(week, autumn_start, autumn_end) ~ "autumn",
-      TRUE ~ "winter"
-    ))
-  }
+  DataSaison <- DataSaison |> mutate(SpSaison = case_when(
+    between(week, spring_start, spring_end) ~ "spring",
+    between(week, summer_start, summer_end) ~ "summer",
+    between(week, autumn_start, autumn_end) ~ "autumn",
+    TRUE ~ "winter"
+  ))
 
 
   # DataSaison <- DataSaison[dplyr::between(DataSaison$fortnight, p_start, p_end), ]
@@ -648,7 +646,7 @@ for (i in seq_along(ListSp))
     small_vars <- endsWith(names(DataSaison), "S")
 
     data <- DataSaison |>
-      select(!small_vars)
+      select(!all.of(small_vars))
 
     print("data")
     print(head(data))
