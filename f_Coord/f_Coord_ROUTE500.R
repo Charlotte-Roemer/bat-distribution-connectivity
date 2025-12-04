@@ -10,13 +10,13 @@ Coord_Route <- function(points, names_coord, bs, bm, bl, folder) {
     pattern = "TRONCON_ROUTE.shp",
     recursive = TRUE, full.names = TRUE
   )
-  ROUTE <- read_sf(route_file)
+  ROUTE <- st_read(route_file, options = "ENCODING=WINDOWS-1252")
 
   fer_file <- list.files(folder,
     pattern = "TRONCON_VOIE_FERREE.shp",
     recursive = TRUE, full.names = TRUE
   )
-  FER <- read_sf(fer_file)
+  FER <- st_read(fer_file, options = "ENCODING=WINDOWS-1252")
 
   Sys.time()
 
@@ -301,7 +301,7 @@ Coord_Route <- function(points, names_coord, bs, bm, bl, folder) {
   ))
 
   if (opt$mode == "predict") {
-	  Reseau$SpRo_dist <- 0
+    Reseau$SpRo_dist <- 0
   }
 
   Reseau <- Reseau |>
