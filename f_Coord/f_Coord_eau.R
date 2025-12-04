@@ -43,6 +43,8 @@ Coord_Eau <- function(points, names_coord, carthagep, carthagec) {
     dsn = dirname(carthagep),
     layer = basename(tools::file_path_sans_ext(carthagep))
   )
+  CarthageP$surf <- st_area(CarthageP)
+
   CarthageC <- sf::read_sf(
     dsn = dirname(carthagec),
     layer = basename(tools::file_path_sans_ext(carthagec))
@@ -60,7 +62,7 @@ Coord_Eau <- function(points, names_coord, carthagep, carthagec) {
 
   ##########################################
   ##########################################
-  ######## water surface distance ##########
+  ########    Water  Distance     ##########
   ##########################################
   ##########################################
 
@@ -82,26 +84,84 @@ Coord_Eau <- function(points, names_coord, carthagep, carthagec) {
     pmin(water_dist_line, water_dist_polyg)
   )
 
-  CarthageCperm <- CarthageC[CarthageC$Persistanc == "permanent", ]
-  CarthagePperm <- CarthageP[CarthageP$Persistanc == "permanent", ]
+  ##########################################
+  ########       Temporary        ##########
+  ##########################################
 
-  nearest_pp <- try(sf::st_nearest_feature(OccSL_L93, CarthagePperm))
-  water_dist_polyg_perm <- st_distance(OccSL_L93,
-    CarthagePperm[nearest_pp, ],
+
+  CarthageCinterm <- CarthageC[CarthageC$Persistanc == "intermittent", ]
+  CarthagePinterm <- CarthageP[CarthageP$Persistanc == "intermittent", ]
+
+  nearest_pp <- try(sf::st_nearest_feature(OccSL_L93, CarthagePinterm))
+  water_dist_polyg_interm <- st_distance(OccSL_L93,
+    CarthagePinterm[nearest_pp, ],
     by_element = TRUE
   )
-  OccSL_L93$water_dist_polyg_perm <- water_dist_polyg_perm
+  OccSL_L93$water_dist_polyg_interm <- water_dist_polyg_interm
 
-  nearest_lp <- try(sf::st_nearest_feature(OccSL_L93, CarthageCperm))
-  water_dist_line_perm <- st_distance(OccSL_L93,
-    CarthageCperm[nearest_lp, ],
+  nearest_lp <- try(sf::st_nearest_feature(OccSL_L93, CarthageCinterm))
+  water_dist_line_interm <- st_distance(OccSL_L93,
+    CarthageCinterm[nearest_lp, ],
     by_element = TRUE
   )
-  OccSL_L93$water_dist_line_perm <- water_dist_line_perm
+  OccSL_L93$water_dist_line_interm <- water_dist_line_interm
 
-  OccSL_L93$SpWDp <- with(
+  OccSL_L93$SpWDinterm <- with(
     OccSL_L93,
-    pmin(water_dist_line_perm, water_dist_polyg_perm)
+    pmin(water_dist_line_interm, water_dist_polyg_interm)
+  )
+
+  ##########################################
+  ########        Salted          ##########
+  ##########################################
+
+
+  CarthageCsalted <- CarthageC[CarthageC$SaliniteTH == 1L, ]
+  CarthagePsalted <- CarthageP[CarthageP$SaliniteTH == 1L, ]
+
+  nearest_pp <- try(sf::st_nearest_feature(OccSL_L93, CarthagePsalted))
+  water_dist_polyg_salted <- st_distance(OccSL_L93,
+    CarthagePsalted[nearest_pp, ],
+    by_element = TRUE
+  )
+  OccSL_L93$water_dist_polyg_salted <- water_dist_polyg_salted
+
+  nearest_lp <- try(sf::st_nearest_feature(OccSL_L93, CarthageCsalted))
+  water_dist_line_salted <- st_distance(OccSL_L93,
+    CarthageCsalted[nearest_lp, ],
+    by_element = TRUE
+  )
+  OccSL_L93$water_dist_line_salted <- water_dist_line_salted
+
+  OccSL_L93$SpWDsalted <- with(
+    OccSL_L93,
+    pmin(water_dist_line_salted, water_dist_polyg_salted)
+  )
+
+  ##########################################
+  ########         Larges         ##########
+  ##########################################
+
+  CarthageClarge <- CarthageC[CarthageC$ClasseLarg %in% c("15_50", "50_250", "250_1250", "1250"), ]
+  CarthagePlarge <- CarthageP[CarthageP$Surf >= 10000L, ]
+
+  nearest_pp <- try(sf::st_nearest_feature(OccSL_L93, CarthagePlarge))
+  water_dist_polyg_large <- st_distance(OccSL_L93,
+    CarthagePlarge[nearest_pp, ],
+    by_element = TRUE
+  )
+  OccSL_L93$water_dist_polyg_large <- water_dist_polyg_large
+
+  nearest_lp <- try(sf::st_nearest_feature(OccSL_L93, CarthageClarge))
+  water_dist_line_large <- st_distance(OccSL_L93,
+    CarthageClarge[nearest_lp, ],
+    by_element = TRUE
+  )
+  OccSL_L93$water_dist_line_large <- water_dist_line_large
+
+  OccSL_L93$SpWDlarge <- with(
+    OccSL_L93,
+    pmin(water_dist_line_large, water_dist_polyg_large)
   )
 
   ######################################################################

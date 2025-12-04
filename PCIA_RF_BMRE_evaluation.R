@@ -324,6 +324,8 @@ for (i in seq_along(ListSp))
   DataSpSL_w0_2$groupe[is.na(DataSpSL_w0_2$groupe)] <- "bat"
   DataSpSL_w0_2$espece[is.na(DataSpSL_w0_2$espece)] <- ListSp[i]
 
+  cat("Absence data added", fill = TRUE)
+
   DataSpSL_w0_2 <- DataSpSL_w0_2 |>
     data <- dplyr::slice_max(data, nb_contacts, by = c(participation, Nuit))
 
@@ -338,29 +340,18 @@ for (i in seq_along(ListSp))
   # Exclude data with obvious wrong date (<2010)
   DataSpSL_w0_2 <- DataSpSL_w0_2[which(DataSpSL_w0_2$Nuit > as.Date("2010-01-01")), ]
 
-  # write.csv(
-  #   DataSpSL_w0_2,
-  #   file.path(
-  #     Output,
-  #     paste0(
-  #       "ListSp[i]", "_dataspslw0.csv"
-  #     )
-  #   )
-  # )
-
   DataSpSL_w0_2$Nuit <- as.Date(DataSpSL_w0_2$Nuit)
   DataSpSL_w0_2 <- unique(DataSpSL_w0_2)
 
   CoordPS <- unique(CoordPS)
   CoordPS$Nuit <- as.Date(CoordPS$Nuit)
 
-  DataSaison <- inner_join(DataSpSL_w0_2,
+  DataSaison <- dplyr::left_join(DataSpSL_w0_2,
     CoordPS,
     by = c("longitude", "latitude", "Nuit", "participation")
   ) # adds environmental variables to activity data ("participation added")
 
 
-  cat("Absence data added", fill = TRUE)
   # lets add the "gites" information
   #
   # data_gites <- read.csv2(file_gites)
@@ -456,7 +447,6 @@ for (i in seq_along(ListSp))
     ocs <- startsWith(Prednames, "SpHOCS")
     Prednames <- Prednames[!ocs]
   }
-
 
   # Do not use species distribution area yet
   ListSpeciesDistribution <- c(
