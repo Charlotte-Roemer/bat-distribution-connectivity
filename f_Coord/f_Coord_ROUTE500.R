@@ -150,11 +150,19 @@ Coord_Route <- function(points, names_coord, bs, bm, bl, folder) {
     names(OccSL_L93Re)[names(OccSL_L93Re) == "SpRo_L"] <- paste0("SpRo", h, "L")
   }
 
+  road_cols <- grep("SpRo[1-4]", names(OccSL_L93Re))
+  road_cols <- names(OccSL_L93Re)[road_cols]
+  OccSL_L93Re$SpRoads <- OccSL_L93Re |>
+    dplyr::select(road_cols) |>
+    dplyr::mutate(SpRoads = rowSums(.), .keep = "none")
+
+  OccSL_L93Re <- OccSL_L93Re |>
+    dplyr::select(-road_cols)
   OccSL_L93Re$SpRo_dist <- road_dist
 
   ##########################################
   ##########################################
-  ########## Voies ferr�es  #################
+  ########## Voies ferrées  #################
   ##########################################
   ##########################################
 
