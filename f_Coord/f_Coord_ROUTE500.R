@@ -160,33 +160,6 @@ Coord_Route <- function(points, names_coord, bs, bm, bl, folder) {
 
 
   ########
-  # Buffer S
-  ########
-
-  print("FerS")
-
-  BufferS <- st_buffer(OccSL_L93, dist = BufferSmall) |>
-    st_transform(st_crs(FER))
-
-  Sys.time()
-  BufferS$Fer_count <- st_intersects(BufferS, FER) |>
-    lengths()
-  Sys.time()
-
-
-  SpFer <- BufferS
-
-  if (is.null(BufferS$Fer_count)) {
-    OccSL_L93Re$SpFe_S <- 0
-  } else {
-    PC_50 <- aggregate(SpFer$Fer_count, by = list(SpFer$FID), FUN = sum)
-    names(PC_50)[ncol(PC_50)] <- "SpFe_S"
-    OccSL_L93Re <- merge(OccSL_L93Re, PC_50, by.x = "FID", by.y = "Group.1", all.x = T)
-    OccSL_L93Re$SpFe_S[is.na(OccSL_L93Re$SpFe_S)] <- 0
-    # spplot(OccSL_L93Re,zcol="SpFe_S",col="transparent")
-  }
-
-  ########
   # Buffer M
   ########
 
