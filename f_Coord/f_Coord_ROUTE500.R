@@ -85,38 +85,6 @@ Coord_Route <- function(points, names_coord, bs, bm, bl, folder) {
     print(h)
 
     ########
-    # Buffer S
-    ########
-
-    BufferS <- st_buffer(OccSL_L93, dist = BufferSmall) |>
-      st_transform(st_crs(ROUTE))
-
-    Sys.time()
-    BufferS$Route_count <- st_intersects(BufferS, ROUTEP) |>
-      lengths()
-    Sys.time()
-
-    # library(viridis)
-    # BufferS |>
-    #   st_crop(xmin=161290, xmax=211290 , ymin=6046796 , ymax=7109796) |> #zoom in some area
-    #   ggplot( aes(fill=Route_count)) +
-    #   geom_sf() +
-    #   scale_fill_gradientn(colours=rev(magma(6)))
-
-    SpRoute <- BufferS
-
-    if (is.null(BufferS$Route_count)) {
-      OccSL_L93Re$SpRo_S <- 0
-    } else {
-      PC_50 <- aggregate(SpRoute$Route_count, by = list(SpRoute$FID), FUN = sum)
-      names(PC_50)[ncol(PC_50)] <- "SpRo_S"
-      OccSL_L93Re <- merge(OccSL_L93Re, PC_50, by.x = "FID", by.y = "Group.1", all.x = T)
-      OccSL_L93Re$SpRo_S[is.na(OccSL_L93Re$SpRo_S)] <- 0
-      # spplot(OccSL_L93Re,zcol="SpRo_S",col="transparent")
-    }
-    names(OccSL_L93Re)[names(OccSL_L93Re) == "SpRo_S"] <- paste0("SpRo", h, "S")
-
-    ########
     # Buffer M
     ########
 
@@ -181,6 +149,7 @@ Coord_Route <- function(points, names_coord, bs, bm, bl, folder) {
     }
     names(OccSL_L93Re)[names(OccSL_L93Re) == "SpRo_L"] <- paste0("SpRo", h, "L")
   }
+
   OccSL_L93Re$SpRo_dist <- road_dist
 
   ##########################################
