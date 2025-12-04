@@ -18,7 +18,7 @@ library(tidyverse)
 
 "extraction of data"
 
-Coord_eol <- function(points, names_coord, bs, bm, bl, layer) {
+Coord_eol <- function(points, names_coord, bm, bl, layer) {
   print("a")
   FOccSL <- points # grid points
   OccSL <- read_delim(paste0(FOccSL, ".csv")) %>%
@@ -29,7 +29,6 @@ Coord_eol <- function(points, names_coord, bs, bm, bl, layer) {
     st_as_sf(coords = names_coord, crs = 4326, remove = FALSE) %>%
     st_transform(2154)
 
-  BufferSmall <- bs
   BufferMedium <- bm
   BufferLarge <- bl
 

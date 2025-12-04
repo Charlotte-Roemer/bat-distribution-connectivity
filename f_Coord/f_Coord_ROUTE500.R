@@ -1,6 +1,6 @@
 print("load routes500")
 
-Coord_Route <- function(points, names_coord, bs, bm, bl, folder) {
+Coord_Route <- function(points, names_coord, bm, bl, folder) {
   library(sf)
   library(data.table)
   library(tidyverse)
@@ -54,7 +54,6 @@ Coord_Route <- function(points, names_coord, bs, bm, bl, folder) {
     CoordH <- names_coord
   }
 
-  BufferSmall <- bs
   BufferMedium <- bm
   BufferLarge <- bl
 

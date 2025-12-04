@@ -318,7 +318,6 @@ for (i in 1:length(listfun))
 # Coord_eol(
 #   points = FCoord,
 #   names_coord = Coord_Headers,
-#   bs = BS,
 #   bm = BM,
 #   bl = BL,
 #   layer = layer_wind_turbines
@@ -389,7 +388,6 @@ Coord_MOSraster(
 # Coord_Route(
 #   points = FCoord,
 #   names_coord = Coord_Headers,
-#   bs = BS,
 #   bm = BM,
 #   bl = BL,
 #   folder = folder_route
