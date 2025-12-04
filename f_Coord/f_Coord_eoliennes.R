@@ -47,31 +47,6 @@ Coord_eol <- function(points, names_coord, bs, bm, bl, layer) {
   ##########################################
 
   ########
-  # Buffer S
-  ########
-
-  print("c")
-
-  BufferS <- st_buffer(OccSL, dist = BufferSmall) %>%
-    st_transform(st_crs(R1))
-  Sys.time()
-
-  BufferS$pt_count <- st_intersects(BufferS, R1) %>%
-    lengths()
-
-  SpEol <- BufferS
-
-  if (length(BufferS$pt_count) > 0) {
-    PC_50 <- aggregate(SpEol$pt_count, by = list(SpEol$ID), FUN = sum)
-    names(PC_50)[ncol(PC_50)] <- "SpRo_S"
-    OccSL_Re <- merge(OccSL, PC_50, by.x = "ID", by.y = "Group.1", all.x = , TRUE)
-    OccSL_Re$SpRo_S[is.na(OccSL_Re$SpRo_S)] <- 0
-  } else {
-    OccSL_Re <- OccSL
-    OccSL_Re$SpRo_S <- 0
-  }
-
-  ########
   # Buffer M
   ########
 
@@ -95,11 +70,11 @@ Coord_eol <- function(points, names_coord, bs, bm, bl, layer) {
   if (length(BufferM$pt_count) > 0) {
     Sys.time()
     PC_50 <- aggregate(SpEol$pt_count, by = list(SpEol$ID), FUN = sum)
-    names(PC_50)[ncol(PC_50)] <- "SpRo_M"
+    names(PC_50)[ncol(PC_50)] <- "SpEol_M"
     OccSL_Re <- merge(OccSL_Re, PC_50, by.x = "ID", by.y = "Group.1", all.x = TRUE)
-    OccSL_Re$SpRo_M[is.na(OccSL_Re$SpRo_M)] <- 0
+    OccSL_Re$SpEol_M[is.na(OccSL_Re$SpEol_M)] <- 0
   } else {
-    OccSL_Re$SpRo_M <- 0
+    OccSL_Re$SpEol_M <- 0
   }
 
   ########
@@ -124,11 +99,11 @@ Coord_eol <- function(points, names_coord, bs, bm, bl, layer) {
 
   if (length(BufferL$pt_count) > 0) {
     PC_50 <- aggregate(SpEol$pt_count, by = list(SpEol$ID), FUN = sum)
-    names(PC_50)[ncol(PC_50)] <- "SpRo_L"
+    names(PC_50)[ncol(PC_50)] <- "Sp_L"
     OccSL_Re <- merge(OccSL_Re, PC_50, by.x = "ID", by.y = "Group.1", all.x = TRUE)
-    OccSL_Re$SpRo_L[is.na(OccSL_Re$SpRo_L)] <- 0
+    OccSL_Re$SpEol_L[is.na(OccSL_Re$SpEol_L)] <- 0
   } else {
-    OccSL_Re$SpRo_L <- 0
+    OccSL_Re$SpEol_L <- 0
   }
 
   ##########################################
