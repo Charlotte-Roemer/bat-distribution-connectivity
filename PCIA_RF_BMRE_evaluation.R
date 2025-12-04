@@ -324,6 +324,11 @@ for (i in seq_along(ListSp))
   DataSpSL_w0_2$groupe[is.na(DataSpSL_w0_2$groupe)] <- "bat"
   DataSpSL_w0_2$espece[is.na(DataSpSL_w0_2$espece)] <- ListSp[i]
 
+  DataSpSL_w0_2 <- DataSpSL_w0_2 |>
+    data <- dplyr::slice_max(data, nb_contacts, by = c(participation, Nuit))
+
+
+
 
   # Exclude sites outside France limits (square) :
   DataSpSL_w0_2 <- subset(DataSpSL_w0_2, DataSpSL_w0_2$longitude < 10L &
