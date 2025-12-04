@@ -261,6 +261,14 @@ filter_by_max_grid <- function(data, region) {
 }
 
 #------------------------------------------------------------------------------#
+#            Function to get row which value is closest to  median             #
+#------------------------------------------------------------------------------#
+
+slice_median <- function(x, column) {
+  x[which.min(abs(x[[column]] - median(x[[column]]))), ]
+}
+
+#------------------------------------------------------------------------------#
 #    Function to select median activity by grid grid cell for each season      #
 #------------------------------------------------------------------------------#
 
@@ -278,15 +286,18 @@ filter_by_median_season_grid <- function(data, region) {
   )
   data <- st_transform(data, 4326)
 
-  data <- data |> arrange(desc(nb_contacts))
 
   grid_d <- read.csv(grid_file)
   grid_sf <- sf::st_as_sf(grid_d, coords = c("X", "Y"), crs = 4326)
 
   data <- sf::st_join(data, grid_sf, join = st_nearest_feature)
-  data <- ddply(data, .(ID, SpSaison), function(z) {
-    z[which.min(abs(z$nb_contacts - median(z$nb_contacts))), ]
-  })
+
+  data <- data |> arrange(desc(nb_contacts))
+
+  data <- data_ord |>
+    dplyr::group_by(ID, SpSaison) |>
+    dplyr::group_modify(~ slice_median(., "nb_contacts"), .groups = "keep") |>
+    dplyr::ungroup()
 
   data <- st_transform(data, 2154)
   data

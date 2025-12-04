@@ -569,9 +569,7 @@ for (i in seq_along(ListSp))
 
   DataSaison_sf <- DataSaison_sf[dplyr::between(DataSaison_sf$fortnight, p_start, p_end), ]
 
-  if (opt$period != "year") {
-    DataSaison_sf <- filter_by_max_grid(DataSaison_sf, opt$region)
-  }
+  DataSaison_sf <- filter_by_median_season_grid(DataSaison_sf, opt$region)
 
   DataSaison <- DataSaison_sf |>
     st_drop_geometry()
