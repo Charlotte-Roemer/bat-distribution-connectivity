@@ -285,9 +285,7 @@ filter_by_median_season_grid <- function(data, region) {
     )
   )
 
-  print((st_crs(data)))
   data <- st_transform(data, 4326)
-  print("ok")
 
   grid_d <- read.csv(grid_file)
 
@@ -305,8 +303,8 @@ filter_by_median_season_grid <- function(data, region) {
     dplyr::group_modify(~ slice_median(., "nb_contacts"), .groups = "keep") |>
     dplyr::ungroup()
 
-  data <- st_transform(data, 2154)
-  data
+  # data <- st_transform(data, 2154)
+  print(colnames(data))
 }
 
 
