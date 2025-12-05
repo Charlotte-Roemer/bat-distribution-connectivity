@@ -119,7 +119,7 @@ prepare_data <- function(args, fpar, fsl) {
   # ))
   coord_ps$participation <- as.data.frame(coord_ps)[, numPar[1L]]
 
-  cat("Done... ready to return data")
+  cat("Done... ready to return data", fill = TRUE)
   list(
     coord_ps, # environmental variables
     data_cpl3, # bat activity (without absence data)

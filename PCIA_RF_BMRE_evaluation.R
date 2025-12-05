@@ -288,9 +288,13 @@ print(ListSp)
 for (i in seq_along(ListSp))
 {
   DataSp <- subset(DataCPL3, DataCPL3$espece == ListSp[i]) # subset species
+
   # DataSp=subset(DataCPL3,DataCPL3$espece==Sp) # subset species
+  print(head(DataSp))
+
   print(ListSp[i])
   START1 <- Sys.time()
+  print("là")
 
   # TEST
   # write.csv(DataSp,
@@ -304,9 +308,11 @@ for (i in seq_along(ListSp))
   # stop("fin du test data")
   # Adds 0 counts using the observation table (avoids user errors but makes the
   # assumption that this table always contains at least 1 species per night)
-  print(head(DataCPL3))
 
-  DataCPL3_unique <- DataCPL3 |> # prepares the table of the complete set of sampled nights/sites
+  print(head(DataCPL3))
+# prepares the table of the complete set of sampled nights/sites
+
+  DataCPL3_unique <- DataCPL3 |>
     select(participation, Nuit, num_micro) |>
     unique()
 
