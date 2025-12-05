@@ -294,7 +294,7 @@ filter_by_median_season_grid <- function(data, region) {
 
   data <- data |> arrange(desc(nb_contacts))
 
-  data <- data_ord |>
+  data <- data |>
     dplyr::group_by(ID, SpSaison) |>
     dplyr::group_modify(~ slice_median(., "nb_contacts"), .groups = "keep") |>
     dplyr::ungroup()
