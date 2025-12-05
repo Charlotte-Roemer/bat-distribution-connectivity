@@ -284,11 +284,17 @@ filter_by_median_season_grid <- function(data, region) {
       full.names = TRUE
     )
   )
-  data <- st_transform(data, 4326)
 
+  print((st_crs(data)))
+  data <- st_transform(data, 4326)
+  print("ok")
 
   grid_d <- read.csv(grid_file)
-  grid_sf <- sf::st_as_sf(grid_d, coords = c("X", "Y"), crs = 4326)
+
+  grid_sf <- sf::st_as_sf(grid_d,
+    coords = c("X", "Y"),
+    crs = 4326
+  )
 
   data <- sf::st_join(data, grid_sf, join = st_nearest_feature)
 
