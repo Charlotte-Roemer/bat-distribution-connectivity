@@ -304,7 +304,6 @@ filter_by_median_season_grid <- function(data, region) {
     dplyr::ungroup()
 
   # data <- st_transform(data, 2154)
-  print(colnames(data))
 }
 
 
