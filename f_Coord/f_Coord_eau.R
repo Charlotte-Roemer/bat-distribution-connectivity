@@ -115,9 +115,8 @@ Coord_Eau <- function(points, names_coord, carthagep, carthagec) {
   ########        Salted          ##########
   ##########################################
 
-
   CarthageCsalted <- CarthageC[CarthageC$SaliniteTH == 1L, ]
-  CarthagePsalted <- CarthageP[CarthageP$SaliniteTH == 1L, ]
+  CarthagePsalted <- CarthageP[CarthageP$SaliniteSE == 1L, ]
 
   nearest_pp <- try(sf::st_nearest_feature(OccSL_L93, CarthagePsalted))
   water_dist_polyg_salted <- st_distance(OccSL_L93,
@@ -143,7 +142,8 @@ Coord_Eau <- function(points, names_coord, carthagep, carthagec) {
   ##########################################
 
   CarthageClarge <- CarthageC[CarthageC$ClasseLarg %in% c("15_50", "50_250", "250_1250", "1250"), ]
-  CarthagePlarge <- CarthageP[CarthageP$Surf >= 10000L, ]
+  CarthageP$surf <- units::drop_units(CarthageP$surf)
+  CarthagePlarge <- CarthageP[CarthageP$surf >= 10000L, ]
 
   nearest_pp <- try(sf::st_nearest_feature(OccSL_L93, CarthagePlarge))
   water_dist_polyg_large <- st_distance(OccSL_L93,
