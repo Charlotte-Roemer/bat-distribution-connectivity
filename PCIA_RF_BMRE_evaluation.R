@@ -253,6 +253,7 @@ test1 <- nrow(DataCPL3)
 
 DataCPL3 <- subset(DataCPL3, !is.na(DataCPL3$nb_contacts))
 
+print(head(DataCPL3))
 # TEST
 # write.csv(DataCPL3,
 #      file.path(Output,
