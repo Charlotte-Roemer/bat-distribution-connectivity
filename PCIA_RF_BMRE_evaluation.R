@@ -576,7 +576,8 @@ for (i in seq_along(ListSp))
   DataSaison_sf <- DataSaison_sf[dplyr::between(DataSaison_sf$fortnight, p_start, p_end), ]
 
   DataSaison_sf <- filter_by_median_season_grid(DataSaison_sf, opt$region)
-  print(class(DataSaison_sf))
+
+  DataSaison <- DataSaison_sf
 
   DataSaison_sf <- st_as_sf(DataSaison_sf,
     coords = c(x = "longitude", y = "latitude"),
@@ -585,14 +586,12 @@ for (i in seq_along(ListSp))
   ) |>
     st_transform(2154L)
 
-
-  DataSaison <- DataSaison_sf |>
-    st_drop_geometry()
-
   set.seed(123)
 
   START <- Sys.time()
-  print("Creating folds :")
+
+  cat("Creating folds :", fill = TRUE)
+
   sfolds <- CAST::knndm(DataSaison_sf, aoi, k = 10, maxp = 0.5) # k = number of folds
   END <- Sys.time()
   print(END - START) # 1 to 1.4 hours
@@ -689,9 +688,9 @@ for (i in seq_along(ListSp))
     other_vars <- other_vars[other_vars != "SpSaison"]
 
 
-    predictors_occs <- data[, ..occsol_vars]
-    predictors_bioc <- data[, ..bioclim_vars]
-    predictors_other <- data[, ..other_vars]
+    predictors_occs <- data[, occsol_vars]
+    predictors_bioc <- data[, bioclim_vars]
+    predictors_other <- data[, other_vars]
 
     bioclim <- get_components(predictors_bioc, "bioclim")
     bioclim_pc_vars <- bioclim$components
