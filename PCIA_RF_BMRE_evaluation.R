@@ -576,6 +576,7 @@ for (i in seq_along(ListSp))
   DataSaison_sf <- DataSaison_sf[dplyr::between(DataSaison_sf$fortnight, p_start, p_end), ]
 
   DataSaison_sf <- filter_by_median_season_grid(DataSaison_sf, opt$region)
+  print(class(DataSaison_sf))
 
   DataSaison_sf <- st_as_sf(DataSaison_sf,
     coords = c(x = "longitude", y = "latitude"),
