@@ -239,6 +239,8 @@ CoordPS <- na.omit(CoordPS)
 cat("General dataset prepared", fill = TRUE)
 
 # Identify the variable to predict as nb_contacts
+
+print("ici")
 DataCPL3$nb_contacts <- subset(DataCPL3, select = args[10])[, 1]
 # TEST
 
@@ -249,6 +251,7 @@ DataCPL3$nb_contacts <- subset(DataCPL3, select = args[10])[, 1]
 #        )
 #      )
 #    )
+print("ou là")
 test1 <- nrow(DataCPL3)
 
 DataCPL3 <- subset(DataCPL3, !is.na(DataCPL3$nb_contacts))
