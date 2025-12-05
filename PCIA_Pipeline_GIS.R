@@ -317,10 +317,10 @@ for (i in 1:length(listfun))
 
 print("wind turbines")
 Coord_eol(
-  points = fcoord,
-  names_coord = coord_headers,
-  bm = bm,
-  bl = bl,
+  points = FCoord,
+  names_coord = Coord_Headers,
+  bm = BM,
+  bl = BL,
   layer = layer_wind_turbines
 )
 
