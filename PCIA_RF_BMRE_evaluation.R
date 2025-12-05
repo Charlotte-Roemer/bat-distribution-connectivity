@@ -577,6 +577,14 @@ for (i in seq_along(ListSp))
 
   DataSaison_sf <- filter_by_median_season_grid(DataSaison_sf, opt$region)
 
+  DataSaison_sf <- st_as_sf(DataSaison_sf,
+    coords = c(x = "longitude", y = "latitude"),
+    remove = FALSE,
+    crs = 4326L
+  ) |>
+    st_transform(2154L)
+
+
   DataSaison <- DataSaison_sf |>
     st_drop_geometry()
 
