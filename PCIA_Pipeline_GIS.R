@@ -230,7 +230,7 @@ if (opt$region %in% c("idf", "france_met")) {
   folder_CLC <- file.path(data_folder, "GIS", "CLC")
   folder_OCS <- file.path(data_folder, "GIS", "OCS_OSO")
   folder_MOS <- file.path(data_folder, "GIS", "MOS")
-  folder_route <- file.path(data_folder, "GIS", "ROUTE500_3-0__SHP_LAMB93_FXX_2021-11-03")
+  folder_route <- file.path(data_folder, "GIS", "ROUTE500")
   clim_norm_folder <- file.path(data_folder, "GIS", "CLIM_NORM")
   layer_wind_turbines <- file.path(data_folder, "GIS", "wind_turbines", "Mats_service_TOTAL.shp")
   # bioclim_folder <- file.path(data_folder, "GIS", "worldclim")
