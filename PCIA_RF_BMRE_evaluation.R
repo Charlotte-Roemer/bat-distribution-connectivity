@@ -280,7 +280,7 @@ if (Sp == "all" || Sp == "All") {
 } else if (Sp == "paper") {
   ListSp <- ListPaper
 } else {
-  ListSp <- Sp
+  ListSp <- c(Sp, "truc")
 }
 
 #### Prepare dataset for each species ####------------------------------------------------------
