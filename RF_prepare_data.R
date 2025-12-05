@@ -203,7 +203,6 @@ get_prednames <- function(df, prednames, response_var, samp_vector = NULL) {
       clusterType = "MPI"
     )
   }
-  print(vsurf$varselect.pred)
   vsurf$varselect.pred
 }
 

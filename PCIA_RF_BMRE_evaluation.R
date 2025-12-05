@@ -291,11 +291,9 @@ for (i in seq_along(ListSp))
   DataSp <- subset(DataCPL3, DataCPL3$espece == ListSp[i]) # subset species
 
   # DataSp=subset(DataCPL3,DataCPL3$espece==Sp) # subset species
-  print(head(DataSp))
 
   print(ListSp[i])
   START1 <- Sys.time()
-  print("là")
 
   # TEST
   # write.csv(DataSp,
@@ -310,16 +308,11 @@ for (i in seq_along(ListSp))
   # Adds 0 counts using the observation table (avoids user errors but makes the
   # assumption that this table always contains at least 1 species per night)
 
-  print(head(DataCPL3))
   # prepares the table of the complete set of sampled nights/sites
 
   DataCPL3_unique <- DataCPL3 |>
     select(participation, Nuit, num_micro) |>
     unique()
-
-
-  print(head(DataCPL3_unique))
-  print("ici")
 
   DataCPL3_unique$Nuit <- as.Date(DataCPL3_unique$Nuit)
 
@@ -339,7 +332,6 @@ for (i in seq_along(ListSp))
 
   cat("Absence data added", fill = TRUE)
 
-  print(colnames(DataSpSL_w0_2))
   DataSpSL_w0_2 <- DataSpSL_w0_2 |>
     dplyr::slice_max(order_by = nb_contacts, by = c(participation, Nuit))
 
@@ -635,7 +627,6 @@ for (i in seq_along(ListSp))
     DataSaison$SpRo3M + DataSaison$SpRo4M
 
   if (selection == "PCA") {
-    print(variables_acp)
     cat("selection : PCA", fill = TRUE)
     predictors <- DataSaison[, variables_acp]
 
@@ -652,8 +643,6 @@ for (i in seq_along(ListSp))
     Prednames <- c(vars_names, vars_norm)
   } else if (selection == "PCA_decomp") {
     cat("selection : PCA decomposée", fill = TRUE)
-    print("datasaison: ")
-    print(head(DataSaison))
 
     small_vars <- endsWith(names(DataSaison), "S")
     small_vars <- names(DataSaison)[small_vars]
@@ -661,26 +650,17 @@ for (i in seq_along(ListSp))
     data <- DataSaison |>
       select(!all_of(small_vars))
 
-    print("data")
-    print(head(data))
-    print(class(data))
-
-    print("names data")
-    print(names(data))
 
     occsol_vars <- startsWith(names(data), "SpHOCS")
     occsol_vars <- names(data)[occsol_vars]
-    print("a")
 
     bioclim_vars <- startsWith(names(data), "SpBioC")
     bioclim_vars <- names(data)[bioclim_vars]
 
-    print("b")
     names_data <- names(data)
     names_data <- names_data[!(names_data %in% bioclim_vars)]
     names_data <- names_data[!(names_data %in% occsol_vars)]
 
-    print("c")
     other_vars <- startsWith(names_data, "Sp")
 
 
@@ -927,9 +907,6 @@ for (i in seq_along(ListSp))
 
   write(nosp, file.path(Output, paste0(suffix, ".txt")), append = TRUE)
 
-  # saveRDS(EDFmod$tunemod, paste0(Output, "/RFtune_", ListSp[i]
-  #                                ,Tag,"_", date_limit
-  #                                ,"_", suffix, ".rds"))
   saveRDS(
     noSpacemod$spatmod,
     file.path(
