@@ -313,29 +313,27 @@ for (i in 1:length(listfun))
 #   layer = layer_alti
 # )
 #
-# ## Wind Turbines ###
-# print("Wind Turbines")
-# Coord_eol(
-#   points = FCoord,
-#   names_coord = Coord_Headers,
-#   bm = BM,
-#   bl = BL,
-#   layer = layer_wind_turbines
-# )
-#
+## wind turbines ###
+
+print("wind turbines")
+coord_eol(
+  points = fcoord,
+  names_coord = coord_headers,
+  bm = bm,
+  bl = bl,
+  layer = layer_wind_turbines
+)
+
 # ## CARTHAGE (eau) ####
 # print("Water")
 #
-# Coord_Eau(
-#   points = FCoord,
-#   names_coord = Coord_Headers,
-#   # bs = BS,
-#   # bm = BM,
-#   # bl = BL,
-#   carthagep = layer_Carthage_P,
-#   carthagec = layer_Carthage_C
-# )
-#
+Coord_Eau(
+  points = FCoord,
+  names_coord = Coord_Headers,
+  carthagep = layer_Carthage_P,
+  carthagec = layer_Carthage_C
+)
+
 #
 # ## Ecoline (idf)
 # Coord_Ecoline(
@@ -359,15 +357,15 @@ for (i in 1:length(listfun))
 # )
 
 ## MOS Land Cover ####
-print("MOS")
-Coord_MOSraster(
-  points = FCoord,
-  names_coord = c(Coord_Headers, "Nuit"),
-  bs = BS,
-  bm = BM,
-  bl = BL,
-  layer = folder_MOS
-)
+# print("MOS")
+# Coord_MOSraster(
+#   points = FCoord,
+#   names_coord = c(Coord_Headers, "Nuit"),
+#   bs = BS,
+#   bm = BM,
+#   bl = BL,
+#   layer = folder_MOS
+# )
 
 #
 # ## CESBIO (Habitat) ####
@@ -385,14 +383,14 @@ Coord_MOSraster(
 #
 # ## ROADS and TRAINS ####
 # print("Roads and trains")
-# Coord_Route(
-#   points = FCoord,
-#   names_coord = Coord_Headers,
-#   bm = BM,
-#   bl = BL,
-#   folder = folder_route
-# )
-#
+Coord_Route(
+  points = FCoord,
+  names_coord = Coord_Headers,
+  bm = BM,
+  bl = BL,
+  folder = folder_route
+)
+
 # print("Meteo")
 # Coord_Meteo(
 #   points = FCoord,

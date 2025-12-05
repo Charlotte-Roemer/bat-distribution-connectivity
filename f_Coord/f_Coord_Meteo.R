@@ -60,7 +60,7 @@ Coord_Meteo <- function(points, temp, prec, wind) {
     tab <- do.call("rbind", monthly_tables)
     tab$Spprecipitations <- tab$precip_norm - tab$total_precipitations
     tab$Sptemp <- tab$temp_norm - tab$mean_temp
-    tab$Spwind <- tab$wind_norm - tab$mean_wind
+    tab$Spwind <- tab$wind_norm - (tab$mean_wind * 0.27777778) # converting kmh to ms
   }
   print(tab, n = 10, width = Inf)
   data.table::fwrite(tab, paste0(points, "_meteo.csv"))
