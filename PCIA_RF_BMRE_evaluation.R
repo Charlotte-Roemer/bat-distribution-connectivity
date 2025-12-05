@@ -287,6 +287,7 @@ if (Sp == "all" || Sp == "All") {
 print(ListSp)
 for (i in seq_along(ListSp))
 {
+  print("ici")
   DataSp <- subset(DataCPL3, DataCPL3$espece == ListSp[i]) # subset species
 
   # DataSp=subset(DataCPL3,DataCPL3$espece==Sp) # subset species
