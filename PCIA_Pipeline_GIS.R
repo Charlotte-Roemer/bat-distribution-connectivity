@@ -316,7 +316,7 @@ for (i in 1:length(listfun))
 ## wind turbines ###
 
 print("wind turbines")
-coord_eol(
+Coord_eol(
   points = fcoord,
   names_coord = coord_headers,
   bm = bm,
