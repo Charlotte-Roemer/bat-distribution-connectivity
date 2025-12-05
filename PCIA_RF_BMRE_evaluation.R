@@ -308,11 +308,14 @@ for (i in seq_along(ListSp))
     select(participation, Nuit, num_micro) |>
     unique()
 
+
+  print(head(DataCPL3_unique))
+  print("ici")
+  
   DataCPL3_unique$Nuit <- as.Date(DataCPL3_unique$Nuit)
 
   DataSp$Nuit <- as.Date(DataSp$Nuit)
   DataCPL3$Nuit <- as.Date(DataCPL3$Nuit)
-  print("ici")
   DataSpSL_w0_2 <- full_join(DataSp, DataCPL3_unique) # Adds the nights with absence
   colnames(DataSpSL_w0_2)[which(colnames(DataSpSL_w0_2) == "point")] <- "nom"
 
