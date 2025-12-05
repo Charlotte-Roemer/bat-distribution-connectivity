@@ -253,7 +253,6 @@ test1 <- nrow(DataCPL3)
 
 DataCPL3 <- subset(DataCPL3, !is.na(DataCPL3$nb_contacts))
 
-print(head(DataCPL3))
 # TEST
 # write.csv(DataCPL3,
 #      file.path(Output,
@@ -262,6 +261,7 @@ print(head(DataCPL3))
 #        )
 #      )
 #    )
+
 test2 <- nrow(DataCPL3)
 
 ifelse(test1 == test2, print("ok"), stop("NA present in activity data!"))
@@ -286,9 +286,9 @@ if (Sp == "all" || Sp == "All") {
 #### Prepare dataset for each species ####------------------------------------------------------
 
 print(ListSp)
+print("ici")
 for (i in seq_along(ListSp))
 {
-  print("ici")
   DataSp <- subset(DataCPL3, DataCPL3$espece == ListSp[i]) # subset species
 
   # DataSp=subset(DataCPL3,DataCPL3$espece==Sp) # subset species
