@@ -22,7 +22,7 @@ Coord_eol <- function(points, names_coord, bm, bl, layer) {
   print("a")
   FOccSL <- points # grid points
   OccSL <- read_delim(paste0(FOccSL, ".csv")) %>%
-    select(names_coord)
+    select(all_of(names_coord))
   OccSL$ID <- c(1:nrow(OccSL))
 
   OccSL <- OccSL %>%
