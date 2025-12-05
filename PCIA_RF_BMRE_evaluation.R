@@ -339,8 +339,9 @@ for (i in seq_along(ListSp))
 
   cat("Absence data added", fill = TRUE)
 
+  print(colnames(DataSpSL_w0_2))
   DataSpSL_w0_2 <- DataSpSL_w0_2 |>
-    dplyr::slice_max(data, n = nb_contacts, by = c(participation, Nuit))
+    dplyr::slice_max(n = nb_contacts, by = c(participation, Nuit))
 
 
   # Exclude sites outside France limits (square) :
