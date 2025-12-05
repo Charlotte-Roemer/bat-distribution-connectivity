@@ -270,7 +270,7 @@ for (i in 1:length(listfun))
 # )
 #
 #
-# ###  ALAN ###
+# ### ALAN ###
 # print("ALAN")
 # Coord_ALAN(
 #   points = FCoord,
@@ -314,15 +314,15 @@ for (i in 1:length(listfun))
 # )
 #
 ## wind turbines ###
-
-print("wind turbines")
-Coord_eol(
-  points = FCoord,
-  names_coord = Coord_Headers,
-  bm = BM,
-  bl = BL,
-  layer = layer_wind_turbines
-)
+#
+# print("wind turbines")
+# Coord_eol(
+#   points = FCoord,
+#   names_coord = Coord_Headers,
+#   bm = BM,
+#   bl = BL,
+#   layer = layer_wind_turbines
+# )
 
 # ## CARTHAGE (eau) ####
 # print("Water")
@@ -391,13 +391,13 @@ Coord_Route(
   folder = folder_route
 )
 
-# print("Meteo")
-# Coord_Meteo(
-#   points = FCoord,
-#   temp = layer_temp,
-#   prec = layer_precip,
-#   wind = layer_wind
-# )
+print("Meteo")
+Coord_Meteo(
+  points = FCoord,
+  temp = layer_temp,
+  prec = layer_precip,
+  wind = layer_wind
+)
 
 ## loc_data <- file.path(loc, "data")
 
