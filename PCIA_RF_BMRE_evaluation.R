@@ -280,7 +280,7 @@ if (Sp == "all" || Sp == "All") {
 } else if (Sp == "paper") {
   ListSp <- ListPaper
 } else {
-  ListSp <- c(Sp, "truc")
+  ListSp <- Sp
 }
 
 #### Prepare dataset for each species ####------------------------------------------------------
@@ -289,6 +289,7 @@ print(ListSp)
 print("ici")
 for (i in seq_along(ListSp))
 {
+  print(i)
   DataSp <- subset(DataCPL3, DataCPL3$espece == ListSp[i]) # subset species
 
   # DataSp=subset(DataCPL3,DataCPL3$espece==Sp) # subset species
