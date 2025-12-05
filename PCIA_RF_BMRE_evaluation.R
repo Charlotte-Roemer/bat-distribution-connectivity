@@ -285,11 +285,9 @@ if (Sp == "all" || Sp == "All") {
 
 #### Prepare dataset for each species ####------------------------------------------------------
 
-print(ListSp)
-print("ici")
+
 for (i in seq_along(ListSp))
 {
-  print(i)
   DataSp <- subset(DataCPL3, DataCPL3$espece == ListSp[i]) # subset species
 
   # DataSp=subset(DataCPL3,DataCPL3$espece==Sp) # subset species
@@ -313,7 +311,7 @@ for (i in seq_along(ListSp))
   # assumption that this table always contains at least 1 species per night)
 
   print(head(DataCPL3))
-# prepares the table of the complete set of sampled nights/sites
+  # prepares the table of the complete set of sampled nights/sites
 
   DataCPL3_unique <- DataCPL3 |>
     select(participation, Nuit, num_micro) |>
@@ -322,7 +320,7 @@ for (i in seq_along(ListSp))
 
   print(head(DataCPL3_unique))
   print("ici")
-  
+
   DataCPL3_unique$Nuit <- as.Date(DataCPL3_unique$Nuit)
 
   DataSp$Nuit <- as.Date(DataSp$Nuit)
@@ -342,9 +340,7 @@ for (i in seq_along(ListSp))
   cat("Absence data added", fill = TRUE)
 
   DataSpSL_w0_2 <- DataSpSL_w0_2 |>
-    data <- dplyr::slice_max(data, nb_contacts, by = c(participation, Nuit))
-
-
+    dplyr::slice_max(data, nb_contacts, by = c(participation, Nuit))
 
 
   # Exclude sites outside France limits (square) :
