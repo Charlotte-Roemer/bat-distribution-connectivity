@@ -153,7 +153,7 @@ Coord_Route <- function(points, names_coord, bm, bl, folder) {
   road_cols <- names(OccSL_L93Re)[road_cols]
   OccSL_L93Re$SpRoads <- OccSL_L93Re |>
     dplyr::select(road_cols) |>
-    dplyr::mutate(SpRoads = rowSums(.), .keep = "none")
+    purrr::reduce(`+`)
 
   OccSL_L93Re <- OccSL_L93Re |>
     dplyr::select(-road_cols)
