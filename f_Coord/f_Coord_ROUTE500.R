@@ -162,10 +162,12 @@ Coord_Route <- function(points, names_coord, bm, bl, folder) {
   cat("combining roads", fill = TRUE)
 
   OccSL_L93Re$SpRoadsM <- OccSL_L93Re |>
+    sf::st_drop_geometry() |>
     dplyr::select(dplyr::all_of(road_colsM)) |>
     purrr::reduce(`+`)
 
   OccSL_L93Re$SpRoadsL <- OccSL_L93Re |>
+    sf::st_drop_geometry() |>
     dplyr::select(dplyr::all_of(road_colsL)) |>
     purrr::reduce(`+`)
 
