@@ -153,21 +153,29 @@ Coord_Route <- function(points, names_coord, bm, bl, folder) {
 
   cat("Roads extracted", fill = TRUE)
 
-  road_cols <- grep("SpRo[1-4]", names(OccSL_L93Re))
-  road_cols <- names(OccSL_L93Re)[road_cols]
-  print(road_cols)
+
+  road_cols <- grep("SpRo[1-4]", names(OccSL_L93Re), value = TRUE)
+  road_colsL <- grep("L", road_cols, value = TRUE)
+  road_colsM <- grep("M", road_cols, value = TRUE)
+
 
   cat("combining roads", fill = TRUE)
 
-  OccSL_L93Re$SpRoads <- OccSL_L93Re |>
-    dplyr::select(all_of(road_cols)) |>
+  OccSL_L93Re$SpRoadsM <- OccSL_L93Re |>
+    dplyr::select(dplyr::all_of(road_colsM)) |>
     purrr::reduce(`+`)
+
+  OccSL_L93Re$SpRoadsL <- OccSL_L93Re |>
+    dplyr::select(dplyr::all_of(road_colsL)) |>
+    purrr::reduce(`+`)
+
+  cat("Roads combined", fill = TRUE)
 
   OccSL_L93Re <- OccSL_L93Re |>
     dplyr::select(-road_cols)
+
   OccSL_L93Re$SpRo_dist <- road_dist
 
-  cat("Roads combined", fill = TRUE)
 
   ##########################################
   ##########################################
