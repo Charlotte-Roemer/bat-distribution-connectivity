@@ -155,8 +155,12 @@ Coord_Route <- function(points, names_coord, bm, bl, folder) {
 
   road_cols <- grep("SpRo[1-4]", names(OccSL_L93Re))
   road_cols <- names(OccSL_L93Re)[road_cols]
+  print(road_cols)
+
+  cat("combining roads", fill = TRUE)
+
   OccSL_L93Re$SpRoads <- OccSL_L93Re |>
-    dplyr::select(road_cols) |>
+    dplyr::select(all_of(road_cols)) |>
     purrr::reduce(`+`)
 
   OccSL_L93Re <- OccSL_L93Re |>
