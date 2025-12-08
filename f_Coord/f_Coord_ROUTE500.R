@@ -28,6 +28,7 @@ Coord_Route <- function(points, names_coord, bm, bl, folder) {
   # bm <- BM
   # bl <- BL
   # fin variable test
+
   FOccSL <- points
   if (opt$mode == "predict") {
     OccSL <- read.csv(paste0(points, ".csv")) |>
@@ -77,6 +78,7 @@ Coord_Route <- function(points, names_coord, bm, bl, folder) {
   fwrite(CPd, "ROUTE500_dictionary.csv", sep = ";")
 
   OccSL_L93Re <- OccSL_L93
+
   for (h in 1L:length(ClassP)) {
     ROUTEP <- ROUTE[ROUTE$VOCATION == ClassP[h], ]
     print(ClassP[h])
@@ -149,6 +151,8 @@ Coord_Route <- function(points, names_coord, bm, bl, folder) {
     names(OccSL_L93Re)[names(OccSL_L93Re) == "SpRo_L"] <- paste0("SpRo", h, "L")
   }
 
+  cat("Roads extracted", fill = TRUE)
+
   road_cols <- grep("SpRo[1-4]", names(OccSL_L93Re))
   road_cols <- names(OccSL_L93Re)[road_cols]
   OccSL_L93Re$SpRoads <- OccSL_L93Re |>
@@ -158,6 +162,8 @@ Coord_Route <- function(points, names_coord, bm, bl, folder) {
   OccSL_L93Re <- OccSL_L93Re |>
     dplyr::select(-road_cols)
   OccSL_L93Re$SpRo_dist <- road_dist
+
+  cat("Roads combined", fill = TRUE)
 
   ##########################################
   ##########################################
