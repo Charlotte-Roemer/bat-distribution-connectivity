@@ -574,7 +574,10 @@ for (i in seq_along(ListSp))
       )
     )
   )
-  DataSaison_sf <- DataSaison_sf[dplyr::between(DataSaison_sf$fortnight, p_start, p_end), ]
+  # DataSaison_sf <- DataSaison_sf[dplyr::between(DataSaison_sf$fortnight, p_start, p_end), ]
+  DataSaison_sf <- subset(DataSaison_sf, DataSaison_sf$SpSaison == opt$period)
+
+  DataSp <- subset(DataCPL3, DataCPL3$espece == ListSp[i]) # subset species
   write.csv(
     DataSaison_sf,
     file.path(
