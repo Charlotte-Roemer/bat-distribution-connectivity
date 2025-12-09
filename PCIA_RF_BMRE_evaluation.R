@@ -394,7 +394,7 @@ for (i in seq_along(ListSp))
     between(week, spring_start, spring_end) ~ "spring",
     between(week, summer_start, summer_end) ~ "summer",
     between(week, autumn_start, autumn_end) ~ "autumn",
-    TRUE ~ "winter"
+    .default ~ "winter"
   ))
 
 
