@@ -565,29 +565,10 @@ for (i in seq_along(ListSp))
 
   print("DataSaison filtered for season")
 
-  write.csv(
-    DataSaison_sf,
-    file.path(
-      Output,
-      paste0(
-        ListSp[i], "_", opt$period, "_", opt$region, "_bug_check_before_saison.csv"
-      )
-    )
-  )
   # DataSaison_sf <- DataSaison_sf[dplyr::between(DataSaison_sf$fortnight, p_start, p_end), ]
   DataSaison_sf <- subset(DataSaison_sf, DataSaison_sf$SpSaison == opt$period)
 
   DataSp <- subset(DataCPL3, DataCPL3$espece == ListSp[i]) # subset species
-  write.csv(
-    DataSaison_sf,
-    file.path(
-      Output,
-      paste0(
-        ListSp[i], "_", opt$period, "_", opt$region, "_bug_check_after_saison.csv"
-      )
-    )
-  )
-
   DataSaison_sf <- filter_by_median_season_grid(DataSaison_sf, opt$region)
 
   DataSaison <- DataSaison_sf
