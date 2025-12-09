@@ -393,9 +393,11 @@ for (i in seq_along(ListSp))
   DataSaison <- DataSaison |> mutate(SpSaison = case_when(
     between(week, spring_start, spring_end) ~ "spring",
     between(week, summer_start, summer_end) ~ "summer",
-    between(week, autumn_start, autumn_end) ~ "autumn",
-    .default ~ "winter"
+    between(week, autumn_start, autumn_end) ~ "autumn"
   ))
+
+  DataSaison <- DataSaison |>
+    tidyr::drop_na(SpSaison)
 
 
   # DataSaison <- DataSaison[dplyr::between(DataSaison$fortnight, p_start, p_end), ]
