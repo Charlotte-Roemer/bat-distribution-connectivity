@@ -565,8 +565,8 @@ for (i in seq_along(ListSp))
 
   print("DataSaison filtered for season")
 
-  # DataSaison_sf <- DataSaison_sf[dplyr::between(DataSaison_sf$fortnight, p_start, p_end), ]
-  DataSaison_sf <- subset(DataSaison_sf, DataSaison_sf$SpSaison == opt$period)
+  DataSaison_sf <- DataSaison_sf[dplyr::between(DataSaison_sf$week, p_start, p_end), ]
+  # DataSaison_sf <- subset(DataSaison_sf, DataSaison_sf$SpSaison == opt$period)
 
   DataSp <- subset(DataCPL3, DataCPL3$espece == ListSp[i]) # subset species
   DataSaison_sf <- filter_by_median_season_grid(DataSaison_sf, opt$region)
