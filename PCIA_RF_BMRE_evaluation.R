@@ -569,6 +569,15 @@ for (i in seq_along(ListSp))
 
   print("check for id in colnames")
   print(colnames(DataSaison_sf))
+  write.csv(
+    DataSaison_sf,
+    file.path(
+      Output,
+      paste0(
+        ListSp[i], "_", opt$period, "_", opt$region, "_bug_check.csv"
+      )
+    )
+  )
   DataSaison_sf <- filter_by_median_season_grid(DataSaison_sf, opt$region)
 
   DataSaison <- DataSaison_sf
