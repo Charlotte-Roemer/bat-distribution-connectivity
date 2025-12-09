@@ -295,11 +295,11 @@ filter_by_median_season_grid <- function(data, region) {
 
   data <- sf::st_join(data, grid_sf, join = st_nearest_feature)
 
-  data <- data |> arrange(desc(nb_contacts))
+  data <- data %>% arrange(desc(nb_contacts))
 
-  data <- data |>
-    dplyr::group_by(ID, SpSaison) |>
-    dplyr::group_modify(~ slice_median(., "nb_contacts"), .groups = "keep") |>
+  data <- data %>%
+    dplyr::group_by(ID, SpSaison) %>%
+    dplyr::group_modify(~ slice_median(., "nb_contacts"), .groups = "keep") %>%
     dplyr::ungroup()
 
   # data <- st_transform(data, 2154)
