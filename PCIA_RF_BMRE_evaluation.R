@@ -225,6 +225,7 @@ return_end <- function(period) {
 
 p_start <- return_start(opt$period)
 p_end <- return_end(opt$period)
+print(paste("starting week : ", p_start, " ending week : ", p_end))
 
 #### Prepare general dataset ####-----------------------------------------------
 
@@ -565,9 +566,13 @@ for (i in seq_along(ListSp))
 
   print("DataSaison filtered for season")
 
+  print("saisons avant filtre")
+  print(unique(DataSaison_sf$SpSaison))
   DataSaison_sf <- DataSaison_sf[dplyr::between(DataSaison_sf$week, p_start, p_end), ]
   # DataSaison_sf <- subset(DataSaison_sf, DataSaison_sf$SpSaison == opt$period)
 
+  print("saisons apres filtre")
+  print(unique(DataSaison_sf$SpSaison))
   DataSp <- subset(DataCPL3, DataCPL3$espece == ListSp[i]) # subset species
   DataSaison_sf <- filter_by_median_season_grid(DataSaison_sf, opt$region)
 
