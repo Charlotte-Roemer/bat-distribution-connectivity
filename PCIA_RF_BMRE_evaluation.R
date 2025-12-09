@@ -567,6 +567,8 @@ for (i in seq_along(ListSp))
 
   DataSaison_sf <- DataSaison_sf[dplyr::between(DataSaison_sf$fortnight, p_start, p_end), ]
 
+  print("check for id in colnames")
+  print(colnames(DataSaison_sf))
   DataSaison_sf <- filter_by_median_season_grid(DataSaison_sf, opt$region)
 
   DataSaison <- DataSaison_sf
