@@ -132,9 +132,9 @@ if (!is.null(opt$predict_period)) {
 
 
 cat("Aggregating roads :", fill = TRUE)
-pred_data$SpRoAddM <- pred_data$SpRo1M + pred_data$SpRo2M +
-  pred_data$SpRo3M + pred_data$SpRo4M
-
+# pred_data$SpRoAddM <- pred_data$SpRo1M + pred_data$SpRo2M +
+#   pred_data$SpRo3M + pred_data$SpRo4M
+#
 cat("Roads aggregated :", fill = TRUE)
 
 for (acp in acp_names) {
