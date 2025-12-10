@@ -634,9 +634,9 @@ for (i in seq_along(ListSp))
   DataSaison$acti_class <- factor(DataSaison$acti_class, levels = c("NoAct", "Faible", "Moyen", "Fort", "TresFort"))
 
   samp_sizes <- def_sample_vector(DataSaison, "acti_class", 0.66)
-  DataSaison$SpRoAddM <- DataSaison$SpRo1M + DataSaison$SpRo2M +
-    DataSaison$SpRo3M + DataSaison$SpRo4M
-
+  # DataSaison$SpRoAddM <- DataSaison$SpRo1M + DataSaison$SpRo2M +
+  #   DataSaison$SpRo3M + DataSaison$SpRo4M
+  #
   if (selection == "PCA") {
     cat("selection : PCA", fill = TRUE)
     predictors <- DataSaison[, variables_acp]
