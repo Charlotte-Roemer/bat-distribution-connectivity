@@ -709,6 +709,11 @@ for (i in seq_along(ListSp))
     Prednames <- variables_indisp
   }
 
+if ("geometry" %in% colnames(DataSaison)){
+  DataSaison <- DataSaison |>
+    select(-geometry)
+}
+
   write.csv(
     DataSaison,
     file.path(
@@ -716,7 +721,8 @@ for (i in seq_along(ListSp))
       paste0(
         ListSp[i], "_", opt$period, "_", opt$region, "_datatrain.csv"
       )
-    )
+    ),
+  row.names = FALSE
   )
 
 
