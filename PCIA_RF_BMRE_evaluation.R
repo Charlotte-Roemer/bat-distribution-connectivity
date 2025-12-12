@@ -207,19 +207,19 @@ dir.create(Output)
 # Bornes en semaines
 return_start <- function(period) {
   switch(period,
-    year = 10L,
-    spring = 10L,
-    summer = 22L,
-    autumn = 30L
+    year = 9L,
+    spring = 9L,
+    summer = 23L,
+    autumn = 33L
   )
 }
 
 return_end <- function(period) {
   switch(period,
-    year = 40L,
+    year = 44L,
     spring = 20L,
-    summer = 28L,
-    autumn = 40L
+    summer = 31L,
+    autumn = 44L
   )
 }
 
