@@ -665,7 +665,7 @@ for (i in seq_along(ListSp))
     occsol_vars <- startsWith(names(data), "SpHOCS")
     occsol_vars <- names(data)[occsol_vars]
 
-    bioclim_vars <- startsWith(names(data), "SpBioC")
+    bioclim_vars <- startsWith(names(data), "SpBioC") # ajouter météo ? saison binaire ?
     bioclim_vars <- names(data)[bioclim_vars]
 
     names_data <- names(data)
