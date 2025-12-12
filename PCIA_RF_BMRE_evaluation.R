@@ -676,7 +676,7 @@ for (i in seq_along(ListSp))
 
 
     other_vars <- names_data[other_vars]
-    other_vars <- other_vars[other_vars != "SpSaison"]
+    other_vars <- other_vars[!(other_vars %in% c("SpSaison", "SpAltiM")]
 
 
     predictors_occs <- data[, occsol_vars]
@@ -872,7 +872,7 @@ for (i in seq_along(ListSp))
 
   # names.Boruta <- names.Boruta[selected_index]
   if (opt$period == "year") {
-    Prednames <- c(Prednames, "SpSaison")
+    Prednames <- c(Prednames, "SpSaison", "SpAltiM")
   }
 
   noSpacemod <- fitvalpred_rf(
