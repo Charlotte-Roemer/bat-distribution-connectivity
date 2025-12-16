@@ -885,8 +885,15 @@ for (i in seq_along(ListSp))
   # selected_index <- get_prednames(DataSaison, names.Boruta, "nb_contacts")
 
   # names.Boruta <- names.Boruta[selected_index]
+
   if (opt$period == "year") {
-    Prednames <- c(Prednames, "SpSaison", "SpAltiM")
+    # setting binary season variables
+    DataSaison <- DataSaison |>
+      mutate(SpSpring = if_else(SpSaison == "spring", 1, 0)) |>
+      mutate(SpSummer = if_else(SpSaison == "summer", 1, 0)) |>
+      mutate(SpAutumn = if_else(SpSaison == "autumn", 1, 0))
+
+    Prednames <- c(Prednames, "SpSpring", "SpSummer", "SpAutumn", "SpAltiM")
   }
 
   noSpacemod <- fitvalpred_rf(
