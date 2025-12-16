@@ -34,7 +34,7 @@ option_list <- list(
   ),
   optparse::make_option(c("-v", "--variableselection"),
     type = "character", default = "None",
-    help = 'Choose which variable selection you want to make between values : "None", "VSURF", "indisp", "PCA", "PCA_decomp".'
+    help = 'Choose which variable selection you want to make between values : "None", "VSURF", "indisp", "PCA", "PCAdecomp".'
   ),
   optparse::make_option(c("-s", "--species"),
     type = "character", default = "paper",
@@ -55,11 +55,23 @@ option_list <- list(
   optparse::make_option(c("-p", "--period"),
     type = "character", default = "year",
     help = "Which activity are you modelling year, spring, summer or autumn"
+  ),
+  optparse::make_option(c("--data_sel"),
+    type = "character", default = "all",
+    help = "Do you reduce data by the pixel (no = all, yes = median)"
+  ),
+  optparse::make_option(c("--acti"),
+    type = "character", default = "median",
+    help = "Do you reduce data by the pixel (no = all, yes = median)"
   )
 )
+
 # Parse options to opt object
 opt_parser <- optparse::OptionParser(option_list = option_list)
 opt <- optparse::parse_args(opt_parser)
+data_sel <- opt$data_sel
+activite <- opt$acti
+
 
 #### Options ####--------------------------------------------------------
 
@@ -131,7 +143,6 @@ if (Place == "local") {
     "GIS",
     "regions.gpkg"
   )
-
   # folder to copy models to (fichiers .learner), no "_" else bug !!! :
   Output <- file.path(
     data_path,
@@ -139,6 +150,12 @@ if (Place == "local") {
     paste0(
       "VC",
       ThresholdSort,
+      "_",
+      data_sel,
+      "_",
+      activite,
+      "_",
+      selection,
       "_",
       Sys.Date()
     )
@@ -653,7 +670,7 @@ for (i in seq_along(ListSp))
 
     vars_names <- names(acp_pc_vars)
     Prednames <- c(vars_names, vars_norm)
-  } else if (selection == "PCA_decomp") {
+  } else if (selection == "PCAdecomp") {
     cat("selection : PCA decomposée", fill = TRUE)
 
     small_vars <- endsWith(names(DataSaison), "S")
@@ -739,6 +756,7 @@ for (i in seq_along(ListSp))
 
   noSpacemod <- fitvalpred_rf(
     Prednames,
+    activite,
     # rctrl,
     sctrl,
     DataSaison

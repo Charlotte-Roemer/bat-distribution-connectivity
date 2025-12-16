@@ -8,6 +8,7 @@
 # n_tree = NTREE
 
 fitvalpred_rf <- function(covariates,
+                          var_to_predict,
                           spatial_ctrl,
                           traindf) {
   # # 1. Tune (find the best mtry)
@@ -38,7 +39,7 @@ fitvalpred_rf <- function(covariates,
     for (mtry in mtrys) {
       tune_mod <- caret::train(
         x = as.data.frame(traindf)[, covariates],
-        y = as.data.frame(traindf)[, "acti_int_class"],
+        y = as.data.frame(traindf)[, var_to_predict],
         method = "rf",
         importance = TRUE,
         trControl = tune_ctrl,
@@ -97,7 +98,7 @@ fitvalpred_rf <- function(covariates,
 
   spatial_mod <- caret::train(
     x = as.data.frame(traindf)[, covariates], # train model
-    y = as.data.frame(traindf)[, "acti_int_class"],
+    y = as.data.frame(traindf)[, var_to_predict],
     method = "rf",
     importance = TRUE,
     trControl = spatial_ctrl,
