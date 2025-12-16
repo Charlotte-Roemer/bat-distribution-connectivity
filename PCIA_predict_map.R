@@ -131,9 +131,9 @@ if (!is.null(opt$predict_period)) {
 }
 
 pred_data <- pred_data |>
-  mutate(SpSpring = if_else(SpSaison == "spring", 1, 0)) |>
-  mutate(SpSummer = if_else(SpSaison == "summer", 1, 0)) |>
-  mutate(SpAutumn = if_else(SpSaison == "autumn", 1, 0))
+  dplyr::mutate(SpSpring = if_else(SpSaison == "spring", 1, 0)) |>
+  dplyr::mutate(SpSummer = if_else(SpSaison == "summer", 1, 0)) |>
+  dplyr::mutate(SpAutumn = if_else(SpSaison == "autumn", 1, 0))
 
 
 
