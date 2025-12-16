@@ -40,10 +40,6 @@ option_list <- list(
     type = "character", default = "paper",
     help = 'Set modelling species between "paper", "all" or a 6 character species code (e.g. "Pippip")'
   ),
-  optparse::make_option(c("-b", "--boruta"),
-    type = "logical", default = FALSE,
-    help = "Do you want to execute boruta feature selection ? Default no (FALSE) "
-  ),
   optparse::make_option(c("-c", "--cure"),
     type = "logical", default = FALSE,
     help = "Do you want to randomly remove close data (spatially and temporally) ?"
@@ -92,9 +88,6 @@ date_limit <- opt$date
 YearEffect <- FALSE # Add year?
 # MTRY = "default"  # "default" or "npred" or "2-3" for 2/3 of npred
 ## NTREE <- 500
-
-# Do variable selection?
-DoBoruta <- opt$boruta
 
 #### Setting Directories ####--------------------------------------------------
 
@@ -722,158 +715,6 @@ for (i in seq_along(ListSp))
       select(-geometry)
   }
 
-  # EDF model
-
-  # set.seed(123)
-  # EDFmod <- fitvalpred_rf(
-  #   names.Boruta,
-  #   sctrl,
-  #   DataSaison
-  # )
-  #
-  # cat("Model done", fill = TRUE)
-  #
-  # #### Save ####----------------------------------------------------------------
-  #
-  # if (DoBoruta) {
-  #   suffix <- paste0("_Boruta_", "EDF", "_", ListSp[i])
-  # } else {
-  #   suffix <- paste0("EDF", "_", ListSp[i])
-  # }
-  #
-  #
-  # write.csv(
-  #   EDFmod$tab,
-  #   file.path(
-  #     Output,
-  #     paste0(
-  #       "Evaluation_",
-  #       ListSp[i],
-  #       Tag, "_",
-  #       date_limit,
-  #       "_",
-  #       suffix,
-  #       ".csv"
-  #     )
-  #   )
-  # )
-  #
-  # data.table::fwrite(EDFmod$graphmod, file.path(Output, paste0(suffix, ".csv")))
-  #
-  # write(ListSp[1L], file.path(Output, paste0(suffix, ".txt")))
-  # write("----", file.path(Output, paste0(suffix, ".txt")), append = TRUE)
-  # write("Moran :", file.path(Output, paste0(suffix, ".txt")), append = TRUE)
-  # write(moran, file.path(Output, paste0(suffix, ".txt")), append = TRUE)
-  # write("EDF", file.path(Output, paste0(suffix, ".txt")), append = TRUE)
-  # edf <- print(EDFmod$spatmod)
-  # write(edf, file.path(Output, paste0(suffix, ".txt")), append = TRUE)
-  #
-  #
-  # # saveRDS(EDFmod$tunemod, paste0(Output, "/RFtune_", ListSp[i]
-  # #                                ,Tag,"_", date_limit
-  # #                                ,"_", suffix, ".rds"))
-  # saveRDS(
-  #   EDFmod$spatmod,
-  #   file.path(
-  #     Output,
-  #     paste0(
-  #       "RFspat_",
-  #       ListSp[i],
-  #       Tag,
-  #       "_",
-  #       date_limit,
-  #       "_",
-  #       suffix,
-  #       ".rds"
-  #     )
-  #   )
-  # )
-  # rm("EDFmod")
-  #
-  # ## LatLong model
-  #
-  #
-  # remove EDF variables from names.boruta
-
-  # LatLongmod <- fitvalpred_rf(
-  #   names.Boruta,
-  #   # rctrl,
-  #   sctrl,
-  #   DataSaison
-  #   # tempstack[[c(basecovs, proxycovs)]]
-  # )
-  #
-  # print("Model done")
-  #
-  # #### Save ####----------------------------------------------------------------
-  #
-  # if (DoBoruta == T) {
-  #   suffix <- paste0("_Boruta_", "LatLong", "_", ListSp[i])
-  # } else {
-  #   suffix <- paste0("LatLong", "_", ListSp[i])
-  # }
-  #
-  # write.csv(
-  #   LatLongmod$tab,
-  #   file.path(
-  #     Output,
-  #     paste0(
-  #       "Evaluation_",
-  #       ListSp[i],
-  #       Tag, "_",
-  #       date_limit,
-  #       "_",
-  #       suffix,
-  #       ".csv"
-  #     )
-  #   )
-  # )
-  #
-  #
-  # data.table::fwrite(LatLongmod$graphmod, file.path(Output, paste0(suffix, ".csv")))
-  #
-  # write("LatLong", file.path(Output, paste0(suffix, ".txt")), append = TRUE)
-  #
-  # latlng <- print(LatLongmod$spatmod)
-  # write(latlng, file.path(Output, paste0(suffix, ".txt")), append = TRUE)
-  #
-  # # saveRDS(EDFmod$tunemod, paste0(Output, "/RFtune_", ListSp[i]
-  # #                                ,Tag,"_", date_limit
-  # #                                ,"_", suffix, ".rds"))
-  # saveRDS(
-  #   LatLongmod$spatmod,
-  #   file.path(
-  #     Output,
-  #     paste0(
-  #       "RFspat_",
-  #       ListSp[i],
-  #       Tag,
-  #       "_",
-  #       date_limit,
-  #       "_",
-  #       suffix,
-  #       ".rds"
-  #     )
-  #   )
-  # )
-  # rm("LatLongmod")
-  #
-  # remove EDF variables from names.boruta
-  #
-  # print("names before splatlon removal")
-  # print(names.Boruta)
-  # testPred <- substr(names.Boruta, 1, 5) != "Splat"
-  # names.Boruta <- names.Boruta[testPred]
-  # testPred <- substr(names.Boruta, 1, 5) != "Splon"
-  # names.Boruta <- names.Boruta[testPred]
-  #
-  # print("rows datasaison")
-  # print(nrow(DataSaison))
-  # print(names.Boruta)
-  # selected_index <- get_prednames(DataSaison, names.Boruta, "nb_contacts")
-
-  # names.Boruta <- names.Boruta[selected_index]
-
   if (opt$period == "year") {
     # setting binary season variables
     DataSaison <- DataSaison |>
@@ -908,11 +749,7 @@ for (i in seq_along(ListSp))
 
   #### Save ####----------------------------------------------------------------
 
-  if (DoBoruta == T) {
-    suffix <- paste0("_Boruta_", opt$period, "_noSpace", "_", ListSp[i])
-  } else {
-    suffix <- paste0(opt$period, "_", opt$region, "_noSpace", "_", ListSp[i])
-  }
+  suffix <- paste0(opt$period, "_", opt$region, "_noSpace", "_", ListSp[i])
 
   write.csv(
     noSpacemod$tab,
