@@ -563,11 +563,11 @@ for (i in seq_along(ListSp))
   DataSaison_sf <- DataSaison_sf[aoi, ]
   # we want to filter out nights with bad meteoroligical conditions
   DataSaison_sf <- DataSaison_sf |>
-    dplyr::filter(total_precipitations)
+    dplyr::filter(total_precipitations < 2L)
   DataSaison_sf <- DataSaison_sf |>
-    dplyr::filter(mean_wind)
+    dplyr::filter(Spwind < 4L)
   DataSaison_sf <- DataSaison_sf |>
-    dplyr::filter(mean_temp)
+    dplyr::filter(dplyr::between(Sptemp, -4L, 4L))
 
   DataSaison_sf$acti_class <- def_classes(DataSaison_sf)
   DataSaison_sf$acti_int_class <- def_int_classes(DataSaison_sf)
