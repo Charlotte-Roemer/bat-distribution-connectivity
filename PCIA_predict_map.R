@@ -130,6 +130,12 @@ if (!is.null(opt$predict_period)) {
   pred_data$SpSaison <- opt$predict_period
 }
 
+pred_data <- pred_data |>
+  mutate(SpSpring = if_else(SpSaison == "spring", 1, 0)) |>
+  mutate(SpSummer = if_else(SpSaison == "summer", 1, 0)) |>
+  mutate(SpAutumn = if_else(SpSaison == "autumn", 1, 0))
+
+
 
 cat("Aggregating roads :", fill = TRUE)
 # pred_data$SpRoAddM <- pred_data$SpRo1M + pred_data$SpRo2M +
