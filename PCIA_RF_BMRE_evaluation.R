@@ -722,18 +722,6 @@ for (i in seq_along(ListSp))
       select(-geometry)
   }
 
-  write.csv(
-    DataSaison,
-    file.path(
-      Output,
-      paste0(
-        ListSp[i], "_", opt$period, "_", opt$region, "_datatrain.csv"
-      )
-    ),
-    row.names = FALSE
-  )
-
-
   # EDF model
 
   # set.seed(123)
@@ -895,6 +883,18 @@ for (i in seq_along(ListSp))
 
     Prednames <- c(Prednames, "SpSpring", "SpSummer", "SpAutumn", "SpAltiM")
   }
+
+  write.csv(
+    DataSaison,
+    file.path(
+      Output,
+      paste0(
+        ListSp[i], "_", opt$period, "_", opt$region, "_datatrain.csv"
+      )
+    ),
+    row.names = FALSE
+  )
+
 
   noSpacemod <- fitvalpred_rf(
     Prednames,
