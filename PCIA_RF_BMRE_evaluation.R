@@ -718,9 +718,9 @@ for (i in seq_along(ListSp))
   if (opt$period == "year") {
     # setting binary season variables
     DataSaison <- DataSaison |>
-      mutate(SpSpring = if_else(SpSaison == "spring", 1, 0)) |>
-      mutate(SpSummer = if_else(SpSaison == "summer", 1, 0)) |>
-      mutate(SpAutumn = if_else(SpSaison == "autumn", 1, 0))
+      dplyr::mutate(SpSpring = dplyr::if_else(SpSaison == "spring", 1, 0)) |>
+      dplyr::mutate(SpSummer = dplyr::if_else(SpSaison == "summer", 1, 0)) |>
+      dplyr::mutate(SpAutumn = dplyr::if_else(SpSaison == "autumn", 1, 0))
 
     Prednames <- c(Prednames, "SpSpring", "SpSummer", "SpAutumn", "SpAltiM")
   }
