@@ -286,8 +286,8 @@ terra::writeRaster(
     "_",
     activite,
     "_",
-    selection
-    "_"
+    selection,
+    "_",
     opt$species,
     "_",
     opt$region,
