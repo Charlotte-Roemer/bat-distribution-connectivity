@@ -62,7 +62,7 @@ option_list <- list(
   ),
   optparse::make_option(c("--acti"),
     type = "character", default = "nb_contacts",
-    help = "Which value do you want to predict ? nb_contacts, acti_int_class"
+    help = "Which value do you want to predict ? nb_contacts, acticlass"
   )
 )
 
@@ -584,9 +584,7 @@ for (i in seq_along(ListSp))
     dplyr::filter(dplyr::between(Sptemp, -4L, 4L))
 
   DataSaison_sf$acti_class <- def_classes(DataSaison_sf)
-  DataSaison_sf$acti_int_class <- def_int_classes(DataSaison_sf)
-  cat("Acti_int_classes : ", fill = TRUE)
-  cat(unique(DataSaison_sf$acti_int_class), fill = TRUE)
+  DataSaison_sf$acticlass <- def_int_classes(DataSaison_sf)
 
   print("DataSaison filtered for season")
 
