@@ -269,24 +269,7 @@ print("raster ready")
 
 print("path")
 period <- opt$predict_period
-print(file.path(model_location, paste0(
-  "RFspat_",
-  "VC",
-  opt$threshold,
-  "_",
-  opt$date_trained,
-  "_",
-  opt$method,
-  "_",
-  opt$species,
-  "_",
-  period,
-  "_",
-  opt$region,
-  "_",
-  period,
-  ".tif"
-)))
+
 terra::writeRaster(
   x = map,
   overwrite = TRUE,
@@ -299,6 +282,12 @@ terra::writeRaster(
     "_",
     opt$method,
     "_",
+    data_sel,
+    "_",
+    activite,
+    "_",
+    selection
+    "_"
     opt$species,
     "_",
     opt$region,
