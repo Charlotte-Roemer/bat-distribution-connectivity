@@ -43,6 +43,18 @@ option_list <- list(
   optparse::make_option(c("--predict_period"),
     type = "character", default = NULL,
     help = "Is it a yearly model or a seasonal one ? (spring, summer, autumn)"
+  ),
+  optparse::make_option(c("--acti"),
+    type = "character", default = NULL,
+    help = "Variable to predict (nb_contacts or acti_int_class)"
+  ),
+  optparse::make_option(c("--data_sel"),
+    type = "character", default = NULL,
+    help = "How is the activity selected inside the pixels (all or median)"
+  ),
+  optparse::make_option(c("--variableselection"),
+    type = "character", default = NULL,
+    help = 'How the training variables were selected ("None", "VSURF", "indisp", "PCA", "PCAdecomp")'
   )
 )
 
@@ -51,10 +63,30 @@ opt_parser <- optparse::OptionParser(option_list = option_list)
 opt <- optparse::parse_args(opt_parser)
 
 period <- opt$period
-
+activite <- opt$acti
+data_sel <- opt$data_sel
+selection <- opt$variableselection
 
 # model <- "/media/tsevere/BBK/VC50_2025-02-28/RFspat_BarbarVC50_2025-02-28_EDF_Barbar.rds" # rds file
-model_location <- file.path(data_path, "ModPred", paste0("VC", opt$threshold, "_", opt$date_trained))
+model_location <- file.path(
+  data_path,
+  "ModPred",
+  activite,
+  paste0(
+    "VC",
+    opt$threshold,
+    "_",
+    data_sel,
+    "_",
+    activite,
+    "_",
+    selection,
+    "_",
+    periode,
+    "_",
+    opt$date_trained
+  )
+)
 model <- file.path(
   model_location,
   paste0(
