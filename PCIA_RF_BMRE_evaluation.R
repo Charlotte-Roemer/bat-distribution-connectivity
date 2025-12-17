@@ -61,8 +61,8 @@ option_list <- list(
     help = "Do you reduce data by the pixel (no = all, yes = median)"
   ),
   optparse::make_option(c("--acti"),
-    type = "character", default = "median",
-    help = "Do you reduce data by the pixel (no = all, yes = median)"
+    type = "character", default = "nb_contacts",
+    help = "Which value do you want to predict ? nb_contacts, acti_int_class"
   )
 )
 
