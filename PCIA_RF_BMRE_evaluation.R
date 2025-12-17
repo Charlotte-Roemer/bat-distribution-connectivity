@@ -147,6 +147,7 @@ if (Place == "local") {
   Output <- file.path(
     data_path,
     "ModPred",
+    activite,
     paste0(
       "VC",
       ThresholdSort,
@@ -196,7 +197,7 @@ coordinate_names <- c("X", "Y")
 args[12] <- coordinate_names[1]
 args[13] <- coordinate_names[2]
 
-dir.create(Output)
+dir.create(Output, recursive = TRUE)
 
 
 #### Set season limits ####-----------------------------------------------------
