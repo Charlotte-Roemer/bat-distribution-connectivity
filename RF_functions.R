@@ -13,6 +13,7 @@ fitvalpred_rf <- function(covariates,
                           traindf) {
   # # 1. Tune (find the best mtry)
   print("tuning model")
+  print(paste("var to predict : ", var_to_predict))
 
   # mtrys <- c(17, 75, 100) # removed 200
   mtrys <- c(
