@@ -10,4 +10,4 @@
 #SBATCH --mail-user=thomas.severe@mnhn.fr
 #SBATCH --mail-type=END,FAIL
 
-Rscript PCIA_RF_BMRE_evaluation.R -s $1 -t $2 -d $(date +%Y-%m-%d) -r $3 -k FALSE -p $4 --variableselection PCA_decomp
+Rscript PCIA_RF_BMRE_evaluation.R -s $1 -t $2 -d $(date +%Y-%m-%d) -r $3 -k FALSE -p $4 --variableselection $5 --acti $6 --data_sel $7
