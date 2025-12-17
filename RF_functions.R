@@ -67,11 +67,11 @@ fitvalpred_rf <- function(covariates,
     ntrees = as.factor(unlist(ntrees))
   )
 
-  best_mtry <- results[results$R2 == max(results$R2), ]$mtry
+  best_mtry <- results[results$RMSE == min(results$RMSE), ]$mtry
   best_mtry <- as.numeric(as.character((best_mtry)))
   cat("Best tuning mtry", best_mtry, fill = TRUE)
 
-  best_ntrees <- results[results$R2 == max(results$R2), ]$ntrees
+  best_ntrees <- results[results$RMSE == max(results$RMSE), ]$ntrees
   best_ntrees <- as.numeric(as.character((best_ntrees)))
   cat("Best tuning ntree", best_ntrees, fill = TRUE)
 
