@@ -158,6 +158,8 @@ if (Place == "local") {
       "_",
       selection,
       "_",
+      periode,
+      "_",
       Sys.Date()
     )
   )
