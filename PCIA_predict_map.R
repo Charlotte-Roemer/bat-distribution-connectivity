@@ -82,8 +82,6 @@ model_location <- file.path(
     "_",
     selection,
     "_",
-    period,
-    "_",
     opt$date_trained
   )
 )
