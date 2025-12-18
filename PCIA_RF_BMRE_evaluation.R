@@ -62,7 +62,7 @@ option_list <- list(
   ),
   optparse::make_option(c("--acti"),
     type = "character", default = "nb_contacts",
-    help = "Which value do you want to predict ? nb_contacts, acticlass"
+    help = "Which value do you want to predict ? nbcontacts, acticlass"
   )
 )
 
@@ -755,6 +755,9 @@ for (i in seq_along(ListSp))
     row.names = FALSE
   )
 
+  if (activite == "nbcontacts") {
+    activite == "nb_contacts"
+  }
 
   noSpacemod <- fitvalpred_rf(
     Prednames,
