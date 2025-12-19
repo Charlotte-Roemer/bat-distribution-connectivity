@@ -63,14 +63,19 @@ variables_acp <- c(
   "SpPenS",
   "SpPenM",
   "SpPenL",
-  "SpRo5L",
+  "SpRoadsM",
+  "SpRoadsL",
   "SpRoAddM",
+  "SpRo5M",
+  "SpRo5L",
   "SpSumL",
   "SpSumM",
   "SpVCF_L",
   "SpVCF_M",
   "SpWD",
-  "SpWDp"
+  "SpWDinterm",
+  "SpWDsalted",
+  "SpWDlarge"
 )
 
 variables_bio <- c(
