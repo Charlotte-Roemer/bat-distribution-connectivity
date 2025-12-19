@@ -1,4 +1,4 @@
-variables_a_exclure <- c("SpSaison", "SpAltiM", "SpGite", "SpALAN_L", "SpAltiS", "SpAltiL", "SpPenM", "SpPenL", "Splat", "Splon")
+variables_a_exclure <- c("SpSaison", "SpAltiM", "SpGite", "SpALAN_L", "SpAltiS", "SpAltiL", "SpPenM", "SpPenL", "Splat", "Splon", "Spprecipitations", "Sptemp", "Spwind")
 # "SpAltiS","SpAltiM",
 variables_indisp <- c(
   "SpBioC1", "SpBioC10", "SpBioC11", "SpBioC12", "SpBioC13", "SpBioC14", "SpBioC15",
