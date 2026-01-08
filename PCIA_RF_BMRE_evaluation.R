@@ -756,8 +756,6 @@ for (i in seq_along(ListSp))
   if (activite == "nbcontacts") {
     activite <- "nb_contacts"
   }
-  print(class(Prednames))
-  stop()
 
   noSpacemod <- fitvalpred_rf(
     Prednames,
