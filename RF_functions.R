@@ -15,6 +15,10 @@ fitvalpred_rf <- function(covariates,
   print("tuning model")
   print(paste("var to predict : ", var_to_predict))
 
+  test_index <- !covariates %in% colnames(traindf)
+  missing_vars <- covariates[test_index]
+  print(paste("missing variables:", missing_vars))
+
   # mtrys <- c(17, 75, 100) # removed 200
   mtrys <- c(
     floor(sqrt(length(covariates))),
@@ -33,8 +37,6 @@ fitvalpred_rf <- function(covariates,
   ntrees <- list()
   A <- Sys.time()
 
-  print("variable names :")
-  print(colnames(traindf))
 
   for (tree in ntree) {
     for (mtry in mtrys) {
