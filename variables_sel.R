@@ -6,7 +6,7 @@ variables_indisp <- c(
   "SpBioC6", "SpBioC7", "SpBioC8", "SpBioC9", "SpWD",
   "SpWDinterm",
   "SpWDsalted",
-  "SpWDlarge", ,
+  "SpWDlarge",
   "SpHOCS2M", "SpHOCS3M", "SpHOCS4M",
   "SpHOCS6M", "SpHOCS7M", "SpHOCS9M", "SpHOCS1M", "SpHOCS5M", "SpHOCS0M", "SpHOCS8M", "SpRoadsM",
   "SpRo5L", "SpRo_dist"
