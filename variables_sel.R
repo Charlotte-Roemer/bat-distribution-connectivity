@@ -3,7 +3,11 @@ variables_a_exclure <- c("SpSaison", "SpAltiM", "SpGite", "SpALAN_L", "SpAltiS",
 variables_indisp <- c(
   "SpBioC1", "SpBioC10", "SpBioC11", "SpBioC12", "SpBioC13", "SpBioC14", "SpBioC15",
   "SpBioC16", "SpBioC17", "SpBioC18", "SpBioC19", "SpBioC2", "SpBioC3", "SpBioC4", "SpBioC5",
-  "SpBioC6", "SpBioC7", "SpBioC8", "SpBioC9", "SpWD", "SpWDp", "SpHOCS2M", "SpHOCS3M", "SpHOCS4M",
+  "SpBioC6", "SpBioC7", "SpBioC8", "SpBioC9", "SpWD",
+  "SpWDinterm",
+  "SpWDsalted",
+  "SpWDlarge", ,
+  "SpHOCS2M", "SpHOCS3M", "SpHOCS4M",
   "SpHOCS6M", "SpHOCS7M", "SpHOCS9M", "SpHOCS1M", "SpHOCS5M", "SpHOCS0M", "SpHOCS8M", "SpRoadsM",
   "SpRo5L", "SpRo_dist"
 )
