@@ -9,11 +9,15 @@ activity.
 
 Those scripts are mostly relying on R libraries (and some Python), in order to
 facilitate reproductibility, we recommend to install a [conda environment](https://www.anaconda.com/docs/getting-started/miniconda/install) from
-the env_bmre.txt file by pasting the following line in a terminal :
+the env_bmre.txt file by pasting the following lines in a linux terminal (we
+dont ensure compatibility for other OS, you might have to look into the env_bmre
+file and look for the correct libraries on the conda-forge channel) :
 
 ```bash
 # cd bat-distribution-connectivity
 conda install --name env_bmre --file env_bmre.txt
+conda activate ~/envs/env_bmre # you can add this line to your .bashrc on in2p3cluster
+conda activate env_bmre # if you didn’t add it to your .bashrc file
 ```
 
 ### Data
