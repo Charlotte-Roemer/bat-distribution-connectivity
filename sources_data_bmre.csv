@@ -1,0 +1,12 @@
+chemin,description,lien de téléchargement,millésimes,précisions
+GIS/BD_TOPAGE_2024-shp,surface et linéaires aquatiques france,https://www.data.gouv.fr/datasets/bd-topage-r,plus récente,
+GIS/ALAN,Lumières nocturnes artificielles (viirs),Script de téléchargement à mettre à jour (pb nasa),une par an,Données présentes sur PCIA ou clé usb à montpellier
+GIS/VCF,Couverture forestière (MODIS),Script de téléchargement à mettre à jour (pb nasa),une par an,Données présentes sur PCIA ou clé usb à montpellier
+GIS/BDALTI,Élévation ign bdalti 25m,https://geoservices.ign.fr/bdalti,plus récente,
+GIS/OCS_OSO,Occupation du sol OCS OSO,https://geodes-portal.cnes.fr,une par an,
+GIS/ROUTE500,Linéaire routier,https://geoservices.ign.fr/route500,plus récente,
+GIS/CLIM_NORM,"normales de précipitation, températures",https://envicloud.wsl.ch/#/?bucket=https%3A%2F%2Fos.zhdk.cloud.switch.ch%2Fchelsav2&prefix=EUR11%2F,normales,"aller dans normals chercher tas_norm, pr_norm"
+GIS/chelsav2_bio,bioclim chelsa (couvrent la mer),https://envicloud.wsl.ch/#/?bucket=https%3A%2F%2Fos.unil.cloud.switch.ch%2Fchelsa02%2F&prefix=chelsa%2Fglobal%2Fbioclim%2F,pas de millésime,
+GIS/wind_turbines,éoliennes,voir avec charlotte,pas de millésime,fichier Mats_service_TOTAL.shp
+GIS/WIND,normales de vent,https://data.dtu.dk/ndownloader/files/17247017,normales,
+GIS/grottocenter.gpkg,cavités grottocenter,"Convention avec grottocenter.org, demander partenariat si autre que bmre",pas de millésime,
