@@ -1,6 +1,6 @@
 # bat-distribution-connectivity
 
-A pipeline to extract environmental data and train Random Forests to map bat
+A pipeline to extract environmental data and train and evaluate Random Forests to map bat
 activity.
 
 ## Setup
@@ -15,3 +15,17 @@ the env_bmre.txt file by pasting the following line in a terminal :
 # cd bat-distribution-connectivity
 conda install --name test_bmre --file env_bmre.txt
 ```
+
+### Data
+
+#### Observation data
+
+Bat activity data comes from french museum of natural history’s citizen science
+program [Vigie Chiro](https://www.vigienature.fr/fr/le-protocole-en-detail)
+(protocole Point-Fixe),
+please contact them in order to obtain the data.
+
+#### Environmental data
+
+
+
