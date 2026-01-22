@@ -9,7 +9,7 @@ vector_data <- "/home/tsevere/Documents/mnhn/projet_git_BMRE/data/GIS/regions.gp
 region <- st_read(vector_data,
   layer = "europe"
 )
-source("/home/bbk9/Documents/asellia/Barba_2024/prep_data_chiros/scripts/_vars.R") # contains username, password for earthdata
+source("/home/tsevere/Documents/mnhn/projet_git_BMRE/bat-distribution-connectivity/_vars.R") # contains username, password for earthdata
 
 
 get_vcf <- function(year_start, year_end, chemin, variable_name,
@@ -108,7 +108,7 @@ get_vcf <- function(year_start, year_end, chemin, variable_name,
   unlink(temp_folder, recursive = TRUE)
 }
 
-chemin <- "/home/bbk9/Documents/mnhn/data/VCF"
+chemin <- "/home/tsevere/Documents/mnhn/data/vcftest"
 
 output <- get_vcf(
   year_start = "2015",
