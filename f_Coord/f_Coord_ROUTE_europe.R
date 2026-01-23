@@ -7,29 +7,13 @@ Coord_Route <- function(points, names_coord, bm, bl, folder) {
 
   Sys.time()
   route_file <- list.files(folder,
-    pattern = "TRONCON_ROUTE.shp",
+    pattern = "grip4_region4-5.gpkg",
     recursive = TRUE, full.names = TRUE
   )
-  ROUTE <- st_read(route_file, options = "ENCODING=WINDOWS-1252")
-
-  fer_file <- list.files(folder,
-    pattern = "TRONCON_VOIE_FERREE.shp",
-    recursive = TRUE, full.names = TRUE
-  )
-  FER <- st_read(fer_file, options = "ENCODING=WINDOWS-1252")
-
-  Sys.time()
-
-  #  # pour tests
-  # points <- FCoord
-
-  # names_coord  <- Coord_Headers
-  # bs <- BS
-  # bm <- BM
-  # bl <- BL
-  # fin variable test
+  ROUTE <- st_read(route_file)
 
   FOccSL <- points
+
   if (opt$mode == "predict") {
     OccSL <- read.csv(paste0(points, ".csv")) |>
       dplyr::select(c("X", "Y"))
@@ -72,15 +56,11 @@ Coord_Route <- function(points, names_coord, bm, bl, folder) {
   )
 
   # Write dictionary
-  ClassP <- unique(ROUTE$VOCATION)
-  ClassP <- ClassP[order(ClassP)]
-  CPd <- data.frame(ClassP, Code = c(1:length(ClassP)))
-  fwrite(CPd, "ROUTE500_dictionary.csv", sep = ";")
-
+  ClassP <- unique(ROUTE$GP_RTP)
   OccSL_L93Re <- OccSL_L93
 
   for (h in 1L:length(ClassP)) {
-    ROUTEP <- ROUTE[ROUTE$VOCATION == ClassP[h], ]
+    ROUTEP <- ROUTE[ROUTE$GP_RTP == ClassP[h], ]
     print(ClassP[h])
     print(names(OccSL_L93Re))
     print(h)
@@ -154,7 +134,7 @@ Coord_Route <- function(points, names_coord, bm, bl, folder) {
   cat("Roads extracted", fill = TRUE)
 
 
-  road_cols <- grep("SpRo[1-4]", names(OccSL_L93Re), value = TRUE)
+  road_cols <- grep("SpRo[0,2-4]", names(OccSL_L93Re), value = TRUE)
   road_colsL <- grep("L", road_cols, value = TRUE)
   road_colsM <- grep("M", road_cols, value = TRUE)
 
@@ -177,80 +157,6 @@ Coord_Route <- function(points, names_coord, bm, bl, folder) {
     dplyr::select(-road_cols)
 
   OccSL_L93Re$SpRo_dist <- road_dist
-
-
-  ##########################################
-  ##########################################
-  ########## Voies ferrées  #################
-  ##########################################
-  ##########################################
-
-
-  ########
-  # Buffer M
-  ########
-
-  print("FerM")
-
-  BufferM <- st_buffer(OccSL_L93, dist = BufferMedium) |>
-    st_transform(st_crs(FER))
-
-  Sys.time()
-  BufferM$Fer_count <- st_intersects(BufferM, FER) |>
-    lengths()
-  Sys.time()
-
-  # library(viridis)
-  # BufferM |>
-  #   st_crop(xmin=161290, xmax=211290 , ymin=6046796 , ymax=7109796) |> #zoom in some area
-  #   ggplot( aes(fill=Fer_count)) +
-  #   geom_sf() +
-  #   scale_fill_gradientn(colours=rev(magma(6)))
-
-  SpFer <- BufferM
-
-  if (is.null(BufferM$Fer_count)) {
-    OccSL_L93Re$SpFe_M <- 0
-  } else {
-    PC_50 <- aggregate(SpFer$Fer_count, by = list(SpFer$FID), FUN = sum)
-    names(PC_50)[ncol(PC_50)] <- "SpFe_M"
-    OccSL_L93Re <- merge(OccSL_L93Re, PC_50, by.x = "FID", by.y = "Group.1", all.x = T)
-    OccSL_L93Re$SpFe_M[is.na(OccSL_L93Re$SpFe_M)] <- 0
-    # spplot(OccSL_L93Re,zcol="SpFe_M",col="transparent")
-  }
-
-  ########
-  # Buffer L
-  ########
-
-  print("FerL")
-
-  BufferL <- st_buffer(OccSL_L93, dist = BufferLarge) |>
-    st_transform(st_crs(FER))
-
-  Sys.time()
-  BufferL$Fer_count <- st_intersects(BufferL, FER) |>
-    lengths()
-  Sys.time()
-
-  # library(viridis)
-  # BufferL |>
-  #   st_crop(xmin=161290, xmax=211290 , ymin=6046796 , ymax=7109796) |> #zoom in some area
-  #   ggplot( aes(fill=Fer_count)) +
-  #   geom_sf() +
-  #   scale_fill_gradientn(colours=rev(magma(6)))
-
-  SpFer <- BufferL
-
-  if (is.null(BufferL$Fer_count)) {
-    OccSL_L93Re$SpFe_L <- 0
-  } else {
-    PC_50 <- aggregate(SpFer$Fer_count, by = list(SpFer$FID), FUN = sum)
-    names(PC_50)[ncol(PC_50)] <- "SpFe_L"
-    OccSL_L93Re <- merge(OccSL_L93Re, PC_50, by.x = "FID", by.y = "Group.1", all.x = T)
-    OccSL_L93Re$SpFe_L[is.na(OccSL_L93Re$SpFe_L)] <- 0
-    # spplot(OccSL_L93Re,zcol="SpFe_L",col="transparent")
-  }
 
   ##########################################
   ##########################################
