@@ -8,4 +8,4 @@
 #SBATCH --mail-user=thomas.severe@mnhn.fr
 #SBATCH --mail-type=END,FAIL
 
-Rscript PCIA_Pipeline_GIS.R -r "france_met" -m "predict" -s $1 -d $2
+Rscript Pipeline_GIS.R -r "france_met" -m "predict" -s $1 -d $2
