@@ -219,25 +219,25 @@ dir.create(Output, recursive = TRUE)
 # Bornes en semaines
 return_start <- function(period) {
   switch(period,
-    year = 9L,
-    spring = 9L,
-    summer = 23L,
-    autumn = 33L
+    year = 60L,
+    spring = 60L,
+    summer = 152L,
+    autumn = 227L
   )
 }
 
 return_end <- function(period) {
   switch(period,
     year = 44L,
-    spring = 20L,
-    summer = 31L,
-    autumn = 44L
+    spring = 135L,
+    summer = 212L,
+    autumn = 304L
   )
 }
 
 p_start <- return_start(opt$period)
 p_end <- return_end(opt$period)
-print(paste("starting week : ", p_start, " ending week : ", p_end))
+print(paste("starting day : ", p_start, " ending week : ", p_end))
 
 #### Prepare general dataset ####-----------------------------------------------
 
@@ -392,6 +392,7 @@ for (i in seq_along(ListSp))
 
 
   DataSaison$week <- as.integer(strftime(DataSaison$Nuit, format = "%V"))
+  DataSaison$day <- as.integer(strftime(DataSaison$Nuit, format = "%j"))
 
   # DataSaison <- DataSaison[dplyr::between(DataSaison$week, p_start, p_end), ]
 
@@ -403,9 +404,9 @@ for (i in seq_along(ListSp))
   autumn_end <- return_end("autumn")
 
   DataSaison <- DataSaison |> mutate(SpSaison = case_when(
-    between(week, spring_start, spring_end) ~ "spring",
-    between(week, summer_start, summer_end) ~ "summer",
-    between(week, autumn_start, autumn_end) ~ "autumn"
+    between(day, spring_start, spring_end) ~ "spring",
+    between(day, summer_start, summer_end) ~ "summer",
+    between(day, autumn_start, autumn_end) ~ "autumn"
   ))
 
   DataSaison <- DataSaison |>
