@@ -88,7 +88,7 @@ Coord_Eau <- function(points, names_coord, eau_polyg, eau_lines) {
   ########         Larges         ##########
   ##########################################
 
-  EauLineslarge <- EauLines[EauLines$ORD_FLOW %in% c("15_50", "50", "50_250", "250_1250", "1250"), ]
+  EauLineslarge <- EauLines[EauLines$ORD_FLOW <= 6, ]
   EauPolyg$surf <- units::drop_units(EauPolyg$surf)
   EauPolyglarge <- EauPolyg[EauPolyg$surf >= 10000L, ]
 
