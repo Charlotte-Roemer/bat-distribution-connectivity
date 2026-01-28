@@ -141,7 +141,7 @@ Coord_Eau <- function(points, names_coord, carthagep, carthagec) {
   ########         Larges         ##########
   ##########################################
 
-  CarthageClarge <- CarthageC[CarthageC$ClasseLarg %in% c("15_50", "50_250", "250_1250", "1250"), ]
+  CarthageClarge <- CarthageC[CarthageC$ClasseLarg %in% c("15_50", "50", "50_250", "250_1250", "1250"), ]
   CarthageP$surf <- units::drop_units(CarthageP$surf)
   CarthagePlarge <- CarthageP[CarthageP$surf >= 10000L, ]
 
