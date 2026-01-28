@@ -1,5 +1,5 @@
 cat("load eau", fill = TRUE)
-Coord_Eau <- function(points, names_coord, carthagep, carthagec) {
+Coord_Eau <- function(points, names_coord, eau_polyg, eau_lines) {
   library(sf)
   library(data.table)
   library(tidyverse)
@@ -39,15 +39,15 @@ Coord_Eau <- function(points, names_coord, carthagep, carthagec) {
 
 
   # recuperation des donnees Carthage (eau)
-  CarthageP <- sf::read_sf(
-    dsn = dirname(carthagep),
-    layer = basename(tools::file_path_sans_ext(carthagep))
+  EauPolyg <- sf::read_sf(
+    dsn = dirname(eau_polyg),
+    layer = basename(tools::file_path_sans_ext(eau_polyg))
   )
-  CarthageP$surf <- st_area(CarthageP)
+  EauPolyg$surf <- st_area(EauPolyg)
 
-  CarthageC <- sf::read_sf(
-    dsn = dirname(carthagec),
-    layer = basename(tools::file_path_sans_ext(carthagec))
+  EauLines <- sf::read_sf(
+    dsn = dirname(eau_lines),
+    layer = basename(tools::file_path_sans_ext(eau_lines))
   ) # All "En service"
 
   # Split result before saving?
@@ -66,16 +66,16 @@ Coord_Eau <- function(points, names_coord, carthagep, carthagec) {
   ##########################################
   ##########################################
 
-  nearest_p <- try(sf::st_nearest_feature(OccSL_L93, CarthageP))
+  nearest_p <- try(sf::st_nearest_feature(OccSL_L93, EauPolyg))
   water_dist_polyg <- st_distance(OccSL_L93,
-    CarthageP[nearest_p, ],
+    EauPolyg[nearest_p, ],
     by_element = TRUE
   )
   OccSL_L93$water_dist_polyg <- water_dist_polyg
 
-  nearest_l <- try(sf::st_nearest_feature(OccSL_L93, CarthageC))
+  nearest_l <- try(sf::st_nearest_feature(OccSL_L93, EauLines))
   water_dist_line <- st_distance(OccSL_L93,
-    CarthageC[nearest_l, ],
+    EauLines[nearest_l, ],
     by_element = TRUE
   )
   OccSL_L93$water_dist_line <- water_dist_line
@@ -88,20 +88,20 @@ Coord_Eau <- function(points, names_coord, carthagep, carthagec) {
   ########         Larges         ##########
   ##########################################
 
-  CarthageClarge <- CarthageC[CarthageC$ClasseLarg %in% c("15_50", "50", "50_250", "250_1250", "1250"), ]
-  CarthageP$surf <- units::drop_units(CarthageP$surf)
-  CarthagePlarge <- CarthageP[CarthageP$surf >= 10000L, ]
+  EauLineslarge <- EauLines[EauLines$ORD_FLOW %in% c("15_50", "50", "50_250", "250_1250", "1250"), ]
+  EauPolyg$surf <- units::drop_units(EauPolyg$surf)
+  EauPolyglarge <- EauPolyg[EauPolyg$surf >= 10000L, ]
 
-  nearest_pp <- try(sf::st_nearest_feature(OccSL_L93, CarthagePlarge))
+  nearest_pp <- try(sf::st_nearest_feature(OccSL_L93, EauPolyglarge))
   water_dist_polyg_large <- st_distance(OccSL_L93,
-    CarthagePlarge[nearest_pp, ],
+    EauPolyglarge[nearest_pp, ],
     by_element = TRUE
   )
   OccSL_L93$water_dist_polyg_large <- water_dist_polyg_large
 
-  nearest_lp <- try(sf::st_nearest_feature(OccSL_L93, CarthageClarge))
+  nearest_lp <- try(sf::st_nearest_feature(OccSL_L93, EauLineslarge))
   water_dist_line_large <- st_distance(OccSL_L93,
-    CarthageClarge[nearest_lp, ],
+    EauLineslarge[nearest_lp, ],
     by_element = TRUE
   )
   OccSL_L93$water_dist_line_large <- water_dist_line_large
