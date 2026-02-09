@@ -236,16 +236,12 @@ if (opt$region %in% c("idf", "france_met")) {
   folder_CLC <- file.path(data_folder, "GIS", "CLC")
   folder_OCS <- file.path(data_folder, "GIS", "OCS_OSO")
   folder_MOS <- file.path(data_folder, "GIS", "MOS")
-  folder_route <- file.path(data_folder, "GIS", "ROUTE500")
   folder_route_europe <- file.path(data_folder, "GIS", "routes")
   clim_norm_folder <- file.path(data_folder, "GIS", "CLIM_NORM")
   layer_wind_turbines <- file.path(data_folder, "GIS", "wind_turbines", "Mats_service_TOTAL.shp")
-  # bioclim_folder <- file.path(data_folder, "GIS", "worldclim")
   bioclim_folder <- file.path(data_folder, "GIS", "chelsav2_bio")
   layer_ecoline_low <- file.path(data_folder, "GIS", "ecoline", "ecoline_vb_2017.shp")
   layer_ecoline_high <- file.path(data_folder, "GIS", "ecoline", "ecoline_vh_2017.shp")
-
-  # layer_bioclim_gross <- file.path(data_folder, "GIS", "BioclimGross", "GrossV.shp")
   layer_wind <- file.path(data_folder, "GIS", "WIND", "gwa3_250_windspeed_10m_europe.tif")
   layer_precip <- file.path(data_folder, "GIS", "CLIM_NORM", "chelsea_eur11_pr_norm_1981-2005_v1_1.tif")
   layer_temp <- file.path(data_folder, "GIS", "CLIM_NORM", "chelsea_eur11_tas_norm_1981-2005_v1_1.tif")
@@ -253,22 +249,14 @@ if (opt$region %in% c("idf", "france_met")) {
 } else if (opt$region == "europe") {
   folder_alan <- file.path(data_folder, "GIS", "ALAN")
   folder_vcf <- file.path(data_folder, "GIS", "VCF")
+  layer_Carthage_P <- file.path(data_folder, "GIS", "waterbodies", "HydroLAKES_v10_europe.gpkg")
+  layer_Carthage_C <- file.path(data_folder, "GIS", "waterbodies", "HydroRIVERS_v10_europe.gpkg")
   layer_alti <- file.path(data_folder, "GIS", "copernicus", "data")
-  layer_Carthage_P <- file.path(data_folder, "GIS", "BD_TOPAGE_2024-shp", "SurfaceElementaire_FXX.shp")
-  layer_Carthage_C <- file.path(data_folder, "GIS", "BD_TOPAGE_2024-shp", "TronconHydrographique_FXX.shp")
-  folder_CLC <- file.path(data_folder, "GIS", "CLC")
-  folder_OCS <- file.path(data_folder, "GIS", "OCS_OSO")
-  folder_MOS <- file.path(data_folder, "GIS", "MOS")
-  folder_route <- file.path(data_folder, "GIS", "ROUTE500")
-  folder_route_europe <- file.path(data_folder, "GIS", "routes")
+  folder_OCS <- file.path(data_folder, "GIS", "esaworldcover")
+  folder_route <- file.path(data_folder, "GIS", "routes")
   clim_norm_folder <- file.path(data_folder, "GIS", "CLIM_NORM")
   layer_wind_turbines <- file.path(data_folder, "GIS", "wind_turbines", "Mats_service_TOTAL.shp")
-  # bioclim_folder <- file.path(data_folder, "GIS", "worldclim")
   bioclim_folder <- file.path(data_folder, "GIS", "chelsav2_bio")
-  layer_ecoline_low <- file.path(data_folder, "GIS", "ecoline", "ecoline_vb_2017.shp")
-  layer_ecoline_high <- file.path(data_folder, "GIS", "ecoline", "ecoline_vh_2017.shp")
-
-  # layer_bioclim_gross <- file.path(data_folder, "GIS", "BioclimGross", "GrossV.shp")
   layer_wind <- file.path(data_folder, "GIS", "WIND", "gwa3_250_windspeed_10m_europe.tif")
   layer_precip <- file.path(data_folder, "GIS", "CLIM_NORM", "chelsea_eur11_pr_norm_1981-2005_v1_1.tif")
   layer_temp <- file.path(data_folder, "GIS", "CLIM_NORM", "chelsea_eur11_tas_norm_1981-2005_v1_1.tif")
@@ -281,7 +269,9 @@ ListLayer <- c(
 
 
 print("Listing function files")
-listfun <- list.files(folderfun, full.names = TRUE, pattern = ".R$")
+if (opt$region == "europe") {
+  listfun <- list.files(folderfun, full.names = TRUE, pattern = ".R$")
+}
 
 
 print("Loading function files")
@@ -331,17 +321,17 @@ for (i in 1:length(listfun))
 #   layers = folder_vcf
 # )
 #
-# ## ALTI ####
-# print("Altitude & slope")
-# Coord_Alti(
-#   points = FCoord,
-#   names_coord = Coord_Headers,
-#   bs = BS,
-#   bm = BM,
-#   bl = BL,
-#   region = opt$region,
-#   layer = layer_alti
-# )
+## ALTI ####
+print("Altitude & slope")
+Coord_Alti(
+  points = FCoord,
+  names_coord = Coord_Headers,
+  bs = BS,
+  bm = BM,
+  bl = BL,
+  region = opt$region,
+  layer = layer_alti
+)
 #
 ## wind turbines ###
 #
