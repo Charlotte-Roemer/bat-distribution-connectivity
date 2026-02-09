@@ -12,4 +12,4 @@
 #SBATCH --mail-user=thomas.severe@mnhn.fr
 #SBATCH --mail-type=BEGIN,END   
 
-Rscript Create_empty_grid_V2.R -r europe -s 1000
+Rscript data_management/Create_empty_grid_V2.R -r europe -s 1000
