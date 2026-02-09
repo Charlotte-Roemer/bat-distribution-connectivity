@@ -271,6 +271,12 @@ ListLayer <- c(
 print("Listing function files")
 if (opt$region == "europe") {
   listfun <- list.files(folderfun, full.names = TRUE, pattern = ".R$")
+  europe_functions <- list.files(file.path(folderfun, "europe"), full.names = TRUE, pattern = ".R$")
+  listfun <- c(listfun, europe_functions)
+} else {
+  listfun <- list.files(folderfun, full.names = TRUE, pattern = ".R$")
+  france_functions <- list.files(file.path(folderfun, "france"), full.names = TRUE, pattern = ".R$")
+  listfun <- c(listfun, france_functions)
 }
 
 
@@ -403,14 +409,14 @@ Coord_Eau(
 #
 # ## ROADS and TRAINS ####
 # print("Roads and trains")
-Coord_Route(
-  points = FCoord,
-  names_coord = Coord_Headers,
-  bm = BM,
-  bl = BL,
-  folder = folder_route
-)
-
+# Coord_Route(
+#   points = FCoord,
+#   names_coord = Coord_Headers,
+#   bm = BM,
+#   bl = BL,
+#   folder = folder_route
+# )
+#
 # print("Meteo")
 # Coord_Meteo(
 #   points = FCoord,
