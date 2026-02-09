@@ -215,10 +215,16 @@ if (opt$mode == "train" && loc_train_exists == FALSE) {
 Coord_Headers <- c("X", "Y") # long and lat
 
 # buffers distances :
-BS <- 50
-BM <- 500
-BL <- 5000
 
+if (opt$region == "france_met") {
+  BS <- 50
+  BM <- 500
+  BL <- 5000
+} else if (opt$region == "europe") {
+  BS <- 1
+  BM <- 1000
+  BL <- 5000
+}
 print("Setting layers")
 if (opt$region %in% c("idf", "france_met")) {
   #  GIS Layers locations :
@@ -244,6 +250,28 @@ if (opt$region %in% c("idf", "france_met")) {
   layer_precip <- file.path(data_folder, "GIS", "CLIM_NORM", "chelsea_eur11_pr_norm_1981-2005_v1_1.tif")
   layer_temp <- file.path(data_folder, "GIS", "CLIM_NORM", "chelsea_eur11_tas_norm_1981-2005_v1_1.tif")
   layer_grotto <- file.path(data_folder, "GIS", "grottocenter.gpkg")
+} else if (opt$region == "europe") {
+  folder_alan <- file.path(data_folder, "GIS", "ALAN")
+  folder_vcf <- file.path(data_folder, "GIS", "VCF")
+  layer_alti <- file.path(data_folder, "GIS", "copernicus", "data")
+  layer_Carthage_P <- file.path(data_folder, "GIS", "BD_TOPAGE_2024-shp", "SurfaceElementaire_FXX.shp")
+  layer_Carthage_C <- file.path(data_folder, "GIS", "BD_TOPAGE_2024-shp", "TronconHydrographique_FXX.shp")
+  folder_CLC <- file.path(data_folder, "GIS", "CLC")
+  folder_OCS <- file.path(data_folder, "GIS", "OCS_OSO")
+  folder_MOS <- file.path(data_folder, "GIS", "MOS")
+  folder_route <- file.path(data_folder, "GIS", "ROUTE500")
+  folder_route_europe <- file.path(data_folder, "GIS", "routes")
+  clim_norm_folder <- file.path(data_folder, "GIS", "CLIM_NORM")
+  layer_wind_turbines <- file.path(data_folder, "GIS", "wind_turbines", "Mats_service_TOTAL.shp")
+  # bioclim_folder <- file.path(data_folder, "GIS", "worldclim")
+  bioclim_folder <- file.path(data_folder, "GIS", "chelsav2_bio")
+  layer_ecoline_low <- file.path(data_folder, "GIS", "ecoline", "ecoline_vb_2017.shp")
+  layer_ecoline_high <- file.path(data_folder, "GIS", "ecoline", "ecoline_vh_2017.shp")
+
+  # layer_bioclim_gross <- file.path(data_folder, "GIS", "BioclimGross", "GrossV.shp")
+  layer_wind <- file.path(data_folder, "GIS", "WIND", "gwa3_250_windspeed_10m_europe.tif")
+  layer_precip <- file.path(data_folder, "GIS", "CLIM_NORM", "chelsea_eur11_pr_norm_1981-2005_v1_1.tif")
+  layer_temp <- file.path(data_folder, "GIS", "CLIM_NORM", "chelsea_eur11_tas_norm_1981-2005_v1_1.tif")
 }
 
 ListLayer <- c(
@@ -311,6 +339,7 @@ for (i in 1:length(listfun))
 #   bs = BS,
 #   bm = BM,
 #   bl = BL,
+#   region = opt$region,
 #   layer = layer_alti
 # )
 #
