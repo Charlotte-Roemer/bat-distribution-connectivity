@@ -40,16 +40,14 @@ Coord_Eau <- function(points, names_coord, eau_polyg, eau_lines) {
 
   # recuperation des donnees Carthage (eau)
   EauPolyg <- sf::read_sf(
-    dsn = dirname(eau_polyg),
-    layer = basename(tools::file_path_sans_ext(eau_polyg))
+    eau_polyg
   )
   EauPolyg <- sf::st_transform(EauPolyg, 2154)
 
   EauPolyg$surf <- st_area(EauPolyg)
 
   EauLines <- sf::read_sf(
-    dsn = dirname(eau_lines),
-    layer = basename(tools::file_path_sans_ext(eau_lines))
+    eau_lines
   ) # All "En service"
   EauLines <- sf::st_transform(EauLines, 2154)
 
