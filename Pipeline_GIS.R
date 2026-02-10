@@ -289,14 +289,14 @@ for (i in 1:length(listfun))
   source(listfun[i])
 }
 
-### Bioclim ###
-# print("Bioclim")
-# Coord_BioclimLocal(
-#   points = FCoord,
-#   names_coord = Coord_Headers,
-#   layer_folder = bioclim_folder
-# )
-#
+## Bioclim ###
+print("Bioclim")
+Coord_BioclimLocal(
+  points = FCoord,
+  names_coord = Coord_Headers,
+  layer_folder = bioclim_folder
+)
+
 #
 # ### ALAN ###
 # print("ALAN")
@@ -354,16 +354,13 @@ for (i in 1:length(listfun))
 # )
 
 ## CARTHAGE (eau) ####
-print("Water")
-cat(layer_Carthage_P, fill = TRUE)
-cat(layer_Carthage_C, fill = TRUE)
-
-Coord_Eau(
-  points = FCoord,
-  names_coord = Coord_Headers,
-  water_polyg = layer_Carthage_P,
-  water_lines = layer_Carthage_C
-)
+# print("Water")
+# Coord_Eau(
+#   points = FCoord,
+#   names_coord = Coord_Headers,
+#   water_polyg = layer_Carthage_P,
+#   water_lines = layer_Carthage_C
+# )
 
 #
 # ## Ecoline (idf)
