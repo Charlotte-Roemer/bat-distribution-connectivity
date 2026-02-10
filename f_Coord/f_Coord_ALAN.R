@@ -48,7 +48,7 @@ Coord_ALAN <- function(points, names_coord, bm, bl, layers) {
   unique_years <- unique(sapply(strsplit(OccSL_L93$Nuit, "-"), "[", 1))
   tables <- list()
   # Get all the .tif files in the folder
-  alan <- list.files(folder_alan,
+  alan <- list.files(layers,
     recursive = TRUE,
     pattern = "tif$",
     full.names = TRUE
