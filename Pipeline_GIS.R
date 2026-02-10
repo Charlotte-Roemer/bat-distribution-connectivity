@@ -291,24 +291,25 @@ for (i in 1:length(listfun))
 
 
 print(FCoord)
-## Bioclim ###
-print("Bioclim")
-Coord_BioclimLocal(
-  points = FCoord,
-  names_coord = Coord_Headers,
-  layer_folder = bioclim_folder
-)
 
+# ## Bioclim ###
+# print("Bioclim")
+# Coord_BioclimLocal(
+#   points = FCoord,
+#   names_coord = Coord_Headers,
+#   layer_folder = bioclim_folder
+# )
+#
 #
 # ### ALAN ###
-# print("ALAN")
-# Coord_ALAN(
-#   points = FCoord,
-#   names_coord = c(Coord_Headers, "Nuit"),
-#   bm = BM,
-#   bl = BL,
-#   layers = folder_alan
-# )
+print("ALAN")
+Coord_ALAN(
+  points = FCoord,
+  names_coord = c(Coord_Headers, "Nuit"),
+  bm = BM,
+  bl = BL,
+  layers = folder_alan
+)
 #
 # # Grotto ###
 # print("Grotto")
