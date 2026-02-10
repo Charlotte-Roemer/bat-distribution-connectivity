@@ -355,6 +355,8 @@ for (i in 1:length(listfun))
 
 ## CARTHAGE (eau) ####
 print("Water")
+cat(layer_Carthage_P, fill = TRUE)
+cat(layer_Carthage_C, fill = TRUE)
 
 Coord_Eau(
   points = FCoord,
