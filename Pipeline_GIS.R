@@ -361,8 +361,8 @@ cat(layer_Carthage_C, fill = TRUE)
 Coord_Eau(
   points = FCoord,
   names_coord = Coord_Headers,
-  carthagep = layer_Carthage_P,
-  carthagec = layer_Carthage_C
+  water_polyg = layer_Carthage_P,
+  water_lines = layer_Carthage_C
 )
 
 #
