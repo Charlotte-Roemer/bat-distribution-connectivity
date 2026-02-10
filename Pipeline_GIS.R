@@ -302,14 +302,14 @@ print(FCoord)
 #
 #
 # ### ALAN ###
-print("ALAN")
-Coord_ALAN(
-  points = FCoord,
-  names_coord = c(Coord_Headers, "Nuit"),
-  bm = BM,
-  bl = BL,
-  layers = folder_alan
-)
+# print("ALAN")
+# Coord_ALAN(
+#   points = FCoord,
+#   names_coord = c(Coord_Headers, "Nuit"),
+#   bm = BM,
+#   bl = BL,
+#   layers = folder_alan
+# )
 #
 # # Grotto ###
 # print("Grotto")
@@ -323,16 +323,16 @@ Coord_ALAN(
 # )
 #
 # # VCF ###
-# print("VCF")
-# Coord_VCF(
-#   points = FCoord,
-#   names_coord = c(Coord_Headers, "Nuit"),
-#   bs = BS,
-#   bm = BM,
-#   bl = BL,
-#   layers = folder_vcf
-# )
-#
+print("VCF")
+Coord_VCF(
+  points = FCoord,
+  names_coord = c(Coord_Headers, "Nuit"),
+  bs = BS,
+  bm = BM,
+  bl = BL,
+  layers = folder_vcf
+)
+
 ## ALTI ####
 # print("Altitude & slope")
 # Coord_Alti(
