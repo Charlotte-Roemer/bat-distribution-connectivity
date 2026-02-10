@@ -133,6 +133,8 @@ Coord_Eau <- function(points, names_coord, water_polyg, water_lines) {
     select(!geometry)
 
   NewName <- paste0(points, "_Carthage.csv")
+  head(Carthage)
+  cat(NewName, fill = TRUE)
 
   fwrite(Carthage, NewName)
 }
