@@ -48,15 +48,17 @@ Coord_VCF <- function(points, names_coord, bs, bm, bl, layers) {
     pattern = "tif$",
     full.names = TRUE
   )
+
   vcf_years <- as.vector(
     as.integer(
       substring(
         sapply(
           strsplit(
             basename(vcf_files),
-            "A"
+            ".",
+            fixed = TRUE
           ),
-          "[", 2
+          "[", 3
         ), 1, 4
       )
     )
