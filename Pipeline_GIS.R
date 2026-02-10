@@ -227,6 +227,7 @@ if (opt$region == "france_met") {
 }
 print("Setting layers")
 if (opt$region %in% c("idf", "france_met")) {
+  cat("France/IdF", fill = TRUE)
   #  GIS Layers locations :
   folder_alan <- file.path(data_folder, "GIS", "ALAN")
   folder_vcf <- file.path(data_folder, "GIS", "VCF")
@@ -247,6 +248,7 @@ if (opt$region %in% c("idf", "france_met")) {
   layer_temp <- file.path(data_folder, "GIS", "CLIM_NORM", "chelsea_eur11_tas_norm_1981-2005_v1_1.tif")
   layer_grotto <- file.path(data_folder, "GIS", "grottocenter.gpkg")
 } else if (opt$region == "europe") {
+  cat("Europe", fill = TRUE)
   folder_alan <- file.path(data_folder, "GIS", "ALAN")
   folder_vcf <- file.path(data_folder, "GIS", "VCF")
   layer_Carthage_P <- file.path(data_folder, "GIS", "waterbodies", "HydroLAKES_v10_europe.gpkg")
@@ -268,12 +270,13 @@ ListLayer <- c(
 )
 
 
-print("Listing function files")
 if (opt$region == "europe") {
+  cat("Listing Europe function files", fill = TRUE)
   listfun <- list.files(folderfun, full.names = TRUE, pattern = ".R$")
   europe_functions <- list.files(file.path(folderfun, "europe"), full.names = TRUE, pattern = ".R$")
   listfun <- c(listfun, europe_functions)
 } else {
+  cat("Listing France function files", fill = TRUE)
   listfun <- list.files(folderfun, full.names = TRUE, pattern = ".R$")
   france_functions <- list.files(file.path(folderfun, "france"), full.names = TRUE, pattern = ".R$")
   listfun <- c(listfun, france_functions)
@@ -328,16 +331,16 @@ for (i in 1:length(listfun))
 # )
 #
 ## ALTI ####
-print("Altitude & slope")
-Coord_Alti(
-  points = FCoord,
-  names_coord = Coord_Headers,
-  bs = BS,
-  bm = BM,
-  bl = BL,
-  region = opt$region,
-  layer = layer_alti
-)
+# print("Altitude & slope")
+# Coord_Alti(
+#   points = FCoord,
+#   names_coord = Coord_Headers,
+#   bs = BS,
+#   bm = BM,
+#   bl = BL,
+#   region = opt$region,
+#   layer = layer_alti
+# )
 #
 ## wind turbines ###
 #
