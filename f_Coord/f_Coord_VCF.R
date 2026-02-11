@@ -73,7 +73,7 @@ Coord_VCF <- function(points, names_coord, bs, bm, bl, layers) {
     print(raster)
 
     VCF <- terra::rast(raster)
-    VCF <- terra::project(raster, "epsg:2154", method = "mean")
+    VCF <- terra::project(VCF, "epsg:2154", method = "mean")
 
     cat(paste("raster loaded for year", year), fill = TRUE)
 
