@@ -264,6 +264,8 @@ Coord_Alti <- function(points, names_coord, bs, bm, bl, region, layer) {
 
   AltiListePointCard <- terra::extract(AltiTot, ListePointCard)
 
+  rm(AltiTot)
+
   for (z in 1:length(AltiListePointCard))
   {
     if (is.na(AltiListePointCard[z, 2])) {
@@ -313,9 +315,18 @@ Coord_Alti <- function(points, names_coord, bs, bm, bl, region, layer) {
     SpEasS, SpEasM, SpEasL, SpSumS, SpSumM, SpSumL
   ))
 
+  rm(
+    SpAltiS, SpAltiM, SpAltiL,
+    SpPenS, SpPenM, SpPenL, SpNorS, SpNorM, SpNorL,
+    SpEasS, SpEasM, SpEasL, SpSumS, SpSumM, SpSumL
+  )
+
   # test=subset(Alti,(Alti$SpPenL>1.24)&(Alti$SpAltiS<50))
 
 
-  fwrite(Alti, paste0(FOccSL, "_Alti.csv"))
-  print("written")
+  fwrite(Alti, paste0(FOccSL, "_Alti.csv"), row.names = FALSE)
+
+  rm(Alti)
+
+  print("elevation written")
 }
