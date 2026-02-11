@@ -105,4 +105,5 @@ Coord_ALAN <- function(points, names_coord, bm, bl, layers) {
   } else {
     data.table::fwrite(ALAN, paste0(FOccSL, "_ALAN.csv"), row.names = FALSE)
   }
+  rm(ALAN)
 }
