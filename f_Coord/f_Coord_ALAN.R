@@ -88,6 +88,7 @@ Coord_ALAN <- function(points, names_coord, bm, bl, layers) {
     SpALAN_L_tab <- exactextractr::exact_extract(ALAN, table_BL, "mean")
     table_year$SpALAN_L <- SpALAN_L_tab
     tables <- rlist::list.append(tables, table_year)
+    rm(SpALAN_L_tab, SpALAN_M_tab, table_year)
   }
 
   tab <- do.call("rbind", tables)
@@ -100,8 +101,8 @@ Coord_ALAN <- function(points, names_coord, bm, bl, layers) {
 
   if (opt$mode == "predict") {
     year <- substr(date_pred, 1, 4)
-    data.table::fwrite(ALAN, paste0(FOccSL, "_", year, "_ALAN.csv"))
+    data.table::fwrite(ALAN, paste0(FOccSL, "_", year, "_ALAN.csv", row.names = FALSE))
   } else {
-    data.table::fwrite(ALAN, paste0(FOccSL, "_ALAN.csv"))
+    data.table::fwrite(ALAN, paste0(FOccSL, "_ALAN.csv"), row.names = FALSE)
   }
 }
