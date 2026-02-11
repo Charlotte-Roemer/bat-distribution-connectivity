@@ -70,6 +70,8 @@ Coord_VCF <- function(points, names_coord, bs, bm, bl, layers) {
 
     raster <- vcf_files[which.min(abs(vcf_years - as.integer(year)))]
 
+    print(raster)
+
     VCF <- terra::rast(raster)
 
     cat(paste("raster loaded for year", year), fill = TRUE)
