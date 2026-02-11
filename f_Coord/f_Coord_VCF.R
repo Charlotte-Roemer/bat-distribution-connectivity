@@ -73,6 +73,7 @@ Coord_VCF <- function(points, names_coord, bs, bm, bl, layers) {
     VCF <- terra::rast(raster)
 
     cat(paste("raster loaded for year", year), fill = TRUE)
+
     # create a buffer around the points
     tableau_BS <- sf::st_buffer(tableau_year, bs) %>%
       sf::st_transform(4326)
@@ -85,15 +86,21 @@ Coord_VCF <- function(points, names_coord, bs, bm, bl, layers) {
 
     SpVCF_S_tab <- exactextractr::exact_extract(VCF, tableau_BS, "mean")
     tableau_year$SpVCF_S <- SpVCF_S_tab
+    cat("data extracted for buffer Small", fill = TRUE)
 
     print("Buffer Medium")
 
     SpVCF_M_tab <- exactextractr::exact_extract(VCF, tableau_BM, "mean")
     tableau_year$SpVCF_M <- SpVCF_M_tab
 
+    cat("data extracted for buffer Medium", fill = TRUE)
     print("Buffer Large")
 
     SpVCF_L_tab <- exactextractr::exact_extract(VCF, tableau_BL, "mean")
+
+    cat("data extracted for buffer Large", fill = TRUE)
+
+    print("Buffer Large")
     tableau_year$SpVCF_L <- SpVCF_L_tab
     tableaux <- rlist::list.append(tableaux, tableau_year)
     rm(SpVCF_M_tab, SpVCF_L_tab, SpVCF_S_tab)
