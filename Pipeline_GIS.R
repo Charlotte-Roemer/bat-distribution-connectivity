@@ -302,14 +302,14 @@ print(FCoord)
 #
 #
 # ### ALAN ###
-print("ALAN")
-Coord_ALAN(
-  points = FCoord,
-  names_coord = c(Coord_Headers, "Nuit"),
-  bm = BM,
-  bl = BL,
-  layers = folder_alan
-)
+# print("ALAN")
+# Coord_ALAN(
+#   points = FCoord,
+#   names_coord = c(Coord_Headers, "Nuit"),
+#   bm = BM,
+#   bl = BL,
+#   layers = folder_alan
+# )
 #
 # # Grotto ###
 # print("Grotto")
