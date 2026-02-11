@@ -73,16 +73,17 @@ Coord_VCF <- function(points, names_coord, bs, bm, bl, layers) {
     print(raster)
 
     VCF <- terra::rast(raster)
+    VCF <- terra::project(raster, "epsg:2154", method = "mean")
 
     cat(paste("raster loaded for year", year), fill = TRUE)
 
     # create a buffer around the points
-    tableau_BS <- sf::st_buffer(tableau_year, bs) %>%
-      sf::st_transform(4326)
-    tableau_BM <- sf::st_buffer(tableau_year, bm) %>%
-      sf::st_transform(4326)
-    tableau_BL <- sf::st_buffer(tableau_year, bl) %>%
-      sf::st_transform(4326)
+    tableau_BS <- sf::st_buffer(tableau_year, bs)
+    # sf::st_transform(4326)
+    tableau_BM <- sf::st_buffer(tableau_year, bm)
+    # sf::st_transform(4326)
+    tableau_BL <- sf::st_buffer(tableau_year, bl)
+    # sf::st_transform(4326)
 
     print("Buffer Small")
 
