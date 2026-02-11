@@ -94,21 +94,24 @@ Coord_VCF <- function(points, names_coord, bs, bm, bl, layers) {
     SpVCF_L_tab <- exactextractr::exact_extract(VCF, tableau_BL, "mean")
     tableau_year$SpVCF_L <- SpVCF_L_tab
     tableaux <- rlist::list.append(tableaux, tableau_year)
+    rm(SpVCF_M_tab, SpVCF_L_tab, SpVCF_S_tab)
   }
 
   tab <- do.call("rbind", tableaux)
 
+  rm(tableaux)
 
   VCF <- data.frame(cbind(tab$Nuit, tab$X, tab$Y, tab$SpVCF_S, tab$SpVCF_M, tab$SpVCF_L))
   colnames(VCF) <- c("Nuit", "X", "Y", "SpVCF_S", "SpVCF_M", "SpVCF_L")
 
   if (opt$mode == "predict") {
     year <- substr(date_pred, 1, 4)
-    fwrite(VCF, paste0(FOccSL, "_", year, "_VCF.csv"))
+    fwrite(VCF, paste0(FOccSL, "_", year, "_VCF.csv"), row.names = FALSE)
   } else {
-    fwrite(VCF, paste0(FOccSL, "_VCF.csv"))
+    fwrite(VCF, paste0(FOccSL, "_VCF.csv"), row.names = FALSE)
   }
 
+  rm(VCF)
   # coordinates(ALAN) <- CoordH
 
   # SelCol=sample(c("SpALAN_M","SpALAN_L"),1)
