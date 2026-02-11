@@ -95,6 +95,7 @@ Coord_VCF <- function(points, names_coord, bs, bm, bl, layers) {
     tableau_year$SpVCF_L <- SpVCF_L_tab
     tableaux <- rlist::list.append(tableaux, tableau_year)
     rm(SpVCF_M_tab, SpVCF_L_tab, SpVCF_S_tab)
+    rm(raster)
   }
 
   tab <- do.call("rbind", tableaux)
