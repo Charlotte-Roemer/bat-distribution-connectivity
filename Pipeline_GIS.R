@@ -323,15 +323,15 @@ print(FCoord)
 # )
 #
 # # VCF ###
-print("VCF")
-Coord_VCF(
-  points = FCoord,
-  names_coord = c(Coord_Headers, "Nuit"),
-  bs = BS,
-  bm = BM,
-  bl = BL,
-  layers = folder_vcf
-)
+# print("VCF")
+# Coord_VCF(
+#   points = FCoord,
+#   names_coord = c(Coord_Headers, "Nuit"),
+#   bs = BS,
+#   bm = BM,
+#   bl = BL,
+#   layers = folder_vcf
+# )
 
 ## ALTI ####
 # print("Altitude & slope")
