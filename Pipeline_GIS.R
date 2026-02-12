@@ -400,35 +400,35 @@ print(FCoord)
 
 #
 # ## CESBIO (Habitat) ####
-# print("OCS OSO")
-# Coord_OCS_OSO(
-#   points = FCoord,
-#   names_coord = c(Coord_Headers, "Nuit"),
-#   bs = BS,
-#   bm = BM
-#   # Buffer Large is not done because was too long in Pipeline V1, and
-#   # at this scale, Corine Land Cover is sufficient anyway
-#   , layer = Layer_OCS
-# )
-#
+print("OCS OSO")
+Coord_OCS_OSO(
+  points = FCoord,
+  names_coord = c(Coord_Headers, "Nuit"),
+  bs = BS,
+  bm = BM
+  # Buffer Large is not done because was too long in Pipeline V1, and
+  # at this scale, Corine Land Cover is sufficient anyway
+  , layer = Layer_OCS
+)
+
 #
 # ## ROADS and TRAINS ####
-print("Roads and trains")
-Coord_Route(
-  points = FCoord,
-  names_coord = Coord_Headers,
-  bm = BM,
-  bl = BL,
-  folder = folder_route
-)
+# print("Roads and trains")
+# Coord_Route(
+#   points = FCoord,
+#   names_coord = Coord_Headers,
+#   bm = BM,
+#   bl = BL,
+#   folder = folder_route
+# )
 #
 # print("Meteo")
-# Coord_Meteo(
-#   points = FCoord,
-#   temp = layer_temp,
-#   prec = layer_precip,
-#   wind = layer_wind
-# )
+Coord_Meteo(
+  points = FCoord,
+  temp = layer_temp,
+  prec = layer_precip,
+  wind = layer_wind
+)
 
 ## loc_data <- file.path(loc, "data")
 
