@@ -11,6 +11,7 @@ Coord_Route <- function(points, names_coord, bm, bl, folder) {
     recursive = TRUE, full.names = TRUE
   )
   ROUTE <- st_read(route_file)
+  ROUTE <- st_transform(ROUTE, 2154)
 
   FOccSL <- points
 
@@ -116,6 +117,7 @@ Coord_Route <- function(points, names_coord, bm, bl, folder) {
     #   ggplot( aes(fill=Route_count)) +
     #   geom_sf() +
     #   scale_fill_gradientn(colours=rev(magma(6)))
+    rm(ROUTE)
 
     SpRoute <- BufferL
 
