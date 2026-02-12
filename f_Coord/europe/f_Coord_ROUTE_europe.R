@@ -117,7 +117,6 @@ Coord_Route <- function(points, names_coord, bm, bl, folder) {
     #   ggplot( aes(fill=Route_count)) +
     #   geom_sf() +
     #   scale_fill_gradientn(colours=rev(magma(6)))
-    rm(ROUTE)
 
     SpRoute <- BufferL
 
@@ -133,6 +132,7 @@ Coord_Route <- function(points, names_coord, bm, bl, folder) {
     names(OccSL_L93Re)[names(OccSL_L93Re) == "SpRo_L"] <- paste0("SpRo", h, "L")
   }
 
+  rm(ROUTE)
   cat("Roads extracted", fill = TRUE)
 
 
