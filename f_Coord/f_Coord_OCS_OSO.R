@@ -112,6 +112,7 @@ Coord_OCS_OSO <- function(points, names_coord, bs, bm, layer) {
 
     # Append large buffer list
     tableaux_s <- rlist::list.append(tableaux_s, landcov_fracs_Small)
+    rm(OCS)
   }
   # Concatenate lists of tibbles
   tableaux_m_bind <- do.call("rbind", tableaux_m)
