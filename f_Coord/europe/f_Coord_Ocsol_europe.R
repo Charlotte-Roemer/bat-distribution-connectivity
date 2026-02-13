@@ -64,47 +64,44 @@ Coord_OCS_OSO <- function(points, names_coord, bs, bm, layer) {
 
   options(dplyr..summarise.inform = FALSE) # to quiet the message produced by the sumarize function below
 
-  for (year in unique_years) {
-    ## nuit <- as.character(nuit)
-    ## print(nuit)
-    print(paste0("Treating year : ", year))
+  ## nuit <- as.character(nuit)
+  ## print(nuit)
+  print(paste0("Treating year : ", year))
 
 
-    OCS <- terra::rast(ocs_file)
+  OCS <- terra::rast(ocs_file)
 
-    # create a buffer around the points
-    tableau_BM <- sf::st_buffer(OccSL_L93, bm)
-    tableau_BS <- sf::st_buffer(OccSL_L93, bs)
+  # create a buffer around the points
+  tableau_BM <- sf::st_buffer(OccSL_L93, bm)
+  tableau_BS <- sf::st_buffer(OccSL_L93, bs)
 
-    # Extract values in medium buffer
-    landcov_fracs_Medium <- exactextractr::exact_extract(OCS, tableau_BM, function(df) {
-      df %>%
-        dplyr::mutate(frac_total = coverage_fraction / sum(coverage_fraction)) %>%
-        dplyr::group_by(FID, value) %>%
-        dplyr::summarize(freq = sum(frac_total))
-    }, summarize_df = TRUE, include_cols = "FID", progress = FALSE)
+  # Extract values in medium buffer
+  landcov_fracs_Medium <- exactextractr::exact_extract(OCS, tableau_BM, function(df) {
+    df %>%
+      dplyr::mutate(frac_total = coverage_fraction / sum(coverage_fraction)) %>%
+      dplyr::group_by(FID, value) %>%
+      dplyr::summarize(freq = sum(frac_total))
+  }, summarize_df = TRUE, include_cols = "FID", progress = FALSE)
 
 
-    # Extract values in large buffer
-    landcov_fracs_Small <- exactextractr::exact_extract(OCS, tableau_BS, function(df) {
-      df %>%
-        dplyr::mutate(frac_total = coverage_fraction / sum(coverage_fraction)) %>%
-        dplyr::group_by(FID, value) %>%
-        dplyr::summarize(freq = sum(frac_total))
-    }, summarize_df = TRUE, include_cols = "FID", progress = FALSE)
+  # Extract values in large buffer
+  landcov_fracs_Small <- exactextractr::exact_extract(OCS, tableau_BS, function(df) {
+    df %>%
+      dplyr::mutate(frac_total = coverage_fraction / sum(coverage_fraction)) %>%
+      dplyr::group_by(FID, value) %>%
+      dplyr::summarize(freq = sum(frac_total))
+  }, summarize_df = TRUE, include_cols = "FID", progress = FALSE)
 
-    # Append large buffer list
-    rm(OCS)
-  }
+  # Append large buffer list
+  rm(OCS)
 
   # Pivot tibbles and rename columns
-  landcov_fracs_Medium_pivot <- tableaux_m %>%
+  landcov_fracs_Medium_pivot <- landcov_fracs_Medium %>%
     tidyr::pivot_wider(names_from = "value", values_from = "freq") %>% # pivot to use CLC values as column names
     dplyr::rename_with(~ paste0("SpHOCS", ., "M"), -FID) %>%
     replace(is.na(.), 0)
-  # TODO: continue adaptation
 
-  landcov_fracs_Small_pivot <- tableaux_s_bind %>%
+  landcov_fracs_Small_pivot <- landcov_fracs_Small %>%
     tidyr::pivot_wider(names_from = "value", values_from = "freq") %>% # pivot to use CLC values as column names
     dplyr::rename_with(~ paste0("SpHOCS", ., "S"), -FID) %>%
     replace(is.na(.), 0)
