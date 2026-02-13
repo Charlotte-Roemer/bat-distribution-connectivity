@@ -1,15 +1,15 @@
-# library(blackmaRble)
 library(sf)
 library(terra)
 library(dplyr)
 library(tidyr)
 library(rvest)
+source("../variables.R")
 
-vector_data <- "/home/tsevere/Documents/mnhn/projet_git_BMRE/data/GIS/regions.gpkg"
+vector_data <- file.path(data_path, "GIS", "regions.gpkg")
 region <- st_read(vector_data,
   layer = "europe"
 )
-source("/home/tsevere/Documents/mnhn/projet_git_BMRE/bat-distribution-connectivity/_vars.R") # contains username, password for earthdata
+source("_vars.R") # contains username, password for earthdata
 
 
 get_vcf <- function(year_start, year_end, chemin, variable_name,
