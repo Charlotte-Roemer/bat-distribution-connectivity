@@ -12,7 +12,7 @@ region <- st_read(vector_data,
 source("_vars.R") # contains username, password for earthdata
 
 
-get_vcf <- function(year_start, year_end, chemin, variable_name,
+get_vcf <- function(year_start, year_end, path, variable_name,
                     custom_shape = NULL) {
   custom_shape <- if (is.character(custom_shape) == TRUE) {
     read_sf(custom_shape)
@@ -108,12 +108,12 @@ get_vcf <- function(year_start, year_end, chemin, variable_name,
   unlink(temp_folder, recursive = TRUE)
 }
 
-chemin <- "/home/tsevere/Documents/mnhn/data/vcftest"
+chemin <- file.path(data_path, "GIS", "VCF")
 
 output <- get_vcf(
   year_start = "2015",
   year_end = "2023",
-  chemin,
+  path = chemin,
   custom_shape = region,
   variable_name = "Percent_Tree_Cover"
 )
