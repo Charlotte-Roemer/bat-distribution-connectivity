@@ -21,4 +21,5 @@ extract_data*
 *.slurm
 notes*
 pygeodes_env/
+*.json
 data_management/config_geodes.json
