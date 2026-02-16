@@ -238,7 +238,7 @@ if (opt$region %in% c("idf", "france_met")) {
   folder_CLC <- file.path(data_folder, "GIS", "CLC")
   folder_OCS <- file.path(data_folder, "GIS", "OCS_OSO")
   folder_MOS <- file.path(data_folder, "GIS", "MOS")
-  folder_route_europe <- file.path(data_folder, "GIS", "routes")
+  folder_route <- file.path(data_folder, "GIS", "routes")
   clim_norm_folder <- file.path(data_folder, "GIS", "CLIM_NORM")
   layer_wind_turbines <- file.path(data_folder, "GIS", "wind_turbines", "Mats_service_TOTAL.shp")
   bioclim_folder <- file.path(data_folder, "GIS", "chelsav2_bio")
@@ -334,18 +334,18 @@ print(FCoord)
 #   layers = folder_vcf
 # )
 #
-# ALTI ####
-print("Altitude & slope")
-Coord_Alti(
-  points = FCoord,
-  names_coord = Coord_Headers,
-  bs = BS,
-  bm = BM,
-  bl = BL,
-  region = opt$region,
-  layer = layer_alti
-)
-
+# # ALTI ####
+# print("Altitude & slope")
+# Coord_Alti(
+#   points = FCoord,
+#   names_coord = Coord_Headers,
+#   bs = BS,
+#   bm = BM,
+#   bl = BL,
+#   region = opt$region,
+#   layer = layer_alti
+# )
+#
 # wind turbines ###
 
 # print("wind turbines")
@@ -356,16 +356,16 @@ Coord_Alti(
 #   bl = BL,
 #   layer = layer_wind_turbines
 # )
-
-# CARTHAGE (eau) ####
-print("Water")
-Coord_Eau(
-  points = FCoord,
-  names_coord = Coord_Headers,
-  water_polyg = layer_Carthage_P,
-  water_lines = layer_Carthage_C
-)
-
+#
+# # CARTHAGE (eau) ####
+# print("Water")
+# Coord_Eau(
+#   points = FCoord,
+#   names_coord = Coord_Headers,
+#   water_polyg = layer_Carthage_P,
+#   water_lines = layer_Carthage_C
+# )
+#
 #
 # ## Ecoline (idf)
 # Coord_Ecoline(
@@ -400,18 +400,18 @@ Coord_Eau(
 # )
 
 #
-# ## CESBIO (Habitat) ####
-print("OCS OSO")
-Coord_OCS_OSO(
-  points = FCoord,
-  names_coord = c(Coord_Headers, "Nuit"),
-  bs = BS,
-  bm = BM
-  # Buffer Large is not done because was too long in Pipeline V1, and
-  # at this scale, Corine Land Cover is sufficient anyway
-  , layer = Layer_OCS
-)
-
+# # ## CESBIO (Habitat) ####
+# print("OCS OSO")
+# Coord_OCS_OSO(
+#   points = FCoord,
+#   names_coord = c(Coord_Headers, "Nuit"),
+#   bs = BS,
+#   bm = BM
+#   # Buffer Large is not done because was too long in Pipeline V1, and
+#   # at this scale, Corine Land Cover is sufficient anyway
+#   , layer = Layer_OCS
+# )
+#
 #
 ## ROADS and TRAINS ####
 print("Roads and trains")

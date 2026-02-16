@@ -1,5 +1,4 @@
 # %%
-import geopandas
 from pygeodes import Geodes
 from pygeodes.utils.formatting import format_items
 from pygeodes import Config
