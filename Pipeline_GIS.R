@@ -231,7 +231,8 @@ if (opt$region %in% c("idf", "france_met")) {
   #  GIS Layers locations :
   folder_alan <- file.path(data_folder, "GIS", "ALAN")
   folder_vcf <- file.path(data_folder, "GIS", "VCF")
-  layer_alti <- file.path(data_folder, "GIS", "BDALTI")
+  # layer_alti <- file.path(data_folder, "GIS", "BDALTI")
+  layer_alti <- file.path(data_folder, "GIS", "copernicus", "data")
   layer_Carthage_P <- file.path(data_folder, "GIS", "BD_TOPAGE_2024-shp", "SurfaceElementaire_FXX.shp")
   layer_Carthage_C <- file.path(data_folder, "GIS", "BD_TOPAGE_2024-shp", "TronconHydrographique_FXX.shp")
   folder_CLC <- file.path(data_folder, "GIS", "CLC")

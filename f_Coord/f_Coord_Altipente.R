@@ -44,20 +44,22 @@ Coord_Alti <- function(points, names_coord, bs, bm, bl, region, layer) {
   BufferMedium <- bm
   BufferLarge <- bl
 
-  if (region %in% c("idf", "france_met")) {
-    asc_files <- list.files(layer,
-      pattern = ".asc$", full.names = TRUE
-    )
-    print("Raster list OK")
-    for (i in 1:length(asc_files)) {
-      rast.list[i] <- rast(asc_files[i])
-    }
-    rast.list <- sprc(rast.list)
-    AltiTot <- terra::mosaic(rast.list, fun = mean) # raster 2154
-  } else if (region == "europe") {
-    AltiTot <- terra::rast(file.path(layer, "DEM1_SAR_DTE_30_europe_L93.tif")) # raster 4326
-  }
+  # if (region %in% c("idf", "france_met")) {
+  #   asc_files <- list.files(layer,
+  #     pattern = ".asc$", full.names = TRUE
+  #   )
+  #   print(asc_files)
+  #   print("Raster list OK")
+  #   for (i in 1:length(asc_files)) {
+  #     rast.list[i] <- rast(asc_files[i])
+  #   }
+  #   rast.list <- sprc(rast.list)
+  #   AltiTot <- terra::mosaic(rast.list, fun = mean) # raster 2154
+  # } else if (region == "europe") {
+  #   AltiTot <- terra::rast(file.path(layer, "DEM1_SAR_DTE_30_europe_L93.tif")) # raster 4326
+  # }
 
+  AltiTot <- terra::rast(file.path(layer, "DEM1_SAR_DTE_30_europe_L93.tif")) # raster 4326
 
   ####################################################
   ####################################################
