@@ -313,27 +313,27 @@ print(FCoord)
 # )
 #
 # Grotto ###
-print("Grotto")
-Coord_Grotto(
-  points = FCoord,
-  names_coord = Coord_Headers,
-  bs = BS,
-  bm = BM,
-  bl = BL,
-  layer = layer_grotto
-)
-
-# VCF ###
-print("VCF")
-Coord_VCF(
-  points = FCoord,
-  names_coord = c(Coord_Headers, "Nuit"),
-  bs = BS,
-  bm = BM,
-  bl = BL,
-  layers = folder_vcf
-)
-
+# print("Grotto")
+# Coord_Grotto(
+#   points = FCoord,
+#   names_coord = Coord_Headers,
+#   bs = BS,
+#   bm = BM,
+#   bl = BL,
+#   layer = layer_grotto
+# )
+#
+# # VCF ###
+# print("VCF")
+# Coord_VCF(
+#   points = FCoord,
+#   names_coord = c(Coord_Headers, "Nuit"),
+#   bs = BS,
+#   bm = BM,
+#   bl = BL,
+#   layers = folder_vcf
+# )
+#
 # ALTI ####
 print("Altitude & slope")
 Coord_Alti(
