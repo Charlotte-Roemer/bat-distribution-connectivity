@@ -122,11 +122,10 @@ if (Place == "local") {
   args[2] <- file.path(
     data_path,
     "observations",
-    "donnees_vigie_chiro",
+    "obs_vars",
     paste0(
-      "GI_",
-      opt$region,
-      "_sites_localites"
+      "data_train_",
+      opt$region
     )
   )
 
