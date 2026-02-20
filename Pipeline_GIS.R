@@ -293,135 +293,135 @@ for (i in 1:length(listfun))
 
 print(FCoord)
 #
-# ## Bioclim ###
-# print("Bioclim")
-# Coord_BioclimLocal(
-#   points = FCoord,
-#   names_coord = Coord_Headers,
-#   layer_folder = bioclim_folder
-# )
-#
-#
-# ### ALAN ###
-# print("ALAN")
-# Coord_ALAN(
-#   points = FCoord,
-#   names_coord = c(Coord_Headers, "Nuit"),
-#   bm = BM,
-#   bl = BL,
-#   layers = folder_alan
-# )
-#
-# Grotto ###
-# print("Grotto")
-# Coord_Grotto(
-#   points = FCoord,
-#   names_coord = Coord_Headers,
-#   bs = BS,
-#   bm = BM,
-#   bl = BL,
-#   layer = layer_grotto
-# )
-#
-# # VCF ###
-# print("VCF")
-# Coord_VCF(
-#   points = FCoord,
-#   names_coord = c(Coord_Headers, "Nuit"),
-#   bs = BS,
-#   bm = BM,
-#   bl = BL,
-#   layers = folder_vcf
-# )
-#
-# # ALTI ####
-# print("Altitude & slope")
-# Coord_Alti(
-#   points = FCoord,
-#   names_coord = Coord_Headers,
-#   bs = BS,
-#   bm = BM,
-#   bl = BL,
-#   region = opt$region,
-#   layer = layer_alti
-# )
-#
-# wind turbines ###
+## Bioclim ###
+print("Bioclim")
+Coord_BioclimLocal(
+  points = FCoord,
+  names_coord = Coord_Headers,
+  layer_folder = bioclim_folder
+)
 
-# print("wind turbines")
-# Coord_eol(
-#   points = FCoord,
-#   names_coord = Coord_Headers,
-#   bm = BM,
-#   bl = BL,
-#   layer = layer_wind_turbines
-# )
-#
-# # CARTHAGE (eau) ####
-# print("Water")
-# Coord_Eau(
-#   points = FCoord,
-#   names_coord = Coord_Headers,
-#   water_polyg = layer_Carthage_P,
-#   water_lines = layer_Carthage_C
-# )
-#
-#
-# ## Ecoline (idf)
-# Coord_Ecoline(
-#   points = FCoord,
-#   names_coord = Coord_Headers,
-#   ecoline_vh = layer_ecoline_high,
-#   ecoline_vb = layer_ecoline_low,
-#   buffer = BM
-# )
-#
-#
-#
-## CLC Corine Land Cover (Habitat) ####
-# print("CLC")
-# Coord_CLCraster(
-#   points = FCoord,
-#   names_coord = c(Coord_Headers, "Nuit"),
-#   bm = BM,
-#   bl = BL,
-#   layer = folder_CLC
-# )
 
-## MOS Land Cover ####
-# print("MOS")
-# Coord_MOSraster(
-#   points = FCoord,
-#   names_coord = c(Coord_Headers, "Nuit"),
-#   bs = BS,
-#   bm = BM,
-#   bl = BL,
-#   layer = folder_MOS
-# )
+### ALAN ###
+print("ALAN")
+Coord_ALAN(
+  points = FCoord,
+  names_coord = c(Coord_Headers, "Nuit"),
+  bm = BM,
+  bl = BL,
+  layers = folder_alan
+)
 
-#
-# # ## CESBIO (Habitat) ####
-# print("OCS OSO")
-# Coord_OCS_OSO(
-#   points = FCoord,
-#   names_coord = c(Coord_Headers, "Nuit"),
-#   bs = BS,
-#   bm = BM
-#   # Buffer Large is not done because was too long in Pipeline V1, and
-#   # at this scale, Corine Land Cover is sufficient anyway
-#   , layer = Layer_OCS
-# )
-#
-#
-## ROADS and TRAINS ####
-# print("Roads and trains")
-# Coord_Route(
-#   points = FCoord,
-#   names_coord = Coord_Headers,
-#   bm = BM,
-#   bl = BL,
-#   folder = folder_route
-# )
+Grotto ###
+print("Grotto")
+Coord_Grotto(
+  points = FCoord,
+  names_coord = Coord_Headers,
+  bs = BS,
+  bm = BM,
+  bl = BL,
+  layer = layer_grotto
+)
+
+# VCF ###
+print("VCF")
+Coord_VCF(
+  points = FCoord,
+  names_coord = c(Coord_Headers, "Nuit"),
+  bs = BS,
+  bm = BM,
+  bl = BL,
+  layers = folder_vcf
+)
+
+# ALTI ####
+print("Altitude & slope")
+Coord_Alti(
+  points = FCoord,
+  names_coord = Coord_Headers,
+  bs = BS,
+  bm = BM,
+  bl = BL,
+  region = opt$region,
+  layer = layer_alti
+)
+
+wind turbines ###
+
+print("wind turbines")
+Coord_eol(
+  points = FCoord,
+  names_coord = Coord_Headers,
+  bm = BM,
+  bl = BL,
+  layer = layer_wind_turbines
+)
+
+# CARTHAGE (eau) ####
+print("Water")
+Coord_Eau(
+  points = FCoord,
+  names_coord = Coord_Headers,
+  water_polyg = layer_Carthage_P,
+  water_lines = layer_Carthage_C
+)
+
+
+## Ecoline (idf)
+Coord_Ecoline(
+  points = FCoord,
+  names_coord = Coord_Headers,
+  ecoline_vh = layer_ecoline_high,
+  ecoline_vb = layer_ecoline_low,
+  buffer = BM
+)
+
+
+
+# CLC Corine Land Cover (Habitat) ####
+print("CLC")
+Coord_CLCraster(
+  points = FCoord,
+  names_coord = c(Coord_Headers, "Nuit"),
+  bm = BM,
+  bl = BL,
+  layer = folder_CLC
+)
+
+# MOS Land Cover ####
+print("MOS")
+Coord_MOSraster(
+  points = FCoord,
+  names_coord = c(Coord_Headers, "Nuit"),
+  bs = BS,
+  bm = BM,
+  bl = BL,
+  layer = folder_MOS
+)
+
+
+# ## CESBIO (Habitat) ####
+print("OCS OSO")
+Coord_OCS_OSO(
+  points = FCoord,
+  names_coord = c(Coord_Headers, "Nuit"),
+  bs = BS,
+  bm = BM
+  # Buffer Large is not done because was too long in Pipeline V1, and
+  # at this scale, Corine Land Cover is sufficient anyway
+  , layer = Layer_OCS
+)
+
+
+# ROADS and TRAINS ####
+print("Roads and trains")
+Coord_Route(
+  points = FCoord,
+  names_coord = Coord_Headers,
+  bm = BM,
+  bl = BL,
+  folder = folder_route
+)
 
 # print("Meteo")
 Coord_Meteo(
