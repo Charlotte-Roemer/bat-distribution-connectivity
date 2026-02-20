@@ -216,7 +216,7 @@ Coord_Headers <- c("X", "Y") # long and lat
 
 # buffers distances :
 
-if (opt$region == "france_met") {
+if (opt$region %in% c("idf", "france_met")) {
   BS <- 50
   BM <- 500
   BL <- 5000
