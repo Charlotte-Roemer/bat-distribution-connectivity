@@ -51,8 +51,6 @@ coords$ID <- 1:nrow(coords)
 # for (i in seq_along(names1)) {
 st_write(
   coords,
-  file.path(data_loc, "GIS", paste0(GridName, ".csv"))
+  file.path(data_loc, "observations", "data_pred", paste0(GridName, ".csv"))
 )
 # }
-
-data_loc
