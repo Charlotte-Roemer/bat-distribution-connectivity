@@ -1,6 +1,6 @@
-print("load OCS OSO")
+print("load europe land cover")
 
-Coord_OCS_OSO <- function(points, names_coord, bs, bm, layer) {
+Coord_Land_Cover <- function(points, names_coord, bs, bm, layer) {
   print("OCS OSO")
   print(points)
   library(data.table)

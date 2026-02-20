@@ -312,17 +312,6 @@ Coord_ALAN(
   layers = folder_alan
 )
 
-Grotto ###
-print("Grotto")
-Coord_Grotto(
-  points = FCoord,
-  names_coord = Coord_Headers,
-  bs = BS,
-  bm = BM,
-  bl = BL,
-  layer = layer_grotto
-)
-
 # VCF ###
 print("VCF")
 Coord_VCF(
@@ -346,20 +335,10 @@ Coord_Alti(
   layer = layer_alti
 )
 
-wind turbines ###
-
-print("wind turbines")
-Coord_eol(
-  points = FCoord,
-  names_coord = Coord_Headers,
-  bm = BM,
-  bl = BL,
-  layer = layer_wind_turbines
-)
 
 # CARTHAGE (eau) ####
 print("Water")
-Coord_Eau(
+Coord_Water(
   points = FCoord,
   names_coord = Coord_Headers,
   water_polyg = layer_Carthage_P,
@@ -367,42 +346,56 @@ Coord_Eau(
 )
 
 
-## Ecoline (idf)
-Coord_Ecoline(
-  points = FCoord,
-  names_coord = Coord_Headers,
-  ecoline_vh = layer_ecoline_high,
-  ecoline_vb = layer_ecoline_low,
-  buffer = BM
-)
+if (opt$region == "idf"){
+  ## Ecoline (idf)
+  Coord_Ecoline(
+    points = FCoord,
+    names_coord = Coord_Headers,
+    ecoline_vh = layer_ecoline_high,
+    ecoline_vb = layer_ecoline_low,
+    buffer = BM
+  )
 
+  # MOS Land Cover ####
+  print("MOS")
+  Coord_MOSraster(
+    points = FCoord,
+    names_coord = c(Coord_Headers, "Nuit"),
+    bs = BS,
+    bm = BM,
+    bl = BL,
+    layer = folder_MOS
+  )
+}
 
+if (opt$region != "europe") {
+  wind turbines ###
 
-# CLC Corine Land Cover (Habitat) ####
-print("CLC")
-Coord_CLCraster(
-  points = FCoord,
-  names_coord = c(Coord_Headers, "Nuit"),
-  bm = BM,
-  bl = BL,
-  layer = folder_CLC
-)
+  print("wind turbines")
+  Coord_eol(
+    points = FCoord,
+    names_coord = Coord_Headers,
+    bm = BM,
+    bl = BL,
+    layer = layer_wind_turbines
+  )
 
-# MOS Land Cover ####
-print("MOS")
-Coord_MOSraster(
-  points = FCoord,
-  names_coord = c(Coord_Headers, "Nuit"),
-  bs = BS,
-  bm = BM,
-  bl = BL,
-  layer = folder_MOS
-)
+  Grotto ###
+  print("Grotto")
+  Coord_Grotto(
+    points = FCoord,
+    names_coord = Coord_Headers,
+    bs = BS,
+    bm = BM,
+    bl = BL,
+    layer = layer_grotto
+  )
+}
 
+# ## Land cover ####
 
-# ## CESBIO (Habitat) ####
-print("OCS OSO")
-Coord_OCS_OSO(
+cat("Land Cover", fill = TRUE)
+Coord_Land_Cover(
   points = FCoord,
   names_coord = c(Coord_Headers, "Nuit"),
   bs = BS,
@@ -415,7 +408,7 @@ Coord_OCS_OSO(
 
 # ROADS and TRAINS ####
 print("Roads and trains")
-Coord_Route(
+Coord_Roads(
   points = FCoord,
   names_coord = Coord_Headers,
   bm = BM,
