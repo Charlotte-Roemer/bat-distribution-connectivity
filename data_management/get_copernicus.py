@@ -6,7 +6,9 @@ from cdsetool.credentials import validate_credentials
 from cdsetool.query import query_features
 from cdsetool.query import describe_collection
 from cdsetool.download import download_features
+import os
 
+dir_path = os.path.dirname(os.path.realpath(__file__))
 
 cred = Credentials()
 
@@ -34,7 +36,8 @@ features = query_features("CCM", search_filter)
 
 dl = download_features(features,
                        # "/sps/mnhn/tsevere/bmre/data/GIS/copernicus/data/dem",
-                       "/home/tsevere/tmp/copernicus/data/dem",
+                       os.path.join(dir_path, "data", "dem"),
+                       # "/home/tsevere/tmp/copernicus/data/dem",
                        {"credentials": cred})
 
 list(dl)
