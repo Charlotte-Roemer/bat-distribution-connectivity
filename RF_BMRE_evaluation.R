@@ -227,7 +227,7 @@ return_start <- function(period) {
 
 return_end <- function(period) {
   switch(period,
-    year = 44L,
+    year = 304L,
     spring = 135L,
     summer = 212L,
     autumn = 304L
@@ -391,7 +391,7 @@ for (i in seq_along(ListSp))
 
 
   DataSaison$week <- as.integer(strftime(DataSaison$Nuit, format = "%V"))
-
+  DataSaison$day <- as.integer(strftime(DataSaison$Nuit, format = "%j"))
   # DataSaison <- DataSaison[dplyr::between(DataSaison$week, p_start, p_end), ]
 
   spring_start <- return_start("spring")
@@ -402,9 +402,9 @@ for (i in seq_along(ListSp))
   autumn_end <- return_end("autumn")
 
   DataSaison <- DataSaison |> mutate(SpSaison = case_when(
-    between(week, spring_start, spring_end) ~ "spring",
-    between(week, summer_start, summer_end) ~ "summer",
-    between(week, autumn_start, autumn_end) ~ "autumn"
+    between(day, spring_start, spring_end) ~ "spring",
+    between(day, summer_start, summer_end) ~ "summer",
+    between(day, autumn_start, autumn_end) ~ "autumn"
   ))
 
   DataSaison <- DataSaison |>
@@ -588,7 +588,7 @@ for (i in seq_along(ListSp))
   print("saisons avant filtre")
   print(unique(DataSaison_sf$SpSaison))
 
-  DataSaison_sf <- DataSaison_sf[dplyr::between(DataSaison_sf$week, p_start, p_end), ]
+  DataSaison_sf <- DataSaison_sf[dplyr::between(DataSaison_sf$day, p_start, p_end), ]
   # DataSaison_sf <- subset(DataSaison_sf, DataSaison_sf$SpSaison == opt$period)
 
   print("saisons apres filtre")
