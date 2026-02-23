@@ -106,6 +106,7 @@ Coord_eol <- function(points, names_coord, bm, bl, layer) {
     print("colnames occsl")
     print(colnames(OccSL_Re))
     OccSL_Re <- merge(OccSL_Re, PC_50, by.x = "ID", by.y = "Group.1", all.x = TRUE)
+    print("here")
     OccSL_Re$SpEol_L[is.na(OccSL_Re$SpEol_L)] <- 0
   } else {
     print("eol abs")
