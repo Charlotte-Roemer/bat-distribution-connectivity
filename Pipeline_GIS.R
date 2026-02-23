@@ -371,16 +371,16 @@ for (i in 1:length(listfun))
 if (opt$region != "europe") {
   # wind turbines ###
 
-  print("wind turbines")
-  Coord_eol(
-    points = FCoord,
-    names_coord = Coord_Headers,
-    bm = BM,
-    bl = BL,
-    layer = layer_wind_turbines
-  )
+  # print("wind turbines")
+  # Coord_eol(
+  #   points = FCoord,
+  #   names_coord = Coord_Headers,
+  #   bm = BM,
+  #   bl = BL,
+  #   layer = layer_wind_turbines
+  # )
 
-  Grotto ###
+  ### Grotto ###
   print("Grotto")
   Coord_Grotto(
     points = FCoord,
