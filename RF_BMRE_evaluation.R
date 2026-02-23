@@ -563,14 +563,6 @@ for (i in seq_along(ListSp))
   ) |>
     st_transform(2154L)
 
-  if (opt$keep) {
-    # last_year <- max(DataSaison$SpYear)
-    DataTest_sf <- DataSaison_sf[DataSaison_sf$SpYear == 2019, ]
-    DataSaison_sf <- DataSaison_sf[DataSaison_sf$SpYear != 2019, ]
-    DataTest <- DataTest_sf |>
-      st_drop_geometry()
-  }
-
   DataSaison_sf <- DataSaison_sf[aoi, ]
   # we want to filter out nights with bad meteoroligical conditions
   DataSaison_sf <- DataSaison_sf |>
@@ -580,6 +572,16 @@ for (i in seq_along(ListSp))
   DataSaison_sf <- DataSaison_sf |>
     dplyr::filter(dplyr::between(Sptemp, -4L, 4L))
 
+  if (opt$keep) {
+    # last_year <- max(DataSaison$SpYear)
+    DataTest_sf <- DataSaison_sf[DataSaison_sf$SpYear == 2019, ]
+    DataSaison_sf <- DataSaison_sf[DataSaison_sf$SpYear != 2019, ]
+    DataTest <- DataTest_sf |>
+      st_drop_geometry()
+  }
+
+  # TODO : add way to get class limits from train dataset and apply to test
+  # dataset
   DataSaison_sf$acti_class <- def_classes(DataSaison_sf)
   DataSaison_sf$acticlass <- def_int_classes(DataSaison_sf)
 
