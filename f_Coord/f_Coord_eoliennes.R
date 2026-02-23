@@ -100,6 +100,11 @@ Coord_eol <- function(points, names_coord, bm, bl, layer) {
     print("eol sup 0")
     PC_50 <- aggregate(SpEol$pt_count, by = list(SpEol$ID), FUN = sum)
     names(PC_50)[ncol(PC_50)] <- "Sp_L"
+    print("head pc_50")
+    print(head(PC_50))
+
+    print("colnames occsl")
+    print(colnames(OccSL_Re))
     OccSL_Re <- merge(OccSL_Re, PC_50, by.x = "ID", by.y = "Group.1", all.x = TRUE)
     OccSL_Re$SpEol_L[is.na(OccSL_Re$SpEol_L)] <- 0
   } else {
