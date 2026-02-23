@@ -101,7 +101,7 @@ Coord_ALAN <- function(points, names_coord, bm, bl, layers) {
 
   if (opt$mode == "predict") {
     year <- substr(date_pred, 1, 4)
-    data.table::fwrite(ALAN, paste0(FOccSL, "_", year, "_ALAN.csv", row.names = FALSE))
+    data.table::fwrite(ALAN, paste0(FOccSL, "_", year, "_ALAN.csv"), row.names = FALSE)
   } else {
     data.table::fwrite(ALAN, paste0(FOccSL, "_ALAN.csv"), row.names = FALSE)
   }
