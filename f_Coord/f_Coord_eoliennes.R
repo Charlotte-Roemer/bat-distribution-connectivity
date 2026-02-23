@@ -97,11 +97,13 @@ Coord_eol <- function(points, names_coord, bm, bl, layer) {
   SpEol <- BufferL
 
   if (length(BufferL$pt_count) > 0) {
+    print("eol sup 0")
     PC_50 <- aggregate(SpEol$pt_count, by = list(SpEol$ID), FUN = sum)
     names(PC_50)[ncol(PC_50)] <- "Sp_L"
     OccSL_Re <- merge(OccSL_Re, PC_50, by.x = "ID", by.y = "Group.1", all.x = TRUE)
     OccSL_Re$SpEol_L[is.na(OccSL_Re$SpEol_L)] <- 0
   } else {
+    print("eol abs")
     OccSL_Re$SpEol_L <- 0
   }
 
