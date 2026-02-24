@@ -7,7 +7,7 @@ import re
 import zipfile
 
 geodes = Geodes()
-config_file = "data_management/config_geodes.json"
+config_file = "config_geodes.json"
 conf = Config.from_file(config_file)
 
 geodes.set_conf(conf)
