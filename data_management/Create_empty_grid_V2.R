@@ -49,8 +49,9 @@ coords$ID <- 1:nrow(coords)
 
 # Envisager de mettre tout ça dans un gpkg :
 # for (i in seq_along(names1)) {
-st_write(
+sf::st_write(
   coords,
-  file.path(data_loc, "observations", "pred_vars", paste0(GridName, ".csv"))
+  file.path(data_loc, "observations", "pred_vars", paste0(GridName, ".csv")),
+  append = FALSE
 )
 # }
