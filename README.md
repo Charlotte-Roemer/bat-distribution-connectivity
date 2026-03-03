@@ -51,6 +51,9 @@ Some data are region specific, others are common to all regions.
 
 ### Step by step routine
 
+Global pipeline runs as such :
+
+![Illustration of the main pipeline](https://raw.githubusercontent.com/wiki/Charlotte-Roemer/bat-distribution-connectivity/Pipeline.png)
 This repo works with three main scripts, in four steps :
 
 - extract environmental data for bats observations locations
