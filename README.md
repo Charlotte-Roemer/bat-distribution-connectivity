@@ -57,12 +57,12 @@ Global pipeline runs as such :
 This repo works with three main scripts, in four steps :
 
 - extract environmental data for bats observations locations
-(PCIA_pipeline_GIS.R)
+(pipeline_GIS.R)
 - train Random Forest / determine best parameters for each species
-(PCIA_RF_BMRE_evaluation.R)
+(RF_BMRE_evaluation.R)
 - extract environmental data on a regional grid to predict model for this
-region (PCIA_pipeline_GIS.R)
-- predict maps for each species (PCIA_predict_maps.R)
+region (pipeline_GIS.R)
+- predict maps for each species (predict_maps.R)
 
 
 
