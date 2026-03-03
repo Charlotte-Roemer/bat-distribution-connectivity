@@ -1,5 +1,6 @@
-cat("load eau", fill = TRUE)
-Coord_Eau <- function(points, names_coord, eau_polyg, eau_lines) {
+cat("load water europe", fill = TRUE)
+
+Coord_Water <- function(points, names_coord, water_polyg, water_lines) {
   library(sf)
   library(data.table)
   library(tidyverse)
@@ -40,15 +41,16 @@ Coord_Eau <- function(points, names_coord, eau_polyg, eau_lines) {
 
   # recuperation des donnees Carthage (eau)
   EauPolyg <- sf::read_sf(
-    dsn = dirname(eau_polyg),
-    layer = basename(tools::file_path_sans_ext(eau_polyg))
+    water_polyg
   )
+  EauPolyg <- sf::st_transform(EauPolyg, 2154)
+
   EauPolyg$surf <- st_area(EauPolyg)
 
   EauLines <- sf::read_sf(
-    dsn = dirname(eau_lines),
-    layer = basename(tools::file_path_sans_ext(eau_lines))
+    water_lines
   ) # All "En service"
+  EauLines <- sf::st_transform(EauLines, 2154)
 
   # Split result before saving?
   # Split <- FALSE
@@ -132,6 +134,8 @@ Coord_Eau <- function(points, names_coord, eau_polyg, eau_lines) {
     select(!geometry)
 
   NewName <- paste0(points, "_Carthage.csv")
+  head(Carthage)
+  cat(NewName, fill = TRUE)
 
   fwrite(Carthage, NewName)
 }

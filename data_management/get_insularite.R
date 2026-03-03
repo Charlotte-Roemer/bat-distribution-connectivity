@@ -1,7 +1,7 @@
 library(terra)
 source("variables.R")
 
-
+# adapter pour options de région
 
 # insularité
 
@@ -10,7 +10,7 @@ coastlines_file <- file.path(data_path, "GIS", "coastlines.gpkg")
 coastlines <- vect(coastlines_file, layer = "eurasie")
 
 france_file <- file.path(data_path, "GIS", "regions.gpkg")
-france <- vect(france_file, layer = "france_met_uniques")
+france <- vect(france_file, layer = "france_met_uniques") # adapter pour europe
 france <- project(france, crs(coastlines))
 
 insul_dist <- terra::distance(france, coastlines)

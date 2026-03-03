@@ -1,6 +1,6 @@
 print("load routes500")
 
-Coord_Route <- function(points, names_coord, bm, bl, folder) {
+Coord_Roads <- function(points, names_coord, bm, bl, folder) {
   library(sf)
   library(data.table)
   library(tidyverse)
@@ -11,6 +11,7 @@ Coord_Route <- function(points, names_coord, bm, bl, folder) {
     recursive = TRUE, full.names = TRUE
   )
   ROUTE <- st_read(route_file)
+  ROUTE <- st_transform(ROUTE, 2154)
 
   FOccSL <- points
 
@@ -131,6 +132,7 @@ Coord_Route <- function(points, names_coord, bm, bl, folder) {
     names(OccSL_L93Re)[names(OccSL_L93Re) == "SpRo_L"] <- paste0("SpRo", h, "L")
   }
 
+  rm(ROUTE)
   cat("Roads extracted", fill = TRUE)
 
 

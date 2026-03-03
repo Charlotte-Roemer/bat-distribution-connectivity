@@ -14,7 +14,11 @@ Coord_Meteo <- function(points, temp, prec, wind) {
 
     tab <- OccSL
   } else if (opt$mode == "train") {
-    # command <- paste0("python3 get_meteo.py  --file ", points, ".csv")
+    # command <- paste0("python3", file.path(
+    #   project_path,
+    #   "data_management",
+    #   "get_meteo.py"
+    # ), "--file", points, ".csv")
     # system(command)
     OccSL <- readr::read_delim(paste0(points, "_meteo.csv"), delim = ",") %>%
       select(c("X", "Y", "Nuit", "mean_temp", "mean_wind", "total_precipitations"))

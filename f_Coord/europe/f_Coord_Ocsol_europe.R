@@ -1,6 +1,6 @@
-print("load OCS OSO")
+print("load europe land cover")
 
-Coord_OCS_OSO <- function(points, names_coord, bs, bm, layer) {
+Coord_Land_Cover <- function(points, names_coord, bs, bm, layer) {
   print("OCS OSO")
   print(points)
   library(data.table)
@@ -50,7 +50,7 @@ Coord_OCS_OSO <- function(points, names_coord, bs, bm, layer) {
   BuffersSmall <- bs
   BufferMedium <- bm
 
-  ocs_files <- list.files(folder_OCS,
+  ocs_file <- list.files(folder_OCS,
     recursive = TRUE,
     pattern = "tif$",
     full.names = TRUE
@@ -60,70 +60,48 @@ Coord_OCS_OSO <- function(points, names_coord, bs, bm, layer) {
   tableaux_m <- list()
   tableaux_s <- list()
 
-  ocs_annees <- as.vector(
-    as.integer(
-      sapply(
-        strsplit(
-          tools::file_path_sans_ext(
-            basename(ocs_files)
-          ), "_"
-        ), "[", 2
-      )
-    )
-  )
+  # removed ocs_annees TODO: remove comment
 
   options(dplyr..summarise.inform = FALSE) # to quiet the message produced by the sumarize function below
 
-  for (year in unique_years) {
-    ## nuit <- as.character(nuit)
-    ## print(nuit)
-    print(paste0("Treating year : ", year))
-    tableau_year <- OccSL_L93[OccSL_L93$year == year, ]
-    ## annee <- as.integer(strsplit(nuit, "-")[[1]][1])
+  ## nuit <- as.character(nuit)
+  ## print(nuit)
+  print(paste0("Treating year : ", year))
 
-    # Determine which clc year is closest
-    ocs_file <- ocs_files[which.min(abs(ocs_annees - as.integer(year)))]
-    OCS <- terra::rast(ocs_file)
 
-    # create a buffer around the points
-    tableau_BM <- sf::st_buffer(tableau_year, bm) %>%
-      sf::st_transform(2154)
-    tableau_BS <- sf::st_buffer(tableau_year, bs) %>%
-      sf::st_transform(2154)
+  OCS <- terra::rast(ocs_file)
 
-    # Extract values in medium buffer
-    landcov_fracs_Medium <- exactextractr::exact_extract(OCS, tableau_BM, function(df) {
-      df %>%
-        dplyr::mutate(frac_total = coverage_fraction / sum(coverage_fraction)) %>%
-        dplyr::group_by(FID, value) %>%
-        dplyr::summarize(freq = sum(frac_total))
-    }, summarize_df = TRUE, include_cols = "FID", progress = FALSE)
+  # create a buffer around the points
+  tableau_BM <- sf::st_buffer(OccSL_L93, bm)
+  tableau_BS <- sf::st_buffer(OccSL_L93, bs)
 
-    # Append medium buffer list
-    tableaux_m <- rlist::list.append(tableaux_m, landcov_fracs_Medium)
+  # Extract values in medium buffer
+  landcov_fracs_Medium <- exactextractr::exact_extract(OCS, tableau_BM, function(df) {
+    df %>%
+      dplyr::mutate(frac_total = coverage_fraction / sum(coverage_fraction)) %>%
+      dplyr::group_by(FID, value) %>%
+      dplyr::summarize(freq = sum(frac_total))
+  }, summarize_df = TRUE, include_cols = "FID", progress = FALSE)
 
-    # Extract values in large buffer
-    landcov_fracs_Small <- exactextractr::exact_extract(OCS, tableau_BS, function(df) {
-      df %>%
-        dplyr::mutate(frac_total = coverage_fraction / sum(coverage_fraction)) %>%
-        dplyr::group_by(FID, value) %>%
-        dplyr::summarize(freq = sum(frac_total))
-    }, summarize_df = TRUE, include_cols = "FID", progress = FALSE)
 
-    # Append large buffer list
-    tableaux_s <- rlist::list.append(tableaux_s, landcov_fracs_Small)
-  }
-  # Concatenate lists of tibbles
-  tableaux_m_bind <- do.call("rbind", tableaux_m)
-  tableaux_s_bind <- do.call("rbind", tableaux_s)
+  # Extract values in large buffer
+  landcov_fracs_Small <- exactextractr::exact_extract(OCS, tableau_BS, function(df) {
+    df %>%
+      dplyr::mutate(frac_total = coverage_fraction / sum(coverage_fraction)) %>%
+      dplyr::group_by(FID, value) %>%
+      dplyr::summarize(freq = sum(frac_total))
+  }, summarize_df = TRUE, include_cols = "FID", progress = FALSE)
 
-  #  Pivot tibbles and rename columns
-  landcov_fracs_Medium_pivot <- tableaux_m_bind %>%
+  # Append large buffer list
+  rm(OCS)
+
+  # Pivot tibbles and rename columns
+  landcov_fracs_Medium_pivot <- landcov_fracs_Medium %>%
     tidyr::pivot_wider(names_from = "value", values_from = "freq") %>% # pivot to use CLC values as column names
     dplyr::rename_with(~ paste0("SpHOCS", ., "M"), -FID) %>%
     replace(is.na(.), 0)
 
-  landcov_fracs_Small_pivot <- tableaux_s_bind %>%
+  landcov_fracs_Small_pivot <- landcov_fracs_Small %>%
     tidyr::pivot_wider(names_from = "value", values_from = "freq") %>% # pivot to use CLC values as column names
     dplyr::rename_with(~ paste0("SpHOCS", ., "S"), -FID) %>%
     replace(is.na(.), 0)

@@ -1,18 +1,18 @@
-# library(blackmaRble)
 library(sf)
 library(terra)
 library(dplyr)
 library(tidyr)
 library(rvest)
+source("../variables.R")
 
-vector_data <- "/home/tsevere/Documents/mnhn/projet_git_BMRE/data/GIS/regions.gpkg"
+vector_data <- file.path(data_path, "GIS", "regions.gpkg")
 region <- st_read(vector_data,
   layer = "europe"
 )
-source("/home/tsevere/Documents/mnhn/projet_git_BMRE/bat-distribution-connectivity/_vars.R") # contains username, password for earthdata
+source("_vars.R") # contains username, password for earthdata
 
 
-get_vcf <- function(year_start, year_end, chemin, variable_name,
+get_vcf <- function(year_start, year_end, path, variable_name,
                     custom_shape = NULL) {
   custom_shape <- if (is.character(custom_shape) == TRUE) {
     read_sf(custom_shape)
@@ -108,12 +108,12 @@ get_vcf <- function(year_start, year_end, chemin, variable_name,
   unlink(temp_folder, recursive = TRUE)
 }
 
-chemin <- "/home/tsevere/Documents/mnhn/data/vcftest"
+chemin <- file.path(data_path, "GIS", "VCF")
 
 output <- get_vcf(
   year_start = "2015",
   year_end = "2023",
-  chemin,
+  path = chemin,
   custom_shape = region,
   variable_name = "Percent_Tree_Cover"
 )

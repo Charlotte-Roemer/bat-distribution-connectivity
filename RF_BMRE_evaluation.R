@@ -122,11 +122,10 @@ if (Place == "local") {
   args[2] <- file.path(
     data_path,
     "observations",
-    "donnees_vigie_chiro",
+    "obs_vars",
     paste0(
-      "GI_",
-      opt$region,
-      "_sites_localites"
+      "data_train_",
+      opt$region
     )
   )
 
@@ -216,7 +215,7 @@ dir.create(Output, recursive = TRUE)
 #   autumn = 20L
 # )
 #
-# Bornes en semaines
+
 return_start <- function(period) {
   switch(period,
     year = 60L,
@@ -228,7 +227,7 @@ return_start <- function(period) {
 
 return_end <- function(period) {
   switch(period,
-    year = 44L,
+    year = 304L,
     spring = 135L,
     summer = 212L,
     autumn = 304L
@@ -393,7 +392,6 @@ for (i in seq_along(ListSp))
 
   DataSaison$week <- as.integer(strftime(DataSaison$Nuit, format = "%V"))
   DataSaison$day <- as.integer(strftime(DataSaison$Nuit, format = "%j"))
-
   # DataSaison <- DataSaison[dplyr::between(DataSaison$week, p_start, p_end), ]
 
   spring_start <- return_start("spring")
@@ -565,14 +563,6 @@ for (i in seq_along(ListSp))
   ) |>
     st_transform(2154L)
 
-  if (opt$keep) {
-    # last_year <- max(DataSaison$SpYear)
-    DataTest_sf <- DataSaison_sf[DataSaison_sf$SpYear == 2019, ]
-    DataSaison_sf <- DataSaison_sf[DataSaison_sf$SpYear != 2019, ]
-    DataTest <- DataTest_sf |>
-      st_drop_geometry()
-  }
-
   DataSaison_sf <- DataSaison_sf[aoi, ]
   # we want to filter out nights with bad meteoroligical conditions
   DataSaison_sf <- DataSaison_sf |>
@@ -582,6 +572,16 @@ for (i in seq_along(ListSp))
   DataSaison_sf <- DataSaison_sf |>
     dplyr::filter(dplyr::between(Sptemp, -4L, 4L))
 
+  if (opt$keep) {
+    # last_year <- max(DataSaison$SpYear)
+    DataTest_sf <- DataSaison_sf[DataSaison_sf$SpYear == 2019, ]
+    DataSaison_sf <- DataSaison_sf[DataSaison_sf$SpYear != 2019, ]
+    DataTest <- DataTest_sf |>
+      st_drop_geometry()
+  }
+
+  # TODO : add way to get class limits from train dataset and apply to test
+  # dataset
   DataSaison_sf$acti_class <- def_classes(DataSaison_sf)
   DataSaison_sf$acticlass <- def_int_classes(DataSaison_sf)
 
@@ -590,7 +590,7 @@ for (i in seq_along(ListSp))
   print("saisons avant filtre")
   print(unique(DataSaison_sf$SpSaison))
 
-  DataSaison_sf <- DataSaison_sf[dplyr::between(DataSaison_sf$week, p_start, p_end), ]
+  DataSaison_sf <- DataSaison_sf[dplyr::between(DataSaison_sf$day, p_start, p_end), ]
   # DataSaison_sf <- subset(DataSaison_sf, DataSaison_sf$SpSaison == opt$period)
 
   print("saisons apres filtre")

@@ -4,8 +4,8 @@ import datetime as dt
 import calendar as cal
 import numpy as np
 import openmeteo_requests
-import requests_cache
-from retry_requests import retry
+# import requests_cache
+# from retry_requests import retry
 import time as tps
 import os
 import time as tps
@@ -13,9 +13,10 @@ import math
 from _vars import meteo_api_key
 
 # Setup the Open-Meteo API client with cache and retry on error
-cache_session = requests_cache.CachedSession('.cache', expire_after=-1)
-retry_session = retry(cache_session, retries=5, backoff_factor=0.2)
-openmeteo = openmeteo_requests.Client(session=retry_session)
+# cache_session = requests_cache.CachedSession('.cache', expire_after=-1)
+# retry_session = retry(cache_session, retries=5, backoff_factor=0.2)
+# openmeteo = openmeteo_requests.Client(session=retry_session)
+openmeteo = openmeteo_requests.Client()
 
 
 def get_open_weather(in_gpdDF, monthly=False):
@@ -220,7 +221,7 @@ def get_open_weather_api_key(in_gpdDF):
             "start_date": date,
             "end_date": fin_nuit,
             "hourly": ["temperature_2m", "wind_speed_10m",
-                        "precipitation"],
+                       "precipitation"],
             "timezone": "Europe/Berlin",
             "apikey": meteo_api_key
         }
@@ -240,7 +241,7 @@ def get_open_weather_api_key(in_gpdDF):
             start=pd.to_datetime(
                 hourly.Time() + time_zone_delta, unit="s"),
             end=pd.to_datetime(hourly.TimeEnd() +
-                                time_zone_delta, unit="s"),
+                               time_zone_delta, unit="s"),
             freq=pd.Timedelta(seconds=hourly.Interval()),
             inclusive="left"
         )}
@@ -252,13 +253,13 @@ def get_open_weather_api_key(in_gpdDF):
         hourly_dataframe = pd.DataFrame(data=hourly_data)
         # night_centered_dataframe = hourly_dataframe[hourly_dataframe.is_day == 0]
         night_centered_dataframe = hourly_dataframe[((hourly_dataframe.date.dt.strftime('%Y-%m-%d')
-                                                                == str(date)) &
-                                                                (hourly_dataframe.date.dt.strftime('%H').astype(int)
-                                                                > 12)) |
-                                                            ((hourly_dataframe.date.dt.strftime('%Y-%m-%d')
-                                                                == str(fin_nuit)) &
-                                                                (hourly_dataframe.date.dt.strftime('%H').astype(int)
-                                                                <= 12))]
+                                                      == str(date)) &
+                                                     (hourly_dataframe.date.dt.strftime('%H').astype(int)
+                                                      > 12)) |
+                                                    ((hourly_dataframe.date.dt.strftime('%Y-%m-%d')
+                                                      == str(fin_nuit)) &
+                                                     (hourly_dataframe.date.dt.strftime('%H').astype(int)
+                                                      <= 12))]
         mean_temp = night_centered_dataframe.temperature_2m.mean()
         mean_wind = night_centered_dataframe.hourly_wind_speed_10m.mean()
         total_precipitations = night_centered_dataframe.precipitations.sum()
@@ -323,5 +324,3 @@ def split_get(data, max, m=False):
                 split_weathered = get_open_weather(split, monthly=m)
                 data_list.append(split_weathered)
     return pd.concat(data_list)
-
-

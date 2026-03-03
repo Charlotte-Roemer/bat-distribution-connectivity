@@ -48,15 +48,17 @@ Coord_VCF <- function(points, names_coord, bs, bm, bl, layers) {
     pattern = "tif$",
     full.names = TRUE
   )
+
   vcf_years <- as.vector(
     as.integer(
       substring(
         sapply(
           strsplit(
             basename(vcf_files),
-            "A"
+            ".",
+            fixed = TRUE
           ),
-          "[", 2
+          "[", 3
         ), 1, 4
       )
     )
@@ -68,45 +70,62 @@ Coord_VCF <- function(points, names_coord, bs, bm, bl, layers) {
 
     raster <- vcf_files[which.min(abs(vcf_years - as.integer(year)))]
 
+    print(raster)
+
     VCF <- terra::rast(raster)
+    VCF <- terra::project(VCF, "epsg:2154", method = "mean")
+
+    cat(paste("raster loaded for year", year), fill = TRUE)
+
     # create a buffer around the points
-    tableau_BS <- sf::st_buffer(tableau_year, bs) %>%
-      sf::st_transform(4326)
-    tableau_BM <- sf::st_buffer(tableau_year, bm) %>%
-      sf::st_transform(4326)
-    tableau_BL <- sf::st_buffer(tableau_year, bl) %>%
-      sf::st_transform(4326)
+    tableau_BS <- sf::st_buffer(tableau_year, bs)
+    # sf::st_transform(4326)
+    tableau_BM <- sf::st_buffer(tableau_year, bm)
+    # sf::st_transform(4326)
+    tableau_BL <- sf::st_buffer(tableau_year, bl)
+    # sf::st_transform(4326)
 
     print("Buffer Small")
 
     SpVCF_S_tab <- exactextractr::exact_extract(VCF, tableau_BS, "mean")
     tableau_year$SpVCF_S <- SpVCF_S_tab
+    cat("data extracted for buffer Small", fill = TRUE)
 
     print("Buffer Medium")
 
     SpVCF_M_tab <- exactextractr::exact_extract(VCF, tableau_BM, "mean")
     tableau_year$SpVCF_M <- SpVCF_M_tab
 
+    cat("data extracted for buffer Medium", fill = TRUE)
     print("Buffer Large")
 
     SpVCF_L_tab <- exactextractr::exact_extract(VCF, tableau_BL, "mean")
+
+    cat("data extracted for buffer Large", fill = TRUE)
+
+    print("Buffer Large")
     tableau_year$SpVCF_L <- SpVCF_L_tab
     tableaux <- rlist::list.append(tableaux, tableau_year)
+    rm(SpVCF_M_tab, SpVCF_L_tab, SpVCF_S_tab)
+    rm(VCF)
   }
 
   tab <- do.call("rbind", tableaux)
 
+  rm(tableaux)
 
   VCF <- data.frame(cbind(tab$Nuit, tab$X, tab$Y, tab$SpVCF_S, tab$SpVCF_M, tab$SpVCF_L))
   colnames(VCF) <- c("Nuit", "X", "Y", "SpVCF_S", "SpVCF_M", "SpVCF_L")
 
-  if (opt$mode == "predict") {
-    year <- substr(date_pred, 1, 4)
-    fwrite(VCF, paste0(FOccSL, "_", year, "_VCF.csv"))
-  } else {
-    fwrite(VCF, paste0(FOccSL, "_VCF.csv"))
-  }
+  fwrite(VCF, paste0(FOccSL, "_", year, "_VCF.csv"), row.names = FALSE)
+  # if (opt$mode == "predict") {
+  #   year <- substr(date_pred, 1, 4)
+  #   fwrite(VCF, paste0(FOccSL, "_", year, "_VCF.csv"), row.names = FALSE)
+  # } else {
+  #   fwrite(VCF, paste0(FOccSL, "_VCF.csv"), row.names = FALSE)
+  # }
 
+  rm(VCF)
   # coordinates(ALAN) <- CoordH
 
   # SelCol=sample(c("SpALAN_M","SpALAN_L"),1)

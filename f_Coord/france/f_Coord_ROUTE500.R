@@ -1,6 +1,6 @@
-print("load routes500")
+print("load roads for France")
 
-Coord_Route <- function(points, names_coord, bm, bl, folder) {
+Coord_Roads <- function(points, names_coord, bm, bl, folder) {
   library(sf)
   library(data.table)
   library(tidyverse)

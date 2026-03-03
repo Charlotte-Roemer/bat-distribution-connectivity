@@ -5,7 +5,7 @@
 
 print("load Alti")
 
-Coord_Alti <- function(points, names_coord, bs, bm, bl, layer) {
+Coord_Alti <- function(points, names_coord, bs, bm, bl, region, layer) {
   library(data.table)
   # library(raster)
   library(tidyverse)
@@ -44,23 +44,22 @@ Coord_Alti <- function(points, names_coord, bs, bm, bl, layer) {
   BufferMedium <- bm
   BufferLarge <- bl
 
-  asc_files <- list.files(layer,
-    pattern = ".asc$", full.names = TRUE
-  )
+  # if (region %in% c("idf", "france_met")) {
+  #   asc_files <- list.files(layer,
+  #     pattern = ".asc$", full.names = TRUE
+  #   )
+  #   print(asc_files)
+  #   print("Raster list OK")
+  #   for (i in 1:length(asc_files)) {
+  #     rast.list[i] <- rast(asc_files[i])
+  #   }
+  #   rast.list <- sprc(rast.list)
+  #   AltiTot <- terra::mosaic(rast.list, fun = mean) # raster 2154
+  # } else if (region == "europe") {
+  #   AltiTot <- terra::rast(file.path(layer, "DEM1_SAR_DTE_30_europe_L93.tif")) # raster 4326
+  # }
 
-  # extraction des donnees alti
-  rast.list <- list()
-
-  print("Raster list OK")
-  for (i in 1:length(asc_files)) {
-    rast.list[i] <- rast(asc_files[i])
-  }
-  Sys.time()
-  rast.list <- sprc(rast.list)
-  AltiTot <- terra::mosaic(rast.list, fun = mean) # 8 min
-  Sys.time()
-  # plot(AltiTot)
-  Sys.time()
+  AltiTot <- terra::rast(file.path(layer, "DEM1_SAR_DTE_30_europe_L93.tif")) # raster 4326
 
   ####################################################
   ####################################################
@@ -206,7 +205,6 @@ Coord_Alti <- function(points, names_coord, bs, bm, bl, layer) {
   ListePointCard <- st_as_sf(ListePointCard, coords = c("Group.1", "Group.2"), crs = 2154, remove = FALSE)
 
 
-
   AltiListePointCard <- terra::extract(AltiTot, ListePointCard)
 
   for (z in 1:length(AltiListePointCard))
@@ -268,6 +266,8 @@ Coord_Alti <- function(points, names_coord, bs, bm, bl, layer) {
 
   AltiListePointCard <- terra::extract(AltiTot, ListePointCard)
 
+  rm(AltiTot)
+
   for (z in 1:length(AltiListePointCard))
   {
     if (is.na(AltiListePointCard[z, 2])) {
@@ -317,9 +317,18 @@ Coord_Alti <- function(points, names_coord, bs, bm, bl, layer) {
     SpEasS, SpEasM, SpEasL, SpSumS, SpSumM, SpSumL
   ))
 
+  rm(
+    SpAltiS, SpAltiM, SpAltiL,
+    SpPenS, SpPenM, SpPenL, SpNorS, SpNorM, SpNorL,
+    SpEasS, SpEasM, SpEasL, SpSumS, SpSumM, SpSumL
+  )
+
   # test=subset(Alti,(Alti$SpPenL>1.24)&(Alti$SpAltiS<50))
 
 
-  fwrite(Alti, paste0(FOccSL, "_Alti.csv"))
-  print("written")
+  fwrite(Alti, paste0(FOccSL, "_Alti.csv"), row.names = FALSE)
+
+  rm(Alti)
+
+  print("elevation written")
 }

@@ -215,35 +215,54 @@ if (opt$mode == "train" && loc_train_exists == FALSE) {
 Coord_Headers <- c("X", "Y") # long and lat
 
 # buffers distances :
-BS <- 50
-BM <- 500
-BL <- 5000
 
+if (opt$region %in% c("idf", "france_met")) {
+  BS <- 50
+  BM <- 500
+  BL <- 5000
+} else if (opt$region == "europe") {
+  BS <- 1
+  BM <- 1000
+  BL <- 5000
+}
 print("Setting layers")
 if (opt$region %in% c("idf", "france_met")) {
+  cat("France/IdF", fill = TRUE)
   #  GIS Layers locations :
   folder_alan <- file.path(data_folder, "GIS", "ALAN")
   folder_vcf <- file.path(data_folder, "GIS", "VCF")
-  layer_alti <- file.path(data_folder, "GIS", "BDALTI")
+  # layer_alti <- file.path(data_folder, "GIS", "BDALTI")
+  layer_alti <- file.path(data_folder, "GIS", "copernicus", "data")
   layer_Carthage_P <- file.path(data_folder, "GIS", "BD_TOPAGE_2024-shp", "SurfaceElementaire_FXX.shp")
   layer_Carthage_C <- file.path(data_folder, "GIS", "BD_TOPAGE_2024-shp", "TronconHydrographique_FXX.shp")
   folder_CLC <- file.path(data_folder, "GIS", "CLC")
   folder_OCS <- file.path(data_folder, "GIS", "OCS_OSO")
   folder_MOS <- file.path(data_folder, "GIS", "MOS")
   folder_route <- file.path(data_folder, "GIS", "ROUTE500")
-  folder_route_europe <- file.path(data_folder, "GIS", "routes")
   clim_norm_folder <- file.path(data_folder, "GIS", "CLIM_NORM")
   layer_wind_turbines <- file.path(data_folder, "GIS", "wind_turbines", "Mats_service_TOTAL.shp")
-  # bioclim_folder <- file.path(data_folder, "GIS", "worldclim")
   bioclim_folder <- file.path(data_folder, "GIS", "chelsav2_bio")
   layer_ecoline_low <- file.path(data_folder, "GIS", "ecoline", "ecoline_vb_2017.shp")
   layer_ecoline_high <- file.path(data_folder, "GIS", "ecoline", "ecoline_vh_2017.shp")
-
-  # layer_bioclim_gross <- file.path(data_folder, "GIS", "BioclimGross", "GrossV.shp")
   layer_wind <- file.path(data_folder, "GIS", "WIND", "gwa3_250_windspeed_10m_europe.tif")
   layer_precip <- file.path(data_folder, "GIS", "CLIM_NORM", "chelsea_eur11_pr_norm_1981-2005_v1_1.tif")
   layer_temp <- file.path(data_folder, "GIS", "CLIM_NORM", "chelsea_eur11_tas_norm_1981-2005_v1_1.tif")
   layer_grotto <- file.path(data_folder, "GIS", "grottocenter.gpkg")
+} else if (opt$region == "europe") {
+  cat("Europe", fill = TRUE)
+  folder_alan <- file.path(data_folder, "GIS", "ALAN")
+  folder_vcf <- file.path(data_folder, "GIS", "VCF")
+  layer_Carthage_P <- file.path(data_folder, "GIS", "waterbodies", "HydroLAKES_v10_europe.gpkg")
+  layer_Carthage_C <- file.path(data_folder, "GIS", "waterbodies", "HydroRIVERS_v10_europe.gpkg")
+  layer_alti <- file.path(data_folder, "GIS", "copernicus", "data")
+  folder_OCS <- file.path(data_folder, "GIS", "esaworldcover")
+  folder_route <- file.path(data_folder, "GIS", "routes")
+  clim_norm_folder <- file.path(data_folder, "GIS", "CLIM_NORM")
+  layer_wind_turbines <- file.path(data_folder, "GIS", "wind_turbines", "Mats_service_TOTAL.shp")
+  bioclim_folder <- file.path(data_folder, "GIS", "chelsav2_bio")
+  layer_wind <- file.path(data_folder, "GIS", "WIND", "gwa3_250_windspeed_10m_europe.tif")
+  layer_precip <- file.path(data_folder, "GIS", "CLIM_NORM", "chelsea_eur11_pr_norm_1981-2005_v1_1.tif")
+  layer_temp <- file.path(data_folder, "GIS", "CLIM_NORM", "chelsea_eur11_tas_norm_1981-2005_v1_1.tif")
 }
 
 ListLayer <- c(
@@ -252,8 +271,17 @@ ListLayer <- c(
 )
 
 
-print("Listing function files")
-listfun <- list.files(folderfun, full.names = TRUE, pattern = ".R$")
+if (opt$region == "europe") {
+  cat("Listing Europe function files", fill = TRUE)
+  listfun <- list.files(folderfun, full.names = TRUE, pattern = ".R$")
+  europe_functions <- list.files(file.path(folderfun, "europe"), full.names = TRUE, pattern = ".R$")
+  listfun <- c(listfun, europe_functions)
+} else {
+  cat("Listing France function files", fill = TRUE)
+  listfun <- list.files(folderfun, full.names = TRUE, pattern = ".R$")
+  france_functions <- list.files(file.path(folderfun, "france"), full.names = TRUE, pattern = ".R$")
+  listfun <- c(listfun, france_functions)
+}
 
 
 print("Loading function files")
@@ -262,129 +290,125 @@ for (i in 1:length(listfun))
   source(listfun[i])
 }
 
-### Bioclim ###
-# print("Bioclim")
-# Coord_BioclimLocal(
-#   points = FCoord,
-#   names_coord = Coord_Headers,
-#   layer_folder = bioclim_folder
-# )
 #
-#
-# ### ALAN ###
-# print("ALAN")
-# Coord_ALAN(
-#   points = FCoord,
-#   names_coord = c(Coord_Headers, "Nuit"),
-#   bm = BM,
-#   bl = BL,
-#   layers = folder_alan
-# )
-#
-# # Grotto ###
-# print("Grotto")
-# Coord_Grotto(
-#   points = FCoord,
-#   names_coord = Coord_Headers,
-#   bs = BS,
-#   bm = BM,
-#   bl = BL,
-#   layer = layer_grotto
-# )
-#
-# # VCF ###
-# print("VCF")
-# Coord_VCF(
-#   points = FCoord,
-#   names_coord = c(Coord_Headers, "Nuit"),
-#   bs = BS,
-#   bm = BM,
-#   bl = BL,
-#   layers = folder_vcf
-# )
-#
-# ## ALTI ####
-# print("Altitude & slope")
-# Coord_Alti(
-#   points = FCoord,
-#   names_coord = Coord_Headers,
-#   bs = BS,
-#   bm = BM,
-#   bl = BL,
-#   layer = layer_alti
-# )
-#
-## wind turbines ###
-#
-# print("wind turbines")
-# Coord_eol(
-#   points = FCoord,
-#   names_coord = Coord_Headers,
-#   bm = BM,
-#   bl = BL,
-#   layer = layer_wind_turbines
-# )
-
-## CARTHAGE (eau) ####
-print("Water")
-
-Coord_Eau(
+# print(FCoord)
+# #
+## Bioclim ###
+print("Bioclim")
+Coord_BioclimLocal(
   points = FCoord,
   names_coord = Coord_Headers,
-  carthagep = layer_Carthage_P,
-  carthagec = layer_Carthage_C
+  layer_folder = bioclim_folder
 )
 
-#
-# ## Ecoline (idf)
-# Coord_Ecoline(
-#   points = FCoord,
-#   names_coord = Coord_Headers,
-#   ecoline_vh = layer_ecoline_high,
-#   ecoline_vb = layer_ecoline_low,
-#   buffer = BM
-# )
-#
-#
-#
-## CLC Corine Land Cover (Habitat) ####
-# print("CLC")
-# Coord_CLCraster(
-#   points = FCoord,
-#   names_coord = c(Coord_Headers, "Nuit"),
-#   bm = BM,
-#   bl = BL,
-#   layer = folder_CLC
-# )
 
-## MOS Land Cover ####
-# print("MOS")
-# Coord_MOSraster(
-#   points = FCoord,
-#   names_coord = c(Coord_Headers, "Nuit"),
-#   bs = BS,
-#   bm = BM,
-#   bl = BL,
-#   layer = folder_MOS
-# )
+### ALAN ###
+print("ALAN")
+Coord_ALAN(
+  points = FCoord,
+  names_coord = c(Coord_Headers, "Nuit"),
+  bm = BM,
+  bl = BL,
+  layers = folder_alan
+)
 
-#
-# ## CESBIO (Habitat) ####
-# print("OCS OSO")
-# Coord_OCS_OSO(
-#   points = FCoord,
-#   names_coord = c(Coord_Headers, "Nuit"),
-#   bs = BS,
-#   bm = BM
-#   # Buffer Large is not done because was too long in Pipeline V1, and
-#   # at this scale, Corine Land Cover is sufficient anyway
-#   , layer = Layer_OCS
-# )
-#
-#
-# ## ROADS and TRAINS ####
-# print("Roads and trains")
-Coord_Route(
+# VCF ###
+print("VCF")
+Coord_VCF(
+  points = FCoord,
+  names_coord = c(Coord_Headers, "Nuit"),
+  bs = BS,
+  bm = BM,
+  bl = BL,
+  layers = folder_vcf
+)
+
+# ALTI ####
+print("Altitude & slope")
+Coord_Alti(
+  points = FCoord,
+  names_coord = Coord_Headers,
+  bs = BS,
+  bm = BM,
+  bl = BL,
+  region = opt$region,
+  layer = layer_alti
+)
+
+
+# CARTHAGE (eau) ####
+print("Water")
+Coord_Water(
+  points = FCoord,
+  names_coord = Coord_Headers,
+  water_polyg = layer_Carthage_P,
+  water_lines = layer_Carthage_C
+)
+
+
+if (opt$region == "idf"){
+  ## Ecoline (idf)
+  Coord_Ecoline(
+    points = FCoord,
+    names_coord = Coord_Headers,
+    ecoline_vh = layer_ecoline_high,
+    ecoline_vb = layer_ecoline_low,
+    buffer = BM
+  )
+
+  # MOS Land Cover ####
+  print("MOS")
+  Coord_MOSraster(
+    points = FCoord,
+    names_coord = c(Coord_Headers, "Nuit"),
+    bs = BS,
+    bm = BM,
+    bl = BL,
+    layer = folder_MOS
+  )
+}
+
+if (opt$region != "europe") {
+  wind turbines ###
+
+  print("wind turbines")
+  Coord_eol(
+    points = FCoord,
+    names_coord = Coord_Headers,
+    bm = BM,
+    bl = BL,
+    layer = layer_wind_turbines
+  )
+
+  ### Grotto ###
+  print("Grotto")
+  Coord_Grotto(
+    points = FCoord,
+    names_coord = Coord_Headers,
+    bs = BS,
+    bm = BM,
+    bl = BL,
+    layer = layer_grotto
+  )
+}
+
+# ## Land cover ####
+
+cat("Land Cover", fill = TRUE)
+Coord_Land_Cover(
+  points = FCoord,
+  names_coord = c(Coord_Headers, "Nuit"),
+  bs = BS,
+  bm = BM
+  # Buffer Large is not done because was too long in Pipeline V1, and
+  # at this scale, Corine Land Cover is sufficient anyway
+  , layer = Layer_OCS
+)
+
+
+# ROADS and TRAINS ####
+print("Roads and trains")
+Coord_Roads(
   points = FCoord,
   names_coord = Coord_Headers,
   bm = BM,
@@ -393,12 +417,12 @@ Coord_Route(
 )
 
 # print("Meteo")
-# Coord_Meteo(
-#   points = FCoord,
-#   temp = layer_temp,
-#   prec = layer_precip,
-#   wind = layer_wind
-# )
+Coord_Meteo(
+  points = FCoord,
+  temp = layer_temp,
+  prec = layer_precip,
+  wind = layer_wind
+)
 
 ## loc_data <- file.path(loc, "data")
 

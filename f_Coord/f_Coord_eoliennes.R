@@ -70,7 +70,7 @@ Coord_eol <- function(points, names_coord, bm, bl, layer) {
     Sys.time()
     PC_50 <- aggregate(SpEol$pt_count, by = list(SpEol$ID), FUN = sum)
     names(PC_50)[ncol(PC_50)] <- "SpEol_M"
-    OccSL_Re <- merge(OccSL_Re, PC_50, by.x = "ID", by.y = "Group.1", all.x = TRUE)
+    OccSL_Re <- merge(OccSL, PC_50, by.x = "ID", by.y = "Group.1", all.x = TRUE)
     OccSL_Re$SpEol_M[is.na(OccSL_Re$SpEol_M)] <- 0
   } else {
     OccSL_Re$SpEol_M <- 0
@@ -98,7 +98,7 @@ Coord_eol <- function(points, names_coord, bm, bl, layer) {
 
   if (length(BufferL$pt_count) > 0) {
     PC_50 <- aggregate(SpEol$pt_count, by = list(SpEol$ID), FUN = sum)
-    names(PC_50)[ncol(PC_50)] <- "Sp_L"
+    names(PC_50)[ncol(PC_50)] <- "SpEol_L"
     OccSL_Re <- merge(OccSL_Re, PC_50, by.x = "ID", by.y = "Group.1", all.x = TRUE)
     OccSL_Re$SpEol_L[is.na(OccSL_Re$SpEol_L)] <- 0
   } else {

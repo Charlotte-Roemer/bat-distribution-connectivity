@@ -48,7 +48,7 @@ Coord_ALAN <- function(points, names_coord, bm, bl, layers) {
   unique_years <- unique(sapply(strsplit(OccSL_L93$Nuit, "-"), "[", 1))
   tables <- list()
   # Get all the .tif files in the folder
-  alan <- list.files(folder_alan,
+  alan <- list.files(layers,
     recursive = TRUE,
     pattern = "tif$",
     full.names = TRUE
@@ -88,6 +88,7 @@ Coord_ALAN <- function(points, names_coord, bm, bl, layers) {
     SpALAN_L_tab <- exactextractr::exact_extract(ALAN, table_BL, "mean")
     table_year$SpALAN_L <- SpALAN_L_tab
     tables <- rlist::list.append(tables, table_year)
+    rm(SpALAN_L_tab, SpALAN_M_tab, table_year)
   }
 
   tab <- do.call("rbind", tables)
@@ -100,8 +101,9 @@ Coord_ALAN <- function(points, names_coord, bm, bl, layers) {
 
   if (opt$mode == "predict") {
     year <- substr(date_pred, 1, 4)
-    data.table::fwrite(ALAN, paste0(FOccSL, "_", year, "_ALAN.csv"))
+    data.table::fwrite(ALAN, paste0(FOccSL, "_", year, "_ALAN.csv"), row.names = FALSE)
   } else {
-    data.table::fwrite(ALAN, paste0(FOccSL, "_ALAN.csv"))
+    data.table::fwrite(ALAN, paste0(FOccSL, "_ALAN.csv"), row.names = FALSE)
   }
+  rm(ALAN)
 }
