@@ -572,8 +572,8 @@ for (i in seq_along(ListSp))
 
   if (opt$keep) {
     # last_year <- max(DataSaison$SpYear)
-    DataTest_sf <- DataSaison_sf[DataSaison_sf$Year %in% c(2021, 2022, 2023, 2024, 2025), ]
-    DataSaison_sf <- DataSaison_sf[!DataSaison_sf$Year %in% c(2021, 2022, 2023, 2024, 2025), ]
+    DataTest_sf <- DataSaison_sf[DataSaison_sf$Year %in% c(2021, 2022, 2023, 2024), ]
+    DataSaison_sf <- DataSaison_sf[!DataSaison_sf$Year %in% c(2021, 2022, 2023, 2024), ]
     DataTest <- DataTest_sf |>
       st_drop_geometry()
   }
