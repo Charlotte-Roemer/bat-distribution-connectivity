@@ -570,13 +570,11 @@ for (i in seq_along(ListSp))
   DataSaison_sf <- DataSaison_sf |>
     dplyr::filter(dplyr::between(Sptemp, -4L, 4L))
 
-  if (opt$keep) {
-    # last_year <- max(DataSaison$SpYear)
-    DataTest_sf <- DataSaison_sf[DataSaison_sf$Year %in% c(2021, 2022, 2023, 2024), ]
-    DataSaison_sf <- DataSaison_sf[!DataSaison_sf$Year %in% c(2021, 2022, 2023, 2024), ]
-    DataTest <- DataTest_sf |>
-      st_drop_geometry()
-  }
+  # last_year <- max(DataSaison$SpYear)
+  DataTest_sf <- DataSaison_sf[DataSaison_sf$Year %in% c(2021, 2022, 2023, 2024), ]
+  DataSaison_sf <- DataSaison_sf[!DataSaison_sf$Year %in% c(2021, 2022, 2023, 2024), ]
+  DataTest <- DataTest_sf |>
+    st_drop_geometry()
 
   # TODO : add way to get class limits from train dataset and apply to test
   # dataset
