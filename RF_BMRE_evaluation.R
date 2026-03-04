@@ -581,11 +581,11 @@ for (i in seq_along(ListSp))
   acti_class <- def_classes(DataSaison_sf, DataTest)
   acticlass <- def_int_classes(DataSaison_sf, DataTest)
 
-  DataSaison_sf$acti_class <- acti_class[1]
-  DataSaison_sf$acticlass <- acticlass[1]
+  DataSaison_sf$acti_class <- acti_class$train
+  DataSaison_sf$acticlass <- acticlass$train
 
-  DataTest$acti_class <- acti_class[2]
-  DataTest$acticlass <- acticlass[2]
+  DataTest$acti_class <- acti_class$test
+  DataTest$acticlass <- acticlass$test
 
 
   print("DataSaison filtered for season")

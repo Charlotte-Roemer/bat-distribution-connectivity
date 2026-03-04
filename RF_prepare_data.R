@@ -151,7 +151,9 @@ def_classes <- function(data, data_test) {
   data_test$acti_class[data_test$nb_contacts > quant[3]] <- "TresFort"
   data_test$acti_class <- factor(data_test$acti_class, levels = c("NoAct", "Faible", "Moyen", "Fort", "TresFort"))
 
-  list(data$acti_class, data_test$acti_class)
+  list(
+    train = data$acti_class, test = data_test$acti_class
+  )
 }
 
 
@@ -188,7 +190,7 @@ def_int_classes <- function(data, data_test) {
   data_test$acti_int_class[data_test$nb_contacts > quant[2] & data_test$nb_contacts < quant[3]] <- 3
   data_test$acti_int_class[data_test$nb_contacts >= quant[3]] <- 4
 
-  list(data$acti_int_class, data_test$acti_int_class)
+  list(train = data$acti_int_class, test = data_test$acti_int_class)
 }
 
 
