@@ -427,9 +427,7 @@ for (i in seq_along(ListSp))
   # DataSaison$SpSDate <- sin(SpFDate / 365L * 2L * pi) # to create a circular variable for date
 
   # If year effect must be accounted for
-  if (YearEffect) {
-    DataSaison$SpYear <- year(Date1)
-  }
+  DataSaison$Year <- year(Date1)
 
   DataSaison_sf <- sf::st_as_sf(
     DataSaison,
@@ -574,16 +572,23 @@ for (i in seq_along(ListSp))
 
   if (opt$keep) {
     # last_year <- max(DataSaison$SpYear)
-    DataTest_sf <- DataSaison_sf[DataSaison_sf$SpYear == 2019, ]
-    DataSaison_sf <- DataSaison_sf[DataSaison_sf$SpYear != 2019, ]
+    DataTest_sf <- DataSaison_sf[DataSaison_sf$Year %in% c(2021, 2022, 2023, 2024, 2025), ]
+    DataSaison_sf <- DataSaison_sf[!DataSaison_sf$Year %in% c(2021, 2022, 2023, 2024, 2025), ]
     DataTest <- DataTest_sf |>
       st_drop_geometry()
   }
 
   # TODO : add way to get class limits from train dataset and apply to test
   # dataset
-  DataSaison_sf$acti_class <- def_classes(DataSaison_sf)
-  DataSaison_sf$acticlass <- def_int_classes(DataSaison_sf)
+  acti_class <- def_classes(DataSaison_sf, DataTest)
+  acticlass <- def_int_classes(DataSaison_sf, DataTest)
+
+  DataSaison_sf$acti_class <- acti_class[1]
+  DataSaison_sf$acticlass <- acticlass[1]
+
+  DataTest$acti_class <- acti_class[2]
+  DataTest$acticlass <- acticlass[2]
+
 
   print("DataSaison filtered for season")
 
@@ -638,17 +643,15 @@ for (i in seq_along(ListSp))
   )
 
   cat("Cross-validation indices prepared", fill = TRUE)
-  if (opt$keep) {
-    write.csv(
-      DataTest,
-      file.path(
-        Output,
-        paste0(
-          ListSp[i], "_", opt$period, "_", opt$region, "_datatest.csv"
-        )
+  write.csv(
+    DataTest,
+    file.path(
+      Output,
+      paste0(
+        ListSp[i], "_", opt$period, "_", opt$region, "_datatest.csv"
       )
     )
-  }
+  )
 
   DataSaison$acti_class <- factor(DataSaison$acti_class, levels = c("NoAct", "Faible", "Moyen", "Fort", "TresFort"))
 
