@@ -58,6 +58,7 @@ option_list <- list(
   )
 )
 
+test_years <- c(2021, 2022, 2023, 2024) # here set the years you want to use as testing data
 # Parse options to opt object
 opt_parser <- optparse::OptionParser(option_list = option_list)
 opt <- optparse::parse_args(opt_parser)
@@ -522,8 +523,8 @@ for (i in seq_along(ListSp))
     dplyr::filter(dplyr::between(Sptemp, -4L, 4L))
 
   # last_year <- max(DataSaison$SpYear)
-  DataTest_sf <- DataSaison_sf[DataSaison_sf$SpYear %in% c(2021, 2022, 2023, 2024), ]
-  DataSaison_sf <- DataSaison_sf[!DataSaison_sf$SpYear %in% c(2021, 2022, 2023, 2024), ]
+  DataTest_sf <- DataSaison_sf[DataSaison_sf$SpYear %in% test_years, ]
+  DataSaison_sf <- DataSaison_sf[!DataSaison_sf$SpYear %in% test_years, ]
   DataTest <- DataTest_sf |>
     st_drop_geometry()
 
