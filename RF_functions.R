@@ -96,7 +96,7 @@ fitvalpred_rf <- function(covariates,
   #   scale_fill_viridis_c()
   #
   # 2. # build model and calculate RMSE and R² using the kNNDM cross-validation method
-  spatial_grid <- data.frame(mtry = best_mtry)
+  spatial_grid <- data.frame(mtry = best_mtry, min.node.size = 5, splitrule = NULL)
   # spatial_grid <- data.frame(mtry = round(length(covariates)*2/3))
   print("building model")
   A <- Sys.time()
@@ -237,7 +237,7 @@ fitvalpred_rf_cat <- function(covariates,
   #   scale_fill_viridis_c()
   #
   # 2. # build model and calculate RMSE and R² using the kNNDM cross-validation method
-  spatial_grid <- data.frame(mtry = best_mtry)
+  spatial_grid <- data.frame(mtry = best_mtry, min.node.size = 5, splitrule = NULL)
   # spatial_grid <- data.frame(mtry = round(length(covariates)*2/3))
   print("building model")
   A <- Sys.time()
