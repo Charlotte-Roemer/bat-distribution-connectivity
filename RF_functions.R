@@ -41,14 +41,18 @@ fitvalpred_rf <- function(covariates,
   for (tree in ntree) {
     for (mtry in mtrys) {
       tune_mod <- caret::train(
-        x = as.data.frame(traindf)[, covariates],
-        y = as.data.frame(traindf)[, var_to_predict],
-        method = "rf",
-        importance = TRUE,
+        # x = as.data.frame(traindf)[, covariates],
+        data = as.data.frame(traindf)[, covariates],
+        # y = as.data.frame(traindf)[, var_to_predict],
+        formula = var_to_predict ~ .,
+        method = "ranger",
+        # importance = TRUE,
+        importance = "impurity",
         trControl = tune_ctrl,
         # strata = traindf$acti_class,
         # sampsize = samp_sizes,
-        ntree = tree,
+        # ntree = tree,
+        num.trees = tree,
         tuneGrid = data.frame(mtry = mtry)
       )
       error <- append(error, tune_mod$results$RMSE)
@@ -100,12 +104,17 @@ fitvalpred_rf <- function(covariates,
   doParallel::registerDoParallel(cl)
 
   spatial_mod <- caret::train(
-    x = as.data.frame(traindf)[, covariates], # train model
-    y = as.data.frame(traindf)[, var_to_predict],
-    method = "rf",
-    importance = TRUE,
+    # x = as.data.frame(traindf)[, covariates], # train model
+    # y = as.data.frame(traindf)[, var_to_predict],
+    data = as.data.frame(traindf)[, covariates],
+    # y = as.data.frame(traindf)[, var_to_predict],
+    formula = var_to_predict ~ .,
+    method = "ranger",
+    # importance = TRUE,
+    importance = "impurity",
     trControl = spatial_ctrl,
-    ntree = best_ntrees,
+    # ntree = best_ntrees,
+    num.trees = best_ntrees,
     tuneGrid = spatial_grid
   )
 
