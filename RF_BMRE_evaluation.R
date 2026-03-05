@@ -40,17 +40,9 @@ option_list <- list(
     type = "character", default = "paper",
     help = 'Set modelling species between "paper", "all" or a 6 character species code (e.g. "Pippip")'
   ),
-  optparse::make_option(c("-c", "--cure"),
-    type = "logical", default = FALSE,
-    help = "Do you want to randomly remove close data (spatially and temporally) ?"
-  ),
   optparse::make_option(c("-d", "--date"),
     type = "character",
     help = "Necessary : pass date when script is run with $(date +%Y-%m-%d)"
-  ),
-  optparse::make_option(c("-k", "--keep"),
-    type = "logical", default = FALSE,
-    help = "keep last year data as testing dataset and run tests"
   ),
   optparse::make_option(c("-p", "--period"),
     type = "character", default = "year",
