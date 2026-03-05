@@ -49,7 +49,7 @@ if (mode == "obs") {
   mode_name <- "pred"
 }
 
-file <- file.path(folder, paste0("data_", mode_name, "_", pattern, ".csv"))
+file <- file.path(folder, paste0("data_", mode_name, "_", region, ".csv"))
 write.csv(base, file)
 
 # colnames(dataframes[[1]])

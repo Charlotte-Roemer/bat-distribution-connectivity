@@ -131,7 +131,7 @@ prepare_data <- function(args, fpar, fsl) {
 #                     Function to classify activity                            #
 #------------------------------------------------------------------------------#
 
-def_classes <- function(data) {
+def_classes <- function(data, data_test) {
   data_no_zero <- data[data$nb_contacts > 0, ]
   quant <- quantile(
     x = unlist(data_no_zero$nb_contacts),
@@ -144,7 +144,16 @@ def_classes <- function(data) {
   data$acti_class[data$nb_contacts > quant[2] & data$nb_contacts <= quant[3]] <- "Fort"
   data$acti_class[data$nb_contacts > quant[3]] <- "TresFort"
   data$acti_class <- factor(data$acti_class, levels = c("NoAct", "Faible", "Moyen", "Fort", "TresFort"))
-  data$acti_class
+  data_test$acti_class[data_test$nb_contacts <= quant[1]] <- "Faible"
+  data_test$acti_class[data_test$nb_contacts == 0] <- "NoAct"
+  data_test$acti_class[data_test$nb_contacts > quant[1] & data_test$nb_contacts <= quant[2]] <- "Moyen"
+  data_test$acti_class[data_test$nb_contacts > quant[2] & data_test$nb_contacts <= quant[3]] <- "Fort"
+  data_test$acti_class[data_test$nb_contacts > quant[3]] <- "TresFort"
+  data_test$acti_class <- factor(data_test$acti_class, levels = c("NoAct", "Faible", "Moyen", "Fort", "TresFort"))
+
+  list(
+    train = data$acti_class, test = data_test$acti_class
+  )
 }
 
 
@@ -162,7 +171,7 @@ def_sample_vector <- function(data, column, proportion) {
 #------------------------------------------------------------------------------#
 
 
-def_int_classes <- function(data) {
+def_int_classes <- function(data, data_test) {
   data_no_zero <- data[data$nb_contacts > 0, ]
   quant <- quantile(
     x = unlist(data_no_zero$nb_contacts),
@@ -174,7 +183,14 @@ def_int_classes <- function(data) {
   data$acti_int_class[data$nb_contacts > quant[1] & data$nb_contacts <= quant[2]] <- 2
   data$acti_int_class[data$nb_contacts > quant[2] & data$nb_contacts < quant[3]] <- 3
   data$acti_int_class[data$nb_contacts >= quant[3]] <- 4
-  data$acti_int_class
+
+  data_test$acti_int_class[data_test$nb_contacts <= quant[1]] <- 1
+  data_test$acti_int_class[data_test$nb_contacts == 0] <- 0
+  data_test$acti_int_class[data_test$nb_contacts > quant[1] & data_test$nb_contacts <= quant[2]] <- 2
+  data_test$acti_int_class[data_test$nb_contacts > quant[2] & data_test$nb_contacts < quant[3]] <- 3
+  data_test$acti_int_class[data_test$nb_contacts >= quant[3]] <- 4
+
+  list(train = data$acti_int_class, test = data_test$acti_int_class)
 }
 
 
