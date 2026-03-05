@@ -98,7 +98,7 @@ GroupSel <- "bat"
 date_limit <- opt$date
 # Predictors and model specs
 # "EDF" = X + Y + Euclidian Distance Fields ;  "noCoord" = no coordinates
-YearEffect <- FALSE # Add year?
+YearEffect <- TRUE # Add year?
 # MTRY = "default"  # "default" or "npred" or "2-3" for 2/3 of npred
 ## NTREE <- 500
 
@@ -201,20 +201,6 @@ dir.create(Output, recursive = TRUE)
 
 
 #### Set season limits ####-----------------------------------------------------
-# Bornes en quinzaines
-# p_start <- switch(opt$period,
-#   year = 1L,
-#   spring = 5L,
-#   summer = 11L,
-#   autumn = 15L
-# )
-# p_end <- switch(opt$period,
-#   year = 27,
-#   spring = 10L,
-#   summer = 14L,
-#   autumn = 20L
-# )
-#
 
 return_start <- function(period) {
   switch(period,
@@ -253,26 +239,9 @@ cat("General dataset prepared", fill = TRUE)
 # Identify the variable to predict as nb_contacts
 DataCPL3$nb_contacts <- subset(DataCPL3, select = args[10])[, 1]
 # TEST
-
-# write.csv(DataCPL3,
-#      file.path(Output,
-#        paste0(
-#          "test_dat", "_datacpl3.txt"
-#        )
-#      )
-#    )
 test1 <- nrow(DataCPL3)
 
 DataCPL3 <- subset(DataCPL3, !is.na(DataCPL3$nb_contacts))
-
-# TEST
-# write.csv(DataCPL3,
-#      file.path(Output,
-#        paste0(
-#          "test_dat", "_datacpl3cleaned.txt"
-#        )
-#      )
-#    )
 
 test2 <- nrow(DataCPL3)
 
@@ -307,16 +276,6 @@ for (i in seq_along(ListSp))
   print(ListSp[i])
   START1 <- Sys.time()
 
-  # TEST
-  # write.csv(DataSp,
-  #      file.path(Output,
-  #        paste0(
-  #          ListSp[i], "_datasp.txt"
-  #        )
-  #      )
-  #    )
-  #
-  # stop("fin du test data")
   # Adds 0 counts using the observation table (avoids user errors but makes the
   # assumption that this table always contains at least 1 species per night)
 
@@ -427,7 +386,7 @@ for (i in seq_along(ListSp))
   # DataSaison$SpSDate <- sin(SpFDate / 365L * 2L * pi) # to create a circular variable for date
 
   # If year effect must be accounted for
-  DataSaison$Year <- year(Date1)
+  DataSaison$SpYear <- year(Date1)
 
   DataSaison_sf <- sf::st_as_sf(
     DataSaison,
@@ -571,12 +530,11 @@ for (i in seq_along(ListSp))
     dplyr::filter(dplyr::between(Sptemp, -4L, 4L))
 
   # last_year <- max(DataSaison$SpYear)
-  DataTest_sf <- DataSaison_sf[DataSaison_sf$Year %in% c(2021, 2022, 2023, 2024), ]
-  DataSaison_sf <- DataSaison_sf[!DataSaison_sf$Year %in% c(2021, 2022, 2023, 2024), ]
+  DataTest_sf <- DataSaison_sf[DataSaison_sf$SpYear %in% c(2021, 2022, 2023, 2024), ]
+  DataSaison_sf <- DataSaison_sf[!DataSaison_sf$SpYear %in% c(2021, 2022, 2023, 2024), ]
   DataTest <- DataTest_sf |>
     st_drop_geometry()
 
-  # TODO : add way to get class limits from train dataset and apply to test
   # dataset
   acti_class <- def_classes(DataSaison_sf, DataTest)
   acticlass <- def_int_classes(DataSaison_sf, DataTest)
@@ -651,7 +609,6 @@ for (i in seq_along(ListSp))
       )
     )
   )
-  stop() # TODO : remove
 
   DataSaison$acti_class <- factor(DataSaison$acti_class, levels = c("NoAct", "Faible", "Moyen", "Fort", "TresFort"))
 
