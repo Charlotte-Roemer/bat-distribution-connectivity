@@ -53,7 +53,7 @@ fitvalpred_rf <- function(covariates,
         # sampsize = samp_sizes,
         # ntree = tree,
         num.trees = tree,
-        tuneGrid = data.frame(mtry = mtry)
+        tuneGrid = data.frame(mtry = mtry, splitrule = NULL, min.node.size = 5)
       )
       error <- append(error, tune_mod$results$RMSE)
       R2 <- append(R2, tune_mod$results$Rsquared)
