@@ -231,7 +231,7 @@ X_pred[is.na(X_pred)] <- 0
 
 print("X pred done")
 y_pred <- predict(model, X_pred)
-y_incert <- predict(model, X_pred, type = "prob")
+y_incert <- predict(model, X_pred, type = "se", se.method = "infjack")
 
 print("prediction done!")
 x_predict_map <- cbind(pred_data_sf, y_pred)
