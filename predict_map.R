@@ -1,6 +1,7 @@
 library(caret)
 library(randomForest)
 library(stats)
+library(rlang, lib.loc. = "~/altRlibs")
 library(FactoMineR)
 library(factoextra)
 library(PCDimension)
