@@ -60,16 +60,16 @@ option_list <- list(
     type = "logical", default = "TRUE", help = "Do you want to save a test dataset ?"
   )
 )
-
-if (opt$keep == TRUE) {
-  test_years <- c(2021, 2022, 2023, 2024) # here set the years you want to use as testing data
-}
 # Parse options to opt object
 opt_parser <- optparse::OptionParser(option_list = option_list)
 opt <- optparse::parse_args(opt_parser)
 data_sel <- opt$data_sel
 activite <- opt$acti
 periode <- opt$period
+
+if (opt$keep == TRUE) {
+  test_years <- c(2021, 2022, 2023, 2024) # here set the years you want to use as testing data
+}
 
 
 #### Options ####--------------------------------------------------------
