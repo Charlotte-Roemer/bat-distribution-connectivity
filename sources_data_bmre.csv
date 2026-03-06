@@ -1,4 +1,4 @@
-chemin,description,lien de téléchargement,millésimes,précisions,usage
+chemin,description,lien de téléchargement,millésimes,précisions,usage,,
 GIS/BD_TOPAGE_2024-shp,surface et linéaires aquatiques france,https://www.data.gouv.fr/datasets/bd-topage-r,plus récente,,france_met
 GIS/ALAN,Lumières nocturnes artificielles (viirs),Script de téléchargement à mettre à jour (pb nasa),une par an,Données présentes sur PCIA ou clé usb à montpellier,france_met;europe;idf
 GIS/VCF,Couverture forestière (MODIS),Script de téléchargement à mettre à jour (pb nasa),une par an,Données présentes sur PCIA ou clé usb à montpellier,france_met;europe;idf
@@ -8,6 +8,11 @@ GIS/ROUTE500,Linéaire routier,https://geoservices.ign.fr/route500,plus récente
 GIS/CLIM_NORM,"normales de précipitation, températures",https://envicloud.wsl.ch/#/?bucket=https%3A%2F%2Fos.zhdk.cloud.switch.ch%2Fchelsav2&prefix=EUR11%2F,normales,"aller dans normals chercher tas_norm, pr_norm",france_met;europe;idf
 GIS/chelsav2_bio,bioclim chelsa (couvrent la mer),https://envicloud.wsl.ch/#/?bucket=https%3A%2F%2Fos.unil.cloud.switch.ch%2Fchelsa02%2F&prefix=chelsa%2Fglobal%2Fbioclim%2F,pas de millésime,,france_met;europe;idf
 GIS/wind_turbines,éoliennes,voir avec charlotte,pas de millésime,fichier Mats_service_TOTAL.shp,france_met
-GIS/WIND,normales de vent,https://data.dtu.dk/ndownloader/files/17247017,normales,,france_met;europe;idf
+GIS/WIND,normales de vent,https://data.dtu.dk/ndownloader/files/17247017,normales,,france_met,europe,idf
 GIS/grottocenter.gpkg,cavités grottocenter,"Convention avec grottocenter.org, demander partenariat si autre que bmre",pas de millésime,,france_met
 GIS/esaworldcover,occupation du sol esa,https://github.com/ESA-WorldCover/esa-worldcover-datasets,pas de millésime,,europe
+GIS/MOS,Occupation du sol MOS,voir avec Institut Paris Région,pas de millésime,,idf
+GIS/copernicus,élévation copernicus 30m (GLO-30),https://dataspace.copernicus.eu/explore-data/data-collections/copernicus-contributing-missions/collections-description/COP-DEM,pas de millésime,,france_met;europe;idf
+GIS/ecoline,Linéaire structures boisées,voir avec Institut Paris Région,2012;2017;2021,Vb = végétation basse; vh = végétation haute,idf
+GIS/routes,routes pour europe,https://www.globio.info/download-grip-dataset,pas de millésime,Besoin de combiner les régions 4 et 5 pour l’europe,europe
+GIS/waterbodies,eau pour europe,https://www.hydrosheds.org/products/hydrorivers,,télécharger global et garder tel quel ou crop sur europe,europe

@@ -1,9 +1,9 @@
 library(caret)
 library(randomForest)
 library(stats)
-library(FactoMineR)
-library(factoextra)
-library(PCDimension)
+# library(FactoMineR)
+# library(factoextra)
+# library(PCDimension)
 library(tidyr)
 library(dplyr)
 library(sf)
@@ -165,7 +165,6 @@ pred_data <- pred_data |>
   dplyr::mutate(SpSpring = if_else(SpSaison == "spring", 1, 0)) |>
   dplyr::mutate(SpSummer = if_else(SpSaison == "summer", 1, 0)) |>
   dplyr::mutate(SpAutumn = if_else(SpSaison == "autumn", 1, 0))
-
 
 
 cat("Aggregating roads :", fill = TRUE)
