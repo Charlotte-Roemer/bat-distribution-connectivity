@@ -128,15 +128,15 @@ fitvalpred_rf <- function(covariates,
   # preds <- predict(rstack, spatial_mod, na.rm=TRUE)
 
   # 4. Variable importance
-  impfeat <- randomForest::importance(spatial_mod$finalModel, type = 2)
-  impfeat <- sum(impfeat[row.names(impfeat) %in% covariates, 1]) / sum(impfeat[, 1]) * 100
-  names(impfeat) <- "impfeat"
+  # impfeat <- randomForest::importance(spatial_mod$finalModel, type = 2)
+  # impfeat <- sum(impfeat[row.names(impfeat) %in% covariates, 1]) / sum(impfeat[, 1]) * 100
+  # names(impfeat) <- "impfeat"
 
   # Tidy and return results
   tabres <- as.data.frame(t(c( # random_stats,
     spatial_stats,
     # AOA,
-    impfeat
+    # impfeat
   )))
   # names(preds) <- c("prediction")
   list(
@@ -265,15 +265,15 @@ fitvalpred_rf_cat <- function(covariates,
   # preds <- predict(rstack, spatial_mod, na.rm=TRUE)
 
   # 4. Variable importance
-  impfeat <- randomForest::importance(spatial_mod$finalModel, type = 2)
-  impfeat <- sum(impfeat[row.names(impfeat) %in% covariates, 1]) / sum(impfeat[, 1]) * 100
-  names(impfeat) <- "impfeat"
+  # impfeat <- randomForest::importance(spatial_mod$finalModel, type = 2)
+  # impfeat <- sum(impfeat[row.names(impfeat) %in% covariates, 1]) / sum(impfeat[, 1]) * 100
+  # names(impfeat) <- "impfeat"
 
   # Tidy and return results
   tabres <- as.data.frame(t(c( # random_stats,
     spatial_stats,
     # AOA,
-    impfeat
+    # impfeat
   )))
   # names(preds) <- c("prediction")
   list(
