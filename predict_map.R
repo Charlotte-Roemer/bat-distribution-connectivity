@@ -224,28 +224,6 @@ pred_data_sf <- st_as_sf(pred_data, coords = c(x = "X", y = "Y"), crs = 4326L) |
 
 cat("data_sf ok", fill = TRUE)
 
-# coords <- as.data.frame(st_coordinates(pred_data_sf))
-
-# sf object with 5 points: the bounding box of the grid of points + the center
-# EDF <- rbind(
-#   st_sf(geom = st_sfc(st_point(c(min(coords$X), min(coords$Y))))),
-#   st_sf(geom = st_sfc(st_point(c(min(coords$X), max(coords$Y))))),
-#   st_sf(geom = st_sfc(st_point(c(max(coords$X), min(coords$Y))))),
-#   st_sf(geom = st_sfc(st_point(c(max(coords$X), max(coords$Y))))),
-#   st_sf(geom = st_sfc(st_point(c(median(coords$X), median(coords$Y)))))
-# )
-# EDF <- st_set_crs(EDF, st_crs(pred_data_sf))
-# EDF <- st_distance(pred_data_sf, EDF) / 1000 # calculate distance between the point and each of these 5 points
-# EDF <- units::drop_units(EDF)
-# EDF <- as.data.frame(EDF)
-# names(EDF) <- paste0("EDF", 1:5)
-# pred_data_sf$SpEDF1 <- EDF$EDF1
-# pred_data_sf$SpEDF2 <- EDF$EDF2
-# pred_data_sf$SpEDF3 <- EDF$EDF3
-# pred_data_sf$SpEDF4 <- EDF$EDF4
-# pred_data_sf$SpEDF5 <- EDF$EDF5
-# pred_data_sf$SpRecorder <- "SM2BAT+"
-#
 X_pred <- pred_data_sf |>
   # dplyr::select(dplyr::starts_with("Sp")) |>
   sf::st_drop_geometry()
@@ -253,7 +231,7 @@ X_pred[is.na(X_pred)] <- 0
 
 print("X pred done")
 y_pred <- predict(model, X_pred)
-y_incert <- predict(model, X_pred, type = "se", se.method = "infjack")
+y_incert <- ranger::predict(model, X_pred, type = "se", se.method = "infjack")
 
 print("prediction done!")
 x_predict_map <- cbind(pred_data_sf, y_pred)
@@ -272,6 +250,7 @@ map_incert <- terra::rasterize(
   fun = "mean"
 )
 
+print("incertitude raster ready")
 print("path")
 period <- opt$predict_period
 
