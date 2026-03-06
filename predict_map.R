@@ -253,16 +253,24 @@ X_pred[is.na(X_pred)] <- 0
 
 print("X pred done")
 y_pred <- predict(model, X_pred)
+y_incert <- predict(model, X_pred, type = "se", se.method = "infjack")
 
 print("prediction done!")
 x_predict_map <- cbind(pred_data_sf, y_pred)
+x_predict_map <- cbind(x_predict_map, y_incert)
 
 map <- terra::rasterize(
   x = x_predict_map, y = empty_raster,
   field = "y_pred",
   fun = "mean"
 )
+
 print("raster ready")
+map_incert <- terra::rasterize(
+  x = x_predict_map, y = empty_raster,
+  field = "y_incert",
+  fun = "mean"
+)
 
 print("path")
 period <- opt$predict_period
@@ -290,7 +298,34 @@ terra::writeRaster(
     opt$region,
     "_",
     period,
-    ".tif"
+    "predictions.tif"
+  ))
+)
+
+terra::writeRaster(
+  x = map_incert,
+  overwrite = TRUE,
+  filename = file.path(model_location, paste0(
+    "RFspat_",
+    "VC",
+    opt$threshold,
+    "_",
+    opt$date_trained,
+    "_",
+    opt$method,
+    "_",
+    data_sel,
+    "_",
+    activite,
+    "_",
+    selection,
+    "_",
+    opt$species,
+    "_",
+    opt$region,
+    "_",
+    period,
+    "incertitude.tif"
   ))
 )
 
