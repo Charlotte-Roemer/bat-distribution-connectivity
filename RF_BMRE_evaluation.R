@@ -66,6 +66,7 @@ opt <- optparse::parse_args(opt_parser)
 data_sel <- opt$data_sel
 activite <- opt$acti
 periode <- opt$period
+print(opt$keep)
 
 if (opt$keep == TRUE) {
   test_years <- c(2021, 2022, 2023, 2024) # here set the years you want to use as testing data
