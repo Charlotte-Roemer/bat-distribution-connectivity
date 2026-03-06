@@ -26,7 +26,7 @@ fitvalpred_rf <- function(covariates,
     floor(length(covariates) / 2)
   )
 
-  tune_ctrl <- caret::trainControl(method = "oob")
+  tune_ctrl <- caret::trainControl(method = "oob", classProbs = TRUE)
   cl <- parallel::makeCluster(10, type = "MPI")
   doParallel::registerDoParallel(cl)
   ntree <- c(800, 1500, 3000) # (150, 500, 1500, 6000)
