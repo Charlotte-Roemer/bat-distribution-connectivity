@@ -134,7 +134,7 @@ fitvalpred_rf <- function(covariates,
 
   # Tidy and return results
   tabres <- as.data.frame(t(c( # random_stats,
-    spatial_stats,
+    spatial_stats
     # AOA,
     # impfeat
   )))
@@ -271,7 +271,7 @@ fitvalpred_rf_cat <- function(covariates,
 
   # Tidy and return results
   tabres <- as.data.frame(t(c( # random_stats,
-    spatial_stats,
+    spatial_stats
     # AOA,
     # impfeat
   )))
