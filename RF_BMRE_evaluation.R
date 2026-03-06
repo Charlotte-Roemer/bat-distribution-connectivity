@@ -57,7 +57,7 @@ option_list <- list(
     help = "Which value do you want to predict ? nbcontacts, acticlass"
   ),
   optparse::make_option(c("-k", "--keep"),
-    type = "logical", default = "TRUE", help = "Do you want to save a test dataset ?"
+    action = "store_true", help = "Do you want to save a test dataset ?"
   )
 )
 # Parse options to opt object
