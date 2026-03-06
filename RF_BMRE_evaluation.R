@@ -55,10 +55,15 @@ option_list <- list(
   optparse::make_option(c("--acti"),
     type = "character", default = "nb_contacts",
     help = "Which value do you want to predict ? nbcontacts, acticlass"
+  ),
+  optparse::make_option(c("-k", "--keep"),
+    type = "logical", default = "TRUE", help = "Do you want to save a test dataset ?"
   )
 )
 
-test_years <- c(2021, 2022, 2023, 2024) # here set the years you want to use as testing data
+if (opt$keep == TRUE) {
+  test_years <- c(2021, 2022, 2023, 2024) # here set the years you want to use as testing data
+}
 # Parse options to opt object
 opt_parser <- optparse::OptionParser(option_list = option_list)
 opt <- optparse::parse_args(opt_parser)
@@ -89,11 +94,8 @@ GroupSel <- "bat"
 # e.g.as.Date("2021-12-31") only use  data before this date
 
 date_limit <- opt$date
-# Predictors and model specs
-# "EDF" = X + Y + Euclidian Distance Fields ;  "noCoord" = no coordinates
+
 YearEffect <- TRUE # Add year?
-# MTRY = "default"  # "default" or "npred" or "2-3" for 2/3 of npred
-## NTREE <- 500
 
 #### Setting Directories ####--------------------------------------------------
 
@@ -137,6 +139,13 @@ if (Place == "local") {
     "regions.gpkg"
   )
   # folder to copy models to (fichiers .learner), no "_" else bug !!! :
+
+  if (periode == "year") {
+    period_mod <- "year"
+  } else {
+    period_mod <- "season"
+  }
+
   Output <- file.path(
     data_path,
     "ModPred",
@@ -151,7 +160,7 @@ if (Place == "local") {
       "_",
       selection,
       "_",
-      date_limit
+      period_mod
     )
   )
 
@@ -523,20 +532,24 @@ for (i in seq_along(ListSp))
     dplyr::filter(dplyr::between(Sptemp, -4L, 4L))
 
   # last_year <- max(DataSaison$SpYear)
-  DataTest_sf <- DataSaison_sf[DataSaison_sf$SpYear %in% test_years, ]
-  DataSaison_sf <- DataSaison_sf[!DataSaison_sf$SpYear %in% test_years, ]
-  DataTest <- DataTest_sf |>
-    st_drop_geometry()
+  if (opt$keep == TRUE) {
+    DataTest_sf <- DataSaison_sf[DataSaison_sf$SpYear %in% test_years, ]
+    DataSaison_sf <- DataSaison_sf[!DataSaison_sf$SpYear %in% test_years, ]
+    DataTest <- DataTest_sf |>
+      st_drop_geometry()
 
-  # dataset
-  acti_class <- def_classes(DataSaison_sf, DataTest)
-  acticlass <- def_int_classes(DataSaison_sf, DataTest)
+    acti_class <- def_classes_test(DataSaison_sf, DataTest)
+    acticlass <- def_int_classes_test(DataSaison_sf, DataTest)
 
-  DataSaison_sf$acti_class <- acti_class$train
-  DataSaison_sf$acticlass <- acticlass$train
+    DataSaison_sf$acti_class <- acti_class$train
+    DataSaison_sf$acticlass <- acticlass$train
 
-  DataTest$acti_class <- acti_class$test
-  DataTest$acticlass <- acticlass$test
+    DataTest$acti_class <- acti_class$test
+    DataTest$acticlass <- acticlass$test
+  } else {
+    DataSaison_sf$acti_class <- def_classes(DataSaison_sf)
+    DataSaison_sf$acticlass <- def_int_classes(DataSaison_sf)
+  }
 
 
   print("DataSaison filtered for season")
@@ -593,15 +606,17 @@ for (i in seq_along(ListSp))
   )
 
   cat("Cross-validation indices prepared", fill = TRUE)
-  write.csv(
-    DataTest,
-    file.path(
-      Output,
-      paste0(
-        ListSp[i], "_", opt$period, "_", opt$region, "_", ThresholdSort, "_datatest.csv"
+  if (opt$keep == TRUE) {
+    write.csv(
+      DataTest,
+      file.path(
+        Output,
+        paste0(
+          ListSp[i], "_", opt$period, "_", opt$region, "_", ThresholdSort, "_datatest.csv"
+        )
       )
     )
-  )
+  }
 
   DataSaison$acti_class <- factor(DataSaison$acti_class, levels = c("NoAct", "Faible", "Moyen", "Fort", "TresFort"))
 

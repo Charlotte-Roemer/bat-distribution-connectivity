@@ -128,10 +128,32 @@ prepare_data <- function(args, fpar, fsl) {
 }
 
 #------------------------------------------------------------------------------#
+#             Function to classify activity without test                       #
+#------------------------------------------------------------------------------#
+
+def_classes <- function(data) {
+  data_no_zero <- data[data$nb_contacts > 0, ]
+  quant <- quantile(
+    x = unlist(data_no_zero$nb_contacts),
+    c(0.25, 0.50, 0.75),
+    na.rm = TRUE
+  )
+  data$acti_class[data$nb_contacts <= quant[1]] <- "Faible"
+  data$acti_class[data$nb_contacts == 0] <- "NoAct"
+  data$acti_class[data$nb_contacts > quant[1] & data$nb_contacts <= quant[2]] <- "Moyen"
+  data$acti_class[data$nb_contacts > quant[2] & data$nb_contacts <= quant[3]] <- "Fort"
+  data$acti_class[data$nb_contacts > quant[3]] <- "TresFort"
+  data$acti_class <- factor(data$acti_class, levels = c("NoAct", "Faible", "Moyen", "Fort", "TresFort"))
+
+  data$acti_class
+}
+
+
+#------------------------------------------------------------------------------#
 #                     Function to classify activity                            #
 #------------------------------------------------------------------------------#
 
-def_classes <- function(data, data_test) {
+def_classes_test <- function(data, data_test) {
   data_no_zero <- data[data$nb_contacts > 0, ]
   quant <- quantile(
     x = unlist(data_no_zero$nb_contacts),
@@ -167,11 +189,33 @@ def_sample_vector <- function(data, column, proportion) {
 }
 
 #------------------------------------------------------------------------------#
+#              Function to classify activity without test                      #
+#------------------------------------------------------------------------------#
+
+
+def_int_classes <- function(data) {
+  data_no_zero <- data[data$nb_contacts > 0, ]
+  quant <- quantile(
+    x = unlist(data_no_zero$nb_contacts),
+    c(0.25, 0.50, 0.75),
+    na.rm = TRUE
+  )
+  data$acti_int_class[data$nb_contacts <= quant[1]] <- 1
+  data$acti_int_class[data$nb_contacts == 0] <- 0
+  data$acti_int_class[data$nb_contacts > quant[1] & data$nb_contacts <= quant[2]] <- 2
+  data$acti_int_class[data$nb_contacts > quant[2] & data$nb_contacts < quant[3]] <- 3
+  data$acti_int_class[data$nb_contacts >= quant[3]] <- 4
+
+  data$acti_int_class
+}
+
+
+#------------------------------------------------------------------------------#
 #                     Function to classify activity                            #
 #------------------------------------------------------------------------------#
 
 
-def_int_classes <- function(data, data_test) {
+def_int_classes_test <- function(data, data_test) {
   data_no_zero <- data[data$nb_contacts > 0, ]
   quant <- quantile(
     x = unlist(data_no_zero$nb_contacts),

@@ -68,6 +68,13 @@ data_sel <- opt$data_sel
 selection <- opt$variableselection
 
 # model <- "/media/tsevere/BBK/VC50_2025-02-28/RFspat_BarbarVC50_2025-02-28_EDF_Barbar.rds" # rds file
+
+if (period == "year") {
+  period_mod <- "year"
+} else {
+  period_mod <- "season"
+}
+
 model_location <- file.path(
   data_path,
   "ModPred",
@@ -82,7 +89,7 @@ model_location <- file.path(
     "_",
     selection,
     "_",
-    opt$date_trained
+    period_mod
   )
 )
 model <- file.path(
@@ -253,10 +260,33 @@ X_pred <- pred_data_sf |>
 X_pred[is.na(X_pred)] <- 0
 
 print("X pred done")
-y_pred <- predict(model, X_pred)
+y_pred <- predict(model, X_pred, predict.all = TRUE)
 
 print("prediction done!")
-x_predict_map <- cbind(pred_data_sf, y_pred)
+
+saveRDS(y_pred, file.path(model_location, paste0(
+  "RFspat_",
+  "VC",
+  opt$threshold,
+  "_",
+  opt$date_trained,
+  "_",
+  opt$method,
+  "_",
+  data_sel,
+  "_",
+  activite,
+  "_",
+  selection,
+  "_",
+  opt$species,
+  "_",
+  opt$region,
+  "_",
+  period,
+  "_predictions.rds"
+)))
+x_predict_map <- cbind(pred_data_sf, y_pred$aggregate)
 
 map <- terra::rasterize(
   x = x_predict_map, y = empty_raster,
@@ -291,7 +321,7 @@ terra::writeRaster(
     opt$region,
     "_",
     period,
-    ".tif"
+    "_predictions.tif"
   ))
 )
 
