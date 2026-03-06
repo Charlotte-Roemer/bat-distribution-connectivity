@@ -53,7 +53,7 @@ fitvalpred_rf <- function(covariates,
         # sampsize = samp_sizes,
         # ntree = tree,
         num.trees = tree,
-        tuneGrid = data.frame(mtry = mtry, splitrule = "variance", min.node.size = 5)
+        tuneGrid = expand.grid(.mtry = mtry, .splitrule = "variance", .min.node.size = 5)
       )
       error <- append(error, tune_mod$results$RMSE)
       R2 <- append(R2, tune_mod$results$Rsquared)
@@ -96,7 +96,7 @@ fitvalpred_rf <- function(covariates,
   #   scale_fill_viridis_c()
   #
   # 2. # build model and calculate RMSE and R² using the kNNDM cross-validation method
-  spatial_grid <- data.frame(mtry = best_mtry, min.node.size = 5, splitrule = "variance")
+  spatial_grid <- expand.grid(.mtry = best_mtry, .min.node.size = 5, .splitrule = "variance")
   # spatial_grid <- data.frame(mtry = round(length(covariates)*2/3))
   print("building model")
   A <- Sys.time()
