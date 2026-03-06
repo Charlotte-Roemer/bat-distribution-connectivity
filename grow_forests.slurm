@@ -10,4 +10,4 @@
 #SBATCH --mail-user=thomas.severe@mnhn.fr
 #SBATCH --mail-type=END,FAIL
 
-Rscript RF_BMRE_evaluation.R -s $1 -t $2 -d $8 -r $3 -p $4 --variableselection $5 --acti $6 --data_sel $7
+Rscript RF_BMRE_evaluation.R -s $1 -t $2 -d $8 -r $3 -p $4 --variableselection $5 --acti $6 --data_sel $7 --keep $8
