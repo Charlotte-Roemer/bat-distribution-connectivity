@@ -261,9 +261,10 @@ X_pred <- pred_data_sf |>
 X_pred[is.na(X_pred)] <- 0
 
 print("X pred done")
-y_pred <- predict(model, X_pred, predict.all = TRUE)
+# y_pred <- predict(model, X_pred, predict.all = TRUE)
 
 y_pred <- predict(model$finalModel, X_pred[model$finalModel$xNames], predict.all = TRUE)
+
 print("prediction done!")
 
 
