@@ -276,6 +276,8 @@ names(x_predict_map)[length(names(x_predict_map))] <- "y_pred"
 stat <- apply(y_pred$individual, 1, sd)
 
 x_predict_map <- cbind(x_predict_map, stat)
+print(colnames(x_predict_map))
+
 
 map <- terra::rasterize(
   x = x_predict_map, y = empty_raster,
