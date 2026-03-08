@@ -270,7 +270,7 @@ print("prediction done!")
 
 x_predict_map <- cbind(pred_data_sf, y_pred$aggregate)
 
-names(x_predict_map)[length(names(x_predict_map))] <- "y_pred"
+# names(x_predict_map)[length(names(x_predict_map))] <- "y_pred"
 
 
 stat <- apply(y_pred$individual, 1, sd)
@@ -281,7 +281,7 @@ print(colnames(x_predict_map))
 
 map <- terra::rasterize(
   x = x_predict_map, y = empty_raster,
-  field = "y_pred",
+  field = "y_pred.aggregate",
   fun = "mean"
 )
 
