@@ -263,38 +263,34 @@ X_pred[is.na(X_pred)] <- 0
 print("X pred done")
 y_pred <- predict(model, X_pred, predict.all = TRUE)
 
+y_pred <- predict(model$finalModel, X_pred[model$finalModel$xNames], predict.all = TRUE)
 print("prediction done!")
 
-saveRDS(y_pred, file.path(model_location, paste0(
-  "RFspat_",
-  "VC",
-  opt$threshold,
-  "_",
-  opt$date_trained,
-  "_",
-  opt$method,
-  "_",
-  data_sel,
-  "_",
-  activite,
-  "_",
-  selection,
-  "_",
-  opt$species,
-  "_",
-  opt$region,
-  "_",
-  period,
-  "_predictions.rds"
-)))
+
 x_predict_map <- cbind(pred_data_sf, y_pred$aggregate)
+
+names(x_predict_map)[length(names(x_predict_map))] <- "y_pred"
+
+
+stat <- apply(y_pred$individual, 1, sd)
+
+x_predict_map <- cbind(pred_data_sf, stat)
 
 map <- terra::rasterize(
   x = x_predict_map, y = empty_raster,
   field = "y_pred",
   fun = "mean"
 )
+
 print("raster ready")
+
+map_stats <- terra::rasterize(
+  x = x_predict_map, y = empty_raster,
+  field = "stat",
+  fun = "mean"
+)
+
+print("raster stats ready")
 
 print("path")
 period <- opt$predict_period
@@ -326,4 +322,31 @@ terra::writeRaster(
   ))
 )
 
+
+terra::writeRaster(
+  x = map_stats,
+  overwrite = TRUE,
+  filename = file.path(model_location, paste0(
+    "RFspat_",
+    "VC",
+    opt$threshold,
+    "_",
+    opt$date_trained,
+    "_",
+    opt$method,
+    "_",
+    data_sel,
+    "_",
+    activite,
+    "_",
+    selection,
+    "_",
+    opt$species,
+    "_",
+    opt$region,
+    "_",
+    period,
+    "_incertitude.tif"
+  ))
+)
 print("raster written")
