@@ -1,14 +1,13 @@
 
 # CREATE MAPS OFFSHORE USING EXPERT ASSESSMENT OF BAT ACTIVITY (based on Migratlane data)
 
-setwd("/home/charlotte/Documents/R/bat-distribution-connectivity")
 library(tidyverse)
 library(sf)
 library(giscoR)
 library(terra)
 
 # Load expert assessment of bat activity
-Activity_offshore = read_delim("Offshore_activity.csv")
+Activity_offshore = read_delim("/pbs/home/c/croemer/Scripts/bat-distribution-connectivity/Offshore_activity.csv")
 
 # Load WORLD GIS limits and crop Europe
 sf_use_s2(FALSE)
@@ -62,7 +61,7 @@ Offshore_buffers = bind_rows(coastline_buffer_1km_crop,
 #   geom_sf(aes(fill = km_from_coast))
 
 # Save sf
-write_sf(Offshore_buffers, "/home/charlotte/Documents/SIG/SIG_Post-Doc_MNHN/Offshore buffers BMRE/Offshore_buffers.shp")
+write_sf(Offshore_buffers, "/sps/mnhn/croemer/data/Offshore/Offshore_buffers.shp")
 
 # Convert to raster and save
 template = rast(vect(Offshore_buffers),res=1000)
@@ -72,7 +71,7 @@ for (i in 1:3){
     filter(Species == Sp)
   Offshore_buffers_raster_i = rasterize(vect(Offshore_buffers_i), template, "Activity_expert")
   writeRaster(Offshore_buffers_raster_i, 
-              paste0("/home/charlotte/Documents/SIG/SIG_Post-Doc_MNHN/Offshore buffers BMRE/", Sp, "_Offshore_buffers.tif"), 
+              paste0("/sps/mnhn/croemer/data/Offshore/", Sp, "_Offshore_buffers.tif"), 
               overwrite=TRUE)
 }
 
