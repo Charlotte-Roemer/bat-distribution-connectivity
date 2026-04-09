@@ -9,6 +9,7 @@
 #SBATCH --mail-user=charlotte.roemer@mnhn.fr
 #SBATCH --mail-type=END,FAIL
 
-conda init
+source ~/.bashrc
+
 conda activate envs/bmre
 Rscript offshore_maps.R
