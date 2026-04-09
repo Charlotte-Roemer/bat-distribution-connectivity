@@ -1,6 +1,8 @@
 
 # CREATE MAPS OFFSHORE USING EXPERT ASSESSMENT OF BAT ACTIVITY (based on Migratlane data)
 
+.libPaths(c("/pbs/home/c/croemer/R/library", .libPaths()))
+
 library(tidyverse)
 library(sf)
 library(giscoR)
