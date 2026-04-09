@@ -11,5 +11,5 @@
 
 source ~/.bashrc
 
-conda activate envs/bmre
+conda activate ~/envs/bmre
 Rscript offshore_maps.R
