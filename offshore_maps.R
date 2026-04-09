@@ -14,6 +14,7 @@ sf_use_s2(FALSE)
 world_poly <- gisco_get_countries(resolution = 01, epsg = 3035, spatialtype = "RG") %>% 
   st_crop(xmin= 2500000, ymin= 1000000, xmax= 6800000, ymax= 5500000) %>% 
   st_union()
+print("world limits charged")
 
 # ggplot(world_poly) +
 #   geom_sf() 
@@ -22,12 +23,16 @@ world_poly <- gisco_get_countries(resolution = 01, epsg = 3035, spatialtype = "R
 sf_use_s2(TRUE)
 coastline_buffer_n2km = st_buffer(world_poly, dist = -2000) %>% # -2 km in meters
   st_make_valid()
+print("buffer -2 km created")
 coastline_buffer_1km = st_buffer(world_poly, dist = 1000) %>% # 1 km in meters
   st_make_valid()
+print("buffer 1 km created")
 coastline_buffer_2km = st_buffer(world_poly, dist = 2000) %>% # 2 km in meters
   st_make_valid() 
+print("buffer 2 km created")
 coastline_buffer_100km = st_buffer(world_poly, dist = 100000) %>% # 100 km in meters
   st_make_valid() 
+print("buffer 100 km created")
 
 # Crop and add bat activity
 coastline_buffer_100km_crop = coastline_buffer_100km %>% 
@@ -45,6 +50,7 @@ coastline_buffer_1km_crop = coastline_buffer_1km %>%
   st_as_sf() %>% 
   mutate(km_from_coast = 1) %>% 
   left_join(Activity_offshore)
+print("buffers cropped")
 
 # ggplot() +
 #   geom_sf(data = coastline_buffer_1km_crop , fill = "lightblue")
@@ -56,6 +62,7 @@ Offshore_buffers = bind_rows(coastline_buffer_1km_crop,
   st_crop(xmin= 2500000, ymin= 1000000, xmax= 6800000, ymax= 5500000) %>% 
   st_make_valid() %>% 
   st_collection_extract("POLYGON")
+print("buffers joined")
 
 # ggplot(Offshore_buffers) +
 #   geom_sf(aes(fill = km_from_coast))
@@ -75,3 +82,4 @@ for (i in 1:3){
               overwrite=TRUE)
 }
 
+print("DONE")
