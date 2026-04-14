@@ -2,7 +2,7 @@
 # N.B. : il faudra faire tourner le modèle sur les données non confidentielles
 # afin de pouvoir publier le script et les données
 
-# This script is adapted from Mila et al. (preprint)
+# This script is adapted from Mila et al. (2025)
 
 source("variables.R")
 library(data.table)
@@ -225,7 +225,7 @@ return_end <- function(period) {
 
 p_start <- return_start(opt$period)
 p_end <- return_end(opt$period)
-print(paste("starting day : ", p_start, " ending week : ", p_end))
+print(paste("starting day : ", p_start, " ending day : ", p_end))
 
 #### Prepare general dataset ####-----------------------------------------------
 
