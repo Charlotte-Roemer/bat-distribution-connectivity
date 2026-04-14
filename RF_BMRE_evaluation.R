@@ -559,7 +559,9 @@ for (i in seq_along(ListSp))
   print(unique(DataSaison_sf$SpSaison))
 
   DataSaison_sf <- DataSaison_sf[dplyr::between(DataSaison_sf$day, p_start, p_end), ]
+    if (opt$keep == TRUE) {
   DataTest <- DataTest[dplyr::between(DataTest$day, p_start, p_end), ]
+    }
   # DataSaison_sf <- subset(DataSaison_sf, DataSaison_sf$SpSaison == opt$period)
 
   print("saisons apres filtre")
