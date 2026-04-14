@@ -30,10 +30,12 @@ prepare_data <- function(args, fpar, fsl) {
 
   # cleaning data in case duplicated columns remains :
   coord_sig <- coord_sig |>
-    rename_all(~ str_replace_all(., "\\.x", ""))
+    select(-contains(".x.x"))
   coord_sig <- coord_sig |>
     select(-contains(".y"))
-
+  coord_sig <- coord_sig |>
+    rename_all(~ str_replace_all(., "\\.x", ""))
+ 
   # Read participation and locality data
   cat("Reading participations...", fill = TRUE)
   particip <- readr::read_delim(fpar, delim = ";") # p_export.csv
