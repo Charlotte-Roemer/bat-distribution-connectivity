@@ -9,7 +9,7 @@
 
 
 #SBATCH --time=3-00:00:00
-#SBATCH --mail-user=thomas.severe@mnhn.fr
+#SBATCH --mail-user=charlotte.roemer@mnhn.fr
 #SBATCH --mail-type=BEGIN,END   
 
-Rscript data_management/Create_empty_grid_V2.R -r france_met -s 500
+Rscript data_management/Create_empty_grid_V2.R -r $1 -s $2
