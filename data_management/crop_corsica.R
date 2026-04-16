@@ -4,7 +4,7 @@ source("variables.R")
 
 # Load GIS limit of Corsica
 emprise <- file.path(data_path, "GIS", "regions.gpkg")
-GIS_limits <- st_read(dsn = emprise, layer = "corse") %>%
+GIS_limits <- st_read(dsn = emprise, layer = "corsica") %>%
   st_as_sf()
 
 # Load data_train
