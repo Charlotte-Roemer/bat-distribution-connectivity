@@ -314,6 +314,36 @@ for (i in seq_along(ListSp))
     DataSpSL_w0_2$longitude > -6L &
     DataSpSL_w0_2$latitude < 52L & DataSpSL_w0_2$latitude > 41L)
 
+  # If species is myocry or myonat, exclude data from the areas where the species is not extant
+  if(ListSp[i] == "myonat"){
+    cat("Filtering myonat area", fill = TRUE)
+    print(dim(DataSpSL_w0_2))
+    print(head(DataSpSL_w0_2))
+    DataSpSL_w0_2_sf = st_as_sf(DataSpSL_w0_2, # convert acoustic data to sf
+    coords = c("longitude", "latitude"), crs=4326, remove=FALSE))
+    Myonat_area_path <- file.path(data_path, "GIS", "regions.gpkg") # load myonat area
+    Myonat_area = st_read(dsn = Myonat_area_path, layer = "nattereri") %>%
+    st_as_sf()
+    DataSpSL_w0_2_sf <- st_intersection(Myonat_area, DataSpSL_w0_2_sf)
+    DataSpSL_w0_2 = st_drop_geometry(DataSpSL_w0_2_sf)
+    print(dim(DataSpSL_w0_2))
+    print(head(DataSpSL_w0_2))
+  }
+  if(ListSp[i] == "myocry"){
+    cat("Filtering myocry area", fill = TRUE)
+    print(dim(DataSpSL_w0_2))
+    print(head(DataSpSL_w0_2))
+    DataSpSL_w0_2_sf = st_as_sf(DataSpSL_w0_2, # convert acoustic data to sf
+    coords = c("longitude", "latitude"), crs=4326, remove=FALSE))
+    Myocry_area_path <- file.path(data_path, "GIS", "regions.gpkg") # load myocry area
+    Myocry_area = st_read(dsn = Myocry_area_path, layer = "crypticus") %>%
+    st_as_sf()
+    DataSpSL_w0_2_sf <- st_intersection(Myocry_area, DataSpSL_w0_2_sf)
+    DataSpSL_w0_2 = st_drop_geometry(DataSpSL_w0_2_sf)
+    print(dim(DataSpSL_w0_2))
+    print(head(DataSpSL_w0_2))
+  }
+
   # Exclude data with obvious wrong date (<2010)
   DataSpSL_w0_2 <- DataSpSL_w0_2[which(DataSpSL_w0_2$Nuit > as.Date("2010-01-01")), ]
 
