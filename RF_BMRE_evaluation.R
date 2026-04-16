@@ -320,7 +320,7 @@ for (i in seq_along(ListSp))
     print(dim(DataSpSL_w0_2))
     print(head(DataSpSL_w0_2))
     DataSpSL_w0_2_sf = st_as_sf(DataSpSL_w0_2, # convert acoustic data to sf
-    coords = c("longitude", "latitude"), crs=4326, remove=FALSE))
+    coords = c("longitude", "latitude"), crs=4326, remove=FALSE)
     Myonat_area_path <- file.path(data_path, "GIS", "regions.gpkg") # load myonat area
     Myonat_area = st_read(dsn = Myonat_area_path, layer = "nattereri") %>%
     st_as_sf()
@@ -334,7 +334,7 @@ for (i in seq_along(ListSp))
     print(dim(DataSpSL_w0_2))
     print(head(DataSpSL_w0_2))
     DataSpSL_w0_2_sf = st_as_sf(DataSpSL_w0_2, # convert acoustic data to sf
-    coords = c("longitude", "latitude"), crs=4326, remove=FALSE))
+    coords = c("longitude", "latitude"), crs=4326, remove=FALSE)
     Myocry_area_path <- file.path(data_path, "GIS", "regions.gpkg") # load myocry area
     Myocry_area = st_read(dsn = Myocry_area_path, layer = "crypticus") %>%
     st_as_sf()
