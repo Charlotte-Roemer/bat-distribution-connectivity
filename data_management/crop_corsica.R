@@ -36,4 +36,4 @@ sysgrid_corsica = st_drop_geometry(sysgrid_corsica_sf)
 # Save
 write_csv(data_train_corsica, paste0(data_path, "/observations/obs_vars/data_train_corsica.csv"))
 write_csv(data_pred_corsica, paste0(data_path, "/observations/pred_vars/data_pred_corsica.csv"))
-write_csv(sysgrid_corsica, paste0(data_path, "/observations/pred_vars/SysGrid_500m_de_cote_corsica.csv"))
+write_csv(sysgrid_corsica, paste0(data_path, "/observations/SysGrid_500m_de_cote_corsica.csv"))
