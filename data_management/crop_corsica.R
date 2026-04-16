@@ -29,9 +29,12 @@ sysgrid_sf = st_as_sf(sysgrid, # convert to sf
 data_train_corsica_sf <- st_intersection(data_train_sf, GIS_limits)
 data_pred_corsica_sf <- st_intersection(data_pred_sf, GIS_limits)
 sysgrid_corsica_sf <- st_intersection(sysgrid_sf, GIS_limits)
-data_train_corsica = st_drop_geometry(data_train_corsica_sf)
-data_pred_corsica = st_drop_geometry(data_pred_corsica_sf)
-sysgrid_corsica = st_drop_geometry(sysgrid_corsica_sf)
+data_train_corsica = st_drop_geometry(data_train_corsica_sf) %>%
+    select(-ID)
+data_pred_corsica = st_drop_geometry(data_pred_corsica_sf) %>%
+    select(-ID)
+sysgrid_corsica = st_drop_geometry(sysgrid_corsica_sf) %>%
+    select(-ID.1)
 
 # Save
 write_csv(data_train_corsica, paste0(data_path, "/observations/obs_vars/data_train_corsica.csv"))
