@@ -547,7 +547,7 @@ if(Sp_real == "Myocry") {
       ThresholdSort,
       "_",
       #ListSp[i],
-      Sp,
+      Sp_real,
       "_temp_sfolds.rds"
     )
   ) # quezaco?
@@ -661,7 +661,7 @@ if(Sp_real == "Myocry") {
         Output,
         paste0(
           #ListSp[i], "_", opt$period, "_", opt$region, "_", ThresholdSort, "_datatest.csv"
-          Sp, "_", opt$period, "_", opt$region, "_", ThresholdSort, "_datatest.csv"
+          Sp_real, "_", opt$period, "_", opt$region, "_", ThresholdSort, "_datatest.csv"
         )
       )
     )
@@ -682,7 +682,7 @@ if(Sp_real == "Myocry") {
     acp_pc_vars <- acp$components
 
     #saveRDS(acp$acp, file.path(Output, paste0("acp_PCA_", ListSp[i], "_", opt$period, ".rds")))
-    saveRDS(acp$acp, file.path(Output, paste0("acp_PCA_", Sp, "_", opt$period, ".rds")))
+    saveRDS(acp$acp, file.path(Output, paste0("acp_PCA_", Sp_real, "_", opt$period, ".rds")))
 
 
     DataSaison <- cbind(DataSaison, acp_pc_vars)
@@ -732,9 +732,9 @@ if(Sp_real == "Myocry") {
     #saveRDS(bioclim$acp, file.path(Output, paste0("acp_bioclim_", ListSp[i], "_", opt$period, ".rds")))
     #saveRDS(occsol$acp, file.path(Output, paste0("acp_occsol_", ListSp[i], "_", opt$period, ".rds")))
     #saveRDS(others$acp, file.path(Output, paste0("acp_autres_", ListSp[i], "_", opt$period, ".rds")))
-    saveRDS(bioclim$acp, file.path(Output, paste0("acp_bioclim_", Sp, "_", opt$period, ".rds")))
-    saveRDS(occsol$acp, file.path(Output, paste0("acp_occsol_", Sp, "_", opt$period, ".rds")))
-    saveRDS(others$acp, file.path(Output, paste0("acp_autres_", Sp, "_", opt$period, ".rds")))
+    saveRDS(bioclim$acp, file.path(Output, paste0("acp_bioclim_", Sp_real, "_", opt$period, ".rds")))
+    saveRDS(occsol$acp, file.path(Output, paste0("acp_occsol_", Sp_real, "_", opt$period, ".rds")))
+    saveRDS(others$acp, file.path(Output, paste0("acp_autres_", Sp_real, "_", opt$period, ".rds")))
 
     vars <- cbind(occsol_pc_vars, bioclim_pc_vars, other_pc_vars)
     DataSaison <- cbind(DataSaison, vars)
@@ -770,7 +770,7 @@ if(Sp_real == "Myocry") {
       Output,
       paste0(
         #ListSp[i], "_", opt$period, "_", opt$region, "_datatrain.csv"
-        Sp, "_", opt$period, "_", opt$region, "_datatrain.csv"
+        Sp_real, "_", opt$period, "_", opt$region, "_datatrain.csv"
       )
     ),
     row.names = FALSE
@@ -794,7 +794,7 @@ if(Sp_real == "Myocry") {
   #### Save ####----------------------------------------------------------------
 
   #suffix <- paste0(opt$period, "_", opt$region, "_noSpace", "_", ListSp[i])
-  suffix <- paste0(opt$period, "_", opt$region, "_noSpace", "_", Sp)
+  suffix <- paste0(opt$period, "_", opt$region, "_noSpace", "_", Sp_real)
 
   write.csv(
     noSpacemod$tab,
@@ -803,7 +803,7 @@ if(Sp_real == "Myocry") {
       paste0(
         "Evaluation_",
         #ListSp[i],
-        Sp,
+        Sp_real,
         "_",
         Tag, "_",
         date_limit,
@@ -829,7 +829,7 @@ if(Sp_real == "Myocry") {
       paste0(
         "RFspat_",
         #ListSp[i],
-        Sp,
+        Sp_real,
         "_",
         Tag,
         "_",
@@ -846,7 +846,7 @@ if(Sp_real == "Myocry") {
   END1 <- Sys.time()
   print(END1 - START1)
   #print(paste("Model done for", ListSp[i]))
-  print(paste("Model done for", Sp))
+  print(paste("Model done for", Sp_real))
 
   # parallel::stopCluster(cl)
 #}
