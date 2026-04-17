@@ -325,7 +325,7 @@ if(Sp_real == "Myocry") {
   if(Sp_real == "Myonat" & opt$region != "corsica"){
     cat("Filtering myonat area", fill = TRUE)
     print(dim(DataSpSL_w0_2))
-    print(head(DataSpSL_w0_2))
+    print(tail(DataSpSL_w0_2))
     DataSpSL_w0_2_sf = st_as_sf(DataSpSL_w0_2, # convert acoustic data to sf
     coords = c("longitude", "latitude"), crs=4326, remove=FALSE)
     Myonat_area_path <- file.path(data_path, "GIS", "regions.gpkg") # load myonat area
@@ -335,12 +335,13 @@ if(Sp_real == "Myocry") {
     DataSpSL_w0_2 = st_drop_geometry(DataSpSL_w0_2_sf) %>%
     select(-ID)
     print(dim(DataSpSL_w0_2))
-    print(head(DataSpSL_w0_2))
+    print(tail(DataSpSL_w0_2))
   }
   if(Sp_real == "Myocry"){
     cat("Filtering myocry area", fill = TRUE)
     print(dim(DataSpSL_w0_2))
-    print(head(DataSpSL_w0_2))
+    print(tail(DataSpSL_w0_2))
+    print(class(DataSpSL_w0_2))
     DataSpSL_w0_2_sf = st_as_sf(DataSpSL_w0_2, # convert acoustic data to sf
     coords = c("longitude", "latitude"), crs=4326, remove=FALSE)
     Myocry_area_path <- file.path(data_path, "GIS", "regions.gpkg") # load myocry area
@@ -350,7 +351,8 @@ if(Sp_real == "Myocry") {
     DataSpSL_w0_2 = st_drop_geometry(DataSpSL_w0_2_sf) %>%
     select(-ID)
     print(dim(DataSpSL_w0_2))
-    print(head(DataSpSL_w0_2))
+    print(tail(DataSpSL_w0_2))
+    print(class(DataSpSL_w0_2))
   }
 
   # Exclude data with obvious wrong date (<2010)
