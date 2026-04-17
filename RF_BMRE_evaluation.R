@@ -331,7 +331,7 @@ if(Sp_real == "Myocry") {
     DataSpSL_w0_2_sf <- st_intersection(DataSpSL_w0_2_sf, Myonat_area)
     print(names(DataSpSL_w0_2_sf))
     DataSpSL_w0_2 = st_drop_geometry(DataSpSL_w0_2_sf) %>%
-    select(-ID) %>%
+    select(-ID, -fid_2, -id_2) %>%
     as.data.table()
     print(names(DataSpSL_w0_2))
     DataSpSL_w0_2_for_zeros_sf <- st_difference(DataSpSL_w0_2_sf, Myonat_area) # Convert all data outside of area to 0
