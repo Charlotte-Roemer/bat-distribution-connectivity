@@ -282,7 +282,7 @@ if(Sp_real == "Myocry") {
 
   DataSp = subset(DataCPL3, DataCPL3$espece == Sp) # subset species
 
-  print(Sp)
+  print(Sp_real)
   START1 <- Sys.time()
 
   # Adds 0 counts using the observation table (avoids user errors but makes the
@@ -332,7 +332,8 @@ if(Sp_real == "Myocry") {
     Myonat_area = st_read(dsn = Myonat_area_path, layer = "nattereri") %>%
     st_as_sf()
     DataSpSL_w0_2_sf <- st_intersection(DataSpSL_w0_2_sf, Myonat_area)
-    DataSpSL_w0_2 = st_drop_geometry(DataSpSL_w0_2_sf)
+    DataSpSL_w0_2 = st_drop_geometry(DataSpSL_w0_2_sf) %>%
+    select(-ID)
     print(dim(DataSpSL_w0_2))
     print(head(DataSpSL_w0_2))
   }
@@ -346,7 +347,8 @@ if(Sp_real == "Myocry") {
     Myocry_area = st_read(dsn = Myocry_area_path, layer = "crypticus") %>%
     st_as_sf()
     DataSpSL_w0_2_sf <- st_intersection(DataSpSL_w0_2_sf, Myocry_area)
-    DataSpSL_w0_2 = st_drop_geometry(DataSpSL_w0_2_sf)
+    DataSpSL_w0_2 = st_drop_geometry(DataSpSL_w0_2_sf) %>%
+    select(-ID)
     print(dim(DataSpSL_w0_2))
     print(head(DataSpSL_w0_2))
   }
