@@ -250,31 +250,37 @@ test2 <- nrow(DataCPL3)
 
 ifelse(test1 == test2, print("ok"), stop("NA present in activity data!"))
 
-# List species to model
-SpeciesList <- fread(args[3]) # read species list
-ListSp <- levels(as.factor(DataCPL3$espece))
-ListSp <- subset(ListSp, ListSp %in% SpeciesList$Esp)
-if (!is.na(GroupSel)) {
-  SpSel <- subset(SpeciesList, SpeciesList$Group %in% GroupSel)
-  ListSp <- subset(ListSp, ListSp %in% SpSel$Esp)
-}
+## List species to model
+#SpeciesList <- fread(args[3]) # read species list
+#ListSp <- levels(as.factor(DataCPL3$espece))
+#ListSp <- subset(ListSp, ListSp %in% SpeciesList$Esp)
+#if (!is.na(GroupSel)) {
+#  SpSel <- subset(SpeciesList, SpeciesList$Group %in% GroupSel)
+#  ListSp <- subset(ListSp, ListSp %in% SpSel$Esp)
+#}
+#
+#if (Sp == "all" || Sp == "All") {
+#  ListSp <- ListSp
+#} else if (Sp == "paper") {
+#  ListSp <- ListPaper
+#} else {
+#  ListSp <- Sp
+#}
 
-if (Sp == "all" || Sp == "All") {
-  ListSp <- ListSp
-} else if (Sp == "paper") {
-  ListSp <- ListPaper
-} else {
-  ListSp <- Sp
+# Add possibility to model Myocry (use Myonat acoustic data but filter the area later)
+Sp_real = Sp
+if(Sp_real == "Myocry") {
+  Sp = "Myonat"
 }
 
 #### Prepare dataset for each species ####------------------------------------------------------
 
 
-for (i in seq_along(ListSp))
-{
-  DataSp <- subset(DataCPL3, DataCPL3$espece == ListSp[i]) # subset species
+#for (i in seq_along(ListSp))
+#{
+  #DataSp <- subset(DataCPL3, DataCPL3$espece == ListSp[i]) # subset species
 
-  # DataSp=subset(DataCPL3,DataCPL3$espece==Sp) # subset species
+  DataSp = subset(DataCPL3, DataCPL3$espece == Sp) # subset species
 
   print(ListSp[i])
   START1 <- Sys.time()
@@ -315,7 +321,7 @@ for (i in seq_along(ListSp))
     DataSpSL_w0_2$latitude < 52L & DataSpSL_w0_2$latitude > 41L)
 
   # If species is myocry or myonat (and not Corsica), exclude data from the areas where the species is not extant
-  if(ListSp[i] == "myonat" & opt$region != "corsica"){
+  if(Sp_real == "Myonat" & opt$region != "corsica"){
     cat("Filtering myonat area", fill = TRUE)
     print(dim(DataSpSL_w0_2))
     print(head(DataSpSL_w0_2))
@@ -329,7 +335,7 @@ for (i in seq_along(ListSp))
     print(dim(DataSpSL_w0_2))
     print(head(DataSpSL_w0_2))
   }
-  if(ListSp[i] == "myocry"){
+  if(Sp_real == "Myocry"){
     cat("Filtering myocry area", fill = TRUE)
     print(dim(DataSpSL_w0_2))
     print(head(DataSpSL_w0_2))
@@ -824,7 +830,7 @@ for (i in seq_along(ListSp))
   print(paste("Model done for", ListSp[i]))
 
   # parallel::stopCluster(cl)
-}
+#}
 
 
 ## print(ListSp[i])
