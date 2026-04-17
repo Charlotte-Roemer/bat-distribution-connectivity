@@ -359,7 +359,7 @@ if(Sp_real == "Myocry") {
     DataSpSL_w0_2_for_zeros = st_drop_geometry(DataSpSL_w0_2_for_zeros_sf) %>%
     #select(-ID) %>%
     as.data.table()
-    print(names(DataSpSL_w0_2))
+    print(names(DataSpSL_w0_2_for_zeros))
     DataSpSL_w0_2_for_zeros$nb_contacts = 0
     DataSpSL_w0_2 = rbind(DataSpSL_w0_2, DataSpSL_w0_2_for_zeros) # Add 0 to dataset
     print(dim(DataSpSL_w0_2))
