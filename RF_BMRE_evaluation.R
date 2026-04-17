@@ -313,9 +313,6 @@ if(Sp_real == "Myocry") {
 
   cat("Absence data added", fill = TRUE)
 
-  DataSpSL_w0_2 <- DataSpSL_w0_2 |>
-    dplyr::slice_max(order_by = nb_contacts, by = c(participation, Nuit))
-
   # Exclude sites outside France limits (square) :
   DataSpSL_w0_2 <- subset(DataSpSL_w0_2, DataSpSL_w0_2$longitude < 10L &
     DataSpSL_w0_2$longitude > -6L &
@@ -335,6 +332,12 @@ if(Sp_real == "Myocry") {
     DataSpSL_w0_2 = st_drop_geometry(DataSpSL_w0_2_sf) %>%
     select(-ID) %>%
     as.data.table()
+    DataSpSL_w0_2_for_zeros_sf <- st_difference(DataSpSL_w0_2_sf, Myonat_area) # Convert all data outside of area to 0
+    DataSpSL_w0_2_for_zeros = st_drop_geometry(DataSpSL_w0_2_for_zeros_sf) %>%
+    select(-ID) %>%
+    as.data.table()
+    DataSpSL_w0_2_for_zeros$nb_contacts = 0
+    DataSpSL_w0_2 = rbind(DataSpSL_w0_2, DataSpSL_w0_2_for_zeros) # Add 0 to dataset
     print(dim(DataSpSL_w0_2))
     print(tail(DataSpSL_w0_2))
   }
@@ -352,10 +355,19 @@ if(Sp_real == "Myocry") {
     DataSpSL_w0_2 = st_drop_geometry(DataSpSL_w0_2_sf) %>%
     select(-ID) %>%
     as.data.table()
+    DataSpSL_w0_2_for_zeros_sf <- st_difference(DataSpSL_w0_2_sf, Myocry_area) # Convert all data outside of area to 0
+    DataSpSL_w0_2_for_zeros = st_drop_geometry(DataSpSL_w0_2_for_zeros_sf) %>%
+    select(-ID) %>%
+    as.data.table()
+    DataSpSL_w0_2_for_zeros$nb_contacts = 0
+    DataSpSL_w0_2 = rbind(DataSpSL_w0_2, DataSpSL_w0_2_for_zeros) # Add 0 to dataset
     print(dim(DataSpSL_w0_2))
     print(tail(DataSpSL_w0_2))
     print(class(DataSpSL_w0_2))
   }
+
+  DataSpSL_w0_2 <- DataSpSL_w0_2 |>
+    dplyr::slice_max(order_by = nb_contacts, by = c(participation, Nuit))
 
   # Exclude data with obvious wrong date (<2010)
   DataSpSL_w0_2 <- DataSpSL_w0_2[which(DataSpSL_w0_2$Nuit > as.Date("2010-01-01")), ]
