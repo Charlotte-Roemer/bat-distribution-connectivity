@@ -282,7 +282,7 @@ if(Sp_real == "Myocry") {
 
   DataSp = subset(DataCPL3, DataCPL3$espece == Sp) # subset species
 
-  print(ListSp[i])
+  print(Sp)
   START1 <- Sys.time()
 
   # Adds 0 counts using the observation table (avoids user errors but makes the
@@ -308,7 +308,8 @@ if(Sp_real == "Myocry") {
   DataSpSL_w0_2$nb_contacts[is.na(DataSpSL_w0_2$nb_contacts)] <- 0L
   DataSpSL_w0_2$score_max[is.na(DataSpSL_w0_2$score_max)] <- 0L
   DataSpSL_w0_2$groupe[is.na(DataSpSL_w0_2$groupe)] <- "bat"
-  DataSpSL_w0_2$espece[is.na(DataSpSL_w0_2$espece)] <- ListSp[i]
+  #DataSpSL_w0_2$espece[is.na(DataSpSL_w0_2$espece)] <- ListSp[i]
+  DataSpSL_w0_2$espece[is.na(DataSpSL_w0_2$espece)] <- Sp
 
   cat("Absence data added", fill = TRUE)
 
@@ -539,7 +540,8 @@ if(Sp_real == "Myocry") {
       "VC",
       ThresholdSort,
       "_",
-      ListSp[i],
+      #ListSp[i],
+      Sp,
       "_temp_sfolds.rds"
     )
   ) # quezaco?
@@ -603,7 +605,8 @@ if(Sp_real == "Myocry") {
   print("saisons apres filtre")
   print(unique(DataSaison_sf$SpSaison))
 
-  DataSp <- subset(DataCPL3, DataCPL3$espece == ListSp[i]) # subset species
+  #DataSp <- subset(DataCPL3, DataCPL3$espece == ListSp[i]) # subset species
+  DataSp <- subset(DataCPL3, DataCPL3$espece == Sp) # subset species
   DataSaison_sf <- filter_by_median_season_grid(DataSaison_sf, opt$region)
 
   DataSaison <- DataSaison_sf
@@ -651,7 +654,8 @@ if(Sp_real == "Myocry") {
       file.path(
         Output,
         paste0(
-          ListSp[i], "_", opt$period, "_", opt$region, "_", ThresholdSort, "_datatest.csv"
+          #ListSp[i], "_", opt$period, "_", opt$region, "_", ThresholdSort, "_datatest.csv"
+          Sp, "_", opt$period, "_", opt$region, "_", ThresholdSort, "_datatest.csv"
         )
       )
     )
@@ -671,7 +675,8 @@ if(Sp_real == "Myocry") {
     acp <- get_components(predictors, "PCA")
     acp_pc_vars <- acp$components
 
-    saveRDS(acp$acp, file.path(Output, paste0("acp_PCA_", ListSp[i], "_", opt$period, ".rds")))
+    #saveRDS(acp$acp, file.path(Output, paste0("acp_PCA_", ListSp[i], "_", opt$period, ".rds")))
+    saveRDS(acp$acp, file.path(Output, paste0("acp_PCA_", Sp, "_", opt$period, ".rds")))
 
 
     DataSaison <- cbind(DataSaison, acp_pc_vars)
@@ -718,9 +723,12 @@ if(Sp_real == "Myocry") {
     others <- get_components(predictors_other, "autres")
     other_pc_vars <- others$components
 
-    saveRDS(bioclim$acp, file.path(Output, paste0("acp_bioclim_", ListSp[i], "_", opt$period, ".rds")))
-    saveRDS(occsol$acp, file.path(Output, paste0("acp_occsol_", ListSp[i], "_", opt$period, ".rds")))
-    saveRDS(others$acp, file.path(Output, paste0("acp_autres_", ListSp[i], "_", opt$period, ".rds")))
+    #saveRDS(bioclim$acp, file.path(Output, paste0("acp_bioclim_", ListSp[i], "_", opt$period, ".rds")))
+    #saveRDS(occsol$acp, file.path(Output, paste0("acp_occsol_", ListSp[i], "_", opt$period, ".rds")))
+    #saveRDS(others$acp, file.path(Output, paste0("acp_autres_", ListSp[i], "_", opt$period, ".rds")))
+    saveRDS(bioclim$acp, file.path(Output, paste0("acp_bioclim_", Sp, "_", opt$period, ".rds")))
+    saveRDS(occsol$acp, file.path(Output, paste0("acp_occsol_", Sp, "_", opt$period, ".rds")))
+    saveRDS(others$acp, file.path(Output, paste0("acp_autres_", Sp, "_", opt$period, ".rds")))
 
     vars <- cbind(occsol_pc_vars, bioclim_pc_vars, other_pc_vars)
     DataSaison <- cbind(DataSaison, vars)
@@ -755,7 +763,8 @@ if(Sp_real == "Myocry") {
     file.path(
       Output,
       paste0(
-        ListSp[i], "_", opt$period, "_", opt$region, "_datatrain.csv"
+        #ListSp[i], "_", opt$period, "_", opt$region, "_datatrain.csv"
+        Sp, "_", opt$period, "_", opt$region, "_datatrain.csv"
       )
     ),
     row.names = FALSE
@@ -778,7 +787,8 @@ if(Sp_real == "Myocry") {
 
   #### Save ####----------------------------------------------------------------
 
-  suffix <- paste0(opt$period, "_", opt$region, "_noSpace", "_", ListSp[i])
+  #suffix <- paste0(opt$period, "_", opt$region, "_noSpace", "_", ListSp[i])
+  suffix <- paste0(opt$period, "_", opt$region, "_noSpace", "_", Sp)
 
   write.csv(
     noSpacemod$tab,
@@ -786,7 +796,8 @@ if(Sp_real == "Myocry") {
       Output,
       paste0(
         "Evaluation_",
-        ListSp[i],
+        #ListSp[i],
+        Sp,
         "_",
         Tag, "_",
         date_limit,
@@ -811,7 +822,8 @@ if(Sp_real == "Myocry") {
       Output,
       paste0(
         "RFspat_",
-        ListSp[i],
+        #ListSp[i],
+        Sp,
         "_",
         Tag,
         "_",
@@ -827,7 +839,8 @@ if(Sp_real == "Myocry") {
 
   END1 <- Sys.time()
   print(END1 - START1)
-  print(paste("Model done for", ListSp[i]))
+  #print(paste("Model done for", ListSp[i]))
+  print(paste("Model done for", Sp))
 
   # parallel::stopCluster(cl)
 #}
