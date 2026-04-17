@@ -333,7 +333,8 @@ if(Sp_real == "Myocry") {
     st_as_sf()
     DataSpSL_w0_2_sf <- st_intersection(DataSpSL_w0_2_sf, Myonat_area)
     DataSpSL_w0_2 = st_drop_geometry(DataSpSL_w0_2_sf) %>%
-    select(-ID)
+    select(-ID) %>%
+    as.data.table()
     print(dim(DataSpSL_w0_2))
     print(tail(DataSpSL_w0_2))
   }
@@ -349,7 +350,8 @@ if(Sp_real == "Myocry") {
     st_as_sf()
     DataSpSL_w0_2_sf <- st_intersection(DataSpSL_w0_2_sf, Myocry_area)
     DataSpSL_w0_2 = st_drop_geometry(DataSpSL_w0_2_sf) %>%
-    select(-ID)
+    select(-ID) %>%
+    as.data.table()
     print(dim(DataSpSL_w0_2))
     print(tail(DataSpSL_w0_2))
     print(class(DataSpSL_w0_2))
