@@ -334,7 +334,7 @@ if(Sp_real == "Myocry") {
     as.data.table()
     DataSpSL_w0_2_for_zeros_sf <- st_difference(DataSpSL_w0_2_sf, Myonat_area) # Convert all data outside of area to 0
     DataSpSL_w0_2_for_zeros = st_drop_geometry(DataSpSL_w0_2_for_zeros_sf) %>%
-    select(-ID, -ID.1) %>%
+    select(-ID, -ID.1, -fid_2, -id_2, -fid_2.1, -id_2.1) %>%
     as.data.table()
     print(names(DataSpSL_w0_2_for_zeros))
     DataSpSL_w0_2_for_zeros$nb_contacts = 0
@@ -356,7 +356,7 @@ if(Sp_real == "Myocry") {
     as.data.table()
     DataSpSL_w0_2_for_zeros_sf <- st_difference(DataSpSL_w0_2_sf, Myocry_area) # Convert all data outside of area to 0
     DataSpSL_w0_2_for_zeros = st_drop_geometry(DataSpSL_w0_2_for_zeros_sf) %>%
-    select(-ID, -ID.1) %>%
+    select(-ID, -ID.1, -fid_2, -id_2, -fid_2.1, -id_2.1) %>%
     as.data.table()
     print(names(DataSpSL_w0_2_for_zeros))
     DataSpSL_w0_2_for_zeros$nb_contacts = 0
