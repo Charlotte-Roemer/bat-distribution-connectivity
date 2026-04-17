@@ -322,7 +322,6 @@ if(Sp_real == "Myocry") {
   if(Sp_real == "Myonat" & opt$region != "corsica"){
     cat("Filtering myonat area", fill = TRUE)
     print(dim(DataSpSL_w0_2))
-    print(names(DataSpSL_w0_2))
     DataSpSL_w0_2_sf = st_as_sf(DataSpSL_w0_2, # convert acoustic data to sf
     coords = c("longitude", "latitude"), crs=4326, remove=FALSE)
     Myonat_area_path <- file.path(data_path, "GIS", "regions.gpkg") # load myonat area
@@ -330,8 +329,9 @@ if(Sp_real == "Myocry") {
     st_as_sf()
     DataSpSL_w0_2_sf <- st_intersection(DataSpSL_w0_2_sf, Myonat_area)
     DataSpSL_w0_2 = st_drop_geometry(DataSpSL_w0_2_sf) %>%
-    select(-ID) %>%
+    select(-ID, -ID.1, -fid_2, -id_2, -fid_2.1, -id_2.1) %>%
     as.data.table()
+    print(names(DataSpSL_w0_2))
     DataSpSL_w0_2_for_zeros_sf <- st_difference(DataSpSL_w0_2_sf, Myonat_area) # Convert all data outside of area to 0
     DataSpSL_w0_2_for_zeros = st_drop_geometry(DataSpSL_w0_2_for_zeros_sf) %>%
     select(-ID, -ID.1, -fid_2, -id_2, -fid_2.1, -id_2.1) %>%
@@ -352,7 +352,7 @@ if(Sp_real == "Myocry") {
     st_as_sf()
     DataSpSL_w0_2_sf <- st_intersection(DataSpSL_w0_2_sf, Myocry_area)
     DataSpSL_w0_2 = st_drop_geometry(DataSpSL_w0_2_sf) %>%
-    select(-ID) %>%
+    select(-ID, -ID.1, -fid_2, -id_2, -fid_2.1, -id_2.1) %>%
     as.data.table()
     DataSpSL_w0_2_for_zeros_sf <- st_difference(DataSpSL_w0_2_sf, Myocry_area) # Convert all data outside of area to 0
     DataSpSL_w0_2_for_zeros = st_drop_geometry(DataSpSL_w0_2_for_zeros_sf) %>%
