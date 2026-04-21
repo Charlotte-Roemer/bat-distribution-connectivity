@@ -332,13 +332,13 @@ if(Sp_real == "Myocry") {
     DataSpSL_w0_2_sf <- st_intersection(DataSpSL_w0_2_sf, Myonat_area)
     print(names(DataSpSL_w0_2_sf))
     DataSpSL_w0_2 = st_drop_geometry(DataSpSL_w0_2_sf) %>%
-    select(any_of(unwanted_vars)) %>%
+    select(!any_of(unwanted_vars)) %>%
     as.data.table()
     print(dim(DataSpSL_w0_2))
     print(names(DataSpSL_w0_2))
     DataSpSL_w0_2_for_zeros_sf <- st_difference(DataSpSL_w0_2_sf, Myonat_area) # Convert all data outside of area to 0
     DataSpSL_w0_2_for_zeros = st_drop_geometry(DataSpSL_w0_2_for_zeros_sf) %>%
-    select(any_of(unwanted_vars)) %>%
+    select(!any_of(unwanted_vars)) %>%
     as.data.table()
     print(dim(DataSpSL_w0_2_for_zeros))
     print(names(DataSpSL_w0_2_for_zeros))
@@ -362,7 +362,7 @@ if(Sp_real == "Myocry") {
     print(names(DataSpSL_w0_2))
     DataSpSL_w0_2_for_zeros_sf <- st_difference(DataSpSL_w0_2_sf, Myocry_area) # Convert all data outside of area to 0
     DataSpSL_w0_2_for_zeros = st_drop_geometry(DataSpSL_w0_2_for_zeros_sf) %>%
-    select(any_of(unwanted_vars)) %>%
+    select(!any_of(unwanted_vars)) %>%
     as.data.table()
     print(names(DataSpSL_w0_2_for_zeros))
     DataSpSL_w0_2_for_zeros$nb_contacts = 0
