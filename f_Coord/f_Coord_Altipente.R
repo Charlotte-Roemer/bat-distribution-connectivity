@@ -174,7 +174,7 @@ Coord_Alti <- function(points, names_coord, bs, bm, bl, region, layer) {
   AltiListePointCard[is.na(AltiListePointCard)] <- 0
 
   print(head(AltiListePointCard))
-  print(AltiListePointCard[(k - 1) * 8 + 1, 2])
+  #print(AltiListePointCard[(k - 1) * 8 + 1, 2])
   # calcul de la SpPen maximale (en degres)
   SpPenS <- vector()
   SpNorS <- vector()
@@ -213,18 +213,34 @@ Coord_Alti <- function(points, names_coord, bs, bm, bl, region, layer) {
   #######
   print("Buffer M")
 
-  ListePointCard <- data.frame()
-  for (k in 1:nrow(Coord)) {
-    x <- c(0, 0, 0, 0, 0, 0, 0, 0)
-    Group.1 <- c(Coord$Group.1[k] + BufferMedium, Coord$Group.1[k] - BufferMedium, Coord$Group.1[k] + BufferMedium, Coord$Group.1[k], Coord$Group.1[k] - BufferMedium, Coord$Group.1[k], Coord$Group.1[k] - BufferMedium, Coord$Group.1[k] + BufferMedium)
-    Group.2 <- c(Coord$Group.2[k] + BufferMedium, Coord$Group.2[k] - BufferMedium, Coord$Group.2[k], Coord$Group.2[k] + BufferMedium, Coord$Group.2[k], Coord$Group.2[k] - BufferMedium, Coord$Group.2[k] + BufferMedium, Coord$Group.2[k] - BufferMedium)
+  #ListePointCard <- data.frame()
+  #for (k in 1:nrow(Coord)) {
+  #  x <- c(0, 0, 0, 0, 0, 0, 0, 0)
+  #  Group.1 <- c(Coord$Group.1[k] + BufferMedium, Coord$Group.1[k] - BufferMedium, Coord$Group.1[k] + BufferMedium, Coord$Group.1[k], Coord$Group.1[k] - BufferMedium, Coord$Group.1[k], Coord$Group.1[k] - BufferMedium, Coord$Group.1[k] + BufferMedium)
+  #  Group.2 <- c(Coord$Group.2[k] + BufferMedium, Coord$Group.2[k] - BufferMedium, Coord$Group.2[k], Coord$Group.2[k] + BufferMedium, Coord$Group.2[k], Coord$Group.2[k] - BufferMedium, Coord$Group.2[k] + BufferMedium, Coord$Group.2[k] - BufferMedium)
+  #
+  #  PointsCard <- data.frame(x, Group.1, Group.2)
+  #  ListePointCard <- rbind(ListePointCard, PointsCard)
+  #}
+  #
+  #ListePointCard <- st_as_sf(ListePointCard, coords = c("Group.1", "Group.2"), crs = 2154, remove = FALSE)
 
-    PointsCard <- data.frame(x, Group.1, Group.2)
-    ListePointCard <- rbind(ListePointCard, PointsCard)
-  }
+# DEBUT ALTERNATIVE CHATGPT ------------------------------
+  # offsets des 8 directions
+  dx <- c(+BufferMedium, -BufferMedium, +BufferMedium, 0, -BufferMedium, 0, -BufferMedium, +BufferMedium)
+  dy <- c(+BufferMedium, -BufferMedium, 0, +BufferMedium, 0, -BufferMedium, +BufferMedium, -BufferMedium)
 
-  ListePointCard <- st_as_sf(ListePointCard, coords = c("Group.1", "Group.2"), crs = 2154, remove = FALSE)
+  # réplication des coordonnées
+  x_all <- rep(coords[,1], each = 8) + rep(dx, times = nrow(coords))
+  y_all <- rep(coords[,2], each = 8) + rep(dy, times = nrow(coords))
 
+  ListePointCard <- st_as_sf(
+    data.frame(x = 0, Group.1 = x_all, Group.2 = y_all),
+    coords = c("Group.1", "Group.2"),
+    crs = 2154,
+    remove = FALSE
+  )
+  # FIN ALTERNATIVE CHATGPT ---------------------------------
 
   AltiListePointCard <- terra::extract(AltiTot, ListePointCard)
 
@@ -272,18 +288,34 @@ Coord_Alti <- function(points, names_coord, bs, bm, bl, region, layer) {
   #######
   print("Buffer L")
 
-  ListePointCard <- data.frame()
-  for (k in 1:nrow(Coord)) {
-    x <- c(0, 0, 0, 0, 0, 0, 0, 0)
-    Group.1 <- c(Coord$Group.1[k] + BufferLarge, Coord$Group.1[k] - BufferLarge, Coord$Group.1[k] + BufferLarge, Coord$Group.1[k], Coord$Group.1[k] - BufferLarge, Coord$Group.1[k], Coord$Group.1[k] - BufferLarge, Coord$Group.1[k] + BufferLarge)
-    Group.2 <- c(Coord$Group.2[k] + BufferLarge, Coord$Group.2[k] - BufferLarge, Coord$Group.2[k], Coord$Group.2[k] + BufferLarge, Coord$Group.2[k], Coord$Group.2[k] - BufferLarge, Coord$Group.2[k] + BufferLarge, Coord$Group.2[k] - BufferLarge)
+  #ListePointCard <- data.frame()
+  #for (k in 1:nrow(Coord)) {
+  #  x <- c(0, 0, 0, 0, 0, 0, 0, 0)
+  #  Group.1 <- c(Coord$Group.1[k] + BufferLarge, Coord$Group.1[k] - BufferLarge, Coord$Group.1[k] + BufferLarge, Coord$Group.1[k], Coord$Group.1[k] - BufferLarge, Coord$Group.1[k], Coord$Group.1[k] - BufferLarge, Coord$Group.1[k] + BufferLarge)
+  #  Group.2 <- c(Coord$Group.2[k] + BufferLarge, Coord$Group.2[k] - BufferLarge, Coord$Group.2[k], Coord$Group.2[k] + BufferLarge, Coord$Group.2[k], Coord$Group.2[k] - BufferLarge, Coord$Group.2[k] + BufferLarge, Coord$Group.2[k] - BufferLarge)
+  #
+  #  PointsCard <- data.frame(x, Group.1, Group.2)
+  #  ListePointCard <- rbind(ListePointCard, PointsCard)
+  #}
+  #
+  #ListePointCard <- st_as_sf(ListePointCard, coords = c("Group.1", "Group.2"), crs = 2154, remove = FALSE)
 
-    PointsCard <- data.frame(x, Group.1, Group.2)
-    ListePointCard <- rbind(ListePointCard, PointsCard)
-  }
+# DEBUT ALTERNATIVE CHATGPT ------------------------------
+  # offsets des 8 directions
+  dx <- c(+BufferLarge, -BufferLarge, +BufferLarge, 0, -BufferLarge, 0, -BufferLarge, +BufferLarge)
+  dy <- c(+BufferLarge, -BufferLarge, 0, +BufferLarge, 0, -BufferLarge, +BufferLarge, -BufferLarge)
 
-  ListePointCard <- st_as_sf(ListePointCard, coords = c("Group.1", "Group.2"), crs = 2154, remove = FALSE)
+  # réplication des coordonnées
+  x_all <- rep(coords[,1], each = 8) + rep(dx, times = nrow(coords))
+  y_all <- rep(coords[,2], each = 8) + rep(dy, times = nrow(coords))
 
+  ListePointCard <- st_as_sf(
+    data.frame(x = 0, Group.1 = x_all, Group.2 = y_all),
+    coords = c("Group.1", "Group.2"),
+    crs = 2154,
+    remove = FALSE
+  )
+  # FIN ALTERNATIVE CHATGPT ---------------------------------
 
   AltiListePointCard <- terra::extract(AltiTot, ListePointCard)
 
