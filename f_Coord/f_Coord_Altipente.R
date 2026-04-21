@@ -85,7 +85,7 @@ Coord_Alti <- function(points, names_coord, bs, bm, bl, region, layer) {
   SpAltiS[is.na(SpAltiS)] <- 0
   OccSL$SpAltiS <- SpAltiS
 
-  print("BS a")
+  print("Buffer Small Alti")
   print(summary(OccSL$SpAltiS))
 
 
@@ -98,6 +98,7 @@ Coord_Alti <- function(points, names_coord, bs, bm, bl, region, layer) {
   SpAltiM[is.na(SpAltiM)] <- 0
   OccSL$SpAltiM <- SpAltiM
 
+  print("Buffer Medium Alti")
 
   #######
   # Buffer L
@@ -108,36 +109,56 @@ Coord_Alti <- function(points, names_coord, bs, bm, bl, region, layer) {
   SpAltiL[is.na(SpAltiL)] <- 0
   OccSL$SpAltiL <- SpAltiL
 
+  print("Buffer Large Alti")
 
   ####################################################
   ####################################################
-  ############# Calcul de la SpPen#####################
+  ############# Calcul de la SpPen ###################
   ####################################################
   ####################################################
 
   print("SpPen")
   # ajout de 8 points cardinaux a 75m de chaques points (N,S,E,O,NO,NE,SE,SO)
 
+  # A DECOMMENTER SI L'ALTERNATIVE FOIRE
+  #Coord <- as.data.frame(OccSL_L93) # extraire les colonnes x, Group1 et Group2
+  #Coord$Group.1 <- st_coordinates(OccSL_L93)[, 1]
+  #Coord$Group.2 <- st_coordinates(OccSL_L93)[, 2]
+  #
+  #print("a")
+  #
+  #ListePointCard <- data.frame()
+  #for (k in 1:nrow(Coord)) {
+  #  x <- c(0, 0, 0, 0, 0, 0, 0, 0)
+  #  Group.1 <- c(Coord$Group.1[k] + 75, Coord$Group.1[k] - 75, Coord$Group.1[k] + 75, Coord$Group.1[k], Coord$Group.1[k] - 75, Coord$Group.1[k], Coord$Group.1[k] - 75, Coord$Group.1[k] + 75)
+  #  Group.2 <- c(Coord$Group.2[k] + 75, Coord$Group.2[k] - 75, Coord$Group.2[k], Coord$Group.2[k] + 75, Coord$Group.2[k], Coord$Group.2[k] - 75, Coord$Group.2[k] + 75, Coord$Group.2[k] - 75)
+  #
+  #  PointsCard <- data.frame(x, Group.1, Group.2)
+  #  ListePointCard <- rbind(ListePointCard, PointsCard)
+  #}
+  #
+  #print("b")
+  #
+  #ListePointCard <- st_as_sf(ListePointCard, coords = c("Group.1", "Group.2"), crs = 2154, remove = FALSE)
 
-  Coord <- as.data.frame(OccSL_L93) # extraire les colonnes x, Group1 et Group2
-  Coord$Group.1 <- st_coordinates(OccSL_L93)[, 1]
-  Coord$Group.2 <- st_coordinates(OccSL_L93)[, 2]
+  # DEBUT ALTERNATIVE CHATGPT ------------------------------
+  coords <- st_coordinates(OccSL_L93)
 
-  print("a")
+  # offsets des 8 directions
+  dx <- c(+75, -75, +75, 0, -75, 0, -75, +75)
+  dy <- c(+75, -75, 0, +75, 0, -75, +75, -75)
 
-  ListePointCard <- data.frame()
-  for (k in 1:nrow(Coord)) {
-    x <- c(0, 0, 0, 0, 0, 0, 0, 0)
-    Group.1 <- c(Coord$Group.1[k] + 75, Coord$Group.1[k] - 75, Coord$Group.1[k] + 75, Coord$Group.1[k], Coord$Group.1[k] - 75, Coord$Group.1[k], Coord$Group.1[k] - 75, Coord$Group.1[k] + 75)
-    Group.2 <- c(Coord$Group.2[k] + 75, Coord$Group.2[k] - 75, Coord$Group.2[k], Coord$Group.2[k] + 75, Coord$Group.2[k], Coord$Group.2[k] - 75, Coord$Group.2[k] + 75, Coord$Group.2[k] - 75)
+  # réplication des coordonnées
+  x_all <- rep(coords[,1], each = 8) + rep(dx, times = nrow(coords))
+  y_all <- rep(coords[,2], each = 8) + rep(dy, times = nrow(coords))
 
-    PointsCard <- data.frame(x, Group.1, Group.2)
-    ListePointCard <- rbind(ListePointCard, PointsCard)
-  }
-
-  print("b")
-
-  ListePointCard <- st_as_sf(ListePointCard, coords = c("Group.1", "Group.2"), crs = 2154, remove = FALSE)
+  ListePointCard <- st_as_sf(
+    data.frame(x = 0, Group.1 = x_all, Group.2 = y_all),
+    coords = c("Group.1", "Group.2"),
+    crs = 2154,
+    remove = FALSE
+  )
+  # FIN ALTERNATIVE CHATGPT ---------------------------------
 
 
   #######
@@ -154,7 +175,7 @@ Coord_Alti <- function(points, names_coord, bs, bm, bl, region, layer) {
 
   print(head(AltiListePointCard))
   print(AltiListePointCard[(k - 1) * 8 + 1, 2])
-  # calcul de la SpPen maximale (en degrï¿½)
+  # calcul de la SpPen maximale (en degres)
   SpPenS <- vector()
   SpNorS <- vector()
   SpEasS <- vector()
