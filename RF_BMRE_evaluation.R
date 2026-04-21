@@ -319,6 +319,7 @@ if(Sp_real == "Myocry") {
     DataSpSL_w0_2$latitude < 52L & DataSpSL_w0_2$latitude > 41L)
 
   # If species is myocry or myonat (and not Corsica), exclude data from the areas where the species is not extant
+  unwanted_vars = c("ID", "ID.1", "fid_2", "id_2", "fid_2.1", "id_2.1")
   if(Sp_real == "Myonat" & opt$region != "corsica"){
     cat("Filtering myonat area", fill = TRUE)
     print(dim(DataSpSL_w0_2))
@@ -331,13 +332,13 @@ if(Sp_real == "Myocry") {
     DataSpSL_w0_2_sf <- st_intersection(DataSpSL_w0_2_sf, Myonat_area)
     print(names(DataSpSL_w0_2_sf))
     DataSpSL_w0_2 = st_drop_geometry(DataSpSL_w0_2_sf) %>%
-    select(any_of(c(-ID, -fid_2, -id_2))) %>%
+    select(any_of(unwanted_vars)) %>%
     as.data.table()
     print(dim(DataSpSL_w0_2))
     print(names(DataSpSL_w0_2))
     DataSpSL_w0_2_for_zeros_sf <- st_difference(DataSpSL_w0_2_sf, Myonat_area) # Convert all data outside of area to 0
     DataSpSL_w0_2_for_zeros = st_drop_geometry(DataSpSL_w0_2_for_zeros_sf) %>%
-    select(any_of(c(-ID, -ID.1, -fid_2, -id_2, -fid_2.1, -id_2.1))) %>%
+    select(any_of(unwanted_vars)) %>%
     as.data.table()
     print(dim(DataSpSL_w0_2_for_zeros))
     print(names(DataSpSL_w0_2_for_zeros))
@@ -361,7 +362,7 @@ if(Sp_real == "Myocry") {
     print(names(DataSpSL_w0_2))
     DataSpSL_w0_2_for_zeros_sf <- st_difference(DataSpSL_w0_2_sf, Myocry_area) # Convert all data outside of area to 0
     DataSpSL_w0_2_for_zeros = st_drop_geometry(DataSpSL_w0_2_for_zeros_sf) %>%
-    select(any_of(c(-ID, -ID.1, -fid_2, -id_2, -fid_2.1, -id_2.1))) %>%
+    select(any_of(unwanted_vars)) %>%
     as.data.table()
     print(names(DataSpSL_w0_2_for_zeros))
     DataSpSL_w0_2_for_zeros$nb_contacts = 0
