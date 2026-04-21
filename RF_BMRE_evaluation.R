@@ -333,11 +333,13 @@ if(Sp_real == "Myocry") {
     DataSpSL_w0_2 = st_drop_geometry(DataSpSL_w0_2_sf) %>%
     select(-ID, -fid_2, -id_2) %>%
     as.data.table()
+    print(dim(DataSpSL_w0_2))
     print(names(DataSpSL_w0_2))
     DataSpSL_w0_2_for_zeros_sf <- st_difference(DataSpSL_w0_2_sf, Myonat_area) # Convert all data outside of area to 0
     DataSpSL_w0_2_for_zeros = st_drop_geometry(DataSpSL_w0_2_for_zeros_sf) %>%
     select(-ID, -ID.1, -fid_2, -id_2, -fid_2.1, -id_2.1) %>%
     as.data.table()
+    print(dim(DataSpSL_w0_2_for_zeros))
     print(names(DataSpSL_w0_2_for_zeros))
     DataSpSL_w0_2_for_zeros$nb_contacts = 0
     DataSpSL_w0_2 = rbind(DataSpSL_w0_2, DataSpSL_w0_2_for_zeros) # Add 0 to dataset
@@ -356,6 +358,7 @@ if(Sp_real == "Myocry") {
     DataSpSL_w0_2 = st_drop_geometry(DataSpSL_w0_2_sf) %>%
     select(-ID) %>%
     as.data.table()
+    print(names(DataSpSL_w0_2))
     DataSpSL_w0_2_for_zeros_sf <- st_difference(DataSpSL_w0_2_sf, Myocry_area) # Convert all data outside of area to 0
     DataSpSL_w0_2_for_zeros = st_drop_geometry(DataSpSL_w0_2_for_zeros_sf) %>%
     select(-ID, -ID.1, -fid_2, -id_2, -fid_2.1, -id_2.1) %>%
@@ -679,12 +682,17 @@ if(Sp_real == "Myocry") {
     )
   }
 
+  prin("a)")
+
   DataSaison$acti_class <- factor(DataSaison$acti_class, levels = c("NoAct", "Faible", "Moyen", "Fort", "TresFort"))
 
   samp_sizes <- def_sample_vector(DataSaison, "acti_class", 0.66)
   # DataSaison$SpRoAddM <- DataSaison$SpRo1M + DataSaison$SpRo2M +
   #   DataSaison$SpRo3M + DataSaison$SpRo4M
   #
+
+prin("b)")
+
   if (selection == "PCA") {
     cat("selection : PCA", fill = TRUE)
     predictors <- DataSaison[, variables_acp]
@@ -761,6 +769,8 @@ if(Sp_real == "Myocry") {
     Prednames <- variables_indisp
   }
 
+  prin("c)")
+
   if ("geometry" %in% colnames(DataSaison)) {
     DataSaison <- DataSaison |>
       select(-geometry)
@@ -787,6 +797,8 @@ if(Sp_real == "Myocry") {
     ),
     row.names = FALSE
   )
+
+  prin("d)")
 
   if (activite == "nbcontacts") {
     activite <- "nb_contacts"
