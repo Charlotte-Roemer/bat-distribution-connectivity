@@ -142,15 +142,15 @@ Coord_Alti <- function(points, names_coord, bs, bm, bl, region, layer) {
   #ListePointCard <- st_as_sf(ListePointCard, coords = c("Group.1", "Group.2"), crs = 2154, remove = FALSE)
 
   # DEBUT ALTERNATIVE CHATGPT ------------------------------
-  coords <- st_coordinates(OccSL_L93)
+  Coord <- st_coordinates(OccSL_L93)
 
   # offsets des 8 directions
   dx <- c(+75, -75, +75, 0, -75, 0, -75, +75)
   dy <- c(+75, -75, 0, +75, 0, -75, +75, -75)
 
   # réplication des coordonnées
-  x_all <- rep(coords[,1], each = 8) + rep(dx, times = nrow(coords))
-  y_all <- rep(coords[,2], each = 8) + rep(dy, times = nrow(coords))
+  x_all <- rep(Coord[,1], each = 8) + rep(dx, times = nrow(Coord))
+  y_all <- rep(Coord[,2], each = 8) + rep(dy, times = nrow(Coord))
 
   ListePointCard <- st_as_sf(
     data.frame(x = 0, Group.1 = x_all, Group.2 = y_all),
@@ -231,8 +231,8 @@ Coord_Alti <- function(points, names_coord, bs, bm, bl, region, layer) {
   dy <- c(+BufferMedium, -BufferMedium, 0, +BufferMedium, 0, -BufferMedium, +BufferMedium, -BufferMedium)
 
   # réplication des coordonnées
-  x_all <- rep(coords[,1], each = 8) + rep(dx, times = nrow(coords))
-  y_all <- rep(coords[,2], each = 8) + rep(dy, times = nrow(coords))
+  x_all <- rep(Coord[,1], each = 8) + rep(dx, times = nrow(Coord))
+  y_all <- rep(Coord[,2], each = 8) + rep(dy, times = nrow(Coord))
 
   ListePointCard <- st_as_sf(
     data.frame(x = 0, Group.1 = x_all, Group.2 = y_all),
@@ -306,8 +306,8 @@ Coord_Alti <- function(points, names_coord, bs, bm, bl, region, layer) {
   dy <- c(+BufferLarge, -BufferLarge, 0, +BufferLarge, 0, -BufferLarge, +BufferLarge, -BufferLarge)
 
   # réplication des coordonnées
-  x_all <- rep(coords[,1], each = 8) + rep(dx, times = nrow(coords))
-  y_all <- rep(coords[,2], each = 8) + rep(dy, times = nrow(coords))
+  x_all <- rep(Coord[,1], each = 8) + rep(dx, times = nrow(Coord))
+  y_all <- rep(Coord[,2], each = 8) + rep(dy, times = nrow(Coord))
 
   ListePointCard <- st_as_sf(
     data.frame(x = 0, Group.1 = x_all, Group.2 = y_all),
