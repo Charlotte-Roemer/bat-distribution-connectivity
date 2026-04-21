@@ -682,7 +682,7 @@ if(Sp_real == "Myocry") {
     )
   }
 
-  prin("a)")
+  print("a)")
 
   DataSaison$acti_class <- factor(DataSaison$acti_class, levels = c("NoAct", "Faible", "Moyen", "Fort", "TresFort"))
 
@@ -691,7 +691,7 @@ if(Sp_real == "Myocry") {
   #   DataSaison$SpRo3M + DataSaison$SpRo4M
   #
 
-prin("b)")
+print("b)")
 
   if (selection == "PCA") {
     cat("selection : PCA", fill = TRUE)
@@ -769,7 +769,7 @@ prin("b)")
     Prednames <- variables_indisp
   }
 
-  prin("c)")
+  print("c)")
 
   if ("geometry" %in% colnames(DataSaison)) {
     DataSaison <- DataSaison |>
@@ -798,7 +798,7 @@ prin("b)")
     row.names = FALSE
   )
 
-  prin("d)")
+  print("d)")
 
   if (activite == "nbcontacts") {
     activite <- "nb_contacts"
