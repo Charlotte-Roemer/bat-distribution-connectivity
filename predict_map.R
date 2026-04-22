@@ -264,17 +264,40 @@ X_pred[is.na(X_pred)] <- 0
 print("X pred done")
 # y_pred <- predict(model, X_pred, predict.all = TRUE)
 
-y_pred <- predict(model$finalModel, X_pred[model$finalModel$xNames], predict.all = TRUE)
+chunk_size <- 10000
+n <- nrow(X_pred)
+
+y_pred <- numeric(n)
+y_sd   <- numeric(n)  # incertitude (écart-type)
+
+start_idx <- seq(1, n, by = chunk_size)
+
+for (i in start_idx) {
+  idx <- i:min(i + chunk_size - 1, n)
+  
+  pred <- predict(
+    model$finalModel,
+    X_pred[idx, model$finalModel$xNames],
+    predict.all = TRUE
+  )
+  
+  # moyenne
+  y_pred[idx] <- pred$aggregate
+  
+  # incertitude = sd des arbres
+  y_sd[idx] <- apply(pred$individual, 1, sd)
+}
+
+#y_pred <- predict(model$finalModel, X_pred[model$finalModel$xNames], predict.all = TRUE) # predict.all = TRUE is to calculate the uncertainty  # à remettre si ça marche pas
 
 print("prediction done!")
 
-
-x_predict_map <- cbind(pred_data_sf, y_pred$aggregate)
-
+#x_predict_map <- cbind(pred_data_sf, y_pred$aggregate) # à remettre si ça marche pas
+x_predict_map <- cbind(pred_data_sf, y_pred)
 # names(x_predict_map)[length(names(x_predict_map))] <- "y_pred"
 
-
-stat <- apply(y_pred$individual, 1, sd)
+#stat <- apply(y_pred$individual, 1, sd) # calculates the uncertainty of the predictions # à remettre si ça marche pas
+stat <- y_sd # calculates the uncertainty of the predictions
 
 x_predict_map <- cbind(x_predict_map, stat)
 print(colnames(x_predict_map))
