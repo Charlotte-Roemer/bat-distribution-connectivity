@@ -305,7 +305,7 @@ print(colnames(x_predict_map))
 
 map <- terra::rasterize(
   x = x_predict_map, y = empty_raster,
-  field = "y_pred.aggregate",
+  field = "y_pred", #field = "y_pred.aggregate", à remettre si ça marche pas
   fun = "mean"
 )
 
