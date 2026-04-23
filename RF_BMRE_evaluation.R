@@ -645,7 +645,7 @@ print("saisons apres filtre")
 print(unique(DataSaison_sf$SpSaison))
 
 # DataSp <- subset(DataCPL3, DataCPL3$espece == ListSp[i]) # subset species
-DataSp <- subset(DataCPL3, DataCPL3$espece == Sp) # subset species
+# DataSp <- subset(DataCPL3, DataCPL3$espece == Sp) # subset species
 DataSaison_sf <- filter_by_median_season_grid(DataSaison_sf, opt$region)
 
 DataSaison <- DataSaison_sf

@@ -290,86 +290,86 @@ for (i in 1:length(listfun))
   source(listfun[i])
 }
 
-#
-# print(FCoord)
 # #
-## Bioclim ###
-print("Bioclim")
-Coord_BioclimLocal(
-  points = FCoord,
-  names_coord = Coord_Headers,
-  layer_folder = bioclim_folder
-)
+# # print(FCoord)
+# # #
+# ## Bioclim ###
+# print("Bioclim")
+# Coord_BioclimLocal(
+#   points = FCoord,
+#   names_coord = Coord_Headers,
+#   layer_folder = bioclim_folder
+# )
 
 
-### ALAN ###
-print("ALAN")
-Coord_ALAN(
-  points = FCoord,
-  names_coord = c(Coord_Headers, "Nuit"),
-  bm = BM,
-  bl = BL,
-  layers = folder_alan
-)
+# ### ALAN ###
+# print("ALAN")
+# Coord_ALAN(
+#   points = FCoord,
+#   names_coord = c(Coord_Headers, "Nuit"),
+#   bm = BM,
+#   bl = BL,
+#   layers = folder_alan
+# )
 
-# VCF ###
-print("VCF")
-Coord_VCF(
-  points = FCoord,
-  names_coord = c(Coord_Headers, "Nuit"),
-  bs = BS,
-  bm = BM,
-  bl = BL,
-  layers = folder_vcf
-)
+# # VCF ###
+# print("VCF")
+# Coord_VCF(
+#   points = FCoord,
+#   names_coord = c(Coord_Headers, "Nuit"),
+#   bs = BS,
+#   bm = BM,
+#   bl = BL,
+#   layers = folder_vcf
+# )
 
-# ALTI ####
-print("Altitude & slope")
-Coord_Alti(
-  points = FCoord,
-  names_coord = Coord_Headers,
-  bs = BS,
-  bm = BM,
-  bl = BL,
-  region = opt$region,
-  layer = layer_alti
-)
-
-
-# CARTHAGE (eau) ####
-print("Water")
-Coord_Water(
-  points = FCoord,
-  names_coord = Coord_Headers,
-  water_polyg = layer_Carthage_P,
-  water_lines = layer_Carthage_C
-)
+# # ALTI ####
+# print("Altitude & slope")
+# Coord_Alti(
+#   points = FCoord,
+#   names_coord = Coord_Headers,
+#   bs = BS,
+#   bm = BM,
+#   bl = BL,
+#   region = opt$region,
+#   layer = layer_alti
+# )
 
 
-if (opt$region == "idf"){
-  ## Ecoline (idf)
-  Coord_Ecoline(
-    points = FCoord,
-    names_coord = Coord_Headers,
-    ecoline_vh = layer_ecoline_high,
-    ecoline_vb = layer_ecoline_low,
-    buffer = BM
-  )
+# # CARTHAGE (eau) ####
+# print("Water")
+# Coord_Water(
+#   points = FCoord,
+#   names_coord = Coord_Headers,
+#   water_polyg = layer_Carthage_P,
+#   water_lines = layer_Carthage_C
+# )
 
-  # MOS Land Cover ####
-  print("MOS")
-  Coord_MOSraster(
-    points = FCoord,
-    names_coord = c(Coord_Headers, "Nuit"),
-    bs = BS,
-    bm = BM,
-    bl = BL,
-    layer = folder_MOS
-  )
-}
+
+# if (opt$region == "idf"){
+#   ## Ecoline (idf)
+#   Coord_Ecoline(
+#     points = FCoord,
+#     names_coord = Coord_Headers,
+#     ecoline_vh = layer_ecoline_high,
+#     ecoline_vb = layer_ecoline_low,
+#     buffer = BM
+#   )
+
+#   # MOS Land Cover ####
+#   print("MOS")
+#   Coord_MOSraster(
+#     points = FCoord,
+#     names_coord = c(Coord_Headers, "Nuit"),
+#     bs = BS,
+#     bm = BM,
+#     bl = BL,
+#     layer = folder_MOS
+#   )
+# }
 
 if (opt$region != "europe") {
-  wind turbines ###
+  ### wind turbines ###
 
   print("wind turbines")
   Coord_eol(
