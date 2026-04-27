@@ -13,11 +13,21 @@ fichiers
 
 dataframes <- lapply(fichiers, read.csv)
 
+#for (i in seq_along(fichiers)) {
+#  if (identical(
+#    colnames(dataframes[[i]]),
+#    c("X", "Y", "Nuit", "fortnight", "fortnight_year", "code")
+#  )) {
+#    base <- dataframes[[i]]
+#    dataframes <- dataframes[-i]
+#  }
+#}
+
 for (i in seq_along(fichiers)) {
-  if (all(c("X", "Y", "Nuit") %in% names(dataframes[[i]]))) {
-    base <- dataframes[[i]]
-    dataframes <- dataframes[-i]
-  }
+ if (all(c("X", "Y", "Nuit") %in% colnames(dataframes[[i]]))) {
+   base <- dataframes[[i]]
+   dataframes <- dataframes[-i]
+ }
 }
 
 base <- unique(base)
