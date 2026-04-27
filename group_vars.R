@@ -3,6 +3,8 @@
 folder <- commandArgs(trailingOnly = TRUE)[1L]
 
 mode <- strsplit(basename(folder), "_", fixed = TRUE)[[1L]][1L]
+print("mode:")
+print(mode)
 region <- commandArgs(trailingOnly = TRUE)[2L]
 
 fichiers <- list.files(folder,
@@ -13,26 +15,36 @@ fichiers
 
 dataframes <- lapply(fichiers, read.csv)
 
-#for (i in seq_along(fichiers)) {
-#  if (identical(
-#    colnames(dataframes[[i]]),
-#    c("X", "Y", "Nuit", "fortnight", "fortnight_year", "code")
-#  )) {
-#    base <- dataframes[[i]]
-#    dataframes <- dataframes[-i]
-#  }
-#}
-
+if(mode=="train"){
+# Looks for the "base" table which is simply the locations and the date of observations
 for (i in seq_along(fichiers)) {
- if (all(c("X", "Y", "Nuit") %in% colnames(dataframes[[i]]))) {
-   base <- dataframes[[i]]
-   dataframes <- dataframes[-i]
- }
+  if (identical(
+    colnames(dataframes[[i]]),
+    c("X", "Y", "Nuit", "fortnight", "fortnight_year", "code")
+  )) {
+    base <- dataframes[[i]] # Identifies the base table in the list of variables
+    dataframes <- dataframes[-i] # Removes the base table from the list of variables
+  }
+}
+}
+
+if(mode=="predict"){
+  # Looks for the "base" table which is simply the locations and the date of predictions
+for (i in seq_along(fichiers)) {
+  if (identical(
+    colnames(dataframes[[i]]),
+    c("X", "Y", "ID")
+  )) {
+    base <- dataframes[[i]] # Identifies the base table in the list of variables
+    dataframes <- dataframes[-i] # Removes the base table from the list of variables
+  }
+}
 }
 
 base <- unique(base)
 head(base)
 
+# Join variables with base
 for (df in dataframes) {
   if ("Nuit" %in% colnames(df)) {
     df <- unique(df)
