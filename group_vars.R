@@ -3,7 +3,7 @@ library(tidyverse)
 folder <- commandArgs(trailingOnly = TRUE)[1L]
 
 # mode <- strsplit(basename(folder), "_", fixed = TRUE)[[1L]][1L]
-mode <- str_extract(chemin, "(?<=/)[^/]*?(?=_vars)")
+mode <- str_extract(folder, "(?<=/)[^/]*?(?=_vars)")
 
 if (mode == "obs") {
   mode_name <- "train"
@@ -15,6 +15,8 @@ if (mode == "obs") {
 
 print("mode:")
 print(mode)
+print("mode name:")
+print(mode_name)
 region <- commandArgs(trailingOnly = TRUE)[2L]
 
 fichiers <- list.files(folder,
