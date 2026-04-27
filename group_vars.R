@@ -1,8 +1,18 @@
-# library(rlist)
+library(tidyverse)
 
 folder <- commandArgs(trailingOnly = TRUE)[1L]
 
-mode <- strsplit(basename(folder), "_", fixed = TRUE)[[1L]][1L]
+# mode <- strsplit(basename(folder), "_", fixed = TRUE)[[1L]][1L]
+mode <- str_extract(chemin, "(?<=/)[^/]*?(?=_vars)")
+
+if (mode == "obs") {
+  mode_name <- "train"
+} else if (mode == "pred") {
+  mode_name <- "pred"
+} else {
+  error("the path does not contain a folder named obs_vars or pred_vars")
+}
+
 print("mode:")
 print(mode)
 region <- commandArgs(trailingOnly = TRUE)[2L]
@@ -15,30 +25,30 @@ fichiers
 
 dataframes <- lapply(fichiers, read.csv)
 
-if(mode=="train"){
-# Looks for the "base" table which is simply the locations and the date of observations
-for (i in seq_along(fichiers)) {
-  if (identical(
-    colnames(dataframes[[i]]),
-    c("X", "Y", "Nuit", "fortnight", "fortnight_year", "code")
-  )) {
-    base <- dataframes[[i]] # Identifies the base table in the list of variables
-    dataframes <- dataframes[-i] # Removes the base table from the list of variables
+if (mode_name == "train") {
+  # Looks for the "base" table which is simply the locations and the date of observations
+  for (i in seq_along(fichiers)) {
+    if (identical(
+      colnames(dataframes[[i]]),
+      c("X", "Y", "Nuit", "fortnight", "fortnight_year", "code")
+    )) {
+      base <- dataframes[[i]] # Identifies the base table in the list of variables
+      dataframes <- dataframes[-i] # Removes the base table from the list of variables
+    }
   }
-}
 }
 
-if(mode=="predict"){
+if (mode_name == "pred") {
   # Looks for the "base" table which is simply the locations and the date of predictions
-for (i in seq_along(fichiers)) {
-  if (identical(
-    colnames(dataframes[[i]]),
-    c("X", "Y", "ID")
-  )) {
-    base <- dataframes[[i]] # Identifies the base table in the list of variables
-    dataframes <- dataframes[-i] # Removes the base table from the list of variables
+  for (i in seq_along(fichiers)) {
+    if (identical(
+      colnames(dataframes[[i]]),
+      c("X", "Y", "ID")
+    )) {
+      base <- dataframes[[i]] # Identifies the base table in the list of variables
+      dataframes <- dataframes[-i] # Removes the base table from the list of variables
+    }
   }
-}
 }
 
 base <- unique(base)
@@ -61,12 +71,6 @@ for (df in dataframes) {
 head(base)
 base <- base |>
   dplyr::select(-geometry)
-
-if (mode == "obs") {
-  mode_name <- "train"
-} else {
-  mode_name <- "pred"
-}
 
 file <- file.path(folder, paste0("data_", mode_name, "_", region, ".csv"))
 write.csv(base, file)
