@@ -58,7 +58,7 @@ head(base)
 
 # Join variables with base
 for (df in dataframes) {
-  print(df)
+  print(names(df))
   if ("Nuit" %in% colnames(df)) {
     df <- unique(df)
     base$Nuit <- df$Nuit[1] # A enlever si ça marche pas
@@ -72,8 +72,10 @@ for (df in dataframes) {
 }
 
 head(base)
+if("geometry" %in% colnames(base)){
 base <- base |>
   dplyr::select(-geometry)
+}
 
 file <- file.path(folder, paste0("data_", mode_name, "_", region, ".csv"))
 write.csv(base, file)
