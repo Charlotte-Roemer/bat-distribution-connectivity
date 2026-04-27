@@ -58,9 +58,10 @@ head(base)
 
 # Join variables with base
 for (df in dataframes) {
+  print(df)
   if ("Nuit" %in% colnames(df)) {
     df <- unique(df)
-    # df$Nuit <- "2024-06-08"
+    base$Nuit <- df$Nuit[1] # A enlever si ça marche pas
     by <- c("X", "Y", "Nuit")
     base <- dplyr::left_join(base, df, by = by)
   } else {
