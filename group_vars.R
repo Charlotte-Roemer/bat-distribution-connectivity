@@ -14,10 +14,7 @@ fichiers
 dataframes <- lapply(fichiers, read.csv)
 
 for (i in seq_along(fichiers)) {
-  if (identical(
-    colnames(dataframes[[i]]),
-    c("X", "Y", "Nuit", "fortnight", "fortnight_year", "code")
-  )) {
+  if (all(c("X", "Y", "Nuit") %in% names(dataframes[[i]]))) {
     base <- dataframes[[i]]
     dataframes <- dataframes[-i]
   }
