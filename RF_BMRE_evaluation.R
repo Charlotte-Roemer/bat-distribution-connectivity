@@ -239,9 +239,9 @@ print("summary of coordinates CoordPS")
 print(summary(CoordPS$longitude))
 print(summary(CoordPS$latitude))
 
-print("summary of coordinates DataCPL3")
-print(summary(DataCPL3$longitude))
-print(summary(DataCPL3$latitude))
+print("summary of coordinates SelParSL")
+print(summary(SelParSL$longitude))
+print(summary(SelParSL$latitude))
 
 # remove na (if no better solution has been found)
 CoordPS <- na.omit(CoordPS)
@@ -297,10 +297,6 @@ if (Sp == "Plesp") {
 
 print(Sp_real)
 START1 <- Sys.time()
-
-print("summary of coordinates DataSp")
-print(summary(DataSp$longitude))
-print(summary(DataSp$latitude))
 
 # Adds 0 counts using the observation table (avoids user errors but makes the
 # assumption that this table always contains at least 1 species per night)
