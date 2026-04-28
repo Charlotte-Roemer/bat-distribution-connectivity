@@ -319,6 +319,9 @@ DataSpSL_w0_2$espece[is.na(DataSpSL_w0_2$espece)] <- Sp
 cat("Absence data added", fill = TRUE)
 
 # Exclude sites outside region limits (square) :
+print("summary of coordinates")
+print(summary(DataSpSL_w0_2$longitude))
+print(summary(DataSpSL_w0_2$latitude))
 if (opt$region == "france_met") {
   DataSpSL_w0_2 <- subset(DataSpSL_w0_2, DataSpSL_w0_2$longitude < 10L &
     DataSpSL_w0_2$longitude > -6L &
@@ -466,6 +469,10 @@ SpFDate <- yday(Date1)
 
 # If year effect must be accounted for
 DataSaison$SpYear <- year(Date1)
+
+print("summary of coordinates")
+print(summary(DataSaison$longitude))
+print(summary(DataSaison$latitude))
 
 DataSaison_sf <- sf::st_as_sf(
   DataSaison,
