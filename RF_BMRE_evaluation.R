@@ -235,6 +235,14 @@ CoordPS <- List_data_prepared[[1]] # environmental variables
 DataCPL3 <- List_data_prepared[[2]] # bat activity (without absence data)
 SelParSL <- List_data_prepared[[3]] # list of sampling sessions to know when to add absence data
 
+print("summary of coordinates CoordPS")
+print(summary(CoordPS$longitude))
+print(summary(CoordPS$latitude))
+
+print("summary of coordinates DataCPL3")
+print(summary(DataCPL3$longitude))
+print(summary(DataCPL3$latitude))
+
 # remove na (if no better solution has been found)
 CoordPS <- na.omit(CoordPS)
 cat("General dataset prepared", fill = TRUE)
@@ -290,6 +298,10 @@ if (Sp == "Plesp") {
 print(Sp_real)
 START1 <- Sys.time()
 
+print("summary of coordinates DataSp")
+print(summary(DataSp$longitude))
+print(summary(DataSp$latitude))
+
 # Adds 0 counts using the observation table (avoids user errors but makes the
 # assumption that this table always contains at least 1 species per night)
 
@@ -319,13 +331,18 @@ DataSpSL_w0_2$espece[is.na(DataSpSL_w0_2$espece)] <- Sp
 cat("Absence data added", fill = TRUE)
 
 # Exclude sites outside region limits (square) :
-print("summary of coordinates")
+print("summary of coordinates DataSpSL_w0_2")
 print(summary(DataSpSL_w0_2$longitude))
 print(summary(DataSpSL_w0_2$latitude))
+if (opt$region == "idf") {
+  DataSpSL_w0_2 <- subset(DataSpSL_w0_2, DataSpSL_w0_2$longitude < 5L &
+    DataSpSL_w0_2$longitude > 0L &
+    DataSpSL_w0_2$latitude < 50L & DataSpSL_w0_2$latitude > 48L)
+}
 if (opt$region == "france_met") {
   DataSpSL_w0_2 <- subset(DataSpSL_w0_2, DataSpSL_w0_2$longitude < 10L &
     DataSpSL_w0_2$longitude > -6L &
-    DataSpSL_w0_2$latitude < 52L & DataSpSL_w0_2$latitude > 41L)
+    DataSpSL_w0_2$latitude < 53L & DataSpSL_w0_2$latitude > 41L)
 }
 if (opt$region == "europe") {
   DataSpSL_w0_2 <- subset(DataSpSL_w0_2, DataSpSL_w0_2$longitude < 42L &
@@ -470,7 +487,7 @@ SpFDate <- yday(Date1)
 # If year effect must be accounted for
 DataSaison$SpYear <- year(Date1)
 
-print("summary of coordinates")
+print("summary of coordinates DataSaison")
 print(summary(DataSaison$longitude))
 print(summary(DataSaison$latitude))
 
