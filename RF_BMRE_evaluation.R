@@ -299,6 +299,7 @@ print(Sp_real)
 START1 <- Sys.time()
 
 print("summary of coordinates DataSp")
+print(names(DataSp))
 print(summary(DataSp$longitude))
 print(summary(DataSp$latitude))
 
@@ -317,6 +318,10 @@ DataSp$Nuit <- as.Date(DataSp$Nuit)
 DataCPL3$Nuit <- as.Date(DataCPL3$Nuit)
 DataSpSL_w0_2 <- full_join(DataSp, DataCPL3_unique) # Adds the nights with absence
 colnames(DataSpSL_w0_2)[which(colnames(DataSpSL_w0_2) == "point")] <- "nom"
+
+print("summary of coordinates DataSpSL_w0_2")
+print(summary(DataSpSL_w0_2$longitude))
+print(summary(DataSpSL_w0_2$latitude))
 
 # performs a partial join (updates columns of DataSpSL_w0_2 with info of SelParSL)
 n <- names(SelParSL)
