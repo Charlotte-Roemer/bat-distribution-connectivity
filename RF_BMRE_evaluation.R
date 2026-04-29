@@ -235,14 +235,6 @@ CoordPS <- List_data_prepared[[1]] # environmental variables
 DataCPL3 <- List_data_prepared[[2]] # bat activity (without absence data)
 SelParSL <- List_data_prepared[[3]] # list of sampling sessions to know when to add absence data
 
-print("summary of coordinates CoordPS")
-print(summary(CoordPS$longitude))
-print(summary(CoordPS$latitude))
-
-print("summary of coordinates SelParSL")
-print(summary(SelParSL$longitude))
-print(summary(SelParSL$latitude))
-
 # remove na (if no better solution has been found)
 CoordPS <- na.omit(CoordPS)
 cat("General dataset prepared", fill = TRUE)
@@ -298,11 +290,6 @@ if (Sp == "Plesp") {
 print(Sp_real)
 START1 <- Sys.time()
 
-print("summary of coordinates DataSp")
-print(names(DataSp))
-print(summary(DataSp$longitude))
-print(summary(DataSp$latitude))
-
 # Adds 0 counts using the observation table (avoids user errors but makes the
 # assumption that this table always contains at least 1 species per night)
 
@@ -319,9 +306,9 @@ DataCPL3$Nuit <- as.Date(DataCPL3$Nuit)
 DataSpSL_w0_2 <- full_join(DataSp, DataCPL3_unique) # Adds the nights with absence
 colnames(DataSpSL_w0_2)[which(colnames(DataSpSL_w0_2) == "point")] <- "nom"
 
-print("summary of coordinates DataSpSL_w0_2")
-print(summary(DataSpSL_w0_2$longitude))
-print(summary(DataSpSL_w0_2$latitude))
+print("summary of coordinates SelParSL")
+print(summary(SelParSL$longitude))
+print(summary(SelParSL$latitude))
 
 # performs a partial join (updates columns of DataSpSL_w0_2 with info of SelParSL)
 n <- names(SelParSL)
@@ -332,7 +319,12 @@ DataSpSL_w0_2$score_max[is.na(DataSpSL_w0_2$score_max)] <- 0L
 DataSpSL_w0_2$groupe[is.na(DataSpSL_w0_2$groupe)] <- "bat"
 # DataSpSL_w0_2$espece[is.na(DataSpSL_w0_2$espece)] <- ListSp[i]
 DataSpSL_w0_2$espece[is.na(DataSpSL_w0_2$espece)] <- Sp
-
+print("dim(DataSpSL_w0_2) before removing NA in coordinates")
+print(dim(DataSpSL_w0_2))
+DataSpSL_w0_2 %<%
+filter(!is.na(DataSpSL_w0_2$longitude)) #removes lines without coordinates (the sites_localites.txt is probably older than SpNuit)
+print("dim(DataSpSL_w0_2) after removing NA in coordinates")
+print(dim(DataSpSL_w0_2))
 cat("Absence data added", fill = TRUE)
 
 # Exclude sites outside region limits (square) :
@@ -354,6 +346,10 @@ if (opt$region == "europe") {
     DataSpSL_w0_2$longitude > -12L &
     DataSpSL_w0_2$latitude < 73L & DataSpSL_w0_2$latitude > 32L)
 }
+
+print("summary of coordinates DataSpSL_w0_2 after cropping")
+print(summary(DataSpSL_w0_2$longitude))
+print(summary(DataSpSL_w0_2$latitude))
 
 # Excludes data outside of known area for acoustically cryptic species (doesn't work for Europe yet !!!)
 # Myonat
