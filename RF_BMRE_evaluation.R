@@ -335,6 +335,20 @@ if (opt$region == "idf") {
   DataSpSL_w0_2 <- subset(DataSpSL_w0_2, DataSpSL_w0_2$longitude < 5L &
     DataSpSL_w0_2$longitude > 0L &
     DataSpSL_w0_2$latitude < 50L & DataSpSL_w0_2$latitude > 48L)
+    # Convert all data inside Paris to 0 if the species is known to avoid big cities
+    # This is done because false positives are suspected to bias the model
+if(Sp_real %in% c("Barbar", "Myoalc", "MyoGT", "Pleaur", "Pleaus", "Myodau", "Rhihip", "Rhifer", "Myoema")){
+  DataSpSL_w0_2_sf <- st_as_sf(DataSpSL_w0_2, # convert acoustic data to sf
+    coords = c("longitude", "latitude"), crs = 4326, remove = FALSE
+  )
+  Paris_area_path <- file.path(data_path, "GIS", "regions.gpkg") # load Paris area
+  Paris_area <- st_read(dsn = Paris_area_path, layer = "paris") %>%
+    st_as_sf()
+  inside <- st_intersects(DataSpSL_w0_2_sf, Paris_area, sparse = FALSE)[, 1] # Convert all data inside Paris to 0
+  DataSpSL_w0_2_sf$nb_contacts[inside] <- 0
+  DataSpSL_w0_2 <- st_drop_geometry(DataSpSL_w0_2_sf) %>%
+    as.data.table()
+}
 }
 if (opt$region == "france_met") {
   DataSpSL_w0_2 <- subset(DataSpSL_w0_2, DataSpSL_w0_2$longitude < 10L &
