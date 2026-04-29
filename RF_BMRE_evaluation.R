@@ -298,6 +298,10 @@ if (Sp == "Plesp") {
 print(Sp_real)
 START1 <- Sys.time()
 
+print("summary of coordinates DataSp")
+print(summary(DataSp$longitude))
+print(summary(DataSp$latitude))
+
 # Adds 0 counts using the observation table (avoids user errors but makes the
 # assumption that this table always contains at least 1 species per night)
 
