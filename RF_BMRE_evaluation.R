@@ -321,7 +321,7 @@ DataSpSL_w0_2$groupe[is.na(DataSpSL_w0_2$groupe)] <- "bat"
 DataSpSL_w0_2$espece[is.na(DataSpSL_w0_2$espece)] <- Sp
 print("dim(DataSpSL_w0_2) before removing NA in coordinates")
 print(dim(DataSpSL_w0_2))
-DataSpSL_w0_2 %<%
+DataSpSL_w0_2 %>% 
 filter(!is.na(DataSpSL_w0_2$longitude)) #removes lines without coordinates (the sites_localites.txt is probably older than SpNuit)
 print("dim(DataSpSL_w0_2) after removing NA in coordinates")
 print(dim(DataSpSL_w0_2))
