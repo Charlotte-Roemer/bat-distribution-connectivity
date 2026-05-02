@@ -702,7 +702,7 @@ START <- Sys.time()
 
 cat("Creating folds :", fill = TRUE)
 
-sfolds <- CAST::knndm(DataSaison_sf, aoi, k = 10, maxp = 0.5) # k = number of folds
+sfolds <- CAST::knndm(DataSaison_sf, aoi, k = 4, maxp = 0.5) # k = number of folds
 END <- Sys.time()
 print(END - START) # 1 to 1.4 hours
 # beep(2)
