@@ -331,7 +331,7 @@ cat("Absence data added", fill = TRUE)
 print("summary of coordinates DataSpSL_w0_2")
 print(summary(DataSpSL_w0_2$longitude))
 print(summary(DataSpSL_w0_2$latitude))
-if (opt$region == "idf") {
+if (opt$region == "idf") { # if model if fore region of Paris
   DataSpSL_w0_2 <- subset(DataSpSL_w0_2, DataSpSL_w0_2$longitude < 5L &
     DataSpSL_w0_2$longitude > 0L &
     DataSpSL_w0_2$latitude < 50L & DataSpSL_w0_2$latitude > 48L)
@@ -462,7 +462,7 @@ DataSaison <- dplyr::left_join(DataSpSL_w0_2,
 # let’s remove data close to a potential colony
 # DataSaison <- DataSaison[DataSaison$gite != 0L, ]
 
-
+# Define seasons
 DataSaison$week <- as.integer(strftime(DataSaison$Nuit, format = "%V"))
 DataSaison$day <- as.integer(strftime(DataSaison$Nuit, format = "%j"))
 # DataSaison <- DataSaison[dplyr::between(DataSaison$week, p_start, p_end), ]
@@ -841,6 +841,19 @@ if (opt$period == "year") {
     dplyr::mutate(SpAutumn = dplyr::if_else(SpSaison == "autumn", 1, 0))
 
   Prednames <- c(Prednames, "SpSpring", "SpSummer", "SpAutumn", "SpAltiM")
+
+  # TEST : make seasons of equal sizes ####
+  dimSpring = dim(subset(DataSaison, DataSaison$SpSaison == "spring"))
+  dimSummer = dim(subset(DataSaison, DataSaison$SpSaison == "summer"))
+  dimAutumn = dim(subset(DataSaison, DataSaison$SpSaison == "autumn"))
+  vectordim = c(dimSpring, dimSummer, dimAutumn)
+
+  DataSaisonSpring = sample(subset(DataSaison, DataSaison$SpSaison == "spring"), min(vectordim), replace = FALSE)
+  DataSaisonSummer = sample(subset(DataSaison, DataSaison$SpSaison == "summer"), min(vectordim), replace = FALSE)
+  DataSaisonAutumn = sample(subset(DataSaison, DataSaison$SpSaison == "autumn"), min(vectordim), replace = FALSE)
+
+  DataSaison = rbind(DataSaisonSpring, DataSaisonSummer, DataSaisonAutumn)
+
 }
 
 write.csv(
