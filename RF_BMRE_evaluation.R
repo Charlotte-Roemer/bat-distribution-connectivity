@@ -852,7 +852,8 @@ if (opt$period == "year") {
   DataSaisonSummer = sample(subset(DataSaison, DataSaison$SpSaison == "summer"), min(vectordim), replace = FALSE)
   DataSaisonAutumn = sample(subset(DataSaison, DataSaison$SpSaison == "autumn"), min(vectordim), replace = FALSE)
 
-  DataSaison = rbind(DataSaisonSpring, DataSaisonSummer, DataSaisonAutumn)
+  DataSaison = rbind(DataSaisonSpring, DataSaisonSummer)
+  DataSaison = rbind(DataSaison, DataSaisonAutumn)
 
 }
 
