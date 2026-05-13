@@ -73,7 +73,7 @@ print("buffers joined")
 write_sf(Offshore_buffers, "/sps/mnhn/croemer/data/GIS/Offshore/Offshore_buffers.shp")
 
 # Convert to raster and save
-template = rast(vect(Offshore_buffers),res=1000)
+template = rast(vect(Offshore_buffers),res=500)
 for (i in 1:3){
   Sp = names(table(Offshore_buffers$Species))[i]
   Offshore_buffers_i = Offshore_buffers %>% 
