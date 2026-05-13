@@ -852,12 +852,14 @@ if (opt$period == "year") {
   DataSaisonSummer = sample_n(subset(DataSaison, DataSaison$SpSaison == "summer"), size = min(vectordim), replace = FALSE)
   DataSaisonAutumn = sample_n(subset(DataSaison, DataSaison$SpSaison == "autumn"), size = min(vectordim), replace = FALSE)
 
-  print(names(DataSaisonSpring))
-  print(names(DataSaisonSummer))
-  print(names(DataSaisonAutumn))
+  print(dim(DataSaisonSpring))
+  print(dim(DataSaisonSummer))
+  print(dim(DataSaisonAutumn))
 
   DataSaison = rbind(DataSaisonSpring, DataSaisonSummer)
   DataSaison = rbind(DataSaison, DataSaisonAutumn)
+
+  dim(DataSaison)
 
 }
 
