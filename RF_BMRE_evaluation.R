@@ -683,27 +683,6 @@ if (opt$keep == TRUE) {
 print("saisons apres filtre")
 print(unique(DataSaison_sf$SpSaison))
 
-# TEST : make seasons of equal sizes ####-------------------------------------------------------------------------------------------------------------
-  dimSpring = dim(subset(DataSaison, DataSaison$SpSaison == "spring"))
-  dimSummer = dim(subset(DataSaison, DataSaison$SpSaison == "summer"))
-  dimAutumn = dim(subset(DataSaison, DataSaison$SpSaison == "autumn"))
-  vectordim = c(dimSpring, dimSummer, dimAutumn)
-
-  DataSaisonSpring = sample_n(subset(DataSaison, DataSaison$SpSaison == "spring"), size = min(vectordim), replace = FALSE)
-  DataSaisonSummer = sample_n(subset(DataSaison, DataSaison$SpSaison == "summer"), size = min(vectordim), replace = FALSE)
-  DataSaisonAutumn = sample_n(subset(DataSaison, DataSaison$SpSaison == "autumn"), size = min(vectordim), replace = FALSE)
-
-  print(dim(DataSaisonSpring))
-  print(dim(DataSaisonSummer))
-  print(dim(DataSaisonAutumn))
-
-  DataSaison = rbind(DataSaisonSpring, DataSaisonSummer)
-  DataSaison = rbind(DataSaison, DataSaisonAutumn)
-
-  dim(DataSaison)
-
-  #-----------------------------------------------------------------------------------------------------------------------------------------------------
-
 # DataSp <- subset(DataCPL3, DataCPL3$espece == ListSp[i]) # subset species
 # DataSp <- subset(DataCPL3, DataCPL3$espece == Sp) # subset species
 DataSaison_sf <- filter_by_median_season_grid(DataSaison_sf, opt$region)
