@@ -18,7 +18,7 @@ option_list <- list(
   optparse::make_option(c("-r", "--region"),
     type = "character", default = "france_met",
     help = 'Set region of interest between "france_met" (default),
- "europe", "idf"'
+ "europe", "idf", "french_neighbours"'
   ),
   optparse::make_option(c("-d", "--date"),
     type = "character", default = NULL,
@@ -220,7 +220,7 @@ if (opt$region %in% c("idf", "france_met")) {
   BS <- 50
   BM <- 500
   BL <- 5000
-} else if (opt$region == "europe") {
+} else if (opt$region %in% c("europe", "french_neighbours")) {
   BS <- 1
   BM <- 1000
   BL <- 5000
@@ -248,7 +248,7 @@ if (opt$region %in% c("idf", "france_met")) {
   layer_precip <- file.path(data_folder, "GIS", "CLIM_NORM", "chelsea_eur11_pr_norm_1981-2005_v1_1.tif")
   layer_temp <- file.path(data_folder, "GIS", "CLIM_NORM", "chelsea_eur11_tas_norm_1981-2005_v1_1.tif")
   layer_grotto <- file.path(data_folder, "GIS", "grottocenter.gpkg")
-} else if (opt$region == "europe") {
+} else if (opt$region %in% c("europe", "french_neighbours")) {
   cat("Europe", fill = TRUE)
   folder_alan <- file.path(data_folder, "GIS", "ALAN")
   folder_vcf <- file.path(data_folder, "GIS", "VCF")
@@ -271,7 +271,7 @@ ListLayer <- c(
 )
 
 
-if (opt$region == "europe") {
+if (opt$region %in% c("europe", "french_neighbours")) {
   cat("Listing Europe function files", fill = TRUE)
   listfun <- list.files(folderfun, full.names = TRUE, pattern = ".R$")
   europe_functions <- list.files(file.path(folderfun, "europe"), full.names = TRUE, pattern = ".R$")
@@ -368,7 +368,7 @@ if (opt$region == "idf"){
   )
 }
 
-if (opt$region != "europe") {
+if (!(opt$region %in% c("europe", "french_neighbours"))) {
   ### wind turbines ###
 
   print("wind turbines")
