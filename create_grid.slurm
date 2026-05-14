@@ -12,4 +12,6 @@
 #SBATCH --mail-user=charlotte.roemer@mnhn.fr
 #SBATCH --mail-type=BEGIN,END   
 
+source ~/.bashrc
+conda activate ~/envs/bmre
 Rscript data_management/Create_empty_grid_V2.R -r $1 -s $2
