@@ -10,4 +10,9 @@
 
 source ~/.bashrc
 conda activate ~/envs/bmre
-Rscript Pipeline_GIS.R -r $1 -m $2 -s ${3:-''}  -d ${4:-''}
+#Rscript Pipeline_GIS.R -r $1 -m $2 -s ${3:-''}  -d ${4:-''}
+Rscript Pipeline_GIS.R \
+  -r "$1" \
+  -m "$2" \
+  ${3:+-s "$3"} \
+  ${4:+-d "$4"}
