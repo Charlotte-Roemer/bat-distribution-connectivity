@@ -109,17 +109,25 @@ if (opt$mode == "train" && loc_train_exists == FALSE) {
   nuits_obs <- read.csv2(nuits_obs_file)
   print("Observations loaded")
 
+  print(names(nuits_obs))
+
   nuits_obs$X <- nuits_obs$longitude
   nuits_obs$Y <- nuits_obs$latitude
 
+  print(names(nuits_obs))
+
   locs <- sf::st_as_sf(nuits_obs, coords = c("X", "Y"), remove = FALSE, crs = 4326)
   ## rapide
+
+  print("a")
 
   locs <- locs[zone, ]
   ## long
   ## locs_intersects <- sf::st_intersection(locs, zone)
 
-  locs <- locs %>% dplyr::select(X, Y, Nuit)
+  locs <- locs %>% 
+    dplyr::select(X, Y, Nuit)
+
   locs$FID <- 1:nrow(locs)
   # setting the fortnight number (1-24) :
   print("Setting fortnight code")
@@ -134,7 +142,8 @@ if (opt$mode == "train" && loc_train_exists == FALSE) {
     format(as.Date(locs$Nuit), "%Y")
   )
 
-  locs_etrs89 <- locs %>% sf::st_transform(3035L)
+  locs_etrs89 <- locs %>% 
+    sf::st_transform(3035L)
 
   grid_file <- file.path(
     data_folder,
