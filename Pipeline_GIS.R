@@ -123,6 +123,11 @@ if (opt$mode == "train" && loc_train_exists == FALSE) {
 
   print("a")
 
+  if(opt$region %in% c("europe", "french_neighbours")){
+    locs = locs %>% 
+      sf::st_transform(3035L)
+  }
+
   locs <- locs[zone, ]
   ## long
   ## locs_intersects <- sf::st_intersection(locs, zone)
