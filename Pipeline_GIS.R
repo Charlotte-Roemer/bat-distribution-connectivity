@@ -157,6 +157,7 @@ if (opt$mode == "train" && loc_train_exists == FALSE) {
   size <- as.integer(opt$size)
 
   print("a")
+  print(opt$size)
   print(size)
 
   size_decal <- size / 2L
