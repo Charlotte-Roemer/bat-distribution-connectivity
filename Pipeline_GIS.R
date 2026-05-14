@@ -37,6 +37,7 @@ option_list <- list(
 # Parse options to opt object
 opt_parser <- OptionParser(option_list = option_list)
 opt <- parse_args(opt_parser)
+print(opt)
 
 ## Setting variables from variables.R
 
