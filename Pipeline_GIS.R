@@ -119,11 +119,15 @@ if (opt$mode == "train" && loc_train_exists == FALSE) {
   locs <- sf::st_as_sf(nuits_obs, coords = c("X", "Y"), remove = FALSE, crs = 4326)
   ## rapide
 
+  print(head(locs))
+
   print("a")
 
   locs <- locs[zone, ]
   ## long
   ## locs_intersects <- sf::st_intersection(locs, zone)
+
+print("b")
 
   locs <- locs %>% 
     dplyr::select(X, Y, Nuit)
