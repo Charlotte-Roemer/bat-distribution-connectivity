@@ -104,7 +104,7 @@ if (opt$mode == "train" && loc_train_exists == FALSE) {
   nuits_obs_file <- file.path(
     data_folder,
     "observations",
-    paste0("parti_unique_non_confi_", opt$region, ".csv")
+    paste0("parti_unique_non_confi.csv")
   )
   nuits_obs <- read.csv2(nuits_obs_file)
   print("Observations loaded")
