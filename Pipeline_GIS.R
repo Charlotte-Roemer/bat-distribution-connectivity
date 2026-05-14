@@ -109,19 +109,11 @@ if (opt$mode == "train" && loc_train_exists == FALSE) {
   nuits_obs <- read.csv2(nuits_obs_file)
   print("Observations loaded")
 
-  print(names(nuits_obs))
-
   nuits_obs$X <- nuits_obs$longitude
   nuits_obs$Y <- nuits_obs$latitude
 
-  print(names(nuits_obs))
-
   locs <- sf::st_as_sf(nuits_obs, coords = c("X", "Y"), remove = FALSE, crs = 4326)
   ## rapide
-
-  print(head(locs))
-
-  print("a")
 
   if(opt$region %in% c("europe", "french_neighbours")){
     locs = locs %>% 
@@ -131,8 +123,6 @@ if (opt$mode == "train" && loc_train_exists == FALSE) {
   locs <- locs[zone, ]
   ## long
   ## locs_intersects <- sf::st_intersection(locs, zone)
-
-print("b")
 
   locs <- locs %>% 
     dplyr::select(X, Y, Nuit)
@@ -165,7 +155,14 @@ print("b")
   )
   study_area <- zone
   size <- as.integer(opt$size)
+
+  print("a")
+  print(size)
+
   size_decal <- size / 2L
+
+  print(size_decal)
+
   # buffer size is to be adapted depending on the study region
   study_area_m <- st_transform(study_area, 3035L)
   study_area_m_buf <- st_buffer(study_area_m, size_decal)
