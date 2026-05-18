@@ -42,7 +42,7 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, layer) {
       sf::st_transform(2154)
   }
 
-  print(names(OccSL_L93))
+  print(summary(OccSL_L93$Nuit))
 
   OccSL_L93$year <- sapply(strsplit(OccSL_L93$Nuit, "-"), "[", 1)
   unique_years <- unique(OccSL_L93$year)
@@ -71,7 +71,8 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, layer) {
 
   ## nuit <- as.character(nuit)
   ## print(nuit)
-  print(paste0("Treating year : ", year))
+  print(paste0("Treating year : ")) # Need to replace by the same for (year in unique_years) as in f_Coord_CLCraster.R
+  print(unique_years)
 
 
   OCS <- terra::rast(ocs_file)
