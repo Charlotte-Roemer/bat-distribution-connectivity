@@ -878,23 +878,23 @@ print("Model done")
 # suffix <- paste0(opt$period, "_", opt$region, "_noSpace", "_", ListSp[i])
 suffix <- paste0(opt$period, "_", opt$region, "_noSpace", "_", Sp_real)
 
-# write.csv(                # remove that after test !!!
-#   noSpacemod$tab,
-#   file.path(
-#     Output,
-#     paste0(
-#       "Evaluation_",
-#       # ListSp[i],
-#       Sp_real,
-#       "_",
-#       Tag, "_",
-#       date_limit,
-#       "_",
-#       suffix,
-#       ".csv"
-#     )
-#   )
-# )                         # remove that after test !!!
+write.csv(
+  noSpacemod$tab,
+  file.path(
+    Output,
+    paste0(
+      "Evaluation_",
+      # ListSp[i],
+      Sp_real,
+      "_",
+      Tag, "_",
+      date_limit,
+      "_",
+      suffix,
+      ".csv"
+    )
+  )
+)
 
 
 data.table::fwrite(noSpacemod$graphmod, file.path(Output, paste0(suffix, ".csv")))
