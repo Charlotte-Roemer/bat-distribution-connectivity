@@ -4,7 +4,7 @@
 
 # This script is adapted from Mila et al. (2025)
 
-source("./variables.R")
+source("../variables.R")
 library(data.table)
 library(randomForest)
 library(gdata)

@@ -1,6 +1,6 @@
 library(tidyverse)
 library(sf)
-source("variables.R")
+source("../variables.R")
 
 # Load GIS limit of Corsica
 emprise <- file.path(data_path, "GIS", "regions.gpkg")

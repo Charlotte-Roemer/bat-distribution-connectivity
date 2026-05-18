@@ -1,6 +1,6 @@
 library(optparse)
 library(sf)
-source("./variables.R")
+source("../variables.R")
 
 option_list <- list(
   optparse::make_option(c("-r", "--region"),

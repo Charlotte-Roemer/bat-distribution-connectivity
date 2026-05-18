@@ -1,6 +1,6 @@
 library(tidyr)
 library(dplyr)
-source("variables.R")
+source("../variables.R")
 
 parti_non_confi_file <- file.path(data, "observations", "parti_unique_non_confi.csv")
 p_export_file <- file.path(data, "p_export.csv")

@@ -1,4 +1,4 @@
-source("./variables.R")
+source("../variables.R")
 library(exactextractr)
 library(optparse)
 library(dplyr)
