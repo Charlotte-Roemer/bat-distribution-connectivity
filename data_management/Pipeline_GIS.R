@@ -67,7 +67,7 @@ print("Study area loaded.")
 
 
 ## Function folder :
-folderfun <- file.path(project_path, "f_Coord")
+folderfun <- file.path(project_path, "data_management","f_Coord")
 
 
 # for testing purposes
