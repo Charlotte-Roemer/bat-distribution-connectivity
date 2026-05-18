@@ -42,7 +42,8 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, layer) {
       sf::st_transform(2154)
   }
 
-  print(summary(OccSL_L93$Nuit))
+  print(head(OccSL_L93$Nuit))
+  print(tail(OccSL_L93$Nuit))
 
   OccSL_L93$year <- sapply(strsplit(OccSL_L93$Nuit, "-"), "[", 1)
   unique_years <- unique(OccSL_L93$year)
