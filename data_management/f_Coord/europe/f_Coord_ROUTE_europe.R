@@ -40,6 +40,8 @@ Coord_Roads <- function(points, names_coord, bm, bl, folder) {
     CoordH <- names_coord
   }
 
+  rm(OccSL)
+
   BufferMedium <- bm
   BufferLarge <- bl
 
@@ -55,6 +57,8 @@ Coord_Roads <- function(points, names_coord, bm, bl, folder) {
     ROUTE[nearest_r, ],
     by_element = TRUE
   )
+
+  rm(nearest_r)
 
   # Write dictionary
   ClassP <- unique(ROUTE$GP_RTP)
@@ -98,6 +102,7 @@ Coord_Roads <- function(points, names_coord, bm, bl, folder) {
     }
     names(OccSL_L93Re)[names(OccSL_L93Re) == "SpRo_M"] <- paste0("SpRo", h, "M")
 
+    rm(BufferM)
 
     ########
     # Buffer L
@@ -130,6 +135,8 @@ Coord_Roads <- function(points, names_coord, bm, bl, folder) {
       # spplot(OccSL_L93Re,zcol="SpRo_S",col="transparent")
     }
     names(OccSL_L93Re)[names(OccSL_L93Re) == "SpRo_L"] <- paste0("SpRo", h, "L")
+
+    rm(BufferL)
   }
 
   rm(ROUTE)
@@ -159,6 +166,7 @@ Coord_Roads <- function(points, names_coord, bm, bl, folder) {
     dplyr::select(-road_cols)
 
   OccSL_L93Re$SpRo_dist <- road_dist
+  rm(road_dist)
 
   ##########################################
   ##########################################
@@ -170,12 +178,18 @@ Coord_Roads <- function(points, names_coord, bm, bl, folder) {
   OccSL_WGS84 <- OccSL_L93 |>
     st_transform(4326) # back transform to WGS84
 
+  rm(OccSL_L93)
+
   OccSL_ARajouter <- subset(OccSL_L93Re, select = grepl("Sp", names(OccSL_L93Re)))
+
+  rm(OccSL_L93Re)
 
   Reseau <- data.frame(cbind(
     st_coordinates(OccSL_WGS84),
     as.data.frame(OccSL_ARajouter)
   ))
+
+  rm(OccSL_WGS84, OccSL_ARajouter)
 
   if (opt$mode == "predict") {
     Reseau$SpRo_dist <- 0
@@ -188,6 +202,8 @@ Coord_Roads <- function(points, names_coord, bm, bl, folder) {
 
   NewName <- paste0(FOccSL, "_Transports.csv")
   fwrite(Reseau, NewName)
+
+  rm(Reseau)
 
   # coordinates(Reseau) <- CoordH
 

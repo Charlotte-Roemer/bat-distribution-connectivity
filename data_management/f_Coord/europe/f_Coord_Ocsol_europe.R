@@ -47,8 +47,8 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, layer) {
 
   CoordH <- names_coord
 
-  BuffersSmall <- bs
-  BufferMedium <- bm
+  #BuffersSmall <- bs
+  #BufferMedium <- bm
 
   ocs_file <- list.files(folder_OCS,
     recursive = TRUE,
@@ -76,6 +76,8 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, layer) {
   tableau_BM <- sf::st_buffer(OccSL_L93, bm)
   tableau_BS <- sf::st_buffer(OccSL_L93, bs)
 
+  rm(OccSL_L93)
+
   # Extract values in medium buffer
   landcov_fracs_Medium <- exactextractr::exact_extract(OCS, tableau_BM, function(df) {
     df %>%
@@ -83,6 +85,8 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, layer) {
       dplyr::group_by(FID, value) %>%
       dplyr::summarize(freq = sum(frac_total))
   }, summarize_df = TRUE, include_cols = "FID", progress = FALSE)
+
+  rm(tableau_BM)
 
 
   # Extract values in large buffer
@@ -94,7 +98,7 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, layer) {
   }, summarize_df = TRUE, include_cols = "FID", progress = FALSE)
 
   # Append large buffer list
-  rm(OCS)
+  rm(OCS, tableau_BS)
 
   # Pivot tibbles and rename columns
   landcov_fracs_Medium_pivot <- landcov_fracs_Medium %>%
@@ -102,10 +106,14 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, layer) {
     dplyr::rename_with(~ paste0("SpHOCS", ., "M"), -FID) %>%
     replace(is.na(.), 0)
 
+  rm(landcov_fracs_Medium)
+
   landcov_fracs_Small_pivot <- landcov_fracs_Small %>%
     tidyr::pivot_wider(names_from = "value", values_from = "freq") %>% # pivot to use CLC values as column names
     dplyr::rename_with(~ paste0("SpHOCS", ., "S"), -FID) %>%
     replace(is.na(.), 0)
+
+  rm(landcov_fracs_Small)
 
   HabufPropT_Tot <- dplyr::inner_join(landcov_fracs_Medium_pivot,
     landcov_fracs_Small_pivot,
@@ -117,6 +125,8 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, layer) {
     as.data.frame() %>%
     dplyr::select(!c(FID, geometry))
 
+  rm(OccSL, landcov_fracs_Medium_pivot, HabufPropT_Tot)
+
 
   # colnames(OccSL_ARajouter)[colnames(OccSL_ARajouter) == 'latitude'] = "Y"
   # colnames(OccSL_ARajouter)[colnames(OccSL_ARajouter) == 'longitude'] = "X"
@@ -127,4 +137,7 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, layer) {
   } else {
     data.table::fwrite(OccSL_ARajouter, paste0(FOccSL, "_OCSraster.csv"))
   }
+
+rm(OccSL_ARajouter)
+
 }

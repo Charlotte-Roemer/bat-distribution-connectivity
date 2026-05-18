@@ -68,4 +68,7 @@ Coord_Meteo <- function(points, temp, prec, wind) {
   }
   print(tab, n = 10, width = Inf)
   data.table::fwrite(tab, paste0(points, "_meteo.csv"))
+
+  rm(OccSL, temperature_norms, precipitation_norms, wind_norms, wind_norm, tableau_month, temp_norm, precip_norm, tab)
+
 }

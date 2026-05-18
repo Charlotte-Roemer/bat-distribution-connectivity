@@ -38,6 +38,7 @@ Coord_Water <- function(points, names_coord, water_polyg, water_lines) {
     CoordH <- names_coord
   }
 
+  rm(OccSL)
 
   # recuperation des donnees Carthage (eau)
   EauPolyg <- sf::read_sf(
@@ -86,6 +87,8 @@ Coord_Water <- function(points, names_coord, water_polyg, water_lines) {
     pmin(water_dist_line, water_dist_polyg)
   )
 
+  rm(water_dist_polyg, nearest_l, water_dist_line)
+
   ##########################################
   ########         Larges         ##########
   ##########################################
@@ -93,6 +96,8 @@ Coord_Water <- function(points, names_coord, water_polyg, water_lines) {
   EauLineslarge <- EauLines[EauLines$ORD_FLOW <= 6, ]
   EauPolyg$surf <- units::drop_units(EauPolyg$surf)
   EauPolyglarge <- EauPolyg[EauPolyg$surf >= 10000L, ]
+
+  rm(EauPolyg, EauLines)
 
   nearest_pp <- try(sf::st_nearest_feature(OccSL_L93, EauPolyglarge))
   water_dist_polyg_large <- st_distance(OccSL_L93,
@@ -113,6 +118,8 @@ Coord_Water <- function(points, names_coord, water_polyg, water_lines) {
     pmin(water_dist_line_large, water_dist_polyg_large)
   )
 
+  rm(EauLineslarge, EauPolyglarge, nearest_lp, water_dist_line_large, water_dist_polyg_large)
+
   ######################################################################
   #################### Write ###########################################
   ######################################################################
@@ -124,10 +131,14 @@ Coord_Water <- function(points, names_coord, water_polyg, water_lines) {
     select = grepl("Sp", names(OccSL_L93), fixed = TRUE)
   )
 
+  rm(OccSL_L93)
+
   Carthage <- data.frame(cbind(
     st_coordinates(OccSL_WGS84),
     as.data.frame(OccSL_ARajouter)
   ))
+
+  rm(OccSL_WGS84, OccSL_ARajouter)
 
   Carthage <- Carthage |>
     st_drop_geometry() |>
@@ -138,4 +149,5 @@ Coord_Water <- function(points, names_coord, water_polyg, water_lines) {
   cat(NewName, fill = TRUE)
 
   fwrite(Carthage, NewName)
+  rm(Carthage)
 }

@@ -62,9 +62,12 @@ Coord_BioclimLocal <- function(points, names_coord, layer_folder) {
 
   OccSL_A <- subset(OccSL, !is.na(OccSL$SpBioC1))
 
+  rm(OccSL, SpBioci)
+
   print(nrow(OccSL_NA))
 
   OccSL_All <- as.data.frame(OccSL_A)
+  rm(OccSL_NA, OccSL_A)
 
   OccSL_All <- OccSL_All %>%
     dplyr::select(!c(FID, geometry))
@@ -74,4 +77,5 @@ Coord_BioclimLocal <- function(points, names_coord, layer_folder) {
 
   print(paste0("Writing file ", FOccSL, "_Bioclim.csv"))
   fwrite(OccSL_All, paste0(FOccSL, "_Bioclim.csv"))
+  rm(OccSL_All)
 }
