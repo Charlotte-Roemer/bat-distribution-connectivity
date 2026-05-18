@@ -42,6 +42,8 @@ Coord_ALAN <- function(points, names_coord, bm, bl, layers) {
     CoordH <- names_coord
   }
 
+  rm(OccSL)
+
   print(class(sapply(strsplit(OccSL_L93$Nuit, "-"), "[", 1)))
   head(OccSL_L93)
 
@@ -68,6 +70,8 @@ Coord_ALAN <- function(points, names_coord, bm, bl, layers) {
     print(year_file)
     table_year <- OccSL_L93[strsplit(OccSL_L93$Nuit, "-")[[1]][1] == year, ]
 
+    rm(OccSL_L93)
+
     # match the year alan raster
     ## year_index <- grep(pattern = paste0("_", year, "_"), x = alan)
     ## year_file <- alan[year_index]
@@ -88,7 +92,7 @@ Coord_ALAN <- function(points, names_coord, bm, bl, layers) {
     SpALAN_L_tab <- exactextractr::exact_extract(ALAN, table_BL, "mean")
     table_year$SpALAN_L <- SpALAN_L_tab
     tables <- rlist::list.append(tables, table_year)
-    rm(SpALAN_L_tab, SpALAN_M_tab, table_year)
+    rm(SpALAN_L_tab, SpALAN_M_tab, table_year, table_BM, table_BL)
   }
 
   tab <- do.call("rbind", tables)
@@ -105,5 +109,5 @@ Coord_ALAN <- function(points, names_coord, bm, bl, layers) {
   } else {
     data.table::fwrite(ALAN, paste0(FOccSL, "_ALAN.csv"), row.names = FALSE)
   }
-  rm(ALAN)
+  rm(ALAN, tab, tables)
 }

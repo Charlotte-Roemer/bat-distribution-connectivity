@@ -82,6 +82,7 @@ Coord_Alti <- function(points, names_coord, bs, bm, bl, region, layer) {
 
   Sys.time()
   SpAltiS <- exact_extract(AltiTot, Points_BS, "mean")
+  rm(Points_BS)
   SpAltiS[is.na(SpAltiS)] <- 0
   OccSL$SpAltiS <- SpAltiS
 
@@ -95,6 +96,7 @@ Coord_Alti <- function(points, names_coord, bs, bm, bl, region, layer) {
 
   Sys.time()
   SpAltiM <- exact_extract(AltiTot, Points_BM, "mean")
+  rm(Points_BM)
   SpAltiM[is.na(SpAltiM)] <- 0
   OccSL$SpAltiM <- SpAltiM
 
@@ -106,6 +108,7 @@ Coord_Alti <- function(points, names_coord, bs, bm, bl, region, layer) {
 
   Sys.time()
   SpAltiL <- exact_extract(AltiTot, Points_BL, "mean")
+  rm(Points_BL)
   SpAltiL[is.na(SpAltiL)] <- 0
   OccSL$SpAltiL <- SpAltiL
 

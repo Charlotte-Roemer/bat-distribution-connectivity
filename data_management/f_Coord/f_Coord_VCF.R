@@ -39,6 +39,8 @@ Coord_VCF <- function(points, names_coord, bs, bm, bl, layers) {
     CoordH <- names_coord
   }
 
+  rm(OccSL)
+
   OccSL_L93$year <- sapply(strsplit(OccSL_L93$Nuit, "-"), "[", 1)
   unique_years <- unique(OccSL_L93$year)
 
@@ -88,31 +90,33 @@ Coord_VCF <- function(points, names_coord, bs, bm, bl, layers) {
     print("Buffer Small")
 
     SpVCF_S_tab <- exactextractr::exact_extract(VCF, tableau_BS, "mean")
+    rm(tableau_BS)
     tableau_year$SpVCF_S <- SpVCF_S_tab
     cat("data extracted for buffer Small", fill = TRUE)
 
     print("Buffer Medium")
 
     SpVCF_M_tab <- exactextractr::exact_extract(VCF, tableau_BM, "mean")
+    rm(tableau_BM)
     tableau_year$SpVCF_M <- SpVCF_M_tab
 
     cat("data extracted for buffer Medium", fill = TRUE)
     print("Buffer Large")
 
     SpVCF_L_tab <- exactextractr::exact_extract(VCF, tableau_BL, "mean")
-
+    rm(tableau_BL)
     cat("data extracted for buffer Large", fill = TRUE)
 
     print("Buffer Large")
     tableau_year$SpVCF_L <- SpVCF_L_tab
     tableaux <- rlist::list.append(tableaux, tableau_year)
-    rm(SpVCF_M_tab, SpVCF_L_tab, SpVCF_S_tab)
+    rm(SpVCF_M_tab, SpVCF_L_tab, SpVCF_S_tab, tableau_year)
     rm(VCF)
   }
 
   tab <- do.call("rbind", tableaux)
 
-  rm(tableaux)
+  rm(tableaux, OccSL_L93)
 
   VCF <- data.frame(cbind(tab$Nuit, tab$X, tab$Y, tab$SpVCF_S, tab$SpVCF_M, tab$SpVCF_L))
   colnames(VCF) <- c("Nuit", "X", "Y", "SpVCF_S", "SpVCF_M", "SpVCF_L")
@@ -125,6 +129,7 @@ Coord_VCF <- function(points, names_coord, bs, bm, bl, layers) {
   #   fwrite(VCF, paste0(FOccSL, "_VCF.csv"), row.names = FALSE)
   # }
 
+  rm(tab)
   rm(VCF)
   # coordinates(ALAN) <- CoordH
 

@@ -1,7 +1,7 @@
 print("load europe land cover")
 
 Coord_Land_Cover <- function(points, names_coord, bs, bm, layer) {
-  print("OCS OSO")
+  print("esaworldcover")
   print(points)
   library(data.table)
   library(dplyr)
@@ -42,14 +42,8 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, layer) {
       sf::st_transform(2154)
   }
 
-  print(head(OccSL_L93$Nuit))
-  print(tail(OccSL_L93$Nuit))
-
   OccSL_L93$year <- sapply(strsplit(OccSL_L93$Nuit, "-"), "[", 1)
   unique_years <- unique(OccSL_L93$year)
-
-  print(unique_years)
-  print(class(unique_years))
 
   CoordH <- names_coord
 
@@ -68,11 +62,11 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, layer) {
 
   # removed ocs_annees TODO: remove comment
 
-  options(dplyr..summarise.inform = FALSE) # to quiet the message produced by the sumarize function below
+  options(dplyr.summarise.inform = FALSE) # to quiet the message produced by the sumarize function below
 
   ## nuit <- as.character(nuit)
   ## print(nuit)
-  print(paste0("Treating year : ")) # Need to replace by the same for (year in unique_years) as in f_Coord_CLCraster.R
+  print(paste0("Treating year : ")) # When more years will be avaialble, need to replace by the same for (year in unique_years) as in f_Coord_CLCraster.R
   print(unique_years)
 
 
