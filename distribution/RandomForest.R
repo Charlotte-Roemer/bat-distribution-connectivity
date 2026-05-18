@@ -15,7 +15,7 @@ library(sf)
 library(CAST)
 library(caret)
 library(sfdep)
-source("./variables_sel.R")
+source("../variables_sel.R")
 source("RF_prepare_data.R")
 source("RF_functions.R")
 
