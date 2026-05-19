@@ -70,8 +70,6 @@ Coord_ALAN <- function(points, names_coord, bm, bl, layers) {
     print(year_file)
     table_year <- OccSL_L93[strsplit(OccSL_L93$Nuit, "-")[[1]][1] == year, ]
 
-    rm(OccSL_L93)
-
     # match the year alan raster
     ## year_index <- grep(pattern = paste0("_", year, "_"), x = alan)
     ## year_file <- alan[year_index]
@@ -94,6 +92,8 @@ Coord_ALAN <- function(points, names_coord, bm, bl, layers) {
     tables <- rlist::list.append(tables, table_year)
     rm(SpALAN_L_tab, SpALAN_M_tab, table_year, table_BM, table_BL)
   }
+
+  rm(OccSL_L93)
 
   tab <- do.call("rbind", tables)
 
