@@ -5,10 +5,10 @@ library(tidyverse)
 library(raster)
 library(sf)
 library(gdistance)
-library(geosphere)
+#library(geosphere)
 
-library(future)
-library(future.apply)
+# library(future)
+# library(future.apply)
 
 #plan(multicore, workers = 16)
 # ou :
@@ -281,8 +281,10 @@ for (j in seq_along(ListTimes)) {
         # )
         
         # Save result
-        UniqueName = paste0(format(Sys.Date(), "%Y%m%d"), "_", Sys.getpid(), "_", k, "_", sample.int(1e9, 1) )
-        writeRaster(pasT, paste0(Directory, "/", Sp, "_", THETA, "_", UniqueName, ".tif" ), overwrite = TRUE)
+        if(max(pasT)>0){ # only if the raster contains some value (passage sometimes produces empty rasters...)
+          UniqueName = paste0(format(Sys.Date(), "%Y%m%d"), "_", Sys.getpid(), "_", k, "_", sample.int(1e9, 1) )
+          writeRaster(pasT, paste0(Directory, "/", Sp, "_", THETA, "_", UniqueName, ".tif" ), overwrite = TRUE)
+        }
         
         break
       }

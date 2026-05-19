@@ -8,7 +8,6 @@ library(raster)
 library(sf)
 #library(landscapemetrics)
 library(gdistance)
-library(beepr)
 library(terra)
 
 ## Script is called with Rscript and options :
