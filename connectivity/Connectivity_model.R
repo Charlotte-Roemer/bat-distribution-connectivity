@@ -10,7 +10,7 @@ library(geosphere)
 library(future)
 library(future.apply)
 
-plan(multicore, workers = 4)
+#plan(multicore, workers = 16)
 # ou :
 # plan(multisession, workers = 16)
 
@@ -89,32 +89,54 @@ for (j in seq_along(ListTimes)) {
   land_cond_sub = readRDS(paste0(Directory, "/", Sp, "_Year_Transition", ".rds"))
   crs(land_cond_sub) <- "EPSG:2154"
   
-  future_lapply(
-    1:N_paths,
-    function(k) {
+  # -------- Cell precalculation for passage function --------
+  
+  coords_mat <- as.matrix(
+    Patches[, c("x", "y")]
+  )
+  
+  r_template <- raster(land_cond_sub)
+  
+  patch_cells <- cellFromXY(
+    r_template,
+    coords_mat
+  )
+  
+  # future_lapply(
+    # 1:N_paths,
+    # function(k) {
+  for (k in 1:N_paths) {
       
       print(k)
       
       repeat {
         
-        ID_Origin <- sample(Patches$id, size=1) #draw random points (random pairs)
-        ID_Goal   <- sample(Patches$id, size=1)
+        # ID_Origin <- sample(Patches$id, size=1) #draw random points (random pairs)
+        # ID_Goal   <- sample(Patches$id, size=1)
         
-        pt_Origin <- SpatialPoints(cbind(
-          Patches$x[Patches$id == ID_Origin],
-          Patches$y[Patches$id == ID_Origin]),
-          proj4string = CRS("EPSG:2154")) #get xy for each point
+        idx_origin <- sample.int(nrow(coords_mat), 1)
+        idx_goal   <- sample.int(nrow(coords_mat), 1)
         
-        pt_Goal <- SpatialPoints(cbind(
-          Patches$x[Patches$id == ID_Goal],
-          Patches$y[Patches$id == ID_Goal]),
-          proj4string = CRS("EPSG:2154")) #get xy for each point
+        origin_xy <- coords_mat[idx_origin, ]
+        goal_xy   <- coords_mat[idx_goal, ]
         
+        # fromCell <- patch_cells[idx_origin]
+        # toCell   <- patch_cells[idx_goal]
+        
+        pt_Origin <- SpatialPoints(
+          matrix(origin_xy, ncol=2),
+          proj4string = CRS("EPSG:2154")) # get xy for each point
+        
+        pt_Goal <- SpatialPoints(
+          matrix(goal_xy, ncol=2),
+          proj4string = CRS("EPSG:2154")) # get xy for each point
+        
+        # Plot
         plot(raster(land_cond_sub))
         plot(pt_Origin, add=T)
         plot(pt_Goal, add=T)
         
-        coords <- rbind(coordinates(pt_Origin), coordinates(pt_Goal))
+        #coords <- rbind(coordinates(pt_Origin), coordinates(pt_Goal))
         
         # Check that the direction of the flyway corresponds to long-distance migration
         
@@ -130,8 +152,11 @@ for (j in seq_along(ListTimes)) {
         #   Distance = dist(my_data_points)[1]/1000
         #   x_vecteur = my_data_points$X[2]-my_data_points$X[1]
         #   y_vecteur = my_data_points$Y[2]-my_data_points$Y[1]
-        x_vecteur = coords[2,1] - coords[1,1]
-        y_vecteur = coords[2,2] - coords[1,2]
+        
+        # x_vecteur = coords[2,1] - coords[1,1]
+        # y_vecteur = coords[2,2] - coords[1,2]
+        x_vecteur <- goal_xy[1] - origin_xy[1]
+        y_vecteur <- goal_xy[2] - origin_xy[2]
         
         #   if(x_vecteur == 0 | y_vecteur == 0){
         #     # does not go further because origin and goal are probably the same point
@@ -181,7 +206,7 @@ for (j in seq_along(ListTimes)) {
         if (x_vecteur == 0 || y_vecteur == 0)
           next # does not go further because origin and goal are probably the same point
         
-        Distance = dist(coords)[1] / 1000
+        Distance <- sqrt(x_vecteur^2 + y_vecteur^2) / 1000
         
         if (Distance >= DistanceMaxSp)
           next # does not go further because distance between points is too big
@@ -248,6 +273,12 @@ for (j in seq_along(ListTimes)) {
           pt_Goal,
           theta = THETA
         )
+        # pasT <- passage(
+        #   land_cond_sub,
+        #   fromCell,
+        #   toCell,
+        #   theta = THETA
+        # )
         
         # Save result
         UniqueName = paste0(format(Sys.Date(), "%Y%m%d"), "_", Sys.getpid(), "_", k, "_", sample.int(1e9, 1) )
@@ -257,9 +288,9 @@ for (j in seq_along(ListTimes)) {
       }
       
       NULL
-    },
-    future.seed = TRUE
-  )
+    }#,
+  #   future.seed = TRUE
+  # )
 }
   
   #           # Calculate paths
@@ -303,30 +334,24 @@ END=Sys.time()
 TIMEDIFF=END-START
 TIMEDIFF
 
-library(beepr)
-beep(2)
+print(paste0("Connectivity done for "), Sp)
 
-# Plot check
-library(maps)
-countries <- c("France")
-France <- map_data("world", region = countries)
-
-France_sf = st_as_sf(
-  France, coords = c("long", "lat"), crs=4326, remove=FALSE)  %>%
-  group_by(group) %>%
-  summarise(geometry = st_combine(geometry)) %>%
-  st_cast("POLYGON") %>%
-  #st_transform("+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
-  st_transform(2154)
-
-ggplot(France_sf) +
-  geom_sf() +
-  geom_sf(data = pt_Origin_sf, col = "blue") +
-  geom_sf(data = pt_Goal_sf, col = "green")
-
-plot(raster(land_cond_sub))
-plot(pt_Origin, add=T)
-plot(pt_Goal, add=T)
-plot(pasT)
+# # Plot check
+# library(maps)
+# countries <- c("France")
+# France <- map_data("world", region = countries)
+# 
+# France_sf = st_as_sf(
+#   France, coords = c("long", "lat"), crs=4326, remove=FALSE)  %>%
+#   group_by(group) %>%
+#   summarise(geometry = st_combine(geometry)) %>%
+#   st_cast("POLYGON") %>%
+#   #st_transform("+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
+#   st_transform(2154)
+# 
+# ggplot(France_sf) +
+#   geom_sf() +
+#   geom_sf(data = pt_Origin_sf, col = "blue") +
+#   geom_sf(data = pt_Goal_sf, col = "green")
 
 
