@@ -1,6 +1,7 @@
 
 # Create patches for movement model
 
+source("../variables.R")
 library(data.table)
 library(tidyverse)
 library(raster)
@@ -10,12 +11,49 @@ library(gdistance)
 library(beepr)
 library(terra)
 
-# Load acoustic predictions
-Name =  "RFspat_VC90_2026-05" #"weighted_2022-08-15"
-Directory <- "/home/charlotte/Bureau/SDM/IDF_k4/Season/" # repertory with outputs from Predict_act
-Species = "Pipnat"  # "Myocap"
+## Script is called with Rscript and options :
+option_list <- list(
+  optparse::make_option(c("-s", "--species"),
+                        type = "character", default = "Pippip",
+                        help = 'Set modelling species as a 6 character species code (e.g. "Pippip")'
+  ),
+  optparse::make_option(c("-r", "--region"),
+                        type = "character", default = "france_met",
+                        help = 'Set region of interest between "france_met" (default),
+                        "europe", "idf", "french_neighbours'
+  ),
+  optparse::make_option(c("-t", "--threshold"),
+                        type = "character", default = "50",
+                        help = 'Set sorting threshold between values : "0", "50", "90" and "weighted'
+  ),
+  optparse::make_option(c("-v", "--variableselection"),
+                        type = "character", default = "None",
+                        help = 'Choose which variable selection you want to make between values : "None", "VSURF", "indisp", "PCA", "PCAdecomp".'
+  ),
+  optparse::make_option(c("-d", "--date"),
+                        type = "character",
+                        help = "Necessary : pass date when script is run with $(date +%Y-%m-%d)"
+  ),
+  optparse::make_option(c("--data_sel"),
+                        type = "character", default = "all",
+                        help = "Do you reduce data by the pixel (no = all, yes = median)"
+  ),
+  optparse::make_option(c("--acti"),
+                        type = "character", default = "nb_contacts",
+                        help = "Which value do you want to predict ? nbcontacts, acticlass"
+  )
+)
 
-NewDir = paste0(Directory, "/Connectivity_", Name)
+# Parse options to opt object
+opt_parser <- optparse::OptionParser(option_list = option_list)
+opt <- optparse::parse_args(opt_parser)
+
+# Load acoustic predictions
+Name = paste0("RFspat_VC", opt$threshold, "_",  opt$date, "_noSpace_", opt$data_sel, "_", opt$acti, "_", opt$variableselection) # RFspat_VC90_2026-05-04_noSpace_all_acticlass_None
+#Directory <- "/home/charlotte/Bureau/SDM/IDF_k4/Season/" # repertory with outputs from Predict_act
+Directory = file.path(data_path, ModPred)
+
+NewDir = file.path(data_path, "Connectivity", Name)
 dir.create(NewDir)
 
 START=Sys.time()
@@ -47,91 +85,63 @@ Clump_function <- function(Raster_sub)
   return(patches_perimeter)
 }
 
-# # Species names
-# List_species_names = c("Myomyo", "Myobly", "Barbar", "Eptser", "Hypsav", "Minsch", 
-#                        "Myodau", "Nyclei", "Nycnoc", "Pipkuh", "Pipnat", "Pippip", 
-#                        "Pippyg", "Rhifer", "Rhihip", "Tadten", "Rhieur", "Myocap", 
-#                        "Myobec", "Myobra", "Myomys", "Myonus", "Myocry", "Myonat", 
-#                        "Myodas", "Myopun", "Pleaus", "Pleaur", "Plemac", "Eptnil", 
-#                        "Vesmur", "Myoalc", "Myoema", "Nyclas", "Plesp", "MyoGT")
-
 # Load files
-if(Species == "All"){
-  list_file <- list.files(Directory, recursive=FALSE, pattern="*.tif$")
-}else{
-  list_file <- list.files(Directory, recursive=FALSE, pattern=paste0("^", Name, ".*.", Species, ".*.tif$"))
-}
+list_file <- list.files(Directory, recursive=TRUE, pattern=paste0("^", Name, ".*.", opt$species, ".*.", opt$region, ".*.tif$"))
 
 ls2 = paste0(Directory,list_file, sep="")
 ld <- lapply(ls2, function(x) raster(x))
 
-list_species = unique(tstrsplit(list_file,split="_")[[8]])
+Sp = opt$species
+print(Sp)
 
-if(Species != "All"){
-  list_species = Species
+# Define origin and goal data
+dataa_ALLSPRING = subset(ld, grepl(Sp, ld) & grepl("spring", ld))
+dataa_ALLSUMMER = subset(ld, grepl(Sp, ld) & grepl("summer", ld))
+dataa_ALLAUTUMN = subset(ld, grepl(Sp, ld) & grepl("autumn", ld))
+s <- stack(ld)
+if(dim(s)[3]!=3){
+  error(paste0("error: there are ", dim(s)[3], " layers for ", Sp))
 }
 
-for(i in 1:length(list_species)){
-  Sp = list_species[i]
-  
-  print(Sp)
-  
-  # Define origin and goal data
-  dataa_ALLSPRING = subset(ld, grepl(Sp, ld) & grepl("spring", ld))
-  dataa_ALLSUMMER = subset(ld, grepl(Sp, ld) & grepl("summer", ld))
-  dataa_ALLAUTUMN = subset(ld, grepl(Sp, ld) & grepl("autumn", ld))
-  s <- stack(ld)
-  if(dim(s)[3]!=3){
-    error(paste0("error: there are ", dim(s)[3], " layers for ", Sp))
-  }
-  
-  print("Transition layer")
-  
-  # Create transition layer by selecting the highest value of each pixel across the year
-  Raster_TRANSITION_YEAR = max(s)
-  
-  # Save
-  Raster_extent= extent(Raster_TRANSITION_YEAR)
-  Raster_TRANSITION_YEAR_wtNA = Raster_TRANSITION_YEAR
-  Raster_TRANSITION_YEAR_wtNA[is.na(Raster_TRANSITION_YEAR_wtNA)] <- 0 # replace NA by 0 because passage function does not like NA
-  land_cost_sub_YEAR <- crop(Raster_TRANSITION_YEAR_wtNA, Raster_extent)
-  land_cost_sub_YEAR <- transition(land_cost_sub_YEAR, transitionFunction = mean, 8)
-  land_cost_sub_YEAR <- geoCorrection(land_cost_sub_YEAR, type = "r", scl = T) # "r" because we anticipate low theta values and randomised shortest path method
-  saveRDS(land_cost_sub_YEAR, paste0(NewDir, "/", Sp, "_", "Year_", "Transition", ".rds"))
-  
-  # Get highest values for patches
-  print("Get highest values for patches")
-  Raster_SPRING= Q80_function(dataa_ALLSPRING[[1]])
-  Raster_AUTUMN= Q80_function(dataa_ALLAUTUMN[[1]])
-  
-  # Save result
-  #writeRaster(Raster_MID, paste0("C:/Users/croemer01/Documents/Donnees vigie-chiro/Connectivity_maps/Pipnat_MID.tif"), overwrite=TRUE)
-  
-  # plot(Raster_0315)
-  
-  # Crop data in box (optional)
-  print("Crop")
-  Raster_SPRING_sub <- crop(Raster_SPRING, Raster_extent)
-  Raster_AUTUMN_sub <- crop(Raster_AUTUMN, Raster_extent)
-  
-  # Clump pixels and remove small patches
-  print("Clump")
-  SPRING_patches_perimeter = Clump_function(Raster_SPRING_sub)
-  AUTUMN_patches_perimeter = Clump_function(Raster_AUTUMN_sub)
-  
-  ListPatches = list(SPRING_patches_perimeter, AUTUMN_patches_perimeter)
-  
-  ListTimes = c("SPRING", "AUTUMN")
-  
-  # Save patches
-  fwrite(SPRING_patches_perimeter, paste0(NewDir, "/", Sp, "_", "SPRING", ".csv"))
-  fwrite(AUTUMN_patches_perimeter, paste0(NewDir, "/", Sp, "_", "AUTUMN", ".csv"))
-}
+print("Transition layer")
 
+# Create transition layer by selecting the highest value of each pixel across the year
+Raster_TRANSITION_YEAR = max(s)
+
+# Save
+Raster_extent= extent(Raster_TRANSITION_YEAR)
+Raster_TRANSITION_YEAR_wtNA = Raster_TRANSITION_YEAR
+Raster_TRANSITION_YEAR_wtNA[is.na(Raster_TRANSITION_YEAR_wtNA)] <- 0 # replace NA by 0 because passage function does not like NA
+land_cost_sub_YEAR <- crop(Raster_TRANSITION_YEAR_wtNA, Raster_extent)
+land_cost_sub_YEAR <- transition(land_cost_sub_YEAR, transitionFunction = mean, 8)
+land_cost_sub_YEAR <- geoCorrection(land_cost_sub_YEAR, type = "r", scl = T) # "r" because we anticipate low theta values and randomised shortest path method
+saveRDS(land_cost_sub_YEAR, paste0(NewDir, "/", Sp, "_", "Year_", "Transition", ".rds"))
+
+# Get highest values for patches
+print("Get highest values for patches")
+Raster_SPRING= Q80_function(dataa_ALLSPRING[[1]])
+Raster_AUTUMN= Q80_function(dataa_ALLAUTUMN[[1]])
+
+# Crop data in box (optional)
+print("Crop")
+Raster_SPRING_sub <- crop(Raster_SPRING, Raster_extent)
+Raster_AUTUMN_sub <- crop(Raster_AUTUMN, Raster_extent)
+
+# Clump pixels and remove small patches
+print("Clump")
+SPRING_patches_perimeter = Clump_function(Raster_SPRING_sub)
+AUTUMN_patches_perimeter = Clump_function(Raster_AUTUMN_sub)
+
+ListPatches = list(SPRING_patches_perimeter, AUTUMN_patches_perimeter)
+
+# Save patches
+fwrite(SPRING_patches_perimeter, paste0(NewDir, "/", Sp, "_", "SPRING", ".csv"))
+fwrite(AUTUMN_patches_perimeter, paste0(NewDir, "/", Sp, "_", "AUTUMN", ".csv"))
 
 END=Sys.time()
 TIMEDIFF=END-START
-TIMEDIFF
+print(TIMEDIFF)
 
-beep(2)
+print(paste0("Patches selected for ", Sp))
+
 
