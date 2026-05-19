@@ -124,8 +124,10 @@ if (opt$evaluation == TRUE) {
   print(B - A)
   print("model built, calculating RMSE and R²")
   # parallel::stopCluster(cl)
+  if (opt$evaluation == TRUE) {
   spatial_stats <- global_validation(spatial_mod)[c("RMSE", "Rsquared")]
   names(spatial_stats) <- paste0("kNNDM_", names(spatial_stats))
+  }
 
   # 3. Surface predictions
   # preds <- predict(rstack, spatial_mod, na.rm=TRUE)
@@ -136,6 +138,7 @@ if (opt$evaluation == TRUE) {
   names(impfeat) <- "impfeat"
 
   # Tidy and return results
+  if (opt$evaluation == TRUE) {
   tabres <- as.data.frame(t(c( # random_stats,
     spatial_stats,
     # AOA,
@@ -149,6 +152,7 @@ if (opt$evaluation == TRUE) {
     spatmod = spatial_mod,
     graphmod = results
   )
+  }
 }
 
 #------------------------------------------------------------------------------#
