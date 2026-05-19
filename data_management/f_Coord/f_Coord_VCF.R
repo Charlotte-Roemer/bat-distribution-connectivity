@@ -42,7 +42,8 @@ Coord_VCF <- function(points, names_coord, bs, bm, bl, layers) {
   rm(OccSL)
 
   OccSL_L93$year <- sapply(strsplit(OccSL_L93$Nuit, "-"), "[", 1)
-  unique_years <- unique(OccSL_L93$year)
+  OccSL_L93$year2 = ifelse(OccSL_L93$year < 2014, 2014, OccSL_L93$year)
+  unique_years <- unique(OccSL_L93$year2)
 
   tableaux <- list()
   vcf_files <- list.files(folder_vcf,
@@ -68,7 +69,7 @@ Coord_VCF <- function(points, names_coord, bs, bm, bl, layers) {
 
   for (year in unique_years) {
     print(paste0("Treating year : ", year))
-    tableau_year <- OccSL_L93[OccSL_L93$year == year, ]
+    tableau_year <- OccSL_L93[OccSL_L93$year2 == year, ]
 
     raster <- vcf_files[which.min(abs(vcf_years - as.integer(year)))]
 

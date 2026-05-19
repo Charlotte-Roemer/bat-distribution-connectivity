@@ -311,7 +311,6 @@ Coord_BioclimLocal(
   layer_folder = bioclim_folder
 )
 
-
 ### ALAN ###
 print("ALAN")
 Coord_ALAN(
