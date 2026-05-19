@@ -99,6 +99,7 @@ fitvalpred_rf <- function(covariates,
   cl <- parallel::makeCluster(10, type = "MPI")
   doParallel::registerDoParallel(cl)
 
+if (opt$evaluation == TRUE) {
   spatial_mod <- caret::train(
     x = as.data.frame(traindf)[, covariates], # train model
     y = as.data.frame(traindf)[, var_to_predict],
@@ -108,6 +109,16 @@ fitvalpred_rf <- function(covariates,
     ntree = best_ntrees,
     tuneGrid = spatial_grid
   )
+}else{
+  spatial_mod <- caret::train(
+    x = as.data.frame(traindf)[, covariates], # train model
+    y = as.data.frame(traindf)[, var_to_predict],
+    method = "rf",
+    importance = TRUE,
+    ntree = best_ntrees,
+    tuneGrid = spatial_grid
+  )
+}
 
   B <- Sys.time()
   print(B - A)

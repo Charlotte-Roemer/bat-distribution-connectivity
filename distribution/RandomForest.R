@@ -58,6 +58,10 @@ option_list <- list(
   ),
   optparse::make_option(c("-k", "--keep"),
     action = "store_true", help = "Do you want to save a test dataset ?"
+  ),
+  optparse::make_option(c("-e", "--evaluation"),
+    type = "logical", default = "TRUE",
+    help = "Do you want to make folds to evaluate the performance ?"
   )
 )
 # Parse options to opt object
@@ -878,6 +882,8 @@ print("Model done")
 # suffix <- paste0(opt$period, "_", opt$region, "_noSpace", "_", ListSp[i])
 suffix <- paste0(opt$period, "_", opt$region, "_noSpace", "_", Sp_real)
 
+# Save evaluation
+if (opt$evaluation == TRUE) {
 write.csv(
   noSpacemod$tab,
   file.path(
@@ -895,6 +901,7 @@ write.csv(
     )
   )
 )
+}
 
 
 data.table::fwrite(noSpacemod$graphmod, file.path(Output, paste0(suffix, ".csv")))
