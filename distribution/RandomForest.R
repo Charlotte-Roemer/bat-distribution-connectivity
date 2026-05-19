@@ -901,10 +901,10 @@ write.csv(
     )
   )
 )
-}
-
 
 data.table::fwrite(noSpacemod$graphmod, file.path(Output, paste0(suffix, ".csv")))
+}
+
 
 write("noSpace", file.path(Output, paste0(suffix, ".txt")), append = TRUE)
 nosp <- print(noSpacemod$spatmod)
