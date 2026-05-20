@@ -19,7 +19,7 @@ Coord_Meteo <- function(points, temp, prec, wind) {
     command <- paste0("python3", file.path(
       project_path,
       "data_management",
-      "get_meteo.py"
+      "get_meteo.py" # asks weather database online
     ), "--file", points, ".csv")
     system(command)
 
