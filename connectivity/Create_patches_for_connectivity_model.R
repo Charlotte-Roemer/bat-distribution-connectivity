@@ -40,6 +40,10 @@ option_list <- list(
   optparse::make_option(c("--acti"),
                         type = "character", default = "nb_contacts",
                         help = "Which value do you want to predict ? nbcontacts, acticlass"
+  ),
+  optparse::make_option(c("-p", "--period"),
+    type = "character", default = "year",
+    help = "Which activity are you modelling year, spring, summer or autumn"
   )
 )
 
@@ -50,7 +54,8 @@ opt <- optparse::parse_args(opt_parser)
 # Load acoustic predictions
 Name = paste0("RFspat_VC", opt$threshold, "_",  opt$date, "_noSpace_", opt$data_sel, "_", opt$acti, "_", opt$variableselection) # RFspat_VC90_2026-05-04_noSpace_all_acticlass_None
 #Directory <- "/home/charlotte/Bureau/SDM/IDF_k4/Season/" # repertory with outputs from Predict_act
-Directory = file.path(data_path, ModPred)
+season_year = ifelse(opt$period == "year", "year", "season")
+Directory = file.path(data_path, "ModPred", opt$acti, paste0("VC", opt$threshold, "_", opt$data_sel, "_", opt$acti, "_", opt$variableselection, "_", season_year))
 
 NewDir = file.path(data_path, "Connectivity", Name)
 dir.create(NewDir)
