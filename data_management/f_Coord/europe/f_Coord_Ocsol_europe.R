@@ -71,6 +71,7 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, layer) {
 
 
   OCS <- terra::rast(ocs_file)
+  OCS <- terra::project(OCS, "epsg:2154")
 
   # create a buffer around the points
   tableau_BM <- sf::st_buffer(OccSL_L93, bm)
