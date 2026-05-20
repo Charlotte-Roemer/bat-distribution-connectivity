@@ -27,8 +27,8 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, layer) {
 
     OccSL$Nuit <- date_pred
 
-    OccSL_L93 <- OccSL %>%
-      sf::st_transform(2154)
+    OccSL_L3035 <- OccSL %>%
+      sf::st_transform(3035)
 
     CoordH <- names_coord
   } else {
@@ -38,12 +38,12 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, layer) {
     OccSL <- OccSL %>%
       sf::st_as_sf(coords = c("X", "Y"), crs = 4326, remove = FALSE)
 
-    OccSL_L93 <- OccSL %>%
+    OccSL_L3035 <- OccSL %>%
       sf::st_transform(2154)
   }
 
-  OccSL_L93$year <- sapply(strsplit(OccSL_L93$Nuit, "-"), "[", 1)
-  unique_years <- unique(OccSL_L93$year)
+  OccSL_L3035$year <- sapply(strsplit(OccSL_L3035$Nuit, "-"), "[", 1)
+  unique_years <- unique(OccSL_L3035$year)
 
   CoordH <- names_coord
 
@@ -56,7 +56,7 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, layer) {
     full.names = TRUE
   )
 
-  nuits_uniques <- unique(OccSL_L93$Nuit)
+  nuits_uniques <- unique(OccSL_L3035$Nuit)
   tableaux_m <- list()
   tableaux_s <- list()
 
@@ -71,13 +71,13 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, layer) {
 
 
   OCS <- terra::rast(ocs_file)
-  OCS <- terra::project(OCS, "epsg:2154")
+  OCS <- terra::project(OCS, "epsg:3035")
 
   # create a buffer around the points
-  tableau_BM <- sf::st_buffer(OccSL_L93, bm)
-  tableau_BS <- sf::st_buffer(OccSL_L93, bs)
+  tableau_BM <- sf::st_buffer(OccSL_L3035, bm)
+  tableau_BS <- sf::st_buffer(OccSL_L3035, bs)
 
-  rm(OccSL_L93)
+  rm(OccSL_L3035)
 
   # Extract values in medium buffer
   landcov_fracs_Medium <- exactextractr::exact_extract(OCS, tableau_BM, function(df) {
