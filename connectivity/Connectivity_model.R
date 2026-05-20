@@ -70,7 +70,8 @@ START=Sys.time()
 LongMigrant = c("Nyclei", "Nycnoc", "Pipnat", "Nyclas", "Vesmur")
 ListTimes = c("SPRING", "AUTUMN")
 
-Table_Dist = read_delim("/home/charlotte/Documents/Donnees vigie-chiro/Maximum_distance_seasonal_movements.csv")
+#Table_Dist = read_delim("/home/charlotte/Documents/Donnees vigie-chiro/Maximum_distance_seasonal_movements.csv")
+Table_Dist = read_delim("/sps/mnhn/croemer/data/observations/donnees_vigie_chiro/")
 
 Sp = opt$species
 print(Sp)
@@ -281,7 +282,7 @@ for (j in seq_along(ListTimes)) {
         # )
         
         # Save result
-        if(max(pasT)>0){ # only if the raster contains some value (passage sometimes produces empty rasters...)
+        if(minmax(pasT)[2]>0){ # only if the raster contains some value (passage sometimes produces empty rasters...)
           UniqueName = paste0(format(Sys.Date(), "%Y%m%d"), "_", Sys.getpid(), "_", k, "_", sample.int(1e9, 1) )
           writeRaster(pasT, paste0(Directory, "/", Sp, "_", THETA, "_", UniqueName, ".tif" ), overwrite = TRUE)
         }
