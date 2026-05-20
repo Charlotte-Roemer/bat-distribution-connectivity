@@ -11,7 +11,7 @@ Coord_Roads <- function(points, names_coord, bm, bl, folder) {
     recursive = TRUE, full.names = TRUE
   )
   ROUTE <- st_read(route_file)
-  ROUTE <- st_transform(ROUTE, 2154)
+  ROUTE <- st_transform(ROUTE, 3035)
 
   FOccSL <- points
 
@@ -23,9 +23,9 @@ Coord_Roads <- function(points, names_coord, bm, bl, folder) {
     OccSL <- OccSL |>
       st_as_sf(coords = c("X", "Y"), crs = 4326, remove = FALSE)
 
-    OccSL_L93 <- OccSL |>
-      st_transform(2154)
-    OccSL_L93$Nuit <- date_pred
+    OccSL_L3035 <- OccSL |>
+      st_transform(3035)
+    OccSL_L3035$Nuit <- date_pred
 
     CoordH <- names_coord
   } else {
@@ -35,8 +35,8 @@ Coord_Roads <- function(points, names_coord, bm, bl, folder) {
     OccSL <- OccSL |>
       st_as_sf(coords = c("X", "Y"), crs = 4326, remove = FALSE)
 
-    OccSL_L93 <- OccSL |>
-      st_transform(2154)
+    OccSL_L3035 <- OccSL |>
+      st_transform(3035)
     CoordH <- names_coord
   }
 
@@ -52,8 +52,8 @@ Coord_Roads <- function(points, names_coord, bm, bl, folder) {
   ##########################################
   ##########################################
 
-  nearest_r <- try(sf::st_nearest_feature(OccSL_L93, ROUTE))
-  road_dist <- st_distance(OccSL_L93,
+  nearest_r <- try(sf::st_nearest_feature(OccSL_L3035, ROUTE))
+  road_dist <- st_distance(OccSL_L3035,
     ROUTE[nearest_r, ],
     by_element = TRUE
   )
@@ -62,7 +62,7 @@ Coord_Roads <- function(points, names_coord, bm, bl, folder) {
 
   # Write dictionary
   ClassP <- unique(ROUTE$GP_RTP)
-  OccSL_L93Re <- OccSL_L93
+  OccSL_L93Re <- OccSL_L3035
 
   for (h in 1L:length(ClassP)) {
     ROUTEP <- ROUTE[ROUTE$GP_RTP == ClassP[h], ]
@@ -74,7 +74,7 @@ Coord_Roads <- function(points, names_coord, bm, bl, folder) {
     # Buffer M
     ########
 
-    BufferM <- st_buffer(OccSL_L93, dist = BufferMedium) |>
+    BufferM <- st_buffer(OccSL_L3035, dist = BufferMedium) |>
       st_transform(st_crs(ROUTE))
 
     Sys.time()
@@ -108,7 +108,7 @@ Coord_Roads <- function(points, names_coord, bm, bl, folder) {
     # Buffer L
     ########
 
-    BufferL <- st_buffer(OccSL_L93, dist = BufferLarge) |>
+    BufferL <- st_buffer(OccSL_L3035, dist = BufferLarge) |>
       st_transform(st_crs(ROUTE))
 
     Sys.time()
@@ -175,10 +175,10 @@ Coord_Roads <- function(points, names_coord, bm, bl, folder) {
   ##########################################
 
   #
-  OccSL_WGS84 <- OccSL_L93 |>
+  OccSL_WGS84 <- OccSL_L3035 |>
     st_transform(4326) # back transform to WGS84
 
-  rm(OccSL_L93)
+  rm(OccSL_L3035)
 
   OccSL_ARajouter <- subset(OccSL_L93Re, select = grepl("Sp", names(OccSL_L93Re)))
 

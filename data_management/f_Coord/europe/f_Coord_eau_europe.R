@@ -21,9 +21,9 @@ Coord_Water <- function(points, names_coord, water_polyg, water_lines) {
     OccSL <- OccSL |>
       sf::st_as_sf(coords = c("X", "Y"), crs = 4326, remove = FALSE)
 
-    OccSL_L93 <- OccSL |>
-      sf::st_transform(2154)
-    OccSL_L93$Nuit <- date_pred
+    OccSL_L3035 <- OccSL |>
+      sf::st_transform(3035)
+    OccSL_L3035$Nuit <- date_pred
 
     CoordH <- names_coord
   } else {
@@ -33,8 +33,8 @@ Coord_Water <- function(points, names_coord, water_polyg, water_lines) {
     OccSL <- OccSL |>
       sf::st_as_sf(coords = c("X", "Y"), crs = 4326, remove = FALSE)
 
-    OccSL_L93 <- OccSL |>
-      sf::st_transform(2154)
+    OccSL_L3035 <- OccSL |>
+      sf::st_transform(3035)
     CoordH <- names_coord
   }
 
@@ -44,14 +44,14 @@ Coord_Water <- function(points, names_coord, water_polyg, water_lines) {
   EauPolyg <- sf::read_sf(
     water_polyg
   )
-  EauPolyg <- sf::st_transform(EauPolyg, 2154)
+  EauPolyg <- sf::st_transform(EauPolyg, 3035)
 
   EauPolyg$surf <- st_area(EauPolyg)
 
   EauLines <- sf::read_sf(
     water_lines
   ) # All "En service"
-  EauLines <- sf::st_transform(EauLines, 2154)
+  EauLines <- sf::st_transform(EauLines, 3035)
 
   # Split result before saving?
   # Split <- FALSE
@@ -69,21 +69,21 @@ Coord_Water <- function(points, names_coord, water_polyg, water_lines) {
   ##########################################
   ##########################################
 
-  nearest_p <- try(sf::st_nearest_feature(OccSL_L93, EauPolyg))
-  water_dist_polyg <- st_distance(OccSL_L93,
+  nearest_p <- try(sf::st_nearest_feature(OccSL_L3035, EauPolyg))
+  water_dist_polyg <- st_distance(OccSL_L3035,
     EauPolyg[nearest_p, ],
     by_element = TRUE
   )
-  OccSL_L93$water_dist_polyg <- water_dist_polyg
+  OccSL_L3035$water_dist_polyg <- water_dist_polyg
 
-  nearest_l <- try(sf::st_nearest_feature(OccSL_L93, EauLines))
-  water_dist_line <- st_distance(OccSL_L93,
+  nearest_l <- try(sf::st_nearest_feature(OccSL_L3035, EauLines))
+  water_dist_line <- st_distance(OccSL_L3035,
     EauLines[nearest_l, ],
     by_element = TRUE
   )
-  OccSL_L93$water_dist_line <- water_dist_line
-  OccSL_L93$SpWD <- with(
-    OccSL_L93,
+  OccSL_L3035$water_dist_line <- water_dist_line
+  OccSL_L3035$SpWD <- with(
+    OccSL_L3035,
     pmin(water_dist_line, water_dist_polyg)
   )
 
@@ -99,22 +99,22 @@ Coord_Water <- function(points, names_coord, water_polyg, water_lines) {
 
   rm(EauPolyg, EauLines)
 
-  nearest_pp <- try(sf::st_nearest_feature(OccSL_L93, EauPolyglarge))
-  water_dist_polyg_large <- st_distance(OccSL_L93,
+  nearest_pp <- try(sf::st_nearest_feature(OccSL_L3035, EauPolyglarge))
+  water_dist_polyg_large <- st_distance(OccSL_L3035,
     EauPolyglarge[nearest_pp, ],
     by_element = TRUE
   )
-  OccSL_L93$water_dist_polyg_large <- water_dist_polyg_large
+  OccSL_L3035$water_dist_polyg_large <- water_dist_polyg_large
 
-  nearest_lp <- try(sf::st_nearest_feature(OccSL_L93, EauLineslarge))
-  water_dist_line_large <- st_distance(OccSL_L93,
+  nearest_lp <- try(sf::st_nearest_feature(OccSL_L3035, EauLineslarge))
+  water_dist_line_large <- st_distance(OccSL_L3035,
     EauLineslarge[nearest_lp, ],
     by_element = TRUE
   )
-  OccSL_L93$water_dist_line_large <- water_dist_line_large
+  OccSL_L3035$water_dist_line_large <- water_dist_line_large
 
-  OccSL_L93$SpWDlarge <- with(
-    OccSL_L93,
+  OccSL_L3035$SpWDlarge <- with(
+    OccSL_L3035,
     pmin(water_dist_line_large, water_dist_polyg_large)
   )
 
@@ -124,14 +124,14 @@ Coord_Water <- function(points, names_coord, water_polyg, water_lines) {
   #################### Write ###########################################
   ######################################################################
 
-  OccSL_WGS84 <- OccSL_L93 |>
+  OccSL_WGS84 <- OccSL_L3035 |>
     st_transform(4326L) # back transform to WGS84
 
-  OccSL_ARajouter <- subset(OccSL_L93,
-    select = grepl("Sp", names(OccSL_L93), fixed = TRUE)
+  OccSL_ARajouter <- subset(OccSL_L3035,
+    select = grepl("Sp", names(OccSL_L3035), fixed = TRUE)
   )
 
-  rm(OccSL_L93)
+  rm(OccSL_L3035)
 
   Carthage <- data.frame(cbind(
     st_coordinates(OccSL_WGS84),

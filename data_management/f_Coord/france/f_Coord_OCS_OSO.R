@@ -83,7 +83,7 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, layer) {
 
     # Determine which clc year is closest
     ocs_file <- ocs_files[which.min(abs(ocs_annees - as.integer(year)))]
-    OCS <- terra::rast(ocs_file)
+    OCS <- terra::rast(ocs_file) # OCS OSO is already in L93
 
     # create a buffer around the points
     tableau_BM <- sf::st_buffer(tableau_year, bm) %>%
