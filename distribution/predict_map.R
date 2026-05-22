@@ -11,7 +11,7 @@ library(dplyr)
 library(sf)
 library(optparse)
 source("RF_prepare_data.R")
-source("variables.R")
+source("../variables.R")
 
 option_list <- list(
   optparse::make_option(c("-t", "--threshold"),
