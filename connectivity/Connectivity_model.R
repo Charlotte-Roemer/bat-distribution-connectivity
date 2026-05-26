@@ -282,7 +282,7 @@ for (j in seq_along(ListTimes)) {
         # )
         
         # Save result
-        if(minmax(pasT)[2]>0){ # only if the raster contains some value (passage sometimes produces empty rasters...)
+        if(cellStats(pasT, max)>0){ # only if the raster contains some value (passage sometimes produces empty rasters...)
           UniqueName = paste0(format(Sys.Date(), "%Y%m%d"), "_", Sys.getpid(), "_", k, "_", sample.int(1e9, 1) )
           writeRaster(pasT, paste0(Directory, "/", Sp, "_", THETA, "_", UniqueName, ".tif" ), overwrite = TRUE)
         }

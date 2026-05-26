@@ -53,10 +53,11 @@ opt <- optparse::parse_args(opt_parser)
 
 # Load acoustic predictions
 Name = paste0("RFspat_VC", opt$threshold, "_",  opt$date, "_noSpace_", opt$data_sel, "_", opt$acti, "_", opt$variableselection) # RFspat_VC90_2026-05-04_noSpace_all_acticlass_None
+print(Name)
 #Directory <- "/home/charlotte/Bureau/SDM/IDF_k4/Season/" # repertory with outputs from Predict_act
 season_year = ifelse(opt$period == "year", "year", "season")
 Directory = file.path(data_path, "ModPred", opt$acti, paste0("VC", opt$threshold, "_", opt$data_sel, "_", opt$acti, "_", opt$variableselection, "_", season_year))
-
+print(Directory)
 NewDir = file.path(data_path, "Connectivity", Name)
 dir.create(NewDir)
 
@@ -90,9 +91,11 @@ Clump_function <- function(Raster_sub)
 }
 
 # Load files
+print("Load files")
+print(paste0("^", Name, ".*.", opt$species, ".*.", opt$region, ".*.tif$"))
 list_file <- list.files(Directory, recursive=TRUE, pattern=paste0("^", Name, ".*.", opt$species, ".*.", opt$region, ".*.tif$"))
 
-ls2 = paste0(Directory,list_file, sep="")
+ls2 = paste0(Directory, list_file, sep="")
 ld <- lapply(ls2, function(x) raster(x))
 
 Sp = opt$species
