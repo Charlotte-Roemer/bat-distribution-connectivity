@@ -273,7 +273,7 @@ for (j in seq_along(ListTimes)) {
           land_cond_sub,
           pt_Origin,
           pt_Goal,
-          theta = THETA
+          theta = opt$theta
         )
         # pasT <- passage(
         #   land_cond_sub,
