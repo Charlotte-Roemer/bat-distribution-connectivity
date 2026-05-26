@@ -110,13 +110,15 @@ if (opt$evaluation == TRUE) {
     tuneGrid = spatial_grid
   )
 }else{
+  ctrl <- trainControl(method = "none") # no evaluation
   spatial_mod <- caret::train(
     x = as.data.frame(traindf)[, covariates], # train model
     y = as.data.frame(traindf)[, var_to_predict],
     method = "rf",
     importance = TRUE,
     ntree = best_ntrees,
-    tuneGrid = spatial_grid
+    tuneGrid = spatial_grid,
+    trControl = ctrl # no evaluation
   )
 }
 
