@@ -107,7 +107,7 @@ dataa_ALLSUMMER = subset(ld, grepl(Sp, ld) & grepl("summer", ld))
 dataa_ALLAUTUMN = subset(ld, grepl(Sp, ld) & grepl("autumn", ld))
 s <- stack(ld)
 if(dim(s)[3]!=3){
-  error(paste0("error: there are ", dim(s)[3], " layers for ", Sp))
+  stop(paste0("error: there are ", dim(s)[3], " layers for ", Sp))
 }
 
 print("Transition layer")
