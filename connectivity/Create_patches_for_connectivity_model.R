@@ -93,7 +93,7 @@ Clump_function <- function(Raster_sub)
 # Load files
 print("Load files")
 print(paste0("^", Name, ".*.", opt$species, ".*.", opt$region, ".*.tif$"))
-list_file <- list.files(Directory, recursive=TRUE, pattern=paste0("^", Name, ".*.", opt$species, ".*.", opt$region, ".*.tif$"))
+list_file <- list.files(Directory, recursive=TRUE, pattern=paste0("^", Name, ".*.", opt$species, ".*.", opt$region, ".*predictions.tif$"))
 
 ls2 = paste(Directory, list_file, sep="/")
 ld <- lapply(ls2, function(x) raster(x))
