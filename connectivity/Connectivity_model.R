@@ -72,7 +72,7 @@ LongMigrant = c("Nyclei", "Nycnoc", "Pipnat", "Nyclas", "Vesmur")
 ListTimes = c("SPRING", "AUTUMN")
 
 #Table_Dist = read_delim("/home/charlotte/Documents/Donnees vigie-chiro/Maximum_distance_seasonal_movements.csv")
-Table_Dist = read_delim("/sps/mnhn/croemer/data/observations/donnees_vigie_chiro/")
+Table_Dist = read_delim("/sps/mnhn/croemer/data/observations/donnees_vigie_chiro/Maximum_distance_seasonal_movements.csv")
 
 Sp = opt$species
 print(Sp)
