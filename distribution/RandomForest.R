@@ -876,6 +876,7 @@ noSpacemod <- fitvalpred_rf(
 )
 
 print("Model done")
+print(noSpacemod$spatmod)
 
 #### Save ####----------------------------------------------------------------
 

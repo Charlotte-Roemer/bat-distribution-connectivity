@@ -152,6 +152,14 @@ if (opt$evaluation == TRUE) {
     spatmod = spatial_mod,
     graphmod = results
   )
+  }else{
+   list(
+    #tab = tabres,
+    # preds = preds,
+    ## tunemod = tune_mod,
+    spatmod = spatial_mod,
+    graphmod = results
+  ) 
   }
 }
 
