@@ -117,7 +117,7 @@ if (opt$evaluation == TRUE) {
     method = "rf",
     importance = TRUE,
     ntree = best_ntrees,
-    tuneGrid = spatial_grid,
+    #tuneGrid = spatial_grid,
     trControl = ctrl # no evaluation
   )
 }
