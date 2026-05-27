@@ -672,7 +672,6 @@ if (opt$keep == TRUE) {
   DataSaison_sf$acticlass <- def_int_classes(DataSaison_sf)
 }
 
-
 print("DataSaison filtered for season")
 
 print("saisons avant filtre")
@@ -751,6 +750,13 @@ samp_sizes <- def_sample_vector(DataSaison, "acti_class", 0.66)
 # DataSaison$SpRoAddM <- DataSaison$SpRo1M + DataSaison$SpRo2M +
 #   DataSaison$SpRo3M + DataSaison$SpRo4M
 #
+
+cat(
+  paste0(
+    "Distribution of response variable: ",
+    summary(DataSaison$acti_class)),
+  fill = TRUE
+)
 
 print("b)")
 

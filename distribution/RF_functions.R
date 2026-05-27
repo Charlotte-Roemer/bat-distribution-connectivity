@@ -73,10 +73,16 @@ fitvalpred_rf <- function(covariates,
   best_mtry <- results[results$RMSE == min(results$RMSE), ]$mtry
   best_mtry <- as.numeric(as.character((best_mtry)))
   cat("Best tuning mtry", best_mtry, fill = TRUE)
+  if(length(best_mtry>1)){
+    stop(paste0("error: best_mtry = ", best_mtry))
+  }
 
-  best_ntrees <- results[results$RMSE == max(results$RMSE), ]$ntrees
+  best_ntrees <- results[results$RMSE == min(results$RMSE), ]$ntrees # MAX SEMBLAIT UNE ERREUR ! J'AI REMPLACé MAX PAR MIN
   best_ntrees <- as.numeric(as.character((best_ntrees)))
   cat("Best tuning ntree", best_ntrees, fill = TRUE)
+    if(length(best_ntrees>1)){
+    stop(paste0("error: best_ntrees = ", best_ntrees))
+  }
 
   cat("Best tuning r2", max(results$R2), fill = TRUE)
   cat("Best tuning rmse", min(results$RMSE), fill = TRUE)
@@ -117,7 +123,7 @@ if (opt$evaluation == TRUE) {
     method = "rf",
     importance = TRUE,
     ntree = best_ntrees,
-    #tuneGrid = spatial_grid,
+    tuneGrid = spatial_grid,
     trControl = ctrl # no evaluation
   )
 }
