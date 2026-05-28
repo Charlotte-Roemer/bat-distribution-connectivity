@@ -90,8 +90,8 @@ fitvalpred_rf <- function(covariates,
   best_ntrees <- as.numeric(as.character((best_ntrees)))
   cat("Best tuning ntree", best_ntrees, fill = TRUE)
     if(length(best_ntrees>1)){
-    stop(print("error: best_ntrees = ")
-    print(best_ntrees))
+    stop(print("error: best_ntrees = "))
+    print(best_ntrees)
   }
 
   cat("Best tuning r2", max(results$R2), fill = TRUE)
