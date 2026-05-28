@@ -635,8 +635,8 @@ aoi <- sf::read_sf(
 ) |>
   st_transform(2154L)
 
-print("Summary of DataSaison :")
-print(summary(DataSaison$nb_contacts))
+cat("Summary of DataSaison :", fill = TRUE)
+cat(summary(DataSaison$nb_contacts), fill = TRUE)
 
 cat("Prep data saison as sf object :", fill = TRUE)
 DataSaison_sf <- st_as_sf(DataSaison,
@@ -754,8 +754,8 @@ samp_sizes <- def_sample_vector(DataSaison, "acti_class", 0.66)
 #   DataSaison$SpRo3M + DataSaison$SpRo4M
 #
 
-print("Distribution of response variable: ")
-print(summary(DataSaison$acti_class))
+cat("Distribution of response variable: ", fill = TRUE)
+cat(summary(DataSaison$acti_class), fill = TRUE)
 
 print("b)")
 
