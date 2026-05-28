@@ -638,6 +638,14 @@ aoi <- sf::read_sf(
 print("Summary of DataSaison :")
 print(summary(DataSaison$nb_contacts))
 
+print("nrow(DataSaison)")
+print(nrow(DataSaison))
+
+print("number of cases where activity is > 0 bat passes/night :")
+print(DataSaison |>
+      filter(nb_contacts > 0) |>
+      nrow())
+
 cat("Prep data saison as sf object :", fill = TRUE)
 DataSaison_sf <- st_as_sf(DataSaison,
   coords = c(x = "longitude", y = "latitude"),
