@@ -43,12 +43,12 @@ fitvalpred_rf <- function(covariates,
 
 
   y_for_check = as.data.frame(traindf)[, var_to_predict],
-  print("class(y) :")
-  print(class(y))
-  print(str(y))
-  print(table(y, useNA = "ifany"))
-  print(is.numeric(y))
-  print(is.factor(y))
+  print("class(y_for_check) :")
+  print(class(yy_for_check))
+  print(str(y_for_check))
+  print(table(y_for_check, useNA = "ifany"))
+  print(is.numeric(y_for_check))
+  print(is.factor(y_for_check))
 
   for (tree in ntree) {
     for (mtry in mtrys) {
