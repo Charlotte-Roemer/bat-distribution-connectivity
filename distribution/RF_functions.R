@@ -26,7 +26,11 @@ fitvalpred_rf <- function(covariates,
     floor(length(covariates) / 2)
   )
 
-  tune_ctrl <- caret::trainControl(method = "oob")
+  #if (opt$evaluation == TRUE) {
+    tune_ctrl <- caret::trainControl(method = "oob")
+  #}else{
+  #  tune_ctrl <- caret::trainControl(method = "none") # no evaluation
+  #}
   cl <- parallel::makeCluster(10, type = "MPI")
   doParallel::registerDoParallel(cl)
   ntree <- c(800, 1500, 3000) # (150, 500, 1500, 6000)
@@ -37,6 +41,14 @@ fitvalpred_rf <- function(covariates,
   ntrees <- list()
   A <- Sys.time()
 
+
+  y_for_check = as.data.frame(traindf)[, var_to_predict],
+  print("class(y) :")
+  print(class(y))
+  print(str(y))
+  print(table(y, useNA = "ifany"))
+  print(is.numeric(y))
+  print(is.factor(y))
 
   for (tree in ntree) {
     for (mtry in mtrys) {
@@ -51,6 +63,11 @@ fitvalpred_rf <- function(covariates,
         ntree = tree,
         tuneGrid = data.frame(mtry = mtry)
       )
+
+      print("tunemod$results")
+      print(tune_mod$results)
+      print(str(tune_mod$results))
+
       error <- append(error, tune_mod$results$RMSE)
       R2 <- append(R2, tune_mod$results$Rsquared)
       params <- append(params, tune_mod$results$mtry)
@@ -74,14 +91,16 @@ fitvalpred_rf <- function(covariates,
   best_mtry <- as.numeric(as.character((best_mtry)))
   cat("Best tuning mtry", best_mtry, fill = TRUE)
   if(length(best_mtry>1)){
-    stop(paste0("error: best_mtry = ", best_mtry))
+    stop(print("error: best_mtry = ")
+    print(best_mtry))
   }
 
-  best_ntrees <- results[results$RMSE == min(results$RMSE), ]$ntrees # MAX SEMBLAIT UNE ERREUR ! J'AI REMPLACé MAX PAR MIN
+  best_ntrees <- results[results$RMSE == min(results$RMSE), ]$ntrees # MAX ETAIT UNE ERREUR ! J'AI REMPLACé MAX PAR MIN
   best_ntrees <- as.numeric(as.character((best_ntrees)))
   cat("Best tuning ntree", best_ntrees, fill = TRUE)
     if(length(best_ntrees>1)){
-    stop(paste0("error: best_ntrees = ", best_ntrees))
+    stop(print("error: best_ntrees = ")
+    print(best_ntrees))
   }
 
   cat("Best tuning r2", max(results$R2), fill = TRUE)
