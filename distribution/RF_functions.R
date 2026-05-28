@@ -42,9 +42,9 @@ fitvalpred_rf <- function(covariates,
   A <- Sys.time()
 
 
-  y_for_check = as.data.frame(traindf)[, var_to_predict],
+  y_for_check = as.data.frame(traindf)[, var_to_predict]
   print("class(y_for_check) :")
-  print(class(yy_for_check))
+  print(class(y_for_check))
   print(str(y_for_check))
   print(table(y_for_check, useNA = "ifany"))
   print(is.numeric(y_for_check))
