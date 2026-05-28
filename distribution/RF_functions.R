@@ -27,7 +27,7 @@ fitvalpred_rf <- function(covariates,
   )
 
   #if (opt$evaluation == TRUE) {
-    tune_ctrl <- caret::trainControl(method = "oob")
+  tune_ctrl <- caret::trainControl(method = "oob")
   #}else{
   #  tune_ctrl <- caret::trainControl(method = "none") # no evaluation
   #}
@@ -82,8 +82,8 @@ fitvalpred_rf <- function(covariates,
   best_mtry <- as.numeric(as.character((best_mtry)))
   cat("Best tuning mtry", best_mtry, fill = TRUE)
   if(length(best_mtry>1)){
-    stop(print("error: best_mtry = ")
-    print(best_mtry))
+    stop(print("error: best_mtry = "))
+    print(best_mtry)
   }
 
   best_ntrees <- results[results$RMSE == min(results$RMSE), ]$ntrees # MAX ETAIT UNE ERREUR ! J'AI REMPLACé MAX PAR MIN
