@@ -71,28 +71,42 @@ fitvalpred_rf <- function(covariates,
   B <- Sys.time()
   print(B - A)
 
+  #results <- data.frame(
+  #  R2 = unlist(R2),
+  #  RMSE = unlist(error),
+  #  mtry = as.factor(unlist(params)),
+  #  ntrees = as.factor(unlist(ntrees))
+  #)
+
   results <- data.frame(
-    R2 = unlist(R2),
-    RMSE = unlist(error),
-    mtry = as.factor(unlist(params)),
-    ntrees = as.factor(unlist(ntrees))
+  R2 = unlist(R2),
+  RMSE = unlist(error),
+  mtry = unlist(params),
+  ntrees = unlist(ntrees)
   )
 
-  best_mtry <- results[results$RMSE == min(results$RMSE), ]$mtry
-  best_mtry <- as.numeric(as.character((best_mtry)))
-  cat("Best tuning mtry", best_mtry, fill = TRUE)
-  if(length(best_mtry>1)){
-    stop(print("error: best_mtry = "))
-    print(best_mtry)
-  }
+  results = results %>%
+    dplyr::arrange(RMSE, ntrees, mtry)
+  best_row = 1
 
-  best_ntrees <- results[results$RMSE == min(results$RMSE), ]$ntrees # MAX ETAIT UNE ERREUR ! J'AI REMPLACé MAX PAR MIN
-  best_ntrees <- as.numeric(as.character((best_ntrees)))
-  cat("Best tuning ntree", best_ntrees, fill = TRUE)
-    if(length(best_ntrees>1)){
-    stop(print("error: best_ntrees = "))
-    print(best_ntrees)
-  }
+  best_mtry <- results$mtry[best_row]
+  best_ntrees <- results$ntrees[best_row]
+
+  #best_mtry <- results[results$RMSE == min(results$RMSE), ]$mtry
+  #best_mtry <- as.numeric(as.character((best_mtry)))
+  #cat("Best tuning mtry", best_mtry, fill = TRUE)
+  #if(length(best_mtry)>1){
+  #  stop("error: best_mtry = ")
+  #  print(best_mtry)
+  #}
+
+  #best_ntrees <- results[results$RMSE == min(results$RMSE), ]$ntrees # MAX ETAIT UNE ERREUR ! J'AI REMPLACé MAX PAR MIN
+  #best_ntrees <- as.numeric(as.character((best_ntrees)))
+  #cat("Best tuning ntree", best_ntrees, fill = TRUE)
+  #  if(length(best_ntrees)>1){
+  #  stop("error: best_ntrees = ")
+  #  print(best_ntrees)
+  #}
 
   cat("Best tuning r2", max(results$R2), fill = TRUE)
   cat("Best tuning rmse", min(results$RMSE), fill = TRUE)
