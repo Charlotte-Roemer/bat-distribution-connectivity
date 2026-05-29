@@ -879,13 +879,13 @@ if (activite == "nbcontacts") {
   activite <- "nb_contacts"
 }
 
-y_for_check = as.data.frame(DataSaison)[, activite]
-  print("class(y_for_check) :")
-  print(class(y_for_check))
-  print(str(y_for_check))
-  print(table(y_for_check, useNA = "ifany"))
-  print(is.numeric(y_for_check))
-  print(is.factor(y_for_check))
+#y_for_check = as.data.frame(DataSaison)[, activite]
+#  print("class(y_for_check) :")
+#  print(class(y_for_check))
+#  print(str(y_for_check))
+#  print(table(y_for_check, useNA = "ifany"))
+#  print(is.numeric(y_for_check))
+#  print(is.factor(y_for_check))
 
 noSpacemod <- fitvalpred_rf(
   Prednames,
