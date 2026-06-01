@@ -225,16 +225,10 @@ if (opt$mode == "train" && loc_train_exists == FALSE) {
 Coord_Headers <- c("X", "Y") # long and lat
 
 # buffers distances :
+BS <- 50
+BM <- 500
+BL <- 5000
 
-if (opt$region %in% c("idf", "france_met")) {
-  BS <- 50
-  BM <- 500
-  BL <- 5000
-} else if (opt$region %in% c("europe", "french_neighbours")) {
-  BS <- 1
-  BM <- 1000
-  BL <- 5000
-}
 print("Setting layers")
 if (opt$region %in% c("idf", "france_met")) {
   cat("France/IdF", fill = TRUE)
