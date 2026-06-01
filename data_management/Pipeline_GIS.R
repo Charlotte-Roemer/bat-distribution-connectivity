@@ -402,7 +402,7 @@ cat("Land Cover", fill = TRUE)
 Coord_Land_Cover(
   points = FCoord,
   names_coord = c(Coord_Headers, "Nuit"),
-  bs = BS,
+  #bs = BS,
   bm = BM,
   bl = BL,
   , layer = Layer_OCS
