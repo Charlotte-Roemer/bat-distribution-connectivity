@@ -1,6 +1,6 @@
 print("load europe land cover")
 
-Coord_Land_Cover <- function(points, names_coord, bm, bl, layer) {
+Coord_Land_Cover <- function(points, names_coord, bs, bm, bl, layer) {
   print("esaworldcover")
   print(points)
   library(data.table)

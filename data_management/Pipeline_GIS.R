@@ -395,15 +395,16 @@ for (i in 1:length(listfun))
 #   )
 # }
 
+# !!!! # Refaire la France avec des buffer medium & large au lieu de small & medium comme Thomas avait fait !!!!!!
+
 # ## Land cover ####
 cat("Land Cover", fill = TRUE)
 Coord_Land_Cover(
   points = FCoord,
   names_coord = c(Coord_Headers, "Nuit"),
   bs = BS,
-  bm = BM
-  # Buffer Large is not done because was too long in Pipeline V1, and
-  # at this scale, Corine Land Cover is sufficient anyway
+  bm = BM,
+  bl = BL,
   , layer = Layer_OCS
 )
 
