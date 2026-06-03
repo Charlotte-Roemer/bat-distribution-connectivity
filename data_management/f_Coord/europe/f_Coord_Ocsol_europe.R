@@ -81,16 +81,6 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, bl, layer) {
   #n_test <- min(1000, nrow(OccSL_L3035))
   #OccSL_L3035 <- OccSL_L3035[1:n_test, ] # SUPPRIMER CETTE LIGNE QUAND J'AURAIS FINI LE TEST !!!!
 
-  # create a buffer around the points
-  tableau_BM <- sf::st_buffer(OccSL_L3035, bm)
-  tableau_BL <- sf::st_buffer(OccSL_L3035, bl)
-  print(object.size(tableau_BM), units = "GB")
-  print(object.size(tableau_BL), units = "GB")
-
-  rm(OccSL_L3035)
-
-  print("Buffers created")
-
   # Operation to crop ESA worldcover to correspond to the zone of points 
   # before reprojecting ESA to epsg:3035 because to lead to OOM killing
   zone_3035 <- sf::st_transform(zone, 3035)
@@ -98,7 +88,7 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, bl, layer) {
   zone_vect <- terra::project(zone_vect, terra::crs(OCS))
   print("Zone reprojected")
   OCS_crop <- terra::crop(OCS, zone_vect) # crop
-  OCS_crop <- terra::mask(OCS_crop, zone_vect) # puts values to NA if they are not in the polygon formed by BL
+  #OCS_crop <- terra::mask(OCS_crop, zone_vect) # puts values to NA if they are not in the polygon formed by BL
   OCS_crop_3035 <- terra::project( # reprojection to epsg:3035
   OCS_crop,
   "epsg:3035",
@@ -119,6 +109,16 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, bl, layer) {
   # )
   # })
   # print(t_agg)
+
+  # create a buffer around the points
+  tableau_BM <- sf::st_buffer(OccSL_L3035, bm)
+  tableau_BL <- sf::st_buffer(OccSL_L3035, bl)
+  print(object.size(tableau_BM), units = "GB")
+  print(object.size(tableau_BL), units = "GB")
+
+  rm(OccSL_L3035)
+
+  print("Buffers created")
 
   # Extract values in medium buffer
   print("Medium buffer")
