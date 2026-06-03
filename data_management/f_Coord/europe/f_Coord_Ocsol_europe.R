@@ -66,14 +66,18 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, bl, layer) {
 
   ## nuit <- as.character(nuit)
   ## print(nuit)
+  print("Europe)")
   print(paste0("Treating year : ")) # When more years will be avaialble, need to replace by the same for (year in unique_years) as in f_Coord_CLCraster.R
   print(unique_years)
 
 
   OCS <- terra::rast(ocs_file)
-  OCS <- terra::project(OCS, "epsg:3035")
 
   print("Raster loaded")
+
+  OCS <- terra::project(OCS, "epsg:3035")
+
+  print("Raster reprojected")
 
   print("Creating 100m raster")
   t_agg <- system.time({

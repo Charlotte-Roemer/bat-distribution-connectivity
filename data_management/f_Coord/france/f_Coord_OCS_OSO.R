@@ -77,6 +77,7 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, layer) {
   for (year in unique_years) {
     ## nuit <- as.character(nuit)
     ## print(nuit)
+    print("France)")
     print(paste0("Treating year : ", year))
     tableau_year <- OccSL_L93[OccSL_L93$year == year, ]
     ## annee <- as.integer(strsplit(nuit, "-")[[1]][1])
