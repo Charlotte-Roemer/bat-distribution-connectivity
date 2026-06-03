@@ -73,9 +73,9 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, bl, layer) {
   OCS <- terra::rast(ocs_file)
   OCS <- terra::project(OCS, "epsg:3035")
 
-  cat("Raster loaded\n")
+  print("Raster loaded")
 
-  cat("Creating 100m raster\n")
+  print("Creating 100m raster")
   t_agg <- system.time({
   OCS_100m <- terra::aggregate(
     OCS,
@@ -91,7 +91,7 @@ print(t_agg)
 n_test <- min(1000, nrow(OccSL_L3035))
 OccSL_L3035 <- OccSL_L3035[1:n_test, ] # SUPPRIMER CETTE LIGNE QUAND J'AURAIS FINI LE TEST !!!!
 
-cat("Creating buffers\n")
+print("Creating buffers")
 
   # create a buffer around the points
   tableau_BM <- sf::st_buffer(OccSL_L3035, bm)
@@ -103,7 +103,7 @@ cat("Creating buffers\n")
   rm(OccSL_L3035)
 
   # Extract values in medium buffer
-  cat("Medium buffer\n")
+  print("Medium buffer")
   t_medium <- system.time({
   landcov_fracs_Medium <- exactextractr::exact_extract(OCS, tableau_BM, function(df) {
     df %>%
@@ -118,7 +118,7 @@ cat("Creating buffers\n")
   rm(tableau_BM)
 
   # Extract values in large buffer
-  cat("Large buffer 10m\n")
+  print("Large buffer 10m")
   t_large10 <- system.time({
   landcov_fracs_Large <- exactextractr::exact_extract(OCS, tableau_BL, function(df) {
     df %>%
@@ -130,7 +130,7 @@ cat("Creating buffers\n")
   })
   print(t_large10)
 
-cat("Large buffer extraction 100m\n")
+print("Large buffer extraction 100m")
 
 t_large100 <- system.time({
 
@@ -184,7 +184,7 @@ print(t_large100)
 
   rm(landcov_fracs_Large_100m)
 
-cat("COMPARAISON\n")
+print("COMPARAISON")
 
   comp <- dplyr::inner_join(
   landcov_fracs_Large10_pivot,
