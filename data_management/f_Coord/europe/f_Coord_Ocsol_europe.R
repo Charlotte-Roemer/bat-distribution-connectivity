@@ -72,50 +72,62 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, bl, layer) {
 
 
   OCS <- terra::rast(ocs_file)
-
   print("Raster loaded")
 
-  OCS <- terra::project(OCS, "epsg:3035")
+  #OCS <- terra::project(OCS, "epsg:3035")
+  #print("Raster reprojected")
 
-  print("Raster reprojected")
+  # prendre seulement 1000 points pour le test
+  #n_test <- min(1000, nrow(OccSL_L3035))
+  #OccSL_L3035 <- OccSL_L3035[1:n_test, ] # SUPPRIMER CETTE LIGNE QUAND J'AURAIS FINI LE TEST !!!!
 
-  print("Creating 100m raster")
-  t_agg <- system.time({
-  OCS_100m <- terra::aggregate(
-    OCS,
-    fact = 10,
-    fun = modal,
-    na.rm = TRUE
-  )
-})
-
-print(t_agg)
-
-# prendre seulement 1000 points pour le test
-n_test <- min(1000, nrow(OccSL_L3035))
-OccSL_L3035 <- OccSL_L3035[1:n_test, ] # SUPPRIMER CETTE LIGNE QUAND J'AURAIS FINI LE TEST !!!!
-
-print("Creating buffers")
+  print("Creating buffers")
 
   # create a buffer around the points
   tableau_BM <- sf::st_buffer(OccSL_L3035, bm)
   tableau_BL <- sf::st_buffer(OccSL_L3035, bl)
-
   print(object.size(tableau_BM), units = "GB")
   print(object.size(tableau_BL), units = "GB")
 
   rm(OccSL_L3035)
 
+  # Operation to crop ESA worldcover to correspond to the zone of points 
+  # before reprojecting ESA to epsg:3035 because to lead to OOM killing
+  zone <- sf::st_union(tableau_BL)
+  zone_vect <- terra::vect(zone)
+  zone_vect <- terra::project(zone_vect, terra::crs(OCS))
+  OCS_crop <- terra::crop(OCS, zone_vect) # crop
+  OCS_crop <- terra::mask(OCS_crop, zone_vect) # puts values to NA if they are not in the polygon formed by BL
+  OCS_crop_3035 <- terra::project( # reprojection to epsg:3035
+  OCS_crop,
+  "epsg:3035",
+  method = "near"
+  )
+
+  rm(OCS, OCS_crop)
+
+  print("Raster reprojected")
+
+  # print("Creating 100m raster")
+  # t_agg <- system.time({
+  # OCS_100m <- terra::aggregate(
+  #  OCS_crop_3035,
+  #  fact = 10,
+  #  fun = modal,
+  #  na.rm = TRUE
+  # )
+  # })
+  # print(t_agg)
+
   # Extract values in medium buffer
   print("Medium buffer")
   t_medium <- system.time({
-  landcov_fracs_Medium <- exactextractr::exact_extract(OCS, tableau_BM, function(df) {
+  landcov_fracs_Medium <- exactextractr::exact_extract(OCS_crop_3035, tableau_BM, function(df) {
     df %>%
       dplyr::mutate(frac_total = coverage_fraction / sum(coverage_fraction)) %>%
       dplyr::group_by(FID, value) %>%
       dplyr::summarize(freq = sum(frac_total))
   }, summarize_df = TRUE, include_cols = "FID", progress = FALSE)
-
   })
   print(t_medium)
 
@@ -124,45 +136,44 @@ print("Creating buffers")
   # Extract values in large buffer
   print("Large buffer 10m")
   t_large10 <- system.time({
-  landcov_fracs_Large <- exactextractr::exact_extract(OCS, tableau_BL, function(df) {
+  landcov_fracs_Large <- exactextractr::exact_extract(OCS_crop_3035, tableau_BL, function(df) {
     df %>%
       dplyr::mutate(frac_total = coverage_fraction / sum(coverage_fraction)) %>%
       dplyr::group_by(FID, value) %>%
       dplyr::summarize(freq = sum(frac_total))
   }, summarize_df = TRUE, include_cols = "FID", progress = FALSE)
-
   })
   print(t_large10)
 
-print("Large buffer extraction 100m")
+  # print("Large buffer extraction 100m")
 
-t_large100 <- system.time({
+  # t_large100 <- system.time({
 
-  landcov_fracs_Large_100m <- exactextractr::exact_extract(
-    OCS_100m,
-    tableau_BL,
-    function(df) {
-      df %>%
-        dplyr::mutate(
-          frac_total = coverage_fraction / sum(coverage_fraction)
-        ) %>%
-        dplyr::group_by(FID, value) %>%
-        dplyr::summarize(
-          freq = sum(frac_total),
-          .groups = "drop"
-        )
-    },
-    summarize_df = TRUE,
-    include_cols = "FID",
-    progress = FALSE
-  )
+  # landcov_fracs_Large_100m <- exactextractr::exact_extract(
+  #   OCS_100m,
+  #   tableau_BL,
+  #   function(df) {
+  #     df %>%
+  #       dplyr::mutate(
+  #         frac_total = coverage_fraction / sum(coverage_fraction)
+  #       ) %>%
+  #       dplyr::group_by(FID, value) %>%
+  #       dplyr::summarize(
+  #         freq = sum(frac_total),
+  #         .groups = "drop"
+  #       )
+  #   },
+  #   summarize_df = TRUE,
+  #   include_cols = "FID",
+  #   progress = FALSE
+  # )
 
-})
+  # })
 
-print(t_large100)
+  # print(t_large100)
 
   # Append large buffer list
-  rm(OCS, tableau_BL)
+  rm(OCS_crop_3035, tableau_BL)
 
   # Pivot tibbles and rename columns
   landcov_fracs_Medium_pivot <- landcov_fracs_Medium %>%
@@ -188,21 +199,21 @@ print(t_large100)
 
   rm(landcov_fracs_Large_100m)
 
-print("COMPARAISON")
+  print("COMPARAISON")
 
   comp <- dplyr::inner_join(
   landcov_fracs_Large10_pivot,
   landcov_fracs_Large100_pivot,
   by = "FID",
   suffix = c("_10m", "_100m")
-)
+  )
 
-classes <- setdiff(
+  classes <- setdiff(
   names(landcov_fracs_Large10_pivot),
   "FID"
-)
+  )
 
-for(cl in classes){
+  for(cl in classes){
 
   cat("\n", cl, "\n")
 
@@ -213,9 +224,9 @@ for(cl in classes){
       use = "complete.obs"
     )
   )
-}
+  }
 
-stop("FIN COMPARAISON")
+  stop("FIN COMPARAISON")
 
   HabufPropT_Tot <- dplyr::inner_join(landcov_fracs_Medium_pivot,
     landcov_fracs_Large_pivot,
@@ -240,6 +251,6 @@ stop("FIN COMPARAISON")
     data.table::fwrite(OccSL_ARajouter, paste0(FOccSL, "_OCSraster.csv"))
   }
 
-rm(OccSL_ARajouter)
+  rm(OccSL_ARajouter)
 
 }
