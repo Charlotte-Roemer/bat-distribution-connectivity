@@ -95,9 +95,9 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, bl, layer) {
 
   #print("Raster reprojected")
 
-  # For benchmark test
-  n_test <- min(10000, nrow(OccSL_L3035))
-  OccSL_L3035 <- OccSL_L3035[1:n_test, ]
+  # # For benchmark test
+  # n_test <- min(10000, nrow(OccSL_L3035))
+  # OccSL_L3035 <- OccSL_L3035[1:n_test, ]
 
   # create a buffer around the points
   tableau_BM <- sf::st_buffer(OccSL_L3035, bm)
