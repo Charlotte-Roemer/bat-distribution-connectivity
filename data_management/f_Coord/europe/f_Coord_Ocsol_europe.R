@@ -95,9 +95,9 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, bl, layer) {
 
   #print("Raster reprojected")
 
-  # For benchmark test
-  n_test <- min(10000, nrow(OccSL_L3035))
-  OccSL_L3035 <- OccSL_L3035[1:n_test, ]
+  # # For benchmark test
+  # n_test <- min(10000, nrow(OccSL_L3035))
+  # OccSL_L3035 <- OccSL_L3035[1:n_test, ]
 
   # create a buffer around the points
   tableau_BM <- sf::st_buffer(OccSL_L3035, bm)
@@ -137,9 +137,21 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, bl, layer) {
   rm(tableau_BM)
 
   # Extract values in large buffer
+
+  print("Creating 100m raster") # to have realistic extraction time
+  t_agg <- system.time({
+  OCS_100m <- terra::aggregate(
+    OCS,
+    fact = 10,
+    fun = modal,
+    na.rm = TRUE
+  )
+  })
+  print(t_agg)
+
   print("Large buffer 10m")
   t_large10 <- system.time({
-  landcov_fracs_Large <- exactextractr::exact_extract(OCS, tableau_BL, function(df) {
+  landcov_fracs_Large <- exactextractr::exact_extract(OCS_100m, tableau_BL, function(df) {
     df %>%
       dplyr::mutate(frac_total = coverage_fraction / sum(coverage_fraction)) %>%
       dplyr::group_by(FID, value) %>%
