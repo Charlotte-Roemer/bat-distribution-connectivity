@@ -89,11 +89,11 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, bl, layer) {
   print("Zone reprojected")
   OCS_crop <- terra::crop(OCS, zone_vect) # crop
   #OCS_crop <- terra::mask(OCS_crop, zone_vect) # puts values to NA if they are not in the polygon formed by BL
-  OCS_crop_3035 <- terra::project( # reprojection to epsg:3035
-  OCS_crop,
-  "epsg:3035",
-  method = "near"
-  )
+  # OCS_crop_3035 <- terra::project( # reprojection to epsg:3035
+  # OCS_crop,
+  # "epsg:3035",
+  # method = "near"
+  # )
 
   #rm(OCS, OCS_crop)
 
