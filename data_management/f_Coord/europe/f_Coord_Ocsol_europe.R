@@ -87,6 +87,7 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, bl, layer) {
   zone_vect <- terra::vect(zone)
   zone_vect <- terra::project(zone_vect, terra::crs(OCS))
   print("Zone reprojected")
+  print(terra::tmpFiles())
   OCS_crop <- terra::crop(OCS, zone_vect) # crop
   #OCS_crop <- terra::mask(OCS_crop, zone_vect) # puts values to NA if they are not in the polygon formed by BL
   # OCS_crop_3035 <- terra::project( # reprojection to epsg:3035
@@ -97,21 +98,39 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, bl, layer) {
 
   #rm(OCS, OCS_crop)
 
-  #print("Raster reprojected")
+  print("Crop done")
+  print(terra::tmpFiles())
 
-  print("Creating 100m raster") # to have realistic extraction time
+  terraOptions(memfrac = 0.5)
+
+  print("Creating 100m raster")
+
+  terraOptions(
+  tempdir = "/sps/mnhn/croemer/Temp",
+  memfrac = 0.5
+)
+
   t_agg <- system.time({
+  print(OCS_crop)
   OCS_100m <- terra::aggregate(
     OCS_crop,
     fact = 10,
     fun = modal,
-    na.rm = TRUE
+    na.rm = TRUE,
+    filename = "/sps/mnhn/croemer/Temp/OCS_100m.tif",
+    overwrite = TRUE,
+    wopt = list(
+      gdal = c("COMPRESS=LZW")
+    )
   )
   })
+
   print(t_agg)
   rm(OCS_crop)
 
   print("100m raster created")
+  print(gc())
+  print(terra::tmpFiles())
 
   # create a buffer around the points
   tableau_BM <- sf::st_buffer(OccSL_L3035, bm)
