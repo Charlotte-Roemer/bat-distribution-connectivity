@@ -111,6 +111,8 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, bl, layer) {
   print(t_agg)
   rm(OCS_crop)
 
+  print("100m raster created")
+
   # create a buffer around the points
   tableau_BM <- sf::st_buffer(OccSL_L3035, bm)
   tableau_BL <- sf::st_buffer(OccSL_L3035, bl)
