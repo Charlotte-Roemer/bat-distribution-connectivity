@@ -410,7 +410,7 @@ if (Sp_real == "Myocry") {
 }
 # Myobly & Myomyo
 if (Sp == "MyoGT" & opt$region != "corsica") {
-  cat("Filtering myonat area", fill = TRUE)
+  cat("Filtering MyoGT area", fill = TRUE)
   print(dim(DataSpSL_w0_2))
   DataSpSL_w0_2_sf <- st_as_sf(DataSpSL_w0_2, # convert acoustic data to sf
     coords = c("longitude", "latitude"), crs = 4326, remove = FALSE

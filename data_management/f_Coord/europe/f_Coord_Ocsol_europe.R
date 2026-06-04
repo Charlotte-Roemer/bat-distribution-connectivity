@@ -93,7 +93,7 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, bl, layer) {
 
   #rm(OCS, OCS_crop)
 
-  print("Raster reprojected")
+  #print("Raster reprojected")
 
   # create a buffer around the points
   tableau_BM <- sf::st_buffer(OccSL_L3035, bm)
@@ -116,7 +116,11 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, bl, layer) {
     terra::crs(OCS)
   )
 
-cat("Buffers reprojected\n")
+  cat("Buffers reprojected\n")
+
+  # For benchmark test
+  n_test <- min(10000, nrow(OccSL_L3035))
+  OccSL_L3035 <- OccSL_L3035[1:n_test, ]
 
   # Extract values in medium buffer
   print("Medium buffer")
