@@ -77,27 +77,39 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, bl, layer) {
   #OCS <- terra::project(OCS, "epsg:3035")
   #print("Raster reprojected")
 
-  # # Operation to crop ESA worldcover to correspond to the zone of points 
-  # # before reprojecting ESA to epsg:3035 because to lead to OOM killing
-  # zone_3035 <- sf::st_transform(zone, 3035)
-  # zone_vect <- terra::vect(zone_3035)
-  # zone_vect <- terra::project(zone_vect, terra::crs(OCS))
-  # print("Zone reprojected")
-  # OCS_crop <- terra::crop(OCS, zone_vect) # crop
-  # #OCS_crop <- terra::mask(OCS_crop, zone_vect) # puts values to NA if they are not in the polygon formed by BL
-  # OCS_crop_3035 <- terra::project( # reprojection to epsg:3035
-  # OCS_crop,
-  # "epsg:3035",
-  # method = "near"
-  # )
+  # For benchmark test
+  n_test <- min(10000, nrow(OccSL_L3035))
+  OccSL_L3035 <- OccSL_L3035[1:n_test, ]
+
+  # Operation to crop ESA worldcover to correspond to the zone of points 
+  # before reprojecting ESA to epsg:3035 because to lead to OOM killing
+  #zone_3035 <- sf::st_transform(zone, 3035)
+  zone_vect <- terra::vect(zone)
+  zone_vect <- terra::project(zone_vect, terra::crs(OCS))
+  print("Zone reprojected")
+  OCS_crop <- terra::crop(OCS, zone_vect) # crop
+  #OCS_crop <- terra::mask(OCS_crop, zone_vect) # puts values to NA if they are not in the polygon formed by BL
+  OCS_crop_3035 <- terra::project( # reprojection to epsg:3035
+  OCS_crop,
+  "epsg:3035",
+  method = "near"
+  )
 
   #rm(OCS, OCS_crop)
 
   #print("Raster reprojected")
 
-  # # For benchmark test
-  # n_test <- min(10000, nrow(OccSL_L3035))
-  # OccSL_L3035 <- OccSL_L3035[1:n_test, ]
+  print("Creating 100m raster") # to have realistic extraction time
+  t_agg <- system.time({
+  OCS_100m <- terra::aggregate(
+    OCS_crop,
+    fact = 10,
+    fun = modal,
+    na.rm = TRUE
+  )
+  })
+  print(t_agg)
+  rm(OCS_crop)
 
   # create a buffer around the points
   tableau_BM <- sf::st_buffer(OccSL_L3035, bm)
@@ -137,18 +149,6 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, bl, layer) {
   rm(tableau_BM)
 
   # Extract values in large buffer
-
-  print("Creating 100m raster") # to have realistic extraction time
-  t_agg <- system.time({
-  OCS_100m <- terra::aggregate(
-    OCS,
-    fact = 10,
-    fun = modal,
-    na.rm = TRUE
-  )
-  })
-  print(t_agg)
-
   print("Large buffer 10m")
   t_large10 <- system.time({
   landcov_fracs_Large <- exactextractr::exact_extract(OCS_100m, tableau_BL, function(df) {
