@@ -123,6 +123,8 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, bl, layer) {
   })
 
   print(t_agg)
+  print("OCS_100m")
+  print(OCS_100m)
   rm(OCS_crop)
 
   print("100m raster created")
