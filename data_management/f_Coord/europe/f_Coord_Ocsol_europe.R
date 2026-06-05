@@ -107,7 +107,7 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, bl, layer) {
 
   terraOptions(
   tempdir = "/sps/mnhn/croemer/Temp",
-  memfrac = 0.5
+  memfrac = 0.3
 )
 
   t_agg <- system.time({
@@ -118,10 +118,7 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, bl, layer) {
     fun = modal,
     na.rm = TRUE,
     filename = "/sps/mnhn/croemer/Temp/OCS_100m.tif",
-    overwrite = TRUE,
-    wopt = list(
-      gdal = c("COMPRESS=LZW")
-    )
+    overwrite = TRUE
   )
   })
 
