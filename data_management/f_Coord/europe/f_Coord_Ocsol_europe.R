@@ -77,9 +77,9 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, bl, layer) {
   #OCS <- terra::project(OCS, "epsg:3035")
   #print("Raster reprojected")
 
-  # For benchmark test
-  n_test <- min(10000, nrow(OccSL_L3035))
-  OccSL_L3035 <- OccSL_L3035[1:n_test, ]
+  # # For benchmark test
+  # n_test <- min(10000, nrow(OccSL_L3035))
+  # OccSL_L3035 <- OccSL_L3035[1:n_test, ]
 
   # Operation to crop ESA worldcover to correspond to the zone of points 
   # before reprojecting ESA to epsg:3035 because to lead to OOM killing
