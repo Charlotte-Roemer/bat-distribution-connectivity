@@ -68,10 +68,12 @@ Coord_Meteo <- function(points, temp, prec, wind) {
     tab$Spprecipitations <- tab$precip_norm - tab$total_precipitations
     tab$Sptemp <- tab$temp_norm - tab$mean_temp
     tab$Spwind <- tab$wind_norm - (tab$mean_wind * 0.27777778) # converting kmh to ms
+
+    rm(temperature_norms, precipitation_norms, wind_norms, wind_norm, tableau_month, temp_norm, precip_norm)
   }
   print(tab, n = 10, width = Inf)
   data.table::fwrite(tab, paste0(points, "_meteo.csv"))
 
-  rm(OccSL, temperature_norms, precipitation_norms, wind_norms, wind_norm, tableau_month, temp_norm, precip_norm, tab)
+  rm(OccSL, tab)
 
 }

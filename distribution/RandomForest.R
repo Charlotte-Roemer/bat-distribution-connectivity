@@ -359,7 +359,7 @@ if (opt$region == "france_met") {
     DataSpSL_w0_2$longitude > -6L &
     DataSpSL_w0_2$latitude < 53L & DataSpSL_w0_2$latitude > 41L)
 }
-if (opt$region == "europe") {
+if (opt$region == "europe" | opt$region == "french_neighbours") {
   DataSpSL_w0_2 <- subset(DataSpSL_w0_2, DataSpSL_w0_2$longitude < 42L &
     DataSpSL_w0_2$longitude > -12L &
     DataSpSL_w0_2$latitude < 73L & DataSpSL_w0_2$latitude > 32L)
