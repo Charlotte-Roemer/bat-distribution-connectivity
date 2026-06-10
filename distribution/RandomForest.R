@@ -509,6 +509,7 @@ DataSaison$SpYear <- year(Date1)
 print("summary of coordinates DataSaison")
 print(summary(DataSaison$longitude))
 print(summary(DataSaison$latitude))
+print(head(DataSaison))
 
 DataSaison_sf <- sf::st_as_sf(
   DataSaison,
@@ -533,6 +534,8 @@ coords <- as.data.frame(st_coordinates(DataSaison_sf))
 testPred <- startsWith(names(DataSaison), "Sp")
 Prednames <- names(DataSaison)[testPred]
 
+print("A")
+print(Prednames)
 
 clc <- startsWith(Prednames, "SpHC")
 Prednames <- Prednames[!clc]
