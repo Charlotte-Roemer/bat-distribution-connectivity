@@ -61,7 +61,11 @@ for (df in dataframes) {
   print(names(df))
   if ("Nuit" %in% colnames(df)) {
     df <- unique(df)
+    print("A")
+    print(base$Nuit)
     base$Nuit <- df$Nuit[1] # A enlever si ça marche pas
+    print("B")
+    print(base$Nuit)
     by <- c("X", "Y", "Nuit")
     base <- dplyr::left_join(base, df, by = by)
   } else {
