@@ -20,7 +20,7 @@ print(mode_name)
 region <- commandArgs(trailingOnly = TRUE)[2L]
 
 fichiers <- list.files(folder,
-  full.names = TRUE, pattern = paste0("loc_train_", region)
+  full.names = TRUE, pattern = paste0("loc_", mode_name, "_", region)
 )
 
 fichiers
