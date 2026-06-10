@@ -19,9 +19,16 @@ print("mode name:")
 print(mode_name)
 region <- commandArgs(trailingOnly = TRUE)[2L]
 
+if (mode_name == "train") {
 fichiers <- list.files(folder,
   full.names = TRUE, pattern = paste0("loc_", mode_name, "_", region)
 )
+}
+if (mode_name == "pred") {
+  fichiers <- list.files(folder,
+  full.names = TRUE, pattern = paste0("SysGrid_500m_de_cote_", region)
+)
+}
 
 fichiers
 
