@@ -20,7 +20,7 @@ print(mode_name)
 region <- commandArgs(trailingOnly = TRUE)[2L]
 
 fichiers <- list.files(folder,
-  full.names = TRUE, pattern = region
+  full.names = TRUE, pattern = paste0("loc_train_", region)
 )
 
 fichiers
@@ -61,10 +61,8 @@ for (df in dataframes) {
   print(names(df))
   if ("Nuit" %in% colnames(df)) {
     df <- unique(df)
-    print("A")
     print(base$Nuit)
     base$Nuit <- df$Nuit[1] # A enlever si ça marche pas
-    print("B")
     print(base$Nuit)
     by <- c("X", "Y", "Nuit")
     base <- dplyr::left_join(base, df, by = by)
