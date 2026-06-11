@@ -66,6 +66,8 @@ head(base)
 # Join variables with base
 for (df in dataframes) {
   print(names(df))
+  print(head(df$X))
+  print(head(df$Y))
   if ("Nuit" %in% colnames(df)) {
     df <- unique(df)
     base$Nuit <- df$Nuit[1] # A enlever si ça marche pas
