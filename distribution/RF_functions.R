@@ -26,11 +26,7 @@ fitvalpred_rf <- function(covariates,
     floor(length(covariates) / 2)
   )
 
-  #if (opt$evaluation == TRUE) {
   tune_ctrl <- caret::trainControl(method = "oob")
-  #}else{
-  #  tune_ctrl <- caret::trainControl(method = "none") # no evaluation
-  #}
   cl <- parallel::makeCluster(10, type = "MPI")
   doParallel::registerDoParallel(cl)
   ntree <- c(800, 1500, 3000) # (150, 500, 1500, 6000)
@@ -121,7 +117,7 @@ fitvalpred_rf <- function(covariates,
   #   coord_equal() +
   #   scale_fill_viridis_c()
   #
-  # 2. # build model and calculate RMSE and R² using the kNNDM cross-validation method
+  # 2. # Build model 
   spatial_grid <- data.frame(mtry = best_mtry)
   # spatial_grid <- data.frame(mtry = round(length(covariates)*2/3))
   print("building model")
@@ -129,7 +125,7 @@ fitvalpred_rf <- function(covariates,
   cl <- parallel::makeCluster(10, type = "MPI")
   doParallel::registerDoParallel(cl)
 
-if (opt$evaluation == TRUE) {
+  if (opt$evaluation == TRUE) {
   spatial_mod <- caret::train(
     x = as.data.frame(traindf)[, covariates], # train model
     y = as.data.frame(traindf)[, var_to_predict],
@@ -139,7 +135,7 @@ if (opt$evaluation == TRUE) {
     ntree = best_ntrees,
     tuneGrid = spatial_grid
   )
-}else{
+  }else{
   ctrl <- trainControl(method = "none") # no evaluation
   spatial_mod <- caret::train(
     x = as.data.frame(traindf)[, covariates], # train model
@@ -150,16 +146,88 @@ if (opt$evaluation == TRUE) {
     tuneGrid = spatial_grid,
     trControl = ctrl # no evaluation
   )
-}
+  }
 
   B <- Sys.time()
   print(B - A)
-  print("model built, calculating RMSE and R²")
-  # parallel::stopCluster(cl)
+
+  print("model built")
+
+  # 3. Calculate evaluation metrics using the kNNDM cross-validation method
+  print("calculating evaluation metrics")
+
   if (opt$evaluation == TRUE) {
-  spatial_stats <- global_validation(spatial_mod)[c("RMSE", "Rsquared")]
-  names(spatial_stats) <- paste0("kNNDM_", names(spatial_stats))
-  }
+  # spatial_stats <- global_validation(spatial_mod)[c("RMSE", "Rsquared")]
+  # names(spatial_stats) <- paste0("kNNDM_", names(spatial_stats))
+
+  # classical CAST metrics
+  spatial_stats <- CAST::global_validation(
+    spatial_mod
+  )[c("RMSE", "Rsquared", "MAE")]
+
+  names(spatial_stats) <- paste0(
+    "kNNDM_",
+    names(spatial_stats)
+  )
+
+  # ----------------------------------------------------------
+  # Waldock et al. 2022 metrics
+  # ----------------------------------------------------------
+
+  predictions <- spatial_mod$pred
+
+  # keep only best tuning
+  predictions <- predictions[
+    predictions$mtry == best_mtry,
+  ]
+
+  obs <- predictions$obs
+  pred <- predictions$pred
+
+  err <- pred - obs
+
+  # Accuracy = relative MAE
+  accuracy_Waldock <- mean(
+    abs(err),
+    na.rm = TRUE
+  ) / mean(
+    obs,
+    na.rm = TRUE
+  )
+
+  # Discrimination = Pearson correlation
+  discrimination_Waldock <- cor(
+    pred,
+    obs,
+    method = "pearson",
+    use = "complete.obs"
+  )
+
+  # Precision = relative SD of errors
+  precision_Waldock <- sd(
+    err,
+    na.rm = TRUE
+  ) / mean(
+    obs,
+    na.rm = TRUE
+  )
+
+  # Bias = systematic over- or under-evaluation
+  bias <- mean(err, na.rm = TRUE) /
+  mean(obs, na.rm = TRUE)
+
+  Waldock_stats <- c(
+    kNNDM_accuracy_ecography = accuracy_Waldock,
+    kNNDM_discrimination = discrimination_Waldock,
+    kNNDM_precision = precision_Waldock,
+    kNNDM_bias = bias
+  )
+
+  spatial_stats <- c(
+    spatial_stats,
+    Waldock_stats
+  )
+}
 
   # 3. Surface predictions
   # preds <- predict(rstack, spatial_mod, na.rm=TRUE)
@@ -200,137 +268,135 @@ if (opt$evaluation == TRUE) {
 #------------------------------------------------------------------------------#
 
 
-fitvalpred_rf_cat <- function(covariates,
-                              spatial_ctrl,
-                              traindf,
-                              samp_sizes) {
-  # # 1. Tune (find the best mtry)
-  print("tuning model")
-  # mtrys <- c(17, 75, 100) # removed 200
-  mtrys <- c(
-    floor(sqrt(length(covariates))),
-    floor(length(covariates) / 3),
-    floor(length(covariates) / 2)
-  )
+# fitvalpred_rf_cat <- function(covariates,
+#                               spatial_ctrl,
+#                               traindf,
+#                               samp_sizes) {
+#   # 1. Tune (find the best mtry and ntree)
+#   print("tuning model")
+#   # mtrys <- c(17, 75, 100) # removed 200
+#   mtrys <- c(
+#     floor(sqrt(length(covariates))),
+#     floor(length(covariates) / 3),
+#     floor(length(covariates) / 2)
+#   )
 
 
-  tune_ctrl <- caret::trainControl(method = "oob")
-  cl <- parallel::makeCluster(10, type = "MPI")
-  doParallel::registerDoParallel(cl)
-  ntree <- c(800, 1500, 3000) # (150, 500, 1500, 6000)
-  print("starting RF tuning")
-  params <- list()
-  Accuracy <- list()
-  ntrees <- list()
-  A <- Sys.time()
+#   tune_ctrl <- caret::trainControl(method = "oob")
+#   cl <- parallel::makeCluster(10, type = "MPI")
+#   doParallel::registerDoParallel(cl)
+#   ntree <- c(800, 1500, 3000) # (150, 500, 1500, 6000)
+#   print("starting RF tuning")
+#   params <- list()
+#   Accuracy <- list()
+#   ntrees <- list()
+#   A <- Sys.time()
 
 
-  print("covariates :")
-  print(covariates)
+#   print("covariates :")
+#   print(covariates)
 
-  for (tree in ntree) {
-    for (mtry in mtrys) {
-      tune_mod <- caret::train(
-        x = as.data.frame(traindf)[, covariates],
-        y = as.data.frame(traindf)[, "acti_class"],
-        method = "rf",
-        importance = TRUE,
-        trControl = tune_ctrl,
-        ntree = tree,
-        strata = traindf$acti_class,
-        sampsize = samp_sizes,
-        tuneGrid = data.frame(mtry = mtry)
-      )
-      print("r2")
-      print(tune_mod)
-      Accuracy <- append(Accuracy, tune_mod$results$Accuracy)
-      params <- append(params, tune_mod$results$mtry)
-      ntrees <- append(ntrees, tree)
-    }
-  }
+#   for (tree in ntree) {
+#     for (mtry in mtrys) {
+#       tune_mod <- caret::train(
+#         x = as.data.frame(traindf)[, covariates],
+#         y = as.data.frame(traindf)[, "acti_class"],
+#         method = "rf",
+#         importance = TRUE,
+#         trControl = tune_ctrl,
+#         ntree = tree,
+#         strata = traindf$acti_class,
+#         sampsize = samp_sizes,
+#         tuneGrid = data.frame(mtry = mtry)
+#       )
+#       print("r2")
+#       print(tune_mod)
+#       Accuracy <- append(Accuracy, tune_mod$results$Accuracy)
+#       params <- append(params, tune_mod$results$mtry)
+#       ntrees <- append(ntrees, tree)
+#     }
+#   }
 
-  print("model tuned")
-  # parallel::stopCluster(cl)
-  B <- Sys.time()
-  print(B - A)
-  print("Accuracy")
-  print(Accuracy)
+#   print("model tuned")
+#   # parallel::stopCluster(cl)
+#   B <- Sys.time()
+#   print(B - A)
 
-  results <- data.frame(
-    Accuracy = unlist(Accuracy),
-    mtry = as.factor(unlist(params)),
-    ntrees = as.factor(unlist(ntrees))
-  )
+#   results <- data.frame(
+#     Accuracy = unlist(Accuracy),
+#     mtry = as.factor(unlist(params)),
+#     ntrees = as.factor(unlist(ntrees))
+#   )
 
-  best_mtry <- results[results$Accuracy == max(results$Accuracy), ]$mtry[1]
-  print(results)
-  best_mtry <- as.numeric(as.character((best_mtry)))
-  cat("Best tuning mtry", best_mtry, fill = TRUE)
+#   best_mtry <- results[results$Accuracy == max(results$Accuracy), ]$mtry[1]
+#   print(results)
+#   best_mtry <- as.numeric(as.character((best_mtry)))
+#   cat("Best tuning mtry", best_mtry, fill = TRUE)
 
-  best_ntrees <- results[results$Accuracy == max(results$Accuracy), ]$ntrees[1]
-  best_ntrees <- as.numeric(as.character((best_ntrees)))
-  cat("Best tuning ntree", best_ntrees, fill = TRUE)
+#   best_ntrees <- results[results$Accuracy == max(results$Accuracy), ]$ntrees[1]
+#   best_ntrees <- as.numeric(as.character((best_ntrees)))
+#   cat("Best tuning ntree", best_ntrees, fill = TRUE)
 
-  cat("Best tuning Accuracy", max(results$Accuracy), fill = TRUE)
-  results <- results %>%
-    dplyr::arrange(ntrees)
+#   cat("Best tuning Accuracy", max(results$Accuracy), fill = TRUE)
+#   results <- results %>%
+#     dplyr::arrange(ntrees)
 
-  # best_params_graph <- ggplot2::ggplot(
-  #   data = results,
-  #   aes(x = ntrees, y = mtry, fill = R2)
-  # ) +
-  #   geom_tile() +
-  #   coord_equal() +
-  #   scale_fill_viridis_c()
-  #
-  # 2. # build model and calculate RMSE and R² using the kNNDM cross-validation method
-  spatial_grid <- data.frame(mtry = best_mtry)
-  # spatial_grid <- data.frame(mtry = round(length(covariates)*2/3))
-  print("building model")
-  A <- Sys.time()
-  cl <- parallel::makeCluster(10)
-  doParallel::registerDoParallel(cl)
+#   # best_params_graph <- ggplot2::ggplot(
+#   #   data = results,
+#   #   aes(x = ntrees, y = mtry, fill = R2)
+#   # ) +
+#   #   geom_tile() +
+#   #   coord_equal() +
+#   #   scale_fill_viridis_c()
+#   #
+#   # 2. build model using the kNNDM cross-validation method
+#   spatial_grid <- data.frame(mtry = best_mtry)
+#   print("building model")
+#   A <- Sys.time()
+#   cl <- parallel::makeCluster(10)
+#   doParallel::registerDoParallel(cl)
 
-  spatial_mod <- caret::train(
-    x = as.data.frame(traindf)[, covariates], # train model
-    y = as.data.frame(traindf)[, "acti_class"],
-    method = "rf",
-    importance = TRUE,
-    trControl = spatial_ctrl,
-    ntree = best_ntrees,
-    tuneGrid = spatial_grid
-  )
+#   spatial_mod <- caret::train(
+#     x = as.data.frame(traindf)[, covariates], # train model
+#     y = as.data.frame(traindf)[, "acti_class"],
+#     method = "rf",
+#     importance = TRUE,
+#     trControl = spatial_ctrl,
+#     ntree = best_ntrees,
+#     tuneGrid = spatial_grid
+#   )
 
-  B <- Sys.time()
-  print(B - A)
-  print("model built, calculating RMSE and R²")
-  parallel::stopCluster(cl)
-  spatial_stats <- CAST::global_validation(spatial_mod)[c("Accuracy")]
-  names(spatial_stats) <- paste0("kNNDM_", names(spatial_stats))
+#   # 3. # build model and calculate RMSE and R² using the kNNDM cross-validation method
+#   B <- Sys.time()
+#   print(B - A)
+#   print("model built, calculating RMSE and R²")
+#   parallel::stopCluster(cl)
+#   spatial_stats <- CAST::global_validation(spatial_mod)[c("Accuracy")]
+#   names(spatial_stats) <- paste0("kNNDM_", names(spatial_stats))
 
-  # 3. Surface predictions
-  # preds <- predict(rstack, spatial_mod, na.rm=TRUE)
+#   # 3. Surface predictions
+#   # preds <- predict(rstack, spatial_mod, na.rm=TRUE)
 
-  # 4. Variable importance
-  impfeat <- randomForest::importance(spatial_mod$finalModel, type = 2)
-  impfeat <- sum(impfeat[row.names(impfeat) %in% covariates, 1]) / sum(impfeat[, 1]) * 100
-  names(impfeat) <- "impfeat"
+#   # 4. Variable importance
+#   impfeat <- randomForest::importance(spatial_mod$finalModel, type = 2)
+#   impfeat <- sum(impfeat[row.names(impfeat) %in% covariates, 1]) / sum(impfeat[, 1]) * 100
+#   names(impfeat) <- "impfeat"
 
-  # Tidy and return results
-  tabres <- as.data.frame(t(c( # random_stats,
-    spatial_stats,
-    # AOA,
-    impfeat
-  )))
-  # names(preds) <- c("prediction")
-  list(
-    tab = tabres,
-    # preds = preds,
-    ## tunemod = tune_mod,
-    spatmod = spatial_mod,
-    graphmod = results
-  )
-}
+#   # Tidy and return results
+#   tabres <- as.data.frame(t(c( # random_stats,
+#     spatial_stats,
+#     # AOA,
+#     impfeat
+#   )))
+#   # names(preds) <- c("prediction")
+#   list(
+#     tab = tabres,
+#     # preds = preds,
+#     ## tunemod = tune_mod,
+#     spatmod = spatial_mod,
+#     graphmod = results
+#   )
+# }
 
 
 #------------------------------------------------------------------------------#

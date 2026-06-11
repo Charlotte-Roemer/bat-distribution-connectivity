@@ -43,7 +43,7 @@ prepare_data <- function(args, fpar, fsl) {
   site_loc <- data.table::fread(fsl) # sites_localites.txt
 
   # Identifies sites recorded near bat roosts !!! Remove these sites ???
-  cat("Identifying shelters", fill = TRUE)
+  cat("Identifying roosts", fill = TRUE)
   Gite <- mapply(
     function(x, y) {
       ((grepl(paste0(y, "="), x)) | (grepl(paste0(y, " ="), x)))
@@ -333,7 +333,7 @@ slice_median <- function(x, column) {
 }
 
 #------------------------------------------------------------------------------#
-#    Function to select median activity by grid grid cell for each season      #
+#    Function to select median activity by grid cell for each season      #
 #------------------------------------------------------------------------------#
 
 

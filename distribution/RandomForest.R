@@ -88,13 +88,6 @@ cat(paste("Threshold :", ThresholdSort), fill = TRUE)
 Sp <- opt$species # choose a species (e.g. "Pippip") or "all" or "paper"
 selection <- opt$variableselection
 
-GroupSel <- "bat"
-# GroupSel=NA #sorting according to the group column of Specieslist
-# (args[3), NA if no sorting
-# ListPaper <- c(
-#   "Minsch", "Barbar", "Nyclei", "Nycnoc", "Eptser", "Pipkuh", "Pipnat",
-#   "Pippip", "Pippyg", "Rhifer"
-# )
 # Filter data by date?
 # e.g.as.Date("2021-12-31") only use  data before this date
 
@@ -254,22 +247,6 @@ test2 <- nrow(DataCPL3)
 
 ifelse(test1 == test2, print("ok"), stop("NA present in activity data!"))
 
-## List species to model
-# SpeciesList <- fread(args[3]) # read species list
-# ListSp <- levels(as.factor(DataCPL3$espece))
-# ListSp <- subset(ListSp, ListSp %in% SpeciesList$Esp)
-# if (!is.na(GroupSel)) {
-#  SpSel <- subset(SpeciesList, SpeciesList$Group %in% GroupSel)
-#  ListSp <- subset(ListSp, ListSp %in% SpSel$Esp)
-# }
-#
-# if (Sp == "all" || Sp == "All") {
-#  ListSp <- ListSp
-# } else if (Sp == "paper") {
-#  ListSp <- ListPaper
-# } else {
-#  ListSp <- Sp
-# }
 
 # Add possibility to model Myocry (use Myonat acoustic data but filter the area later)
 Sp_real <- Sp
@@ -444,7 +421,7 @@ DataSaison <- dplyr::left_join(DataSpSL_w0_2,
 ) # adds environmental variables to activity data ("participation added")
 
 
-# lets add the "gites" information
+# Add information about roost if present
 #
 # data_gites <- read.csv2(file_gites)
 #
@@ -469,7 +446,6 @@ DataSaison <- dplyr::left_join(DataSpSL_w0_2,
 # Define seasons
 DataSaison$week <- as.integer(strftime(DataSaison$Nuit, format = "%V"))
 DataSaison$day <- as.integer(strftime(DataSaison$Nuit, format = "%j"))
-# DataSaison <- DataSaison[dplyr::between(DataSaison$week, p_start, p_end), ]
 
 spring_start <- return_start("spring")
 spring_end <- return_end("spring")
@@ -487,10 +463,7 @@ DataSaison <- DataSaison |> mutate(SpSaison = case_when(
 DataSaison <- DataSaison |>
   tidyr::drop_na(SpSaison)
 
-
-# DataSaison <- DataSaison[dplyr::between(DataSaison$fortnight, p_start, p_end), ]
-
-# add date of year
+# Add date of year
 if (grepl("/", DataSaison$Nuit[1L], fixed = TRUE)) {
   Date1 <- as.Date(substr(DataSaison$Nuit, 1L, 10L),
     format = "%Y/%m/%Y"
@@ -526,20 +499,11 @@ coords <- as.data.frame(st_coordinates(DataSaison_sf))
 # DataSaison$SpRecorder <- DataSaison$detecteur_enregistreur_type
 
 # Identify predictors
-# DataSaison <- DataSaison |> # removing medium and large buffers
-#   dplyr::select(!dplyr::ends_with("S"))
-# DataSaison <- DataSaison |>
-#   dplyr::select(!dplyr::ends_with("L"))
-#
+print("Define Prednames")
 testPred <- startsWith(names(DataSaison), "Sp")
 Prednames <- names(DataSaison)[testPred]
-
-print("A")
-print(Prednames)
-
 clc <- startsWith(Prednames, "SpHC")
 Prednames <- Prednames[!clc]
-
 Prednames <- Prednames[!(Prednames %in% variables_a_exclure)]
 
 if (opt$region == "idf") {
@@ -559,6 +523,8 @@ ListSpeciesDistribution <- c(
   "SpEptnil", "SpEptser", "SpHypsav"
 )
 Prednames <- Prednames[which(!Prednames %in% ListSpeciesDistribution)]
+
+print(Prednames)
 
 Predictors <- DataSaison[, ..Prednames]
 
@@ -658,7 +624,7 @@ DataSaison_sf <- st_as_sf(DataSaison,
   st_transform(2154L)
 
 DataSaison_sf <- DataSaison_sf[aoi, ]
-# we want to filter out nights with bad meteoroligical conditions
+# Filter out nights with bad meteoroligical conditions
 DataSaison_sf <- DataSaison_sf |>
   dplyr::filter(total_precipitations < 2L)
 DataSaison_sf <- DataSaison_sf |>
@@ -666,7 +632,7 @@ DataSaison_sf <- DataSaison_sf |>
 DataSaison_sf <- DataSaison_sf |>
   dplyr::filter(dplyr::between(Sptemp, -4L, 4L))
 
-# last_year <- max(DataSaison$SpYear)
+# Keep test data and define classes of activity
 if (opt$keep == TRUE) {
   DataTest_sf <- DataSaison_sf[DataSaison_sf$SpYear %in% test_years, ]
   DataSaison_sf <- DataSaison_sf[!DataSaison_sf$SpYear %in% test_years, ]
@@ -688,7 +654,7 @@ if (opt$keep == TRUE) {
 
 print("DataSaison filtered for season")
 
-print("saisons avant filtre")
+print("Seasons before filter")
 print(unique(DataSaison_sf$SpSaison))
 
 DataSaison_sf <- DataSaison_sf[dplyr::between(DataSaison_sf$day, p_start, p_end), ]
@@ -697,12 +663,13 @@ if (opt$keep == TRUE) {
 }
 # DataSaison_sf <- subset(DataSaison_sf, DataSaison_sf$SpSaison == opt$period)
 
-print("saisons apres filtre")
+print("Seasons after filter")
 print(unique(DataSaison_sf$SpSaison))
 
-# DataSp <- subset(DataCPL3, DataCPL3$espece == ListSp[i]) # subset species
-# DataSp <- subset(DataCPL3, DataCPL3$espece == Sp) # subset species
-DataSaison_sf <- filter_by_median_season_grid(DataSaison_sf, opt$region)
+# Apply selection of only one value per pixel if option is chosen
+if(data_sel == "median"){
+  DataSaison_sf <- filter_by_median_season_grid(DataSaison_sf, opt$region)
+}
 
 DataSaison <- DataSaison_sf
 
@@ -749,28 +716,21 @@ if (opt$keep == TRUE) {
     file.path(
       Output,
       paste0(
-        # ListSp[i], "_", opt$period, "_", opt$region, "_", ThresholdSort, "_datatest.csv"
         Sp_real, "_", opt$period, "_", opt$region, "_", ThresholdSort, "_datatest.csv"
       )
     )
   )
 }
 
-print("a)")
-
 DataSaison$acti_class <- factor(DataSaison$acti_class, levels = c("NoAct", "Faible", "Moyen", "Fort", "TresFort"))
 
 samp_sizes <- def_sample_vector(DataSaison, "acti_class", 0.66)
-# DataSaison$SpRoAddM <- DataSaison$SpRo1M + DataSaison$SpRo2M +
-#   DataSaison$SpRo3M + DataSaison$SpRo4M
-#
 
 print("Distribution of response variable: ")
 print(summary(DataSaison$acti_class))
 
-print("b)")
-
-if (selection == "PCA") {
+# Make PCA for response variable if chosen as option
+if (selection == "PCA") { # All variables
   cat("selection : PCA", fill = TRUE)
   predictors <- DataSaison[, variables_acp]
 
@@ -778,7 +738,6 @@ if (selection == "PCA") {
   acp <- get_components(predictors, "PCA")
   acp_pc_vars <- acp$components
 
-  # saveRDS(acp$acp, file.path(Output, paste0("acp_PCA_", ListSp[i], "_", opt$period, ".rds")))
   saveRDS(acp$acp, file.path(Output, paste0("acp_PCA_", Sp_real, "_", opt$period, ".rds")))
 
 
@@ -786,7 +745,7 @@ if (selection == "PCA") {
 
   vars_names <- names(acp_pc_vars)
   Prednames <- c(vars_names, vars_norm)
-} else if (selection == "PCAdecomp") {
+} else if (selection == "PCAdecomp") { # One PCA for each grop of variables
   cat("selection : PCA decomposée", fill = TRUE)
 
   small_vars <- endsWith(names(DataSaison), "S")
@@ -795,28 +754,29 @@ if (selection == "PCA") {
   data <- DataSaison |>
     select(!all_of(small_vars))
 
-
+  # PCA for Habitat variables
   occsol_vars <- startsWith(names(data), "SpHOCS")
   occsol_vars <- names(data)[occsol_vars]
 
-  bioclim_vars <- startsWith(names(data), "SpBioC") # ajouter météo ? saison binaire ?
+  # PCA for bioclim variables
+  bioclim_vars <- startsWith(names(data), "SpBioC")
   bioclim_vars <- names(data)[bioclim_vars]
 
   names_data <- names(data)
   names_data <- names_data[!(names_data %in% bioclim_vars)]
   names_data <- names_data[!(names_data %in% occsol_vars)]
 
+  # PCA for other variables
   other_vars <- startsWith(names_data, "Sp")
-
 
   other_vars <- names_data[other_vars]
   other_vars <- other_vars[!(other_vars %in% c("SpSaison", "SpAltiM"))]
-
 
   predictors_occs <- data[, occsol_vars]
   predictors_bioc <- data[, bioclim_vars]
   predictors_other <- data[, other_vars]
 
+  # Do PCA
   bioclim <- get_components(predictors_bioc, "bioclim")
   bioclim_pc_vars <- bioclim$components
 
@@ -826,9 +786,7 @@ if (selection == "PCA") {
   others <- get_components(predictors_other, "autres")
   other_pc_vars <- others$components
 
-  # saveRDS(bioclim$acp, file.path(Output, paste0("acp_bioclim_", ListSp[i], "_", opt$period, ".rds")))
-  # saveRDS(occsol$acp, file.path(Output, paste0("acp_occsol_", ListSp[i], "_", opt$period, ".rds")))
-  # saveRDS(others$acp, file.path(Output, paste0("acp_autres_", ListSp[i], "_", opt$period, ".rds")))
+  # Save ACP results
   saveRDS(bioclim$acp, file.path(Output, paste0("acp_bioclim_", Sp_real, "_", opt$period, ".rds")))
   saveRDS(occsol$acp, file.path(Output, paste0("acp_occsol_", Sp_real, "_", opt$period, ".rds")))
   saveRDS(others$acp, file.path(Output, paste0("acp_autres_", Sp_real, "_", opt$period, ".rds")))
@@ -836,25 +794,36 @@ if (selection == "PCA") {
   vars <- cbind(occsol_pc_vars, bioclim_pc_vars, other_pc_vars)
   DataSaison <- cbind(DataSaison, vars)
   Prednames <- names(vars)
-} else if (selection == "VSURF") {
+
+  # Perform automatic selection of variables
+} else if (selection == "VSURF") { 
   cat("selection : VSURF", fill = TRUE)
   selected_index <- get_prednames(DataSaison, Prednames, "acti_class", samp_sizes)
   Prednames <- Prednames[selected_index]
+
+  # ??
 } else if (selection == "bio") {
   Prednames <- c(variables_bio, vars_norm)
+
+  # Keep only essential variables
 } else if (selection == "indisp") {
   Prednames <- variables_indisp
 }
 
-print("c)")
+if (activite == "nbcontacts") {
+  activite <- "nb_contacts"
+}
+
+print("Response variable defined)")
 
 if ("geometry" %in% colnames(DataSaison)) {
   DataSaison <- DataSaison |>
     select(-geometry)
 }
 
-if (opt$period == "year") {
   # setting binary season variables
+if (opt$period == "year") {
+
   DataSaison <- DataSaison |>
     dplyr::mutate(SpSpring = dplyr::if_else(SpSaison == "spring", 1, 0)) |>
     dplyr::mutate(SpSummer = dplyr::if_else(SpSaison == "summer", 1, 0)) |>
@@ -864,32 +833,19 @@ if (opt$period == "year") {
 
 }
 
+# Write Train data (with different folds inside)
 write.csv(
   DataSaison,
   file.path(
     Output,
     paste0(
-      # ListSp[i], "_", opt$period, "_", opt$region, "_datatrain.csv"
       Sp_real, "_", opt$period, "_", opt$region, "_datatrain.csv"
     )
   ),
   row.names = FALSE
 )
 
-print("d)")
-
-if (activite == "nbcontacts") {
-  activite <- "nb_contacts"
-}
-
-#y_for_check = as.data.frame(DataSaison)[, activite]
-#  print("class(y_for_check) :")
-#  print(class(y_for_check))
-#  print(str(y_for_check))
-#  print(table(y_for_check, useNA = "ifany"))
-#  print(is.numeric(y_for_check))
-#  print(is.factor(y_for_check))
-
+print("Training model")
 noSpacemod <- fitvalpred_rf(
   Prednames,
   activite,
@@ -904,7 +860,6 @@ print(noSpacemod$spatmod)
 
 #### Save ####----------------------------------------------------------------
 
-# suffix <- paste0(opt$period, "_", opt$region, "_noSpace", "_", ListSp[i])
 suffix <- paste0(opt$period, "_", opt$region, "_noSpace", "_", Sp_real)
 
 # Save evaluation
@@ -915,7 +870,6 @@ write.csv(
     Output,
     paste0(
       "Evaluation_",
-      # ListSp[i],
       Sp_real,
       "_",
       Tag, "_",
@@ -959,16 +913,4 @@ rm("noSpacemod")
 
 END1 <- Sys.time()
 print(END1 - START1)
-# print(paste("Model done for", ListSp[i]))
 print(paste("Model done for", Sp_real))
-
-# parallel::stopCluster(cl)
-# }
-
-
-## print(ListSp[i])
-## print(ThresholdSort)
-## if (DoBoruta) {
-##   print(paste0("Variables before selection = ", length(Predictors)))
-##   print(paste0("Variables after selection = ", length(names.Boruta)))
-## }
