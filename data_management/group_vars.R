@@ -70,7 +70,7 @@ for (df in dataframes) {
   print(head(df$Y))
   if ("Nuit" %in% colnames(df)) {
     df <- unique(df)
-    base$Nuit <- df$Nuit[1] # A enlever si ça marche pas
+    #base$Nuit <- df$Nuit[1] # A enlever si ça marche pas
     by <- c("X", "Y", "Nuit")
     base <- dplyr::left_join(base, df, by = by)
   } else {
