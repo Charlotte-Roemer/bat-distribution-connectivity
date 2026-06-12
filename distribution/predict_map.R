@@ -64,12 +64,12 @@ option_list <- list(
 opt_parser <- optparse::OptionParser(option_list = option_list)
 opt <- optparse::parse_args(opt_parser)
 
+print(opt$species)
+
 period <- opt$period
 activite <- opt$acti
 data_sel <- opt$data_sel
 selection <- opt$variableselection
-
-# model <- "/media/tsevere/BBK/VC50_2025-02-28/RFspat_BarbarVC50_2025-02-28_EDF_Barbar.rds" # rds file
 
 if (period == "year") {
   period_mod <- "year"
@@ -176,13 +176,6 @@ pred_data <- pred_data |>
   dplyr::mutate(SpAutumn = if_else(SpSaison == "autumn", 1, 0))
 
 
-
-cat("Aggregating roads :", fill = TRUE)
-# pred_data$SpRoAddM <- pred_data$SpRo1M + pred_data$SpRo2M +
-#   pred_data$SpRo3M + pred_data$SpRo4M
-#
-cat("Roads aggregated :", fill = TRUE)
-
 for (acp in acp_names) {
   cat(paste("ACP name : ", acp), fill = TRUE)
   train_data_file <-
@@ -234,92 +227,158 @@ pred_data_sf <- st_as_sf(pred_data, coords = c(x = "X", y = "Y"), crs = 4326L) |
 
 cat("data_sf ok", fill = TRUE)
 
-# coords <- as.data.frame(st_coordinates(pred_data_sf))
-
-# sf object with 5 points: the bounding box of the grid of points + the center
-# EDF <- rbind(
-#   st_sf(geom = st_sfc(st_point(c(min(coords$X), min(coords$Y))))),
-#   st_sf(geom = st_sfc(st_point(c(min(coords$X), max(coords$Y))))),
-#   st_sf(geom = st_sfc(st_point(c(max(coords$X), min(coords$Y))))),
-#   st_sf(geom = st_sfc(st_point(c(max(coords$X), max(coords$Y))))),
-#   st_sf(geom = st_sfc(st_point(c(median(coords$X), median(coords$Y)))))
-# )
-# EDF <- st_set_crs(EDF, st_crs(pred_data_sf))
-# EDF <- st_distance(pred_data_sf, EDF) / 1000 # calculate distance between the point and each of these 5 points
-# EDF <- units::drop_units(EDF)
-# EDF <- as.data.frame(EDF)
-# names(EDF) <- paste0("EDF", 1:5)
-# pred_data_sf$SpEDF1 <- EDF$EDF1
-# pred_data_sf$SpEDF2 <- EDF$EDF2
-# pred_data_sf$SpEDF3 <- EDF$EDF3
-# pred_data_sf$SpEDF4 <- EDF$EDF4
-# pred_data_sf$SpEDF5 <- EDF$EDF5
-# pred_data_sf$SpRecorder <- "SM2BAT+"
-#
 X_pred <- pred_data_sf |>
   # dplyr::select(dplyr::starts_with("Sp")) |>
   sf::st_drop_geometry()
 X_pred[is.na(X_pred)] <- 0
 
 print("X pred done")
-# y_pred <- predict(model, X_pred, predict.all = TRUE)
 
 chunk_size <- 10000
 n <- nrow(X_pred)
 
+# y_pred <- numeric(n)
+# y_sd   <- numeric(n)  # incertitude (écart-type)
+
+# start_idx <- seq(1, n, by = chunk_size)
+
+# for (i in start_idx) {
+#   idx <- i:min(i + chunk_size - 1, n)
+  
+#   pred <- predict(
+#     model$finalModel,
+#     X_pred[idx, model$finalModel$xNames],
+#     predict.all = TRUE
+#   )
+  
+#   # moyenne
+#   y_pred[idx] <- pred$aggregate
+  
+#   # incertitude = sd des arbres
+#   y_sd[idx] <- apply(pred$individual, 1, sd)
+# }
+
+# ----------------------------------------------------------
+# FINAL PREDICTION
+# using full model
+# ----------------------------------------------------------
+
 y_pred <- numeric(n)
-y_sd   <- numeric(n)  # incertitude (écart-type)
 
 start_idx <- seq(1, n, by = chunk_size)
 
-for (i in start_idx) {
+cat(
+  "predicting final model",
+  fill = TRUE
+)
+
+for(i in start_idx) {
+
   idx <- i:min(i + chunk_size - 1, n)
-  
-  pred <- predict(
-    model$finalModel,
-    X_pred[idx, model$finalModel$xNames],
-    predict.all = TRUE
+
+  y_pred[idx] <- predict(
+    model$spatmod$finalModel,
+    X_pred[idx, model$spatmod$finalModel$xNames]
   )
-  
-  # moyenne
-  y_pred[idx] <- pred$aggregate
-  
-  # incertitude = sd des arbres
-  y_sd[idx] <- apply(pred$individual, 1, sd)
 }
 
-#y_pred <- predict(model$finalModel, X_pred[model$finalModel$xNames], predict.all = TRUE) # predict.all = TRUE is to calculate the uncertainty  # à remettre si ça marche pas
+# ----------------------------------------------------------
+# UNCERTAINTY
+# using spatial folds
+# ----------------------------------------------------------
+
+if(!is.null(model$fold_models)) {
+
+  nfolds <- length(model$fold_models)
+
+  all_fold_preds <- matrix(
+    NA,
+    nrow = n,
+    ncol = nfolds
+  )
+
+  for(f in seq_len(nfolds)) {
+
+    cat(
+      paste("predicting fold", f),
+      fill = TRUE
+    )
+
+    fold_model <- model$fold_models[[f]]
+
+    fold_pred <- numeric(n)
+
+    for(i in start_idx) {
+
+      idx <- i:min(i + chunk_size - 1, n)
+
+      fold_pred[idx] <- predict(
+        fold_model,
+        X_pred[idx, fold_model$xNames]
+      )
+    }
+
+    all_fold_preds[, f] <- fold_pred
+  }
+
+  # SD across folds
+  y_sd <- apply(
+    all_fold_preds,
+    1,
+    sd,
+    na.rm = TRUE
+  )
+
+  # coefficient of variation
+  y_cv <- y_sd / abs(y_pred)
+
+} else {
+
+  y_sd <- rep(NA, n)
+
+  y_cv <- rep(NA, n)
+}
 
 print("prediction done!")
 
-#x_predict_map <- cbind(pred_data_sf, y_pred$aggregate) # à remettre si ça marche pas
-x_predict_map <- cbind(pred_data_sf, y_pred)
-# names(x_predict_map)[length(names(x_predict_map))] <- "y_pred"
-
-#stat <- apply(y_pred$individual, 1, sd) # calculates the uncertainty of the predictions # à remettre si ça marche pas
-stat <- y_sd # calculates the uncertainty of the predictions
-
-x_predict_map <- cbind(x_predict_map, stat)
+#x_predict_map <- cbind(pred_data_sf, y_pred)
+#stat <- y_sd # calculates the uncertainty of the predictions
+#x_predict_map <- cbind(x_predict_map, stat)
+x_predict_map <- cbind(
+  pred_data_sf,
+  y_pred,
+  y_sd,
+  y_cv
+)
 print(colnames(x_predict_map))
 
-
+# Map predictions
 map <- terra::rasterize(
   x = x_predict_map, y = empty_raster,
-  field = "y_pred", #field = "y_pred.aggregate", à remettre si ça marche pas
+  field = "y_pred",
   fun = "mean"
 )
 
 print("raster ready")
 
+# Map uncertainty (standard deviation between folds)
 map_stats <- terra::rasterize(
   x = x_predict_map, y = empty_raster,
-  field = "stat",
+  field = "y_sd",
+  fun = "mean"
+)
+
+# Map Cross-validation: useful to compare species with different activity levels
+map_cv <- terra::rasterize(
+  x = x_predict_map,
+  y = empty_raster,
+  field = "y_cv",
   fun = "mean"
 )
 
 print("raster stats ready")
 
-print("path")
+print("Writing rasters")
 period <- opt$predict_period
 
 terra::writeRaster(
@@ -376,4 +435,35 @@ terra::writeRaster(
     "_incertitude.tif"
   ))
 )
+
+terra::writeRaster(
+  x = map_cv,
+  overwrite = TRUE,
+  filename = file.path(
+    model_location,
+    paste0(
+      "RFspat_",
+      "VC",
+      opt$threshold,
+      "_",
+      opt$date_trained,
+      "_",
+      opt$method,
+      "_",
+      data_sel,
+      "_",
+      activite,
+      "_",
+      selection,
+      "_",
+      opt$species,
+      "_",
+      opt$region,
+      "_",
+      period,
+      "_cv.tif"
+    )
+  )
+)
+
 print("raster written")

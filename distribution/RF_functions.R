@@ -153,7 +153,26 @@ fitvalpred_rf <- function(covariates,
 
   print("model built")
 
-  # 3. Calculate evaluation metrics using the kNNDM cross-validation method
+  # 3. Train models for each fold (to calculate error maps later)
+
+  fold_models <- list()
+
+  for(i in seq_along(spatial_ctrl$index)) {
+
+  cat("training fold", i, fill = TRUE)
+
+  train_ids <- spatial_ctrl$index[[i]]
+  train_data <- traindf[train_ids, ]
+  fold_models[[i]] <- randomForest::randomForest(
+    x = train_data[, covariates],
+    y = train_data[, var_to_predict],
+    ntree = best_ntrees,
+    mtry = best_mtry,
+    importance = TRUE
+  )
+  }
+
+  # 4. Calculate evaluation metrics using the kNNDM cross-validation method
   print("calculating evaluation metrics")
 
   if (opt$evaluation == TRUE) {
@@ -229,10 +248,7 @@ fitvalpred_rf <- function(covariates,
   )
 }
 
-  # 3. Surface predictions
-  # preds <- predict(rstack, spatial_mod, na.rm=TRUE)
-
-  # 4. Variable importance
+  # 5. Variable importance
   impfeat <- randomForest::importance(spatial_mod$finalModel, type = 2)
   impfeat <- sum(impfeat[row.names(impfeat) %in% covariates, 1]) / sum(impfeat[, 1]) * 100
   names(impfeat) <- "impfeat"
@@ -241,24 +257,19 @@ fitvalpred_rf <- function(covariates,
   if (opt$evaluation == TRUE) {
   tabres <- as.data.frame(t(c( # random_stats,
     spatial_stats,
-    # AOA,
     impfeat
   )))
-  # names(preds) <- c("prediction")
   list(
     tab = tabres,
-    # preds = preds,
-    ## tunemod = tune_mod,
     spatmod = spatial_mod,
-    graphmod = results
+    graphmod = results,
+    fold_models = fold_models
   )
   }else{
    list(
-    #tab = tabres,
-    # preds = preds,
-    ## tunemod = tune_mod,
     spatmod = spatial_mod,
-    graphmod = results
+    graphmod = results,
+    fold_models = NULL
   ) 
   }
 }

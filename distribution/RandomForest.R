@@ -56,9 +56,9 @@ option_list <- list(
     type = "character", default = "nb_contacts",
     help = "Which value do you want to predict ? nbcontacts, acticlass"
   ),
-  optparse::make_option(c("-k", "--keep"),
-    action = "store_true", help = "Do you want to save a test dataset ?"
-  ),
+  # optparse::make_option(c("-k", "--keep"),
+  #   action = "store_true", help = "Do you want to save a test dataset ?"
+  # ),
   optparse::make_option(c("-e", "--evaluation"),
     type = "logical", default = "TRUE",
     help = "Do you want to make folds to evaluate the performance ?"
@@ -70,11 +70,11 @@ opt <- optparse::parse_args(opt_parser)
 data_sel <- opt$data_sel
 activite <- opt$acti
 periode <- opt$period
-print(opt$keep)
+# print(opt$keep)
 
-if (opt$keep == TRUE) {
-  test_years <- c(2021, 2022, 2023, 2024) # here set the years you want to use as testing data
-}
+# if (opt$keep == TRUE) {
+#   test_years <- c(2021, 2022, 2023, 2024) # here set the years you want to use as testing data
+# }
 
 
 #### Options ####--------------------------------------------------------
@@ -632,25 +632,27 @@ DataSaison_sf <- DataSaison_sf |>
 DataSaison_sf <- DataSaison_sf |>
   dplyr::filter(dplyr::between(Sptemp, -4L, 4L))
 
-# Keep test data and define classes of activity
-if (opt$keep == TRUE) {
-  DataTest_sf <- DataSaison_sf[DataSaison_sf$SpYear %in% test_years, ]
-  DataSaison_sf <- DataSaison_sf[!DataSaison_sf$SpYear %in% test_years, ]
-  DataTest <- DataTest_sf |>
-    st_drop_geometry()
+# # Keep test data and define classes of activity
+# if (opt$keep == TRUE) {
+#   DataTest_sf <- DataSaison_sf[DataSaison_sf$SpYear %in% test_years, ]
+#   DataSaison_sf <- DataSaison_sf[!DataSaison_sf$SpYear %in% test_years, ]
+#   DataTest <- DataTest_sf |>
+#     st_drop_geometry()
 
-  acti_class <- def_classes_test(DataSaison_sf, DataTest)
-  acticlass <- def_int_classes_test(DataSaison_sf, DataTest)
+#   acti_class <- def_classes_test(DataSaison_sf, DataTest)
+#   acticlass <- def_int_classes_test(DataSaison_sf, DataTest)
 
-  DataSaison_sf$acti_class <- acti_class$train
-  DataSaison_sf$acticlass <- acticlass$train
+#   DataSaison_sf$acti_class <- acti_class$train
+#   DataSaison_sf$acticlass <- acticlass$train
 
-  DataTest$acti_class <- acti_class$test
-  DataTest$acticlass <- acticlass$test
-} else {
+#   DataTest$acti_class <- acti_class$test
+#   DataTest$acticlass <- acticlass$test
+# } else {
+
+# Define classes of activity
   DataSaison_sf$acti_class <- def_classes(DataSaison_sf)
   DataSaison_sf$acticlass <- def_int_classes(DataSaison_sf)
-}
+#}
 
 print("DataSaison filtered for season")
 
