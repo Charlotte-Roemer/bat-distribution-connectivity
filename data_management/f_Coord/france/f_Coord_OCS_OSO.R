@@ -69,7 +69,7 @@ Coord_Land_Cover <- function(points, names_coord, bm, bl, layer) {
     )
   )
 
-  options(dplyr..summarise.inform = FALSE) # to quiet the message produced by the sumarize function below
+  options(dplyr.summarise.inform = FALSE) # to quiet the message produced by the sumarize function below
 
   for (year in unique_years) {
     print("France)")
