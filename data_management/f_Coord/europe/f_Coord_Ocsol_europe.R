@@ -47,9 +47,6 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, bl, layer) {
 
   CoordH <- names_coord
 
-  #BuffersSmall <- bs
-  #BufferMedium <- bm
-
   ocs_file <- list.files(folder_OCS,
     recursive = TRUE,
     pattern = "tif$",
@@ -57,15 +54,13 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, bl, layer) {
   )
 
   nuits_uniques <- unique(OccSL_L3035$Nuit)
-  tableaux_m <- list()
-  tableaux_s <- list()
+  # tableaux_m <- list()
+  # tableaux_s <- list()
 
   # removed ocs_annees TODO: remove comment
 
   options(dplyr.summarise.inform = FALSE) # to quiet the message produced by the sumarize function below
 
-  ## nuit <- as.character(nuit)
-  ## print(nuit)
   print("Europe)")
   print(paste0("Treating year : ")) # When more years will be avaialble, need to replace by the same for (year in unique_years) as in f_Coord_CLCraster.R
   print(unique_years)
@@ -77,26 +72,14 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, bl, layer) {
   #OCS <- terra::project(OCS, "epsg:3035")
   #print("Raster reprojected")
 
-  # # For benchmark test
-  # n_test <- min(10000, nrow(OccSL_L3035))
-  # OccSL_L3035 <- OccSL_L3035[1:n_test, ]
-
   # Operation to crop ESA worldcover to correspond to the zone of points 
-  # before reprojecting ESA to epsg:3035 because to lead to OOM killing
+  # before reprojecting ESA to epsg:3035 to avoid OOM killing
   #zone_3035 <- sf::st_transform(zone, 3035)
   zone_vect <- terra::vect(zone)
   zone_vect <- terra::project(zone_vect, terra::crs(OCS))
   print("Zone reprojected")
   print(terra::tmpFiles())
   OCS_crop <- terra::crop(OCS, zone_vect) # crop
-  #OCS_crop <- terra::mask(OCS_crop, zone_vect) # puts values to NA if they are not in the polygon formed by BL
-  # OCS_crop_3035 <- terra::project( # reprojection to epsg:3035
-  # OCS_crop,
-  # "epsg:3035",
-  # method = "near"
-  # )
-
-  #rm(OCS, OCS_crop)
 
   print("Crop done")
   print(terra::tmpFiles())
@@ -180,33 +163,6 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, bl, layer) {
   })
   print(t_large10)
 
-  # print("Large buffer extraction 100m")
-
-  # t_large100 <- system.time({
-
-  # landcov_fracs_Large_100m <- exactextractr::exact_extract(
-  #   OCS_100m,
-  #   tableau_BL,
-  #   function(df) {
-  #     df %>%
-  #       dplyr::mutate(
-  #         frac_total = coverage_fraction / sum(coverage_fraction)
-  #       ) %>%
-  #       dplyr::group_by(FID, value) %>%
-  #       dplyr::summarize(
-  #         freq = sum(frac_total),
-  #         .groups = "drop"
-  #       )
-  #   },
-  #   summarize_df = TRUE,
-  #   include_cols = "FID",
-  #   progress = FALSE
-  # )
-
-  # })
-
-  # print(t_large100)
-
   # Append large buffer list
   rm(OCS, tableau_BL)
 
@@ -225,44 +181,6 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, bl, layer) {
 
   rm(landcov_fracs_Large)
 
-  # landcov_fracs_Large100_pivot <- landcov_fracs_Large_100m %>%
-  # tidyr::pivot_wider(
-  #   names_from = value,
-  #   values_from = freq
-  # ) %>%
-  # replace(is.na(.), 0)
-
-  # rm(landcov_fracs_Large_100m)
-
-  # print("COMPARAISON")
-
-  # comp <- dplyr::inner_join(
-  # landcov_fracs_Large10_pivot,
-  # landcov_fracs_Large100_pivot,
-  # by = "FID",
-  # suffix = c("_10m", "_100m")
-  # )
-
-  # classes <- setdiff(
-  # names(landcov_fracs_Large10_pivot),
-  # "FID"
-  # )
-
-  # for(cl in classes){
-
-  # cat("\n", cl, "\n")
-
-  # print(
-  #   cor(
-  #     comp[[paste0(cl, "_10m")]],
-  #     comp[[paste0(cl, "_100m")]],
-  #     use = "complete.obs"
-  #   )
-  # )
-  # }
-
-  # stop("FIN COMPARAISON")
-
   HabufPropT_Tot <- dplyr::inner_join(landcov_fracs_Medium_pivot,
     landcov_fracs_Large_pivot,
     by = c("FID")
@@ -276,9 +194,7 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, bl, layer) {
   rm(OccSL, landcov_fracs_Medium_pivot, HabufPropT_Tot, landcov_fracs_Large_pivot)
 
 
-  # colnames(OccSL_ARajouter)[colnames(OccSL_ARajouter) == 'latitude'] = "Y"
-  # colnames(OccSL_ARajouter)[colnames(OccSL_ARajouter) == 'longitude'] = "X"
-
+  # Save
   if (opt$mode == "predict") {
     year <- substr(date_pred, 1, 4)
     data.table::fwrite(OccSL_ARajouter, paste0(FOccSL, "_", year, "_OCSraster.csv"))

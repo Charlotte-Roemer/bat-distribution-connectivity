@@ -72,8 +72,6 @@ Coord_Land_Cover <- function(points, names_coord, bm, bl, layer) {
   options(dplyr..summarise.inform = FALSE) # to quiet the message produced by the sumarize function below
 
   for (year in unique_years) {
-    ## nuit <- as.character(nuit)
-    ## print(nuit)
     print("France)")
     print(paste0("Treating year : ", year))
     tableau_year <- OccSL_L93[OccSL_L93$year == year, ]
@@ -156,15 +154,11 @@ Coord_Land_Cover <- function(points, names_coord, bm, bl, layer) {
 
   rm(OccSL, HabufPropT_Tot)
 
-  # colnames(OccSL_ARajouter)[colnames(OccSL_ARajouter) == 'latitude'] = "Y"
-  # colnames(OccSL_ARajouter)[colnames(OccSL_ARajouter) == 'longitude'] = "X"
-
-  data.table::fwrite(OccSL_ARajouter, paste0(FOccSL, "_OCSraster.csv"))
-  # if (opt$mode == "predict") {
-  #   year <- substr(date_pred, 1, 4)
-  #   data.table::fwrite(OccSL_ARajouter, paste0(FOccSL, "_", year, "_OCSraster.csv"))
-  # } else {
-  #   data.table::fwrite(OccSL_ARajouter, paste0(FOccSL, "_OCSraster.csv"))
-  # }
+  if (opt$mode == "predict") {
+    year <- substr(date_pred, 1, 4)
+    data.table::fwrite(OccSL_ARajouter, paste0(FOccSL, "_", year, "_OCSraster.csv"))
+  } else {
+    data.table::fwrite(OccSL_ARajouter, paste0(FOccSL, "_OCSraster.csv"))
+  }
   rm(OccSL_ARajouter)
 }
