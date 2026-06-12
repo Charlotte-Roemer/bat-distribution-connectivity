@@ -43,17 +43,23 @@ main_args, _ = main_parser.parse_known_args()
 # type=str, required=True)
 
 # date_args = date_parser.parse_args()
+
+# File to read
 csv_file = main_args.file
 filename_ext = os.path.basename(csv_file)
 filename = os.path.splitext(filename_ext)[0]
 csv_folder = os.path.dirname(csv_file)
 
-
+# Define dates
 observations = pd.read_csv(csv_file, sep=",", parse_dates=["Nuit"])
 
 # csv_file = "../data/dependances_fixes/loc_train.csv"
 observations = pd.read_csv(csv_file, sep=",", parse_dates=["Nuit"])
 
+# Define a specific timeframe to obtain data
+data_filtered = data.query("Nuit >= '2011-01-01' and Nuit < '2024-12-09'")
+
+# Define locations
 data = gpd.GeoDataFrame(
     observations,
     geometry=gpd.points_from_xy(observations.X,
@@ -61,20 +67,20 @@ data = gpd.GeoDataFrame(
     crs="EPSG:4326"
 )
 
-# if no apikey
+# if no API key
 # (function split_get has to be modified)
 # data_weathered = fun.split_get(data, 500, m=monthly)
 
-data_filtered = data.query("Nuit >= '2011-01-01' and Nuit < '2024-12-09'")
 
+# If API key
 data_weathered = fun.get_open_weather_api_key(data_filtered)
-#data_weathered = fun.split_get(data, 500, m=monthly)
+
 
 data_tab = pd.DataFrame(data_weathered.drop(columns=['geometry'
                                                      ]))
 
+# Save
 filename_meteo = filename + "_meteo.csv"
-
 data_tab.to_csv(os.path.join(csv_folder, filename_meteo),
                 sep=",")
 
