@@ -1,6 +1,6 @@
 print("load france Land Cover")
 
-Coord_Land_Cover <- function(points, names_coord, bs, bm, layer) {
+Coord_Land_Cover <- function(points, names_coord, bm, bl, layer) {
   print("OCS OSO")
   print(points)
   library(data.table)
@@ -47,9 +47,6 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, layer) {
 
   CoordH <- names_coord
 
-  BuffersSmall <- bs
-  BufferMedium <- bm
-
   ocs_files <- list.files(folder_OCS,
     recursive = TRUE,
     pattern = "tif$",
@@ -58,7 +55,7 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, layer) {
 
   nuits_uniques <- unique(OccSL_L93$Nuit)
   tableaux_m <- list()
-  tableaux_s <- list()
+  tableaux_l <- list()
 
   ocs_annees <- as.vector(
     as.integer(
@@ -87,10 +84,14 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, layer) {
     OCS <- terra::rast(ocs_file) # OCS OSO is already in L93
 
     # create a buffer around the points
+    #tableau_BS <- sf::st_buffer(tableau_year, bs) %>%
+    #  sf::st_transform(2154)
     tableau_BM <- sf::st_buffer(tableau_year, bm) %>%
       sf::st_transform(2154)
-    tableau_BS <- sf::st_buffer(tableau_year, bs) %>%
+    tableau_BL <- sf::st_buffer(tableau_year, bl) %>%
       sf::st_transform(2154)
+
+    rm(tableau_year)
 
     # Extract values in medium buffer
     landcov_fracs_Medium <- exactextractr::exact_extract(OCS, tableau_BM, function(df) {
@@ -100,24 +101,31 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, layer) {
         dplyr::summarize(freq = sum(frac_total))
     }, summarize_df = TRUE, include_cols = "FID", progress = FALSE)
 
+    rm(tableau_BM)
+
     # Append medium buffer list
     tableaux_m <- rlist::list.append(tableaux_m, landcov_fracs_Medium)
+    rm(landcov_fracs_Medium)
 
     # Extract values in large buffer
-    landcov_fracs_Small <- exactextractr::exact_extract(OCS, tableau_BS, function(df) {
+    landcov_fracs_Large <- exactextractr::exact_extract(OCS, tableau_BL, function(df) {
       df %>%
         dplyr::mutate(frac_total = coverage_fraction / sum(coverage_fraction)) %>%
         dplyr::group_by(FID, value) %>%
         dplyr::summarize(freq = sum(frac_total))
     }, summarize_df = TRUE, include_cols = "FID", progress = FALSE)
 
+    rm(tableau_BL)
+
     # Append large buffer list
-    tableaux_s <- rlist::list.append(tableaux_s, landcov_fracs_Small)
-    rm(OCS)
+    tableaux_l <- rlist::list.append(tableaux_l, landcov_fracs_Large)
+    rm(OCS, landcov_fracs_Large)
   }
   # Concatenate lists of tibbles
   tableaux_m_bind <- do.call("rbind", tableaux_m)
-  tableaux_s_bind <- do.call("rbind", tableaux_s)
+  tableaux_l_bind <- do.call("rbind", tableaux_l)
+
+  rm(tableaux_m, tableaux_l)
 
   #  Pivot tibbles and rename columns
   landcov_fracs_Medium_pivot <- tableaux_m_bind %>%
@@ -125,21 +133,28 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, layer) {
     dplyr::rename_with(~ paste0("SpHOCS", ., "M"), -FID) %>%
     replace(is.na(.), 0)
 
-  landcov_fracs_Small_pivot <- tableaux_s_bind %>%
+  rm(tableaux_m_bind)
+
+  landcov_fracs_Large_pivot <- tableaux_l_bind %>%
     tidyr::pivot_wider(names_from = "value", values_from = "freq") %>% # pivot to use CLC values as column names
     dplyr::rename_with(~ paste0("SpHOCS", ., "S"), -FID) %>%
     replace(is.na(.), 0)
 
+  rm(tableaux_l_bind)
+
   HabufPropT_Tot <- dplyr::inner_join(landcov_fracs_Medium_pivot,
-    landcov_fracs_Small_pivot,
+    landcov_fracs_Large_pivot,
     by = c("FID")
   ) %>%
     as.data.frame()
+
+  rm(landcov_fracs_Medium_pivot, landcov_fracs_Large_pivot)
 
   OccSL_ARajouter <- dplyr::left_join(OccSL, HabufPropT_Tot) %>%
     as.data.frame() %>%
     dplyr::select(!c(FID, geometry))
 
+  rm(OccSL, HabufPropT_Tot)
 
   # colnames(OccSL_ARajouter)[colnames(OccSL_ARajouter) == 'latitude'] = "Y"
   # colnames(OccSL_ARajouter)[colnames(OccSL_ARajouter) == 'longitude'] = "X"
@@ -151,4 +166,5 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, layer) {
   # } else {
   #   data.table::fwrite(OccSL_ARajouter, paste0(FOccSL, "_OCSraster.csv"))
   # }
+  rm(OccSL_ARajouter)
 }

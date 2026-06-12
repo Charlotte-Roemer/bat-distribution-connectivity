@@ -395,8 +395,6 @@ for (i in 1:length(listfun))
 #   )
 # }
 
-# !!!! # Refaire la France avec des buffer medium & large au lieu de small & medium comme Thomas avait fait !!!!!!
-
 # ## Land cover ####
 cat("Land Cover", fill = TRUE)
 Coord_Land_Cover(
