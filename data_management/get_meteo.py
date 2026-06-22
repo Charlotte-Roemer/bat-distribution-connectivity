@@ -82,7 +82,7 @@ data_tab = pd.DataFrame(data_weathered.drop(columns=['geometry'
 # Save
 filename_meteo = filename + "_meteo.csv"
 data_tab.to_csv(os.path.join(csv_folder, filename_meteo),
-                sep=",")
+                sep=",", float_format="%.17g")
 
 
 # # plateforme de tests
