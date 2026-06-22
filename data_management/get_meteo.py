@@ -82,7 +82,7 @@ data_tab = pd.DataFrame(data_weathered.drop(columns=['geometry'
 # Save
 filename_meteo = filename + "_meteo.csv"
 data_tab.to_csv(os.path.join(csv_folder, filename_meteo),
-                sep=",", float_format="%.17g")
+                sep=",", float_format="%.14f") # 14f is to obtain the same number of digits in coordinates as in R
 
 
 # # plateforme de tests
