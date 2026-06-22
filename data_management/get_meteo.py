@@ -56,9 +56,6 @@ observations = pd.read_csv(csv_file, sep=",", parse_dates=["Nuit"])
 # csv_file = "../data/dependances_fixes/loc_train.csv"
 observations = pd.read_csv(csv_file, sep=",", parse_dates=["Nuit"])
 
-# Define a specific timeframe to obtain data
-data_filtered = observations.query("Nuit >= '2011-01-01' and Nuit < '2024-12-09'")
-
 # Define locations
 data = gpd.GeoDataFrame(
     observations,
@@ -66,6 +63,9 @@ data = gpd.GeoDataFrame(
                                 observations.Y),
     crs="EPSG:4326"
 )
+
+# Define a specific timeframe to obtain data
+data_filtered = data.query("Nuit >= '2011-01-01' and Nuit < '2024-12-09'")
 
 # if no API key
 # (function split_get has to be modified)
