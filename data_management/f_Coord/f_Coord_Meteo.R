@@ -17,7 +17,7 @@ Coord_Meteo <- function(points, temp, prec, wind) {
   } else if (opt$mode == "train") {
     # Load nightly weather values, calculate deviation from monthly mean, add new columns and overwrite file
 
-    # This part can be commented to accelerate the process once it's done a first time
+    # This part was done by hand via a srun (see wiki)
     # command <- paste0("python3", file.path(
     #   project_path,
     #   "data_management",
