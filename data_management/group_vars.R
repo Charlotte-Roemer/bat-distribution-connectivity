@@ -34,20 +34,20 @@ fichiers
 
 dataframes <- lapply(fichiers, read.csv)
 
-#if (mode_name == "train") {
+if (mode_name == "train") {
   # Looks for the "base" table which is simply the locations and the date of observations
-  # for (i in seq_along(fichiers)) {
-  #   if (identical(
-  #     colnames(dataframes[[i]]),
-  #     c("X", "Y", "Nuit", "fortnight", "fortnight_year", "code")
-  #   )) {
-  #     base <- dataframes[[i]] # Identifies the base table in the list of variables
-  #     dataframes <- dataframes[-i] # Removes the base table from the list of variables
-  #   }
-  # }
-#}
+  for (i in seq_along(fichiers)) {
+    if (identical(
+      colnames(dataframes[[i]]),
+      c("X", "Y", "Nuit", "fortnight", "fortnight_year", "code")
+    )) {
+      base <- dataframes[[i]] # Identifies the base table in the list of variables
+      dataframes <- dataframes[-i] # Removes the base table from the list of variables
+    }
+  }
+}
 
-#if (mode_name == "pred") {
+if (mode_name == "pred") {
   # Looks for the "base" table which is simply the locations and the date of predictions
   for (i in seq_along(fichiers)) {
     if (identical(
@@ -58,7 +58,7 @@ dataframes <- lapply(fichiers, read.csv)
       dataframes <- dataframes[-i] # Removes the base table from the list of variables
     }
   }
-#}
+}
 
 base <- unique(base)
 head(base)
