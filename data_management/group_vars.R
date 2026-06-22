@@ -73,12 +73,14 @@ for (df in dataframes) {
     if(mode_name == "pred"){
     base$Nuit <- df$Nuit[1] # A enlever si ça marche pas
     }
-    by <- c("X", "Y", "Nuit")
-    base <- dplyr::left_join(base, df, by = by)
+    #by <- c("X", "Y", "Nuit")
+    #base <- dplyr::left_join(base, df, by = by)
+    base <- dplyr::left_join(base, df)
   } else {
     df <- unique(df)
-    by <- c("X", "Y")
-    base <- dplyr::left_join(base, df, by = by)
+    #by <- c("X", "Y")
+    #base <- dplyr::left_join(base, df, by = by)
+    base <- dplyr::left_join(base, df)
   }
 }
 
