@@ -57,7 +57,7 @@ observations = pd.read_csv(csv_file, sep=",", parse_dates=["Nuit"])
 observations = pd.read_csv(csv_file, sep=",", parse_dates=["Nuit"])
 
 # Define a specific timeframe to obtain data
-data_filtered = data.query("Nuit >= '2011-01-01' and Nuit < '2024-12-09'")
+data_filtered = observations.query("Nuit >= '2011-01-01' and Nuit < '2024-12-09'")
 
 # Define locations
 data = gpd.GeoDataFrame(
