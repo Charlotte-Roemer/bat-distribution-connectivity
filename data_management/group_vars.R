@@ -26,7 +26,7 @@ fichiers <- list.files(folder,
 }
 if (mode_name == "pred") {
   fichiers <- list.files(folder,
-  full.names = TRUE, pattern = paste0("SysGrid_500m_de_cote_", region)
+  full.names = TRUE, pattern = paste0("m_de_cote_", region)
 )
 }
 
