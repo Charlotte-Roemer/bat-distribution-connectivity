@@ -703,12 +703,12 @@ if(data_sel == "median"){
 
 DataSaison <- DataSaison_sf
 
-DataSaison_sf <- st_as_sf(DataSaison_sf,
-  coords = c(x = "longitude", y = "latitude"),
-  remove = FALSE,
-  crs = 4326L
-) |>
-  st_transform(2154L)
+# DataSaison_sf <- st_as_sf(DataSaison_sf,
+#   coords = c(x = "longitude", y = "latitude"),
+#   remove = FALSE,
+#   crs = 4326L
+# ) |>
+#   st_transform(2154L)
 
 set.seed(123)
 
@@ -716,7 +716,7 @@ START <- Sys.time()
 
 cat("Creating folds :", fill = TRUE)
 
-sfolds <- CAST::knndm(DataSaison_sf, aoi, k = 10, maxp = 0.5) # k = number of folds
+sfolds <- CAST::knndm(DataSaison, aoi, k = 10, maxp = 0.5) # k = number of folds
 END <- Sys.time()
 print(END - START) # 1 to 1.4 hours
 # beep(2)
@@ -880,9 +880,6 @@ write.csv(
 )
 
 print("Training model")
-print(activite)
-print(colnames(as.data.frame(DataSaison)))
-print(activite %in% colnames(as.data.frame(DataSaison)))
 noSpacemod <- fitvalpred_rf(
   Prednames,
   activite,

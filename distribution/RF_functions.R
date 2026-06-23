@@ -163,9 +163,13 @@ fitvalpred_rf <- function(covariates,
 
   train_ids <- spatial_ctrl$index[[i]]
   train_data <- traindf[train_ids, ]
+  x_data <- as.data.frame(train_data[, covariates])
+  y_data <- train_data[[var_to_predict]]
   fold_models[[i]] <- randomForest::randomForest(
-    x = train_data[, covariates],
-    y = train_data[, var_to_predict],
+    #x = train_data[, covariates],
+    #y = train_data[, var_to_predict],
+    x = x_data,
+    y = y_data,
     ntree = best_ntrees,
     mtry = best_mtry,
     importance = TRUE
