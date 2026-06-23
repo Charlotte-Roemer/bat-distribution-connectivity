@@ -277,7 +277,8 @@ for(i in start_idx) {
   idx <- i:min(i + chunk_size - 1, n)
 
   y_pred[idx] <- predict(
-    model$spatmod$finalModel,
+    #model$spatmod$finalModel,
+    model$finalModel,
     #X_pred[idx, model$spatmod$finalModel$xNames]
     X_pred[idx, model$finalModel$xNames]
   )
