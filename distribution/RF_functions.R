@@ -63,7 +63,7 @@ fitvalpred_rf <- function(covariates,
   }
 
   print("model tuned")
-  # parallel::stopCluster(cl)
+  #parallel::stopCluster(cl)
   B <- Sys.time()
   print(B - A)
 
@@ -123,7 +123,7 @@ fitvalpred_rf <- function(covariates,
   print("building model")
   A <- Sys.time()
   cl <- parallel::makeCluster(10, type = "MPI")
-  doParallel::registerDoParallel(cl)
+  #doParallel::registerDoParallel(cl)
 
   if (opt$evaluation == TRUE) {
   spatial_mod <- caret::train(
@@ -152,6 +152,7 @@ fitvalpred_rf <- function(covariates,
   print(B - A)
 
   print("model built")
+  parallel::stopCluster(cl)
 
   # 3. Train models for each fold (to calculate error maps later)
 

@@ -482,7 +482,10 @@ DataSaison$SpYear <- year(Date1)
 print("summary of coordinates DataSaison")
 print(summary(DataSaison$longitude))
 print(summary(DataSaison$latitude))
+print("head(DataSaison)")
 print(head(DataSaison))
+print("summary(DataSaison$SpALAN_L)")
+print(summary(DataSaison$SpALAN_L))
 
 DataSaison_sf <- sf::st_as_sf(
   DataSaison,
