@@ -86,7 +86,7 @@ Coord_Land_Cover <- function(points, names_coord, bs, bm, bl, layer) {
 
   terraOptions(memfrac = 0.5)
 
-  print("Creating 100m raster")
+  print("Creating 100m raster") # aggregate raster at 100 m precision for large buffer to avoid OOM killing
 
   terraOptions(
   tempdir = "/sps/mnhn/croemer/Temp",

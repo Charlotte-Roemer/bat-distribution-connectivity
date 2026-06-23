@@ -93,6 +93,8 @@ base <- base |>
 file <- file.path(folder, paste0("data_", mode_name, "_", region, ".csv"))
 write.csv(base, file)
 
+print("ALL VARIABLES GROUPED !")
+
 # colnames(dataframes[[1]])
 # nrow(unique(base))
 # base <- base |>
