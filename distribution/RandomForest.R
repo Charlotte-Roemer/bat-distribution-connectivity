@@ -669,7 +669,14 @@ DataSaison$log_nb_contacts = log10(DataSaison$nb_contacts + 1)
 }
 
 print("Distribution of response variable: ")
-print(summary(DataSaison$acti_class))
+if(activite == "acti_class"){
+  print(summary(DataSaison$acti_class))
+}else if(activite == "nb_contacts"){
+  print(summary(DataSaison$nb_contacts))
+} else if(activite == "log_nb_contacts"){
+  print(summary(DataSaison$log_nb_contacts))
+}
+
 
 #}
 
@@ -714,12 +721,26 @@ print(END - START) # 1 to 1.4 hours
 saveRDS(sfolds, sfolds_source)
 print("sfolds written")
 
-
 DataSaison$sfold <- sfolds$clusters
+
+# Define classes to create equilibrated folds for activity classes
+if(activite == "nb_contacts" | activite == "log_nb_contacts"){
+  DataSaison$fold_class <- cut(
+  log1p(DataSaison$nb_contacts),
+  breaks = quantile(
+    log1p(DataSaison$nb_contacts),
+    probs = c(0, 0.5, 0.9, 1),
+    na.rm = TRUE
+  ),
+  include.lowest = TRUE
+)
+}else if (activite == "acti_class"){
+  DataSaison$fold_class = DataSaison$acti_class
+}
 
 sindx <- CreateSpacetimeFolds(DataSaison,
   spacevar = "sfold",
-  class = "acti_class",
+  class = "fold_class", 
   ## timevar = "fortnight",
   k = 10L
 )
