@@ -212,8 +212,8 @@ for (acp in acp_names) {
 }
 pred_data <- as.data.frame(pred_data)
 pred_names <- names(pred_data)
-missing_vars <- setdiff(train_names, pred_names) # pour connaitre les colonnes à ajouter
-cat(paste("missing vars : ", missing_vars))
+missing_vars <- setdiff(train_names, c(pred_names, ".outcome")) # pour connaitre les colonnes à ajouter
+cat(paste("missing vars : ", missing_vars), fill = TRUE)
 
 # for predicting over paris with france data
 for (variable in missing_vars) {
@@ -278,7 +278,8 @@ for(i in start_idx) {
 
   y_pred[idx] <- predict(
     model$spatmod$finalModel,
-    X_pred[idx, model$spatmod$finalModel$xNames]
+    #X_pred[idx, model$spatmod$finalModel$xNames]
+    X_pred[idx, model$finalModel$xNames]
   )
 }
 
