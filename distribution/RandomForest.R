@@ -666,8 +666,8 @@ if (activite == "nbcontacts") {
 
 # Define log activity
 if (activite == "log") {
-  activite <- "log_nb_contacts"
-DataSaison$log_nb_contacts = log10(DataSaison$nb_contacts + 1)
+  activite <- "log"
+DataSaison$log = log10(DataSaison$nb_contacts + 1)
 }
 
 print("Distribution of response variable: ")
@@ -675,8 +675,8 @@ if(activite == "acti_class"){
   print(summary(DataSaison$acti_class))
 }else if(activite == "nb_contacts"){
   print(summary(DataSaison$nb_contacts))
-} else if(activite == "log_nb_contacts"){
-  print(summary(DataSaison$log_nb_contacts))
+} else if(activite == "log"){
+  print(summary(DataSaison$log))
 }
 
 
@@ -726,7 +726,7 @@ print("sfolds written")
 DataSaison$sfold <- sfolds$clusters
 
 # Define classes to create equilibrated folds for activity classes
-if(activite == "nb_contacts" | activite == "log_nb_contacts"){
+if(activite == "nb_contacts" | activite == "log"){
   DataSaison$fold_class <- "NoAct"
   positive_values <- log1p(DataSaison$nb_contacts[DataSaison$nb_contacts > 0])
   positive_breaks <- quantile(positive_values, probs = c(0, 0.5, 1),  na.rm = TRUE)
@@ -880,6 +880,9 @@ write.csv(
 )
 
 print("Training model")
+print(activite)
+print(colnames(as.data.frame(DataSaison)))
+print(activite %in% colnames(as.data.frame(DataSaison)))
 noSpacemod <- fitvalpred_rf(
   Prednames,
   activite,
