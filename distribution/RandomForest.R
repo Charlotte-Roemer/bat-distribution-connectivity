@@ -670,8 +670,6 @@ if (activite == "log") {
 DataSaison$log_nb_contacts = log10(DataSaison$nb_contacts + 1)
 }
 
-print(activite)
-
 print("Distribution of response variable: ")
 if(activite == "acti_class"){
   print(summary(DataSaison$acti_class))
@@ -729,15 +727,18 @@ DataSaison$sfold <- sfolds$clusters
 
 # Define classes to create equilibrated folds for activity classes
 if(activite == "nb_contacts" | activite == "log_nb_contacts"){
-  DataSaison$fold_class <- cut(
-  log1p(DataSaison$nb_contacts),
-  breaks = quantile(
-    log1p(DataSaison$nb_contacts),
-    probs = c(0, 0.5, 0.9, 1),
-    na.rm = TRUE
-  ),
-  include.lowest = TRUE
-)
+  DataSaison$fold_class <- "NoAct"
+  positive_values <- log1p(DataSaison$nb_contacts[DataSaison$nb_contacts > 0])
+  positive_breaks <- quantile(positive_values, probs = c(0, 0.5, 1),  na.rm = TRUE)
+  positive_breaks <- unique(positive_breaks)
+
+  DataSaison$fold_class[DataSaison$nb_contacts > 0] <- cut(log1p(DataSaison$nb_contacts[DataSaison$nb_contacts > 0]),
+    breaks = positive_breaks,
+    include.lowest = TRUE,
+    labels = c("Faible", "Fort")[1:(length(positive_breaks)-1)])
+
+  DataSaison$fold_class <- factor(DataSaison$fold_class)
+
 }else if (activite == "acti_class"){
   DataSaison$fold_class = DataSaison$acti_class
 }
