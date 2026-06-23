@@ -163,7 +163,10 @@ fitvalpred_rf <- function(covariates,
 
   train_ids <- spatial_ctrl$index[[i]]
   train_data <- traindf[train_ids, ]
-  x_data <- as.data.frame(train_data[, covariates])
+  x_data <- train_data |>
+  sf::st_drop_geometry() |>
+  as.data.frame()
+  x_data <- x_data[, covariates]
   y_data <- train_data[[var_to_predict]]
   fold_models[[i]] <- randomForest::randomForest(
     #x = train_data[, covariates],
