@@ -54,7 +54,7 @@ option_list <- list(
   ),
   optparse::make_option(c("--acti"),
     type = "character", default = "nb_contacts",
-    help = "Which value do you want to predict ? nbcontacts, acticlass"
+    help = "Which value do you want to predict ? nbcontacts, acticlass, log"
   ),
   # optparse::make_option(c("-k", "--keep"),
   #   action = "store_true", help = "Do you want to save a test dataset ?"
@@ -604,10 +604,10 @@ aoi <- sf::read_sf(
 ) |>
   st_transform(2154L)
 
-print("Summary of DataSaison :")
+print("Summary of DataSaison before filtering:")
 print(summary(DataSaison$nb_contacts))
 
-print("nrow(DataSaison)")
+print("nrow(DataSaison) before filtering:")
 print(nrow(DataSaison))
 
 print("number of cases where activity is > 0 bat passes/night :")
@@ -649,12 +649,31 @@ DataSaison_sf <- DataSaison_sf |>
 #   DataTest$acticlass <- acticlass$test
 # } else {
 
+print("Preparing response variable")
+
 # Define classes of activity
-  DataSaison_sf$acti_class <- def_classes(DataSaison_sf)
-  DataSaison_sf$acticlass <- def_int_classes(DataSaison_sf)
+#DataSaison_sf$acti_class <- def_classes(DataSaison_sf)
+DataSaison_sf$acticlass <- def_int_classes(DataSaison_sf)
+DataSaison$acti_class <- factor(DataSaison$acti_class, levels = c("NoAct", "Faible", "Moyen", "Fort", "TresFort"))
+samp_sizes <- def_sample_vector(DataSaison, "acti_class", 0.66)
+
+# Define raw activity
+if (activite == "nbcontacts") {
+  activite <- "nb_contacts"
+}
+
+# Define log activity
+if (activite == "log") {
+  activite <- "log_nb_contacts"
+DataSaison$log_nb_contacts = log10(DataSaison$nb_contacts + 1)
+}
+
+print("Distribution of response variable: ")
+print(summary(DataSaison$acti_class))
+
 #}
 
-print("DataSaison filtered for season")
+print("Filter seasons")
 
 print("Seasons before filter")
 print(unique(DataSaison_sf$SpSaison))
@@ -723,13 +742,6 @@ cat("Cross-validation indices prepared", fill = TRUE)
 #     )
 #   )
 # }
-
-DataSaison$acti_class <- factor(DataSaison$acti_class, levels = c("NoAct", "Faible", "Moyen", "Fort", "TresFort"))
-
-samp_sizes <- def_sample_vector(DataSaison, "acti_class", 0.66)
-
-print("Distribution of response variable: ")
-print(summary(DataSaison$acti_class))
 
 # Make PCA for response variable if chosen as option
 if (selection == "PCA") { # All variables
@@ -811,12 +823,6 @@ if (selection == "PCA") { # All variables
 } else if (selection == "indisp") {
   Prednames <- variables_indisp
 }
-
-if (activite == "nbcontacts") {
-  activite <- "nb_contacts"
-}
-
-print("Response variable defined)")
 
 if ("geometry" %in% colnames(DataSaison)) {
   DataSaison <- DataSaison |>

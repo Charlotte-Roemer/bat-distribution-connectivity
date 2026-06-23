@@ -133,7 +133,7 @@ print(summary(site_loc$latitude))
 }
 
 #------------------------------------------------------------------------------#
-#             Function to classify activity without test                       #
+#     Function to classify activity without test for classification RF         #
 #------------------------------------------------------------------------------#
 
 def_classes <- function(data) {
@@ -155,7 +155,7 @@ def_classes <- function(data) {
 
 
 #------------------------------------------------------------------------------#
-#                     Function to classify activity                            #
+#             Function to classify activity for classification RF              #
 #------------------------------------------------------------------------------#
 
 def_classes_test <- function(data, data_test) {
@@ -194,7 +194,7 @@ def_sample_vector <- function(data, column, proportion) {
 }
 
 #------------------------------------------------------------------------------#
-#              Function to classify activity without test                      #
+#        Function to classify activity without test for regression RF          #
 #------------------------------------------------------------------------------#
 
 
@@ -216,7 +216,7 @@ def_int_classes <- function(data) {
 
 
 #------------------------------------------------------------------------------#
-#                     Function to classify activity                            #
+#          Function to classify activity with test for regression RF           #
 #------------------------------------------------------------------------------#
 
 
