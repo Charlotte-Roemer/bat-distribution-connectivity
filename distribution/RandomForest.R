@@ -651,6 +651,8 @@ DataSaison_sf <- DataSaison_sf |>
 
 print("Preparing response variable")
 
+print(activite)
+
 # Define classes of activity
 #DataSaison_sf$acti_class <- def_classes(DataSaison_sf)
 DataSaison_sf$acticlass <- def_int_classes(DataSaison_sf)
@@ -667,6 +669,8 @@ if (activite == "log") {
   activite <- "log_nb_contacts"
 DataSaison$log_nb_contacts = log10(DataSaison$nb_contacts + 1)
 }
+
+print(activite)
 
 print("Distribution of response variable: ")
 if(activite == "acti_class"){
