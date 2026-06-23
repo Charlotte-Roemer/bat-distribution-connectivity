@@ -656,8 +656,8 @@ print(activite)
 # Define classes of activity
 #DataSaison_sf$acti_class <- def_classes(DataSaison_sf)
 DataSaison_sf$acticlass <- def_int_classes(DataSaison_sf)
-DataSaison$acti_class <- factor(DataSaison$acti_class, levels = c("NoAct", "Faible", "Moyen", "Fort", "TresFort"))
-samp_sizes <- def_sample_vector(DataSaison, "acti_class", 0.66)
+#DataSaison$acti_class <- factor(DataSaison$acti_class, levels = c("NoAct", "Faible", "Moyen", "Fort", "TresFort"))
+#samp_sizes <- def_sample_vector(DataSaison, "acti_class", 0.66)
 
 # Define raw activity
 if (activite == "nbcontacts") {
@@ -667,16 +667,16 @@ if (activite == "nbcontacts") {
 # Define log activity
 if (activite == "log") {
   activite <- "log"
-DataSaison$log = log10(DataSaison$nb_contacts + 1)
+DataSaison_sf$log = log10(DataSaison_sf$nb_contacts + 1)
 }
 
 print("Distribution of response variable: ")
 if(activite == "acti_class"){
-  print(summary(DataSaison$acti_class))
+  print(summary(DataSaison_sf$acti_class))
 }else if(activite == "nb_contacts"){
-  print(summary(DataSaison$nb_contacts))
+  print(summary(DataSaison_sf$nb_contacts))
 } else if(activite == "log"){
-  print(summary(DataSaison$log))
+  print(summary(DataSaison_sf$log))
 }
 
 
