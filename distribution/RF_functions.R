@@ -122,7 +122,7 @@ fitvalpred_rf <- function(covariates,
   # spatial_grid <- data.frame(mtry = round(length(covariates)*2/3))
   print("building model")
   A <- Sys.time()
-  cl <- parallel::makeCluster(10, type = "MPI")
+  #cl <- parallel::makeCluster(10, type = "MPI")
   #doParallel::registerDoParallel(cl)
 
   if (opt$evaluation == TRUE) {
