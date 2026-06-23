@@ -660,9 +660,9 @@ print("Seasons before filter")
 print(unique(DataSaison_sf$SpSaison))
 
 DataSaison_sf <- DataSaison_sf[dplyr::between(DataSaison_sf$day, p_start, p_end), ]
-if (opt$keep == TRUE) {
-  DataTest <- DataTest[dplyr::between(DataTest$day, p_start, p_end), ]
-}
+# if (opt$keep == TRUE) {
+#   DataTest <- DataTest[dplyr::between(DataTest$day, p_start, p_end), ]
+# }
 # DataSaison_sf <- subset(DataSaison_sf, DataSaison_sf$SpSaison == opt$period)
 
 print("Seasons after filter")
@@ -712,17 +712,17 @@ sctrl <- caret::trainControl(
 )
 
 cat("Cross-validation indices prepared", fill = TRUE)
-if (opt$keep == TRUE) {
-  write.csv(
-    DataTest,
-    file.path(
-      Output,
-      paste0(
-        Sp_real, "_", opt$period, "_", opt$region, "_", ThresholdSort, "_datatest.csv"
-      )
-    )
-  )
-}
+# if (opt$keep == TRUE) {
+#   write.csv(
+#     DataTest,
+#     file.path(
+#       Output,
+#       paste0(
+#         Sp_real, "_", opt$period, "_", opt$region, "_", ThresholdSort, "_datatest.csv"
+#       )
+#     )
+#   )
+# }
 
 DataSaison$acti_class <- factor(DataSaison$acti_class, levels = c("NoAct", "Faible", "Moyen", "Fort", "TresFort"))
 
