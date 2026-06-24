@@ -672,7 +672,7 @@ DataSaison_sf$log = log10(DataSaison_sf$nb_contacts + 1)
 }
 
 print("Distribution of response variable: ")
-if(activite == "acti_class"){
+if(activite == "acticlass"){
   print(summary(DataSaison_sf$acti_class))
 }else if(activite == "nb_contacts"){
   print(summary(DataSaison_sf$nb_contacts))
@@ -743,7 +743,7 @@ if(activite == "nb_contacts" | activite == "log"){
 
   DataSaison$fold_class <- factor(DataSaison$fold_class)
 
-}else if (activite == "acti_class"){
+}else if (activite == "acticlass"){
   DataSaison$fold_class = DataSaison$acti_class
 }
 
@@ -754,6 +754,8 @@ print(unique(DataSaison$sfold))
 
 print("k_folds")
 print(k_folds)
+
+print(colnames(DataSaison))
 
 sindx <- CreateSpacetimeFolds(DataSaison,
   spacevar = "sfold",
