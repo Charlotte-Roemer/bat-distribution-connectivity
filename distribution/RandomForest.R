@@ -938,7 +938,7 @@ nosp <- print(noSpacemod$spatmod)
 write(nosp, file.path(Output, paste0(suffix, ".txt")), append = TRUE)
 
 saveRDS(
-  noSpacemod$spatmod,
+  noSpacemod,
   file.path(
     Output,
     paste0(
