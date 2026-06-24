@@ -271,7 +271,8 @@ fitvalpred_rf <- function(covariates,
     tab = tabres,
     spatmod = spatial_mod,
     graphmod = results,
-    fold_models = fold_models
+    fold_models = fold_models,
+    covariates = covariates
   )
   }else{
    list(

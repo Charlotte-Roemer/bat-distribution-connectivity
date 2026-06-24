@@ -280,7 +280,8 @@ for(i in start_idx) {
     #model$spatmod$finalModel,
     model$finalModel,
     #X_pred[idx, model$spatmod$finalModel$xNames]
-    X_pred[idx, model$finalModel$xNames]
+    #X_pred[idx, model$finalModel$xNames]
+    X_pred[idx, model$covariates]
   )
 }
 
@@ -290,6 +291,12 @@ for(i in start_idx) {
 # ----------------------------------------------------------
 
 if(!is.null(model$fold_models)) {
+
+  print("Check model$fold_models")
+  print(fold_model$xNames)
+  print(names(model))
+  print(length(model$fold_models))
+  print(class(model$fold_models[[1]]))
 
   nfolds <- length(model$fold_models)
 
@@ -316,7 +323,8 @@ if(!is.null(model$fold_models)) {
 
       fold_pred[idx] <- predict(
         fold_model,
-        X_pred[idx, fold_model$xNames]
+        #X_pred[idx, fold_model$xNames]
+        X_pred[idx, model$covariates]
       )
     }
 
@@ -332,7 +340,8 @@ if(!is.null(model$fold_models)) {
   )
 
   # coefficient of variation
-  y_cv <- y_sd / abs(y_pred)
+  #y_cv <- y_sd / abs(y_pred)
+  y_cv <- y_sd / pmax(abs(y_pred), 1e-6)
 
 } else {
 
@@ -340,6 +349,11 @@ if(!is.null(model$fold_models)) {
 
   y_cv <- rep(NA, n)
 }
+
+print("check all_fold_preds")
+print(dim(all_fold_preds))
+print(summary(all_fold_preds))
+print(sum(is.na(all_fold_preds)))
 
 print("prediction done!")
 
