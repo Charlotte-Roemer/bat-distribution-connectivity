@@ -743,27 +743,34 @@ if(activite == "nb_contacts" | activite == "log"){
 
   DataSaison$fold_class <- factor(DataSaison$fold_class)
 
-}else if (activite == "acticlass"){
-  DataSaison$fold_class = DataSaison$acti_class
-}
-
-print("sfold")
-print(table(DataSaison$sfold))
-print(length(unique(DataSaison$sfold)))
-print(unique(DataSaison$sfold))
-
-print("k_folds")
-print(k_folds)
-
-print(colnames(DataSaison))
-
-sindx <- CreateSpacetimeFolds(DataSaison,
+  sindx <- CreateSpacetimeFolds(DataSaison,
   spacevar = "sfold",
   class = "fold_class", 
   ## timevar = "fortnight",
   #k = 10L
   k = k_folds
 )
+
+}else if (activite == "acticlass"){
+  sindx <- CreateSpacetimeFolds(DataSaison,
+  spacevar = "sfold",
+  ## timevar = "fortnight",
+  #k = 10L
+  k = k_folds
+)
+}
+
+# print("sfold")
+# print(table(DataSaison$sfold))
+# print(length(unique(DataSaison$sfold)))
+# print(unique(DataSaison$sfold))
+
+# print("k_folds")
+# print(k_folds)
+
+# print(colnames(DataSaison))
+
+
 
 sctrl <- caret::trainControl(
   method = "cv",
