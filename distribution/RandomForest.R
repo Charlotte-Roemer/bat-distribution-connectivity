@@ -717,10 +717,13 @@ START <- Sys.time()
 
 cat("Creating folds :", fill = TRUE)
 
-sfolds <- CAST::knndm(DataSaison, aoi, k = 5, maxp = 0.25) # k = number of folds
+k_folds = 5
+sfolds <- CAST::knndm(DataSaison, aoi, k = k_folds, maxp = 0.25) # k = number of folds
 END <- Sys.time()
 print(END - START) # 1 to 1.4 hours
-# beep(2)
+print(length(unique(sfolds$cluster)))
+table(sfolds$cluster)
+
 saveRDS(sfolds, sfolds_source)
 print("sfolds written")
 
@@ -748,7 +751,8 @@ sindx <- CreateSpacetimeFolds(DataSaison,
   spacevar = "sfold",
   class = "fold_class", 
   ## timevar = "fortnight",
-  k = 10L
+  #k = 10L
+  k = k_folds
 )
 
 sctrl <- caret::trainControl(
