@@ -280,8 +280,8 @@ for(i in start_idx) {
     #model$spatmod$finalModel,
     model$finalModel,
     #X_pred[idx, model$spatmod$finalModel$xNames]
-    #X_pred[idx, model$finalModel$xNames]
-    X_pred[idx, model$covariates]
+    X_pred[idx, model$finalModel$xNames]
+    #X_pred[idx, model$covariates]
   )
 }
 
@@ -320,11 +320,12 @@ if(!is.null(model$fold_models)) {
     for(i in start_idx) {
 
       idx <- i:min(i + chunk_size - 1, n)
+      xnames <- attr(fold_model, "xNames")
 
       fold_pred[idx] <- predict(
         fold_model,
         #X_pred[idx, fold_model$xNames]
-        X_pred[idx, model$covariates]
+        X_pred[idx, xnames, drop = FALSE]
       )
     }
 

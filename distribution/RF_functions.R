@@ -167,7 +167,7 @@ fitvalpred_rf <- function(covariates,
   x_data <- train_data |>
   sf::st_drop_geometry() |>
   as.data.frame()
-  x_data <- x_data[, covariates]
+  x_data <- x_data[, covariates, drop = FALSE]
   y_data <- train_data[[var_to_predict]]
   fold_models[[i]] <- randomForest::randomForest(
     #x = train_data[, covariates],
@@ -178,6 +178,7 @@ fitvalpred_rf <- function(covariates,
     mtry = best_mtry,
     importance = TRUE
   )
+  attr(fold_models[[i]], "xNames") <- covariates
   }
 
   # 4. Calculate evaluation metrics using the kNNDM cross-validation method
