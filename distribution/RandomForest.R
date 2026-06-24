@@ -747,6 +747,14 @@ if(activite == "nb_contacts" | activite == "log"){
   DataSaison$fold_class = DataSaison$acti_class
 }
 
+print("sfold")
+print(table(DataSaison$sfold))
+print(length(unique(DataSaison$sfold)))
+print(unique(DataSaison$sfold))
+
+print("k_folds")
+print(k_folds)
+
 sindx <- CreateSpacetimeFolds(DataSaison,
   spacevar = "sfold",
   class = "fold_class", 
