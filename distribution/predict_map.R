@@ -344,17 +344,19 @@ if(!is.null(model$fold_models)) {
   #y_cv <- y_sd / abs(y_pred)
   y_cv <- y_sd / pmax(abs(y_pred), 1e-6)
 
+  print("check all_fold_preds")
+  print(dim(all_fold_preds))
+  print(summary(all_fold_preds))
+  print(sum(is.na(all_fold_preds)))
+
 } else {
 
   y_sd <- rep(NA, n)
-
   y_cv <- rep(NA, n)
-}
 
-print("check all_fold_preds")
-print(dim(all_fold_preds))
-print(summary(all_fold_preds))
-print(sum(is.na(all_fold_preds)))
+  print("WARNING: model$fold_models is NULL")
+
+}
 
 print("prediction done!")
 
