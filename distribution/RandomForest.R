@@ -656,7 +656,7 @@ print(activite)
 
 # Define classes of activity
 #DataSaison_sf$acti_class <- def_classes(DataSaison_sf)
-DataSaison_sf$acticlass <- def_int_classes(DataSaison_sf)
+DataSaison_sf$acti_class <- def_int_classes(DataSaison_sf)
 #DataSaison$acti_class <- factor(DataSaison$acti_class, levels = c("NoAct", "Faible", "Moyen", "Fort", "TresFort"))
 #samp_sizes <- def_sample_vector(DataSaison, "acti_class", 0.66)
 
