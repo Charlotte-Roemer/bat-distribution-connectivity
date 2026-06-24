@@ -293,10 +293,8 @@ for(i in start_idx) {
 if(!is.null(model$fold_models)) {
 
   print("Check model$fold_models")
-  print(fold_model$xNames)
   print(names(model))
   print(length(model$fold_models))
-  print(class(model$fold_models[[1]]))
 
   nfolds <- length(model$fold_models)
 
@@ -314,6 +312,7 @@ if(!is.null(model$fold_models)) {
     )
 
     fold_model <- model$fold_models[[f]]
+    print(attr(fold_model, "xNames"))
 
     fold_pred <- numeric(n)
 
