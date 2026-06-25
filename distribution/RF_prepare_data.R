@@ -136,52 +136,52 @@ print(summary(site_loc$latitude))
 #     Function to classify activity without test for classification RF         #
 #------------------------------------------------------------------------------#
 
-def_classes <- function(data) {
-  data_no_zero <- data[data$nb_contacts > 0, ]
-  quant <- quantile(
-    x = unlist(data_no_zero$nb_contacts),
-    c(0.25, 0.50, 0.75),
-    na.rm = TRUE
-  )
-  data$acti_class[data$nb_contacts <= quant[1]] <- "Faible"
-  data$acti_class[data$nb_contacts == 0] <- "NoAct"
-  data$acti_class[data$nb_contacts > quant[1] & data$nb_contacts <= quant[2]] <- "Moyen"
-  data$acti_class[data$nb_contacts > quant[2] & data$nb_contacts <= quant[3]] <- "Fort"
-  data$acti_class[data$nb_contacts > quant[3]] <- "TresFort"
-  data$acti_class <- factor(data$acti_class, levels = c("NoAct", "Faible", "Moyen", "Fort", "TresFort"))
+# def_classes <- function(data) {
+#   data_no_zero <- data[data$nb_contacts > 0, ]
+#   quant <- quantile(
+#     x = unlist(data_no_zero$nb_contacts),
+#     c(0.25, 0.50, 0.75),
+#     na.rm = TRUE
+#   )
+#   data$acti_class[data$nb_contacts <= quant[1]] <- "Faible"
+#   data$acti_class[data$nb_contacts == 0] <- "NoAct"
+#   data$acti_class[data$nb_contacts > quant[1] & data$nb_contacts <= quant[2]] <- "Moyen"
+#   data$acti_class[data$nb_contacts > quant[2] & data$nb_contacts <= quant[3]] <- "Fort"
+#   data$acti_class[data$nb_contacts > quant[3]] <- "TresFort"
+#   data$acti_class <- factor(data$acti_class, levels = c("NoAct", "Faible", "Moyen", "Fort", "TresFort"))
 
-  data$acti_class
-}
+#   data$acti_class
+# }
 
 
 #------------------------------------------------------------------------------#
 #             Function to classify activity for classification RF              #
 #------------------------------------------------------------------------------#
 
-def_classes_test <- function(data, data_test) {
-  data_no_zero <- data[data$nb_contacts > 0, ]
-  quant <- quantile(
-    x = unlist(data_no_zero$nb_contacts),
-    c(0.25, 0.50, 0.75),
-    na.rm = TRUE
-  )
-  data$acti_class[data$nb_contacts <= quant[1]] <- "Faible"
-  data$acti_class[data$nb_contacts == 0] <- "NoAct"
-  data$acti_class[data$nb_contacts > quant[1] & data$nb_contacts <= quant[2]] <- "Moyen"
-  data$acti_class[data$nb_contacts > quant[2] & data$nb_contacts <= quant[3]] <- "Fort"
-  data$acti_class[data$nb_contacts > quant[3]] <- "TresFort"
-  data$acti_class <- factor(data$acti_class, levels = c("NoAct", "Faible", "Moyen", "Fort", "TresFort"))
-  data_test$acti_class[data_test$nb_contacts <= quant[1]] <- "Faible"
-  data_test$acti_class[data_test$nb_contacts == 0] <- "NoAct"
-  data_test$acti_class[data_test$nb_contacts > quant[1] & data_test$nb_contacts <= quant[2]] <- "Moyen"
-  data_test$acti_class[data_test$nb_contacts > quant[2] & data_test$nb_contacts <= quant[3]] <- "Fort"
-  data_test$acti_class[data_test$nb_contacts > quant[3]] <- "TresFort"
-  data_test$acti_class <- factor(data_test$acti_class, levels = c("NoAct", "Faible", "Moyen", "Fort", "TresFort"))
+# def_classes_test <- function(data, data_test) {
+#   data_no_zero <- data[data$nb_contacts > 0, ]
+#   quant <- quantile(
+#     x = unlist(data_no_zero$nb_contacts),
+#     c(0.25, 0.50, 0.75),
+#     na.rm = TRUE
+#   )
+#   data$acti_class[data$nb_contacts <= quant[1]] <- "Faible"
+#   data$acti_class[data$nb_contacts == 0] <- "NoAct"
+#   data$acti_class[data$nb_contacts > quant[1] & data$nb_contacts <= quant[2]] <- "Moyen"
+#   data$acti_class[data$nb_contacts > quant[2] & data$nb_contacts <= quant[3]] <- "Fort"
+#   data$acti_class[data$nb_contacts > quant[3]] <- "TresFort"
+#   data$acti_class <- factor(data$acti_class, levels = c("NoAct", "Faible", "Moyen", "Fort", "TresFort"))
+#   data_test$acti_class[data_test$nb_contacts <= quant[1]] <- "Faible"
+#   data_test$acti_class[data_test$nb_contacts == 0] <- "NoAct"
+#   data_test$acti_class[data_test$nb_contacts > quant[1] & data_test$nb_contacts <= quant[2]] <- "Moyen"
+#   data_test$acti_class[data_test$nb_contacts > quant[2] & data_test$nb_contacts <= quant[3]] <- "Fort"
+#   data_test$acti_class[data_test$nb_contacts > quant[3]] <- "TresFort"
+#   data_test$acti_class <- factor(data_test$acti_class, levels = c("NoAct", "Faible", "Moyen", "Fort", "TresFort"))
 
-  list(
-    train = data$acti_class, test = data_test$acti_class
-  )
-}
+#   list(
+#     train = data$acti_class, test = data_test$acti_class
+#   )
+# }
 
 
 #------------------------------------------------------------------------------#
@@ -198,78 +198,149 @@ def_sample_vector <- function(data, column, proportion) {
 #------------------------------------------------------------------------------#
 
 
+# def_int_classes <- function(data) {
+#   data_no_zero <- data[data$nb_contacts > 0, ]
+#   quant <- quantile(
+#     x = unlist(data_no_zero$nb_contacts),
+#     c(0.25, 0.50, 0.75),
+#     na.rm = TRUE
+#   )
+#   data$acti_int_class[data$nb_contacts <= quant[1]] <- 1
+#   data$acti_int_class[data$nb_contacts == 0] <- 0
+#   data$acti_int_class[data$nb_contacts > quant[1] & data$nb_contacts <= quant[2]] <- 2
+#   data$acti_int_class[data$nb_contacts > quant[2] & data$nb_contacts < quant[3]] <- 3
+#   data$acti_int_class[data$nb_contacts >= quant[3]] <- 4
+
+#   data$acti_int_class
+# }
+
 def_int_classes <- function(data) {
+
+  data$acti_int_class <- NA
+  n_positive <- sum(data$nb_contacts > 0, na.rm = TRUE)
   data_no_zero <- data[data$nb_contacts > 0, ]
-  quant <- quantile(
-    x = unlist(data_no_zero$nb_contacts),
-    c(0.25, 0.50, 0.75),
-    na.rm = TRUE
-  )
-  data$acti_int_class[data$nb_contacts <= quant[1]] <- 1
-  data$acti_int_class[data$nb_contacts == 0] <- 0
-  data$acti_int_class[data$nb_contacts > quant[1] & data$nb_contacts <= quant[2]] <- 2
-  data$acti_int_class[data$nb_contacts > quant[2] & data$nb_contacts < quant[3]] <- 3
-  data$acti_int_class[data$nb_contacts >= quant[3]] <- 4
 
-  data$acti_int_class
+  # -----------------------------
+  # RARE SPECIES : 3 classes
+  # -----------------------------
+  if(n_positive < 500) {
+
+    quant25 <- quantile(
+      data_no_zero$nb_contacts,
+      probs = 0.25,
+      na.rm = TRUE
+    )
+
+    # absence
+    data$acti_int_class[data$nb_contacts == 0] <- 0
+
+    # low activity
+    data$acti_int_class[
+      data$nb_contacts > 0 &
+      data$nb_contacts <= quant25
+    ] <- 1
+
+    # mid-high-very high activity
+    data$acti_int_class[
+      data$nb_contacts > quant25
+    ] <- 4
+
+  # -----------------------------
+  # COMMON SPECIES : 5 classes
+  # -----------------------------
+  } else {
+
+    quant <- quantile(
+      x = data_no_zero$nb_contacts,
+      probs = c(0.25, 0.50, 0.75),
+      na.rm = TRUE
+    )
+
+    # absence
+    data$acti_int_class[data$nb_contacts == 0] <- 0
+
+    # low activity
+    data$acti_int_class[
+      data$nb_contacts > 0 &
+      data$nb_contacts <= quant[1]
+    ] <- 1
+
+    # mid activity
+    data$acti_int_class[
+      data$nb_contacts > quant[1] &
+      data$nb_contacts <= quant[2]
+    ] <- 2
+
+    # high activity
+    data$acti_int_class[
+      data$nb_contacts > quant[2] &
+      data$nb_contacts < quant[3]
+    ] <- 3
+
+    # very high activity
+    data$acti_int_class[
+      data$nb_contacts >= quant[3]
+    ] <- 4
+  }
+
+  return(data$acti_int_class)
 }
-
 
 #------------------------------------------------------------------------------#
 #          Function to classify activity with test for regression RF           #
 #------------------------------------------------------------------------------#
 
 
-def_int_classes_test <- function(data, data_test) {
-  data_no_zero <- data[data$nb_contacts > 0, ]
-  quant <- quantile(
-    x = unlist(data_no_zero$nb_contacts),
-    c(0.25, 0.50, 0.75),
-    na.rm = TRUE
-  )
-  data$acti_int_class[data$nb_contacts <= quant[1]] <- 1
-  data$acti_int_class[data$nb_contacts == 0] <- 0
-  data$acti_int_class[data$nb_contacts > quant[1] & data$nb_contacts <= quant[2]] <- 2
-  data$acti_int_class[data$nb_contacts > quant[2] & data$nb_contacts < quant[3]] <- 3
-  data$acti_int_class[data$nb_contacts >= quant[3]] <- 4
+# def_int_classes_test <- function(data, data_test) {
+#   data_no_zero <- data[data$nb_contacts > 0, ]
+#   quant <- quantile(
+#     x = unlist(data_no_zero$nb_contacts),
+#     c(0.25, 0.50, 0.75),
+#     na.rm = TRUE
+#   )
+#   data$acti_int_class[data$nb_contacts <= quant[1]] <- 1
+#   data$acti_int_class[data$nb_contacts == 0] <- 0
+#   data$acti_int_class[data$nb_contacts > quant[1] & data$nb_contacts <= quant[2]] <- 2
+#   data$acti_int_class[data$nb_contacts > quant[2] & data$nb_contacts < quant[3]] <- 3
+#   data$acti_int_class[data$nb_contacts >= quant[3]] <- 4
 
-  data_test$acti_int_class[data_test$nb_contacts <= quant[1]] <- 1
-  data_test$acti_int_class[data_test$nb_contacts == 0] <- 0
-  data_test$acti_int_class[data_test$nb_contacts > quant[1] & data_test$nb_contacts <= quant[2]] <- 2
-  data_test$acti_int_class[data_test$nb_contacts > quant[2] & data_test$nb_contacts < quant[3]] <- 3
-  data_test$acti_int_class[data_test$nb_contacts >= quant[3]] <- 4
+#   data_test$acti_int_class[data_test$nb_contacts <= quant[1]] <- 1
+#   data_test$acti_int_class[data_test$nb_contacts == 0] <- 0
+#   data_test$acti_int_class[data_test$nb_contacts > quant[1] & data_test$nb_contacts <= quant[2]] <- 2
+#   data_test$acti_int_class[data_test$nb_contacts > quant[2] & data_test$nb_contacts < quant[3]] <- 3
+#   data_test$acti_int_class[data_test$nb_contacts >= quant[3]] <- 4
 
-  list(train = data$acti_int_class, test = data_test$acti_int_class)
-}
+#   list(train = data$acti_int_class, test = data_test$acti_int_class)
+# }
 
 
 #------------------------------------------------------------------------------#
 #            Function to select best predictors with VSURF                     #
 #------------------------------------------------------------------------------#
 
-get_prednames <- function(df, prednames, response_var, samp_vector = NULL) {
-  predictors <- df |>
-    dplyr::select(all_of(prednames))
+# get_prednames <- function(df, prednames, response_var, samp_vector = NULL) {
+#   predictors <- df |>
+#     dplyr::select(all_of(prednames))
 
-  if (response_var == "acti_class") {
-    vsurf <- VSURF::VSURF(predictors,
-      df$acti_class,
-      parallel = TRUE,
-      nmin = 0.5,
-      clusterType = "MPI",
-      sampsize = samp_vector
-    )
-  } else {
-    response <- as.vector(df$nb_contacts)
+#   if (response_var == "acti_class") {
+#     vsurf <- VSURF::VSURF(predictors,
+#       df$acti_class,
+#       parallel = TRUE,
+#       nmin = 0.5,
+#       clusterType = "MPI",
+#       sampsize = samp_vector
+#     )
+#   } else {
+#     response <- as.vector(df$nb_contacts)
 
-    vsurf <- VSURF::VSURF(predictors,
-      response,
-      parallel = TRUE,
-      clusterType = "MPI"
-    )
-  }
-  vsurf$varselect.pred
-}
+#     vsurf <- VSURF::VSURF(predictors,
+#       response,
+#       parallel = TRUE,
+#       clusterType = "MPI"
+#     )
+#   }
+#   vsurf$varselect.pred
+# }
 
 
 #------------------------------------------------------------------------------#
