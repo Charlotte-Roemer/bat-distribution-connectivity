@@ -582,10 +582,7 @@ testNA2 <- apply(Predictors, MARGIN = 1, FUN = function(x) sum(is.na(x)))
 print(summary(testNA2))
 Sys.time()
 
-#### Modelling ####-----------------------------------------------------------
-
-
-
+#### Preparing response ####-----------------------------------------------------------
 print("Summary of DataSaison before filtering:")
 print(summary(DataSaison$nb_contacts))
 
@@ -597,6 +594,7 @@ print(DataSaison |>
       filter(nb_contacts > 0) |>
       nrow())
 
+print("Filter seasons, weather and area of interest")
 cat("Prep data saison as sf object :", fill = TRUE)
 DataSaison_sf <- st_as_sf(DataSaison,
   coords = c(x = "longitude", y = "latitude"),
@@ -605,22 +603,27 @@ DataSaison_sf <- st_as_sf(DataSaison,
 ) |>
   st_transform(2154L)
 
-# # Keep test data and define classes of activity
-# if (opt$keep == TRUE) {
-#   DataTest_sf <- DataSaison_sf[DataSaison_sf$SpYear %in% test_years, ]
-#   DataSaison_sf <- DataSaison_sf[!DataSaison_sf$SpYear %in% test_years, ]
-#   DataTest <- DataTest_sf |>
-#     st_drop_geometry()
+cat("Load Area of Interest and filter:", fill = TRUE)
+  aoi <- sf::read_sf(
+    dsn = args[4],
+    layer = opt$region) |>
+    st_transform(2154L)
+DataSaison_sf <- DataSaison_sf[aoi, ]
 
-#   acti_class <- def_classes_test(DataSaison_sf, DataTest)
-#   acticlass <- def_int_classes_test(DataSaison_sf, DataTest)
-
-#   DataSaison_sf$acti_class <- acti_class$train
-#   DataSaison_sf$acticlass <- acticlass$train
-
-#   DataTest$acti_class <- acti_class$test
-#   DataTest$acticlass <- acticlass$test
-# } else {
+# Filter out nights with bad meteoroligical conditions
+print("total_precipitations")
+print(summary(DataSaison_sf$total_precipitations))
+print("Spwind")
+print(summary(DataSaison_sf$Spwind))
+print("Sptemp")
+print(summary(DataSaison_sf$Sptemp))
+DataSaison_sf <- DataSaison_sf |>
+  dplyr::filter(total_precipitations < 2L)
+DataSaison_sf <- DataSaison_sf |>
+  dplyr::filter(Spwind < 4L)
+DataSaison_sf <- DataSaison_sf |>
+ # dplyr::filter(dplyr::between(Sptemp, -4L, 4L))
+   dplyr::filter(Sptemp > -10L)
 
 print("Preparing response variable")
 
@@ -648,7 +651,7 @@ if (activite == "acticlass") {
   activite <- "acti_class"
 }
 
-print("Distribution of response variable before season, aoi and weather filter: ")
+print("Distribution of response variable before season filter: ")
 if(activite == "acti_class"){
   print(table(DataSaison_sf$acti_class))
 }else if(activite == "nb_contacts"){
@@ -656,30 +659,6 @@ if(activite == "acti_class"){
 } else if(activite == "log"){
   print(summary(DataSaison_sf$log))
 }
-
-print("Filter seasons, weather and area of interest")
-
-cat("Load Area of Interest and filter:", fill = TRUE)
-  aoi <- sf::read_sf(
-    dsn = args[4],
-    layer = opt$region) |>
-    st_transform(2154L)
-DataSaison_sf <- DataSaison_sf[aoi, ]
-
-# Filter out nights with bad meteoroligical conditions
-print("total_precipitations")
-print(summary(DataSaison_sf$total_precipitations))
-print("Spwind")
-print(summary(DataSaison_sf$Spwind))
-print("Sptemp")
-print(summary(DataSaison_sf$Sptemp))
-DataSaison_sf <- DataSaison_sf |>
-  dplyr::filter(total_precipitations < 2L)
-DataSaison_sf <- DataSaison_sf |>
-  dplyr::filter(Spwind < 4L)
-DataSaison_sf <- DataSaison_sf |>
- # dplyr::filter(dplyr::between(Sptemp, -4L, 4L))
-   dplyr::filter(Sptemp > -10L)
 
 print("Seasons before filter")
 print(unique(DataSaison_sf$SpSaison))
@@ -715,6 +694,8 @@ DataSaison <- DataSaison_sf
 #   crs = 4326L
 # ) |>
 #   st_transform(2154L)
+
+#### Modelling ####-----------------------------------------------------------
 
 set.seed(123)
 
