@@ -679,7 +679,7 @@ DataSaison_sf$log = log10(DataSaison_sf$nb_contacts + 1)
 
 print("Distribution of response variable: ")
 if(activite == "acti_class"){
-  print(summary(DataSaison_sf$acti_class))
+  print(table(DataSaison_sf$acti_class))
 }else if(activite == "nb_contacts"){
   print(summary(DataSaison_sf$nb_contacts))
 } else if(activite == "log"){
@@ -702,6 +702,11 @@ DataSaison_sf <- DataSaison_sf[dplyr::between(DataSaison_sf$day, p_start, p_end)
 
 print("Seasons after filter")
 print(unique(DataSaison_sf$SpSaison))
+
+print("number of cases where activity is > 0 bat passes/night :")
+print(DataSaison_sf |>
+      filter(nb_contacts > 0) |>
+      nrow())
 
 # Apply selection of only one value per pixel if option is chosen
 if(data_sel == "median"){
