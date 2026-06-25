@@ -678,7 +678,8 @@ DataSaison_sf <- DataSaison_sf |>
 DataSaison_sf <- DataSaison_sf |>
   dplyr::filter(Spwind < 4L)
 DataSaison_sf <- DataSaison_sf |>
-  dplyr::filter(dplyr::between(Sptemp, -4L, 4L))
+ # dplyr::filter(dplyr::between(Sptemp, -4L, 4L))
+   dplyr::filter(Sptemp > -10L)
 
 print("Seasons before filter")
 print(unique(DataSaison_sf$SpSaison))
