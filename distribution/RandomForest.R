@@ -625,7 +625,7 @@ print(summary(DataSaison_sf$Sptemp))
 DataSaison_sf <- DataSaison_sf |>
   dplyr::filter(total_precipitations < 2L)
 DataSaison_sf <- DataSaison_sf |>
-  dplyr::filter(Spwind < 4L)
+  dplyr::filter(Spwind < 6L)
 DataSaison_sf <- DataSaison_sf |>
  # dplyr::filter(dplyr::between(Sptemp, -4L, 4L))
    dplyr::filter(Sptemp > -10L)
