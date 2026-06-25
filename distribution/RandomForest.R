@@ -584,26 +584,7 @@ Sys.time()
 
 #### Modelling ####-----------------------------------------------------------
 
-# Prepare random and spatial cross-validation indices
-cat("Preparing cross-validation indices", fill = TRUE)
-sfolds_source <- file.path(
-  Output,
-  paste0(
-    "VC",
-    ThresholdSort,
-    "_",
-    # ListSp[i],
-    Sp_real,
-    "_temp_sfolds.rds"
-  )
-) # quezaco?
 
-cat("Load Area of Interest:", fill = TRUE)
-aoi <- sf::read_sf(
-  dsn = args[4],
-  layer = opt$region
-) |>
-  st_transform(2154L)
 
 print("Summary of DataSaison before filtering:")
 print(summary(DataSaison$nb_contacts))
@@ -623,15 +604,6 @@ DataSaison_sf <- st_as_sf(DataSaison,
   crs = 4326L
 ) |>
   st_transform(2154L)
-
-DataSaison_sf <- DataSaison_sf[aoi, ]
-# Filter out nights with bad meteoroligical conditions
-DataSaison_sf <- DataSaison_sf |>
-  dplyr::filter(total_precipitations < 2L)
-DataSaison_sf <- DataSaison_sf |>
-  dplyr::filter(Spwind < 4L)
-DataSaison_sf <- DataSaison_sf |>
-  dplyr::filter(dplyr::between(Sptemp, -4L, 4L))
 
 # # Keep test data and define classes of activity
 # if (opt$keep == TRUE) {
@@ -674,10 +646,9 @@ DataSaison_sf$log = log10(DataSaison_sf$nb_contacts + 1)
 # Define class activity
 if (activite == "acticlass") {
   activite <- "acti_class"
-DataSaison_sf$log = log10(DataSaison_sf$nb_contacts + 1)
 }
 
-print("Distribution of response variable before season filter: ")
+print("Distribution of response variable before season, aoi and weather filter: ")
 if(activite == "acti_class"){
   print(table(DataSaison_sf$acti_class))
 }else if(activite == "nb_contacts"){
@@ -686,10 +657,28 @@ if(activite == "acti_class"){
   print(summary(DataSaison_sf$log))
 }
 
+print("Filter seasons, weather and area of interest")
 
-#}
+cat("Load Area of Interest and filter:", fill = TRUE)
+  aoi <- sf::read_sf(
+    dsn = args[4],
+    layer = opt$region) |>
+    st_transform(2154L)
+DataSaison_sf <- DataSaison_sf[aoi, ]
 
-print("Filter seasons")
+# Filter out nights with bad meteoroligical conditions
+print("total_precipitations")
+print(summary(DataSaison_sf$total_precipitations))
+print("Spwind")
+print(summary(DataSaison_sf$Spwind))
+print("Sptemp")
+print(summary(DataSaison_sf$Sptemp))
+DataSaison_sf <- DataSaison_sf |>
+  dplyr::filter(total_precipitations < 2L)
+DataSaison_sf <- DataSaison_sf |>
+  dplyr::filter(Spwind < 4L)
+DataSaison_sf <- DataSaison_sf |>
+  dplyr::filter(dplyr::between(Sptemp, -4L, 4L))
 
 print("Seasons before filter")
 print(unique(DataSaison_sf$SpSaison))
@@ -712,7 +701,6 @@ if(activite == "acti_class"){
   print(summary(DataSaison_sf$log))
 }
 
-
 # Apply selection of only one value per pixel if option is chosen
 if(data_sel == "median"){
   DataSaison_sf <- filter_by_median_season_grid(DataSaison_sf, opt$region)
@@ -731,7 +719,7 @@ set.seed(123)
 
 START <- Sys.time()
 
-cat("Creating folds :", fill = TRUE)
+cat("Preparing cross-validation indices", fill = TRUE)
 
 k_folds = 5
 sfolds <- CAST::knndm(DataSaison, aoi, k = k_folds, maxp = 0.25) # k = number of folds
@@ -740,6 +728,18 @@ print(END - START) # 1 to 1.4 hours
 print(length(unique(sfolds$cluster)))
 table(sfolds$cluster)
 
+# Save random and spatial cross-validation indices
+sfolds_source <- file.path(
+  Output,
+  paste0(
+    "VC",
+    ThresholdSort,
+    "_",
+    # ListSp[i],
+    Sp_real,
+    "_temp_sfolds.rds"
+  )
+) 
 saveRDS(sfolds, sfolds_source)
 print("sfolds written")
 
