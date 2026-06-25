@@ -287,9 +287,9 @@ DataCPL3$Nuit <- as.Date(DataCPL3$Nuit)
 DataSpSL_w0_2 <- full_join(DataSp, DataCPL3_unique) # Adds the nights with absence
 colnames(DataSpSL_w0_2)[which(colnames(DataSpSL_w0_2) == "point")] <- "nom"
 
-print("summary of coordinates SelParSL")
-print(summary(SelParSL$longitude))
-print(summary(SelParSL$latitude))
+# print("summary of coordinates SelParSL")
+# print(summary(SelParSL$longitude))
+# print(summary(SelParSL$latitude))
 
 # performs a partial join (updates columns of DataSpSL_w0_2 with info of SelParSL)
 n <- names(SelParSL)
@@ -300,18 +300,18 @@ DataSpSL_w0_2$score_max[is.na(DataSpSL_w0_2$score_max)] <- 0L
 DataSpSL_w0_2$groupe[is.na(DataSpSL_w0_2$groupe)] <- "bat"
 # DataSpSL_w0_2$espece[is.na(DataSpSL_w0_2$espece)] <- ListSp[i]
 DataSpSL_w0_2$espece[is.na(DataSpSL_w0_2$espece)] <- Sp
-print("dim(DataSpSL_w0_2) before removing NA in coordinates")
-print(dim(DataSpSL_w0_2))
+# print("dim(DataSpSL_w0_2) before removing NA in coordinates")
+# print(dim(DataSpSL_w0_2))
 DataSpSL_w0_2 = DataSpSL_w0_2 %>% 
 filter(!is.na(DataSpSL_w0_2$longitude)) #removes lines without coordinates (the sites_localites.txt is probably older than SpNuit)
-print("dim(DataSpSL_w0_2) after removing NA in coordinates")
-print(dim(DataSpSL_w0_2))
+# print("dim(DataSpSL_w0_2) after removing NA in coordinates")
+# print(dim(DataSpSL_w0_2))
 cat("Absence data added", fill = TRUE)
 
 # Exclude sites outside region limits (square) :
-print("summary of coordinates DataSpSL_w0_2")
-print(summary(DataSpSL_w0_2$longitude))
-print(summary(DataSpSL_w0_2$latitude))
+# print("summary of coordinates DataSpSL_w0_2")
+# print(summary(DataSpSL_w0_2$longitude))
+# print(summary(DataSpSL_w0_2$latitude))
 if (opt$region == "idf") { # if model if fore region of Paris
   DataSpSL_w0_2 <- subset(DataSpSL_w0_2, DataSpSL_w0_2$longitude < 5L &
     DataSpSL_w0_2$longitude > 0L &
@@ -342,9 +342,9 @@ if (opt$region == "europe" | opt$region == "french_neighbours") {
     DataSpSL_w0_2$latitude < 73L & DataSpSL_w0_2$latitude > 32L)
 }
 
-print("summary of coordinates DataSpSL_w0_2 after cropping")
-print(summary(DataSpSL_w0_2$longitude))
-print(summary(DataSpSL_w0_2$latitude))
+# print("summary of coordinates DataSpSL_w0_2 after cropping")
+# print(summary(DataSpSL_w0_2$longitude))
+# print(summary(DataSpSL_w0_2$latitude))
 
 # Excludes data outside of known area for acoustically cryptic species (doesn't work for Europe yet !!!)
 # Myonat
@@ -479,11 +479,11 @@ SpFDate <- yday(Date1)
 # If year effect must be accounted for
 DataSaison$SpYear <- year(Date1)
 
-print("summary of coordinates DataSaison")
-print(summary(DataSaison$longitude))
-print(summary(DataSaison$latitude))
-print("head(DataSaison)")
-print(head(DataSaison))
+# print("summary of coordinates DataSaison")
+# print(summary(DataSaison$longitude))
+# print(summary(DataSaison$latitude))
+# print("head(DataSaison)")
+# print(head(DataSaison))
 
 DataSaison_sf <- sf::st_as_sf(
   DataSaison,
@@ -677,7 +677,7 @@ if (activite == "acticlass") {
 DataSaison_sf$log = log10(DataSaison_sf$nb_contacts + 1)
 }
 
-print("Distribution of response variable: ")
+print("Distribution of response variable before season filter: ")
 if(activite == "acti_class"){
   print(table(DataSaison_sf$acti_class))
 }else if(activite == "nb_contacts"){
@@ -703,10 +703,15 @@ DataSaison_sf <- DataSaison_sf[dplyr::between(DataSaison_sf$day, p_start, p_end)
 print("Seasons after filter")
 print(unique(DataSaison_sf$SpSaison))
 
-print("number of cases where activity is > 0 bat passes/night :")
-print(DataSaison_sf |>
-      filter(nb_contacts > 0) |>
-      nrow())
+print("Distribution of response variable after season filter: ")
+if(activite == "acti_class"){
+  print(table(DataSaison_sf$acti_class))
+}else if(activite == "nb_contacts"){
+  print(summary(DataSaison_sf$nb_contacts))
+} else if(activite == "log"){
+  print(summary(DataSaison_sf$log))
+}
+
 
 # Apply selection of only one value per pixel if option is chosen
 if(data_sel == "median"){
