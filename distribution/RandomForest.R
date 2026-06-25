@@ -594,7 +594,7 @@ print(DataSaison |>
       filter(nb_contacts > 0) |>
       nrow())
 
-print("Filter seasons, weather and area of interest")
+print("Filter weather and area of interest")
 cat("Prep data saison as sf object :", fill = TRUE)
 DataSaison_sf <- st_as_sf(DataSaison,
   coords = c(x = "longitude", y = "latitude"),
@@ -610,6 +610,11 @@ cat("Load Area of Interest and filter:", fill = TRUE)
     st_transform(2154L)
 DataSaison_sf <- DataSaison_sf[aoi, ]
 
+print("number of cases where activity is > 0 bat passes/night :")
+print(DataSaison_sf |>
+      filter(nb_contacts > 0) |>
+      nrow())
+
 # Filter out nights with bad meteoroligical conditions
 print("total_precipitations")
 print(summary(DataSaison_sf$total_precipitations))
@@ -624,6 +629,11 @@ DataSaison_sf <- DataSaison_sf |>
 DataSaison_sf <- DataSaison_sf |>
  # dplyr::filter(dplyr::between(Sptemp, -4L, 4L))
    dplyr::filter(Sptemp > -10L)
+
+print("number of cases where activity is > 0 bat passes/night :")
+print(DataSaison_sf |>
+      filter(nb_contacts > 0) |>
+      nrow())
 
 print("Preparing response variable")
 
