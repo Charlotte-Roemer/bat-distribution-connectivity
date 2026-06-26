@@ -625,7 +625,7 @@ print(summary(DataSaison_sf$Spwind))
 print("Sptemp")
 print(summary(DataSaison_sf$Sptemp))
 DataSaison_sf <- DataSaison_sf |>
-  dplyr::filter(total_precipitations < 2L)
+  dplyr::filter(total_precipitations < 4L)
 DataSaison_sf <- DataSaison_sf |>
   dplyr::filter(Spwind < 6L)
 DataSaison_sf <- DataSaison_sf |>
