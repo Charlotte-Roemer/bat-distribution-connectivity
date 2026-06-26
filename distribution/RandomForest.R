@@ -618,8 +618,8 @@ print(DataSaison_sf |>
 # Filter out nights with bad meteoroligical conditions
 print("total_precipitations")
 print(summary(DataSaison_sf$total_precipitations))
-print("precip_norm")
-print(summary(DataSaison_sf$precip_norm))
+print("Spprecipitations")
+print(summary(DataSaison_sf$Spprecipitations))
 print("Spwind")
 print(summary(DataSaison_sf$Spwind))
 print("Sptemp")
