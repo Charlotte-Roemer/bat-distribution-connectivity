@@ -214,6 +214,11 @@ fitvalpred_rf <- function(covariates,
 
   err <- pred - obs
 
+  mean_obs <- mean(
+  obs,
+  na.rm = TRUE
+)
+
   # Accuracy = relative MAE
   accuracy_Waldock <- mean(
     abs(err),
