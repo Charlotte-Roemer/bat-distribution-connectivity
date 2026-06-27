@@ -218,10 +218,7 @@ fitvalpred_rf <- function(covariates,
   accuracy_Waldock <- mean(
     abs(err),
     na.rm = TRUE
-  ) / mean(
-    obs,
-    na.rm = TRUE
-  )
+  ) / max(mean_obs, 1e-6)
 
   # Discrimination = Pearson correlation
   discrimination_Waldock <- cor(
@@ -235,21 +232,73 @@ fitvalpred_rf <- function(covariates,
   precision_Waldock <- sd(
     err,
     na.rm = TRUE
-  ) / mean(
-    obs,
-    na.rm = TRUE
-  )
+  ) / max(mean_obs, 1e-6)
 
   # Bias = systematic over- or under-evaluation
-  bias <- mean(err, na.rm = TRUE) /
-  mean(obs, na.rm = TRUE)
+  bias <- mean(
+    err,
+    na.rm = TRUE
+  ) / max(mean_obs, 1e-6)
+
+# ----------------------------------------------------------
+# Presence / absence AUC
+# ----------------------------------------------------------
+
+obs_pa <- ifelse(
+  obs > 0,
+  1,
+  0
+)
+
+# check that both classes exist
+if(length(unique(obs_pa)) > 1) {
+
+  auc_pa <- as.numeric(
+    pROC::auc(
+      response = obs_pa,
+      predictor = pred
+    )
+  )
+
+} else {
+
+  auc_pa <- NA
+
+}
+
+# ----------------------------------------------------------
+# Pearson only on presences
+# ----------------------------------------------------------
+
+presence_idx <- obs > 0
+
+if(sum(presence_idx, na.rm = TRUE) >= 3) {
+
+  discrimination_presence <- cor(
+    pred[presence_idx],
+    obs[presence_idx],
+    method = "pearson",
+    use = "complete.obs"
+  )
+
+} else {
+
+  discrimination_presence <- NA
+
+}
+
+# ----------------------------------------------------------
+# Gather metrics
+# ----------------------------------------------------------
 
   Waldock_stats <- c(
-    kNNDM_accuracy_ecography = accuracy_Waldock,
-    kNNDM_discrimination = discrimination_Waldock,
-    kNNDM_precision = precision_Waldock,
-    kNNDM_bias = bias
-  )
+  kNNDM_accuracy_Waldock = accuracy_Waldock,
+  kNNDM_discrimination = discrimination_Waldock,
+  kNNDM_precision = precision_Waldock,
+  kNNDM_bias = bias,
+  kNNDM_auc_pa = auc_pa,
+  kNNDM_discrimination_presence = discrimination_presence
+)
 
   spatial_stats <- c(
     spatial_stats,
