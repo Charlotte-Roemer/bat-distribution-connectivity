@@ -3,8 +3,8 @@ library(tidyverse)
 
 # Il faut adapter ici pour recevoir les arguments de la commande slurm
 HeadDir = "/home/charlotte/Bureau/SDM/"
-ModelDir = "/home/charlotte/Bureau/SDM/IDF_acticlass_k5/year/evaluations"
-DateModel="2026-06-26" #date of prediction (exactly same writing as the folder name)
+ModelDir = "/home/charlotte/Bureau/SDM/IDF_acticlass_k5/seasons/evaluations"
+DateModel="2026-06-27" #date of prediction (exactly same writing as the folder name)
 
 # Load evaluation tables
 List_tables <- fs::dir_ls(ModelDir, regexp="Evaluation_")
