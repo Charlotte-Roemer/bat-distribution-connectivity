@@ -146,7 +146,8 @@ pred_data <- data.table::fread(pred_data_file)
 pred_data$SpRecorder <- "SM4"
 # ajouter colonnes nécessaires : spGite, spcosdaysinday
 
-train_names <- colnames(model$trainingData)
+train_names <- colnames(model$spatmod$trainingData)
+required_vars <- model$spatmod$finalModel$xNames
 pred_names <- colnames(pred_data)
 
 setdiff(train_names, pred_names) # pour connaitre les colonnes à ajouter
@@ -212,7 +213,8 @@ for (acp in acp_names) {
 }
 pred_data <- as.data.frame(pred_data)
 pred_names <- names(pred_data)
-missing_vars <- setdiff(train_names, c(pred_names, ".outcome")) # pour connaitre les colonnes à ajouter
+#missing_vars <- setdiff(train_names, c(pred_names, ".outcome")) # pour connaitre les colonnes à ajouter
+missing_vars <- setdiff(required_vars, pred_names) # pour connaitre les colonnes à ajouter
 cat(paste("missing vars : ", missing_vars), fill = TRUE)
 
 # for predicting over paris with france data
