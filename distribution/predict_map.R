@@ -148,6 +148,7 @@ pred_data$SpRecorder <- "SM4"
 
 train_names <- colnames(model$spatmod$trainingData)
 required_vars <- model$spatmod$finalModel$xNames
+print(required_vars)
 pred_names <- colnames(pred_data)
 
 setdiff(train_names, pred_names) # pour connaitre les colonnes à ajouter
