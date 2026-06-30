@@ -141,9 +141,9 @@ Coord_Water <- function(points, names_coord, water_polyg, water_lines) {
   ########         Larges         ##########
   ##########################################
 
-  CarthageClarge <- CarthageC[CarthageC$ClasseLarg %in% c("15_50", "50", "50_250", "250_1250", "1250"), ]
+  CarthageClarge <- CarthageC[CarthageC$ClasseLarg %in% c("15_50", "50", "50_250", "250_1250", "1250"), ] # superior to 50 m
   CarthageP$surf <- units::drop_units(CarthageP$surf)
-  CarthagePlarge <- CarthageP[CarthageP$surf >= 10000L, ]
+  CarthagePlarge <- CarthageP[CarthageP$surf >= 10000L, ] # m²
 
   nearest_pp <- try(sf::st_nearest_feature(OccSL_L93, CarthagePlarge))
   water_dist_polyg_large <- st_distance(OccSL_L93,

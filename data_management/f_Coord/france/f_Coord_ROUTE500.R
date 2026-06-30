@@ -154,9 +154,9 @@ Coord_Roads <- function(points, names_coord, bm, bl, folder) {
   cat("Roads extracted", fill = TRUE)
 
 
-  road_cols <- grep("SpRo[1-4]", names(OccSL_L93Re), value = TRUE)
-  road_colsL <- grep("L", road_cols, value = TRUE)
-  road_colsM <- grep("M", road_cols, value = TRUE)
+  road_cols <- grep("SpRo[1-4]", names(OccSL_L93Re), value = TRUE) # All roads except highways (SpRo5M and SpRo5L)
+  road_colsL <- grep("L", road_cols, value = TRUE) # All roads except highways in large buffer
+  road_colsM <- grep("M", road_cols, value = TRUE) # All roads except highways in medium buffer
 
 
   cat("combining roads", fill = TRUE)
@@ -176,7 +176,7 @@ Coord_Roads <- function(points, names_coord, bm, bl, folder) {
   OccSL_L93Re <- OccSL_L93Re |>
     dplyr::select(-road_cols)
 
-  OccSL_L93Re$SpRo_dist <- road_dist
+  OccSL_L93Re$SpRo_dist <- road_dist # Distance to roads
 
 
   ##########################################
