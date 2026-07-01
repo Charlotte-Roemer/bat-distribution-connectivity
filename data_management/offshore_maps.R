@@ -78,7 +78,7 @@ for (i in 1:3){
   Sp = names(table(Offshore_buffers$Species))[i]
   Offshore_buffers_i = Offshore_buffers %>% 
     filter(Species == Sp)
-  Offshore_buffers_raster_i = rasterize(vect(Offshore_buffers_i), template, "Activity_expert")
+  Offshore_buffers_raster_i = rasterize(vect(Offshore_buffers_i), template, "Activity_class")
   writeRaster(Offshore_buffers_raster_i, 
               paste0("/sps/mnhn/croemer/data/GIS/Offshore/", Sp, "_Offshore_buffers.tif"), 
               overwrite=TRUE)
