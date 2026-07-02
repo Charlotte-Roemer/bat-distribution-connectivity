@@ -122,6 +122,11 @@ for (j in seq_along(ListTimes)) {
         
         origin_xy <- coords_mat[idx_origin, ]
         goal_xy   <- coords_mat[idx_goal, ]
+
+        prin(origin_xy)
+        print(goal_xy)
+
+        Coord_tab = rbind(origin_xy, goal_xy)
         
         # fromCell <- patch_cells[idx_origin]
         # toCell   <- patch_cells[idx_goal]
@@ -289,6 +294,7 @@ for (j in seq_along(ListTimes)) {
         if(cellStats(pasT, max)>0){ # only if the raster contains some value (passage sometimes produces empty rasters...)
           UniqueName = paste0(format(Sys.Date(), "%Y%m%d"), "_", Sys.getpid(), "_", k, "_", sample.int(1e9, 1) )
           writeRaster(pasT, paste0(Directory, "/", Sp, "_", opt$region, "_", opt$theta, "_", Season, "_", UniqueName, ".tif" ), overwrite = TRUE)
+          write_csv(Coord_tab, paste0(Directory, "/", Sp, "_", opt$region, "_", opt$theta, "_", Season, "_", UniqueName, ".csv"))
         }
         
         break
