@@ -120,9 +120,7 @@ Raster_TRANSITION_YEAR = max(s)
 
 # Create transition layer
 Raster_extent= extent(Raster_TRANSITION_YEAR)
-Raster_TRANSITION_YEAR_wtNA = Raster_TRANSITION_YEAR
-Raster_TRANSITION_YEAR_wtNA[is.na(Raster_TRANSITION_YEAR_wtNA)] <- 0 # replace NA by 0 because passage function does not like NA
-land_cost_sub_YEAR <- crop(Raster_TRANSITION_YEAR_wtNA, Raster_extent)
+land_cost_sub_YEAR <- crop(Raster_TRANSITION_YEAR, Raster_extent)
 
 print("Merge with offshore layer")
 # Read offshore raster
@@ -149,7 +147,9 @@ print(terra::compareGeom(land_cost_sub_YEAR_spat, offshore_align))
 land_cost_sub_YEAR_offshore <- cover(land_cost_sub_YEAR_spat, offshore_align)
 
 # Convert to transition object
-land_cost_sub_YEAR_final <- transition(raster(land_cost_sub_YEAR_offshore), transitionFunction = mean, 8)
+Raster_TRANSITION_YEAR_wtNA = land_cost_sub_YEAR_offshore
+Raster_TRANSITION_YEAR_wtNA[is.na(Raster_TRANSITION_YEAR_wtNA)] <- 0 # replace NA by 0 because passage function does not like NA
+land_cost_sub_YEAR_final <- transition(raster(Raster_TRANSITION_YEAR_wtNA), transitionFunction = mean, 8)
 land_cost_sub_YEAR_final <- geoCorrection(land_cost_sub_YEAR_final, type = "c", scl = T) # "r" if we anticipate low theta values and randomised shortest path method or "c" else
 
 print("Save transition object")
