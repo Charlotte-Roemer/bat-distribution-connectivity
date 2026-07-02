@@ -59,9 +59,11 @@ N_paths = 500 # number of pathways to calculate for each time gap
 opt_parser <- optparse::OptionParser(option_list = option_list)
 opt <- optparse::parse_args(opt_parser)
 
-# Load acoustic predictions
-Name = paste0("RFspat_VC", opt$threshold, "_",  opt$date, ".*", "_noSpace_", opt$data_sel, "_", opt$acti, "_", opt$variableselection) # RFspat_VC90_2026-05-04_noSpace_all_acticlass_None
-Directory = file.path(data_path, "Connectivity", Name)
+# Directory
+season_year = ifelse(opt$period == "year", "year", "season")
+#Name = paste0("RFspat_VC", opt$threshold, "_",  opt$date, ".*", "_noSpace_", opt$data_sel, "_", opt$acti, "_", opt$variableselection) # RFspat_VC90_2026-05-04_noSpace_all_acticlass_None
+BaseDir = paste0("VC", opt$threshold, "_", opt$data_sel, "_", opt$acti, "_", opt$variableselection, "_", season_year)
+Directory = file.path(data_path, "Connectivity", BaseDir)
 
 #Directory <- "/home/charlotte/Bureau/SDM/IDF_k4/Season/Connectivity_RFspat_VC90_2026-05" # repertory with outputs from Predict_act
 
