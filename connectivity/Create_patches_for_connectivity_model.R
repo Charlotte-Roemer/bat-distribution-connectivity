@@ -131,18 +131,19 @@ offshore = subset(List_offshore, grepl(Sp, List_offshore))
 offshore_raster <- rast(offshore)
 
 # Align offshore raster according to transition layer
+land_cost_sub_YEAR_spat = rast(land_cost_sub_YEAR)
 offshore_align <- project( 
   offshore_raster,
-  land_cost_sub_YEAR,
+  land_cost_sub_YEAR_spat,
   method = "bilinear"
 )
 
 # Check alignment before fusion : if TRUE it's OK
 print("is alignment OK?")
-print(compareGeom(land_cost_sub_YEAR, offshore_align))
+print(terra::compareGeom(land_cost_sub_YEAR_spat, offshore_align))
 
 # Fusion
-land_cost_sub_YEAR_offshore <- cover(land_cost_sub_YEAR, offshore_align) 
+land_cost_sub_YEAR_offshore <- cover(land_cost_sub_YEAR_spat, offshore_align) 
 
 # Convert to transition object
 land_cost_sub_YEAR_final <- transition(land_cost_sub_YEAR_offshore, transitionFunction = mean, 8)
