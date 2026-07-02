@@ -133,6 +133,7 @@ print(summary(offshore_raster))
 
 # Align offshore raster according to transition layer
 land_cost_sub_YEAR_spat = rast(land_cost_sub_YEAR)
+crs(land_cost_sub_YEAR_spat) <- "EPSG:2154"
 offshore_align <- project( 
   offshore_raster,
   land_cost_sub_YEAR_spat,
@@ -151,6 +152,7 @@ land_cost_sub_YEAR_final <- transition(raster(land_cost_sub_YEAR_offshore), tran
 land_cost_sub_YEAR_final <- geoCorrection(land_cost_sub_YEAR_final, type = "c", scl = T) # "r" if we anticipate low theta values and randomised shortest path method or "c" else
 
 print("Save transition object")
+writeRaster(land_cost_sub_YEAR_offshore, paste0(NewDir, "/", Sp, "_", opt$region, "_Year_", "Transition", ".tif"))
 saveRDS(land_cost_sub_YEAR_final, paste0(NewDir, "/", Sp, "_", opt$region, "_Year_", "Transition", ".rds"))
 
 # Get highest values for patches
