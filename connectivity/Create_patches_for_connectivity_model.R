@@ -150,7 +150,7 @@ land_cost_sub_YEAR_final <- transition(raster(land_cost_sub_YEAR_offshore), tran
 land_cost_sub_YEAR_final <- geoCorrection(land_cost_sub_YEAR_final, type = "c", scl = T) # "r" if we anticipate low theta values and randomised shortest path method or "c" else
 
 print("Save transition object")
-saveRDS(land_cost_sub_YEAR_final, paste0(NewDir, "/", Sp, "_", "Year_", "Transition", ".rds"))
+saveRDS(land_cost_sub_YEAR_final, paste0(NewDir, "/", Sp, "_", opt$region, "_Year_", "Transition", ".rds"))
 
 # Get highest values for patches
 print("Get highest values for patches")
@@ -170,8 +170,8 @@ AUTUMN_patches_perimeter = Clump_function(Raster_AUTUMN_sub)
 ListPatches = list(SPRING_patches_perimeter, AUTUMN_patches_perimeter)
 
 # Save patches
-fwrite(SPRING_patches_perimeter, paste0(NewDir, "/", Sp, "_", "SPRING", ".csv"))
-fwrite(AUTUMN_patches_perimeter, paste0(NewDir, "/", Sp, "_", "AUTUMN", ".csv"))
+fwrite(SPRING_patches_perimeter, paste0(NewDir, "/", Sp, "_", opt$region, "_SPRING", ".csv"))
+fwrite(AUTUMN_patches_perimeter, paste0(NewDir, "/", Sp, "_", opt$region, "_AUTUMN", ".csv"))
 
 END=Sys.time()
 TIMEDIFF=END-START
