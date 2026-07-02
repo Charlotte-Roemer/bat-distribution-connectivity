@@ -116,14 +116,38 @@ print("Transition layer")
 # Create transition layer by selecting the highest value of each pixel across the year
 Raster_TRANSITION_YEAR = max(s)
 
-# Save
+# Create transition layer
 Raster_extent= extent(Raster_TRANSITION_YEAR)
 Raster_TRANSITION_YEAR_wtNA = Raster_TRANSITION_YEAR
 Raster_TRANSITION_YEAR_wtNA[is.na(Raster_TRANSITION_YEAR_wtNA)] <- 0 # replace NA by 0 because passage function does not like NA
 land_cost_sub_YEAR <- crop(Raster_TRANSITION_YEAR_wtNA, Raster_extent)
-land_cost_sub_YEAR <- transition(land_cost_sub_YEAR, transitionFunction = mean, 8)
-land_cost_sub_YEAR <- geoCorrection(land_cost_sub_YEAR, type = "r", scl = T) # "r" because we anticipate low theta values and randomised shortest path method
-saveRDS(land_cost_sub_YEAR, paste0(NewDir, "/", Sp, "_", "Year_", "Transition", ".rds"))
+
+print("Merge with offshore layer")
+# Read offshore raster
+List_offshore = list.files("/sps/mnhn/croemer/data/GIS/Offshore", pattern = ".tif$", full.names = T)
+offshore = subset(List_offshore, grepl(Sp, List_offshore))
+offshore_raster <- rast(offshore)
+
+# Align offshore raster according to transition layer
+offshore_align <- project( 
+  offshore_raster,
+  land_cost_sub_YEAR,
+  method = "bilinear"
+)
+
+# Check alignment before fusion : if TRUE it's OK
+print("is alignment OK?")
+print(compareGeom(land_cost_sub_YEAR, offshore_align))
+
+# Fusion
+land_cost_sub_YEAR_offshore <- cover(land_cost_sub_YEAR, offshore_align) 
+
+# Convert to transition object
+land_cost_sub_YEAR_final <- transition(land_cost_sub_YEAR_offshore, transitionFunction = mean, 8)
+land_cost_sub_YEAR_final <- geoCorrection(land_cost_sub_YEAR_final, type = "c", scl = T) # "r" if we anticipate low theta values and randomised shortest path method or "c" else
+
+print("Save transition object")
+saveRDS(land_cost_sub_YEAR_final, paste0(NewDir, "/", Sp, "_", "Year_", "Transition", ".rds"))
 
 # Get highest values for patches
 print("Get highest values for patches")
