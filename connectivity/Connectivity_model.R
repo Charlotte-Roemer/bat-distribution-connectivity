@@ -123,7 +123,7 @@ for (j in seq_along(ListTimes)) {
         origin_xy <- coords_mat[idx_origin, ]
         goal_xy   <- coords_mat[idx_goal, ]
 
-        prin(origin_xy)
+        print(origin_xy)
         print(goal_xy)
 
         Coord_tab = rbind(origin_xy, goal_xy)
