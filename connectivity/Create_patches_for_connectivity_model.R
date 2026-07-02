@@ -52,7 +52,7 @@ opt_parser <- optparse::OptionParser(option_list = option_list)
 opt <- optparse::parse_args(opt_parser)
 
 # Load acoustic predictions
-Name = paste0("RFspat_VC", opt$threshold, "_",  opt$date, ".*.", "_noSpace_", opt$data_sel, "_", opt$acti, "_", opt$variableselection) # RFspat_VC90_2026-05-04_noSpace_all_acticlass_None
+Name = paste0("RFspat_VC", opt$threshold, "_",  opt$date, ".*", "_noSpace_", opt$data_sel, "_", opt$acti, "_", opt$variableselection) # RFspat_VC90_2026-05-04_noSpace_all_acticlass_None
 print(Name)
 #Directory <- "/home/charlotte/Bureau/SDM/IDF_k4/Season/" # repertory with outputs from Predict_act
 season_year = ifelse(opt$period == "year", "year", "season")
