@@ -153,7 +153,7 @@ land_cost_sub_YEAR_final <- transition(raster(land_cost_sub_YEAR_offshore), tran
 land_cost_sub_YEAR_final <- geoCorrection(land_cost_sub_YEAR_final, type = "c", scl = T) # "r" if we anticipate low theta values and randomised shortest path method or "c" else
 
 print("Save transition object")
-writeRaster(land_cost_sub_YEAR_offshore, paste0(NewDir, "/", Sp, "_", opt$region, "_Year_", "Transition", ".tif"))
+writeRaster(land_cost_sub_YEAR_offshore, paste0(NewDir, "/", Sp, "_", opt$region, "_Year_", "Transition", ".tif"), overwrite=TRUE)
 saveRDS(land_cost_sub_YEAR_final, paste0(NewDir, "/", Sp, "_", opt$region, "_Year_", "Transition", ".rds"))
 
 # Get highest values for patches
