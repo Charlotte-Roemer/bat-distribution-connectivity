@@ -135,7 +135,7 @@ Coord_Land_Cover <- function(points, names_coord, bm, bl, layer) {
 
   landcov_fracs_Large_pivot <- tableaux_l_bind %>%
     tidyr::pivot_wider(names_from = "value", values_from = "freq") %>% # pivot to use CLC values as column names
-    dplyr::rename_with(~ paste0("SpHOCS", ., "S"), -FID) %>%
+    dplyr::rename_with(~ paste0("SpHOCS", ., "L"), -FID) %>%
     replace(is.na(.), 0)
 
   rm(tableaux_l_bind)
