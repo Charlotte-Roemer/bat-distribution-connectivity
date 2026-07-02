@@ -60,7 +60,7 @@ opt_parser <- optparse::OptionParser(option_list = option_list)
 opt <- optparse::parse_args(opt_parser)
 
 # Load acoustic predictions
-Name = paste0("RFspat_VC", opt$threshold, "_",  opt$date, ".*.", "_noSpace_", opt$data_sel, "_", opt$acti, "_", opt$variableselection) # RFspat_VC90_2026-05-04_noSpace_all_acticlass_None
+#Name = paste0("RFspat_VC", opt$threshold, "_",  opt$date, ".*", "_noSpace_", opt$data_sel, "_", opt$acti, "_", opt$variableselection) # RFspat_VC90_2026-05-04_noSpace_all_acticlass_None
 Directory = file.path(data_path, "Connectivity", Name)
 
 #Directory <- "/home/charlotte/Bureau/SDM/IDF_k4/Season/Connectivity_RFspat_VC90_2026-05" # repertory with outputs from Predict_act
@@ -85,10 +85,10 @@ for (j in seq_along(ListTimes)) {
   cat(Sp, Season, "\n")
   
   # Read Patches
-  Patches = fread(paste0(Directory, "/", Sp, "_", Season, ".csv"))
+  Patches = fread(paste0(Directory, "/", Sp, "_", opt$region, "_", Season, ".csv"))
   
   # Read Transition
-  land_cond_sub = readRDS(paste0(Directory, "/", Sp, "_Year_Transition", ".rds"))
+  land_cond_sub = readRDS(paste0(Directory, "/", Sp, "_", opt$region, "_Year_Transition", ".rds"))
   crs(land_cond_sub) <- "EPSG:2154"
   
   # -------- Cell precalculation for passage function --------
@@ -287,7 +287,7 @@ for (j in seq_along(ListTimes)) {
         print(cellStats(pasT, max))
         if(cellStats(pasT, max)>0){ # only if the raster contains some value (passage sometimes produces empty rasters...)
           UniqueName = paste0(format(Sys.Date(), "%Y%m%d"), "_", Sys.getpid(), "_", k, "_", sample.int(1e9, 1) )
-          writeRaster(pasT, paste0(Directory, "/", Sp, "_", opt$theta, "_", UniqueName, ".tif" ), overwrite = TRUE)
+          writeRaster(pasT, paste0(Directory, "/", Sp, "_", opt$region, "_", opt$theta, "_", UniqueName, ".tif" ), overwrite = TRUE)
         }
         
         break
