@@ -66,17 +66,32 @@ Offshore_buffers = bind_rows(coastline_buffer_1km_crop,
   st_collection_extract("POLYGON")
 print("buffers joined")
 
+print("Crop french_neighbours")
+# Load French contour
+France_area <- st_read(dsn = "/sps/mnhn/croemer/data/GIS/regions.gpkg", layer = "france_met") %>%
+  st_transform(3035)
+
+# Buffer around France
+sf_use_s2(TRUE)
+buffer_200km = st_buffer(France_area, dist = 200000) %>% # 200 km in meters
+  st_make_valid()
+
+# Crop
+Offshore_buffers_crop = Offshore_buffers %>% 
+  st_intersection(buffer_200km)
+
+
 # ggplot(Offshore_buffers) +
 #   geom_sf(aes(fill = km_from_coast))
 
 # Save sf
-write_sf(Offshore_buffers, "/sps/mnhn/croemer/data/GIS/Offshore/Offshore_buffers.shp")
+write_sf(Offshore_buffers_crop, "/sps/mnhn/croemer/data/GIS/Offshore/Offshore_buffers.shp")
 
 # Convert to raster and save
-template = rast(vect(Offshore_buffers),res=500)
+template = rast(vect(Offshore_buffers_crop),res=500)
 for (i in 1:3){
-  Sp = names(table(Offshore_buffers$Species))[i]
-  Offshore_buffers_i = Offshore_buffers %>% 
+  Sp = names(table(Offshore_buffers_crop$Species))[i]
+  Offshore_buffers_i = Offshore_buffers_crop %>% 
     filter(Species == Sp)
   Offshore_buffers_raster_i = rasterize(vect(Offshore_buffers_i), template, "Activity_class")
   writeRaster(Offshore_buffers_raster_i, 
