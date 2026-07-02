@@ -146,7 +146,7 @@ print(terra::compareGeom(land_cost_sub_YEAR_spat, offshore_align))
 land_cost_sub_YEAR_offshore <- cover(land_cost_sub_YEAR_spat, offshore_align) 
 
 # Convert to transition object
-land_cost_sub_YEAR_final <- transition(land_cost_sub_YEAR_offshore, transitionFunction = mean, 8)
+land_cost_sub_YEAR_final <- transition(raster(land_cost_sub_YEAR_offshore), transitionFunction = mean, 8)
 land_cost_sub_YEAR_final <- geoCorrection(land_cost_sub_YEAR_final, type = "c", scl = T) # "r" if we anticipate low theta values and randomised shortest path method or "c" else
 
 print("Save transition object")
