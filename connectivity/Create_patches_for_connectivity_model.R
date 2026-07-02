@@ -129,6 +129,7 @@ print("Merge with offshore layer")
 List_offshore = list.files("/sps/mnhn/croemer/data/GIS/Offshore", pattern = ".tif$", full.names = T)
 offshore = subset(List_offshore, grepl(Sp, List_offshore))
 offshore_raster <- rast(offshore)
+crs(offshore_raster) <- "EPSG:3035"
 print(summary(offshore_raster))
 
 # Align offshore raster according to transition layer
