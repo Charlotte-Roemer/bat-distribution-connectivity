@@ -150,7 +150,7 @@ land_cost_sub_YEAR_offshore <- cover(land_cost_sub_YEAR_spat, offshore_align)
 Raster_TRANSITION_YEAR_wtNA = land_cost_sub_YEAR_offshore
 Raster_TRANSITION_YEAR_wtNA[is.na(Raster_TRANSITION_YEAR_wtNA)] <- 0 # replace NA by 0 because passage function does not like NA
 land_cost_sub_YEAR_final <- transition(raster(Raster_TRANSITION_YEAR_wtNA), transitionFunction = mean, 8)
-land_cost_sub_YEAR_final <- geoCorrection(land_cost_sub_YEAR_final, type = "c", scl = T) # "r" if we anticipate low theta values and randomised shortest path method or "c" else
+land_cost_sub_YEAR_final <- geoCorrection(land_cost_sub_YEAR_final, type = "r", scl = T) # "r" if we anticipate low theta values close to randomised shortest path method or "c" else
 
 print("Save transition object")
 #writeRaster(land_cost_sub_YEAR_offshore, paste0(NewDir, "/", Sp, "_", opt$region, "_Year_", "Transition", ".tif"), overwrite=TRUE)
