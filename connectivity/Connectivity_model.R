@@ -113,6 +113,8 @@ for (j in seq_along(ListTimes)) {
       print(k)
       
       repeat {
+
+        cat("NEW TRY\n")
         
         # ID_Origin <- sample(Patches$id, size=1) #draw random points (random pairs)
         # ID_Goal   <- sample(Patches$id, size=1)
@@ -126,7 +128,7 @@ for (j in seq_along(ListTimes)) {
         print(origin_xy)
         print(goal_xy)
 
-        Coord_tab = rbind(origin_xy, goal_xy)
+        Coord_tab = as.data.frame(rbind(origin_xy, goal_xy))
         
         # fromCell <- patch_cells[idx_origin]
         # toCell   <- patch_cells[idx_goal]
