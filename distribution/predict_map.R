@@ -261,104 +261,162 @@ n <- nrow(X_pred)
 #   y_sd[idx] <- apply(pred$individual, 1, sd)
 # }
 
+# # ----------------------------------------------------------
+# # FINAL PREDICTION
+# # using full model
+# # ----------------------------------------------------------
+
+# y_pred <- numeric(n)
+
+# start_idx <- seq(1, n, by = chunk_size)
+
+# cat(
+#   "predicting final model",
+#   fill = TRUE
+# )
+
+# for(i in start_idx) {
+
+#   idx <- i:min(i + chunk_size - 1, n)
+
+#   y_pred[idx] <- predict(
+#     model$spatmod$finalModel,
+#     #model$finalModel,
+#     X_pred[idx, model$spatmod$finalModel$xNames]
+#     #X_pred[idx, model$finalModel$xNames]
+#     #X_pred[idx, model$covariates]
+#   )
+# }
+
+
 # ----------------------------------------------------------
 # FINAL PREDICTION
-# using full model
-# ----------------------------------------------------------
-
-y_pred <- numeric(n)
-
-start_idx <- seq(1, n, by = chunk_size)
-
-cat(
-  "predicting final model",
-  fill = TRUE
-)
-
-for(i in start_idx) {
-
-  idx <- i:min(i + chunk_size - 1, n)
-
-  y_pred[idx] <- predict(
-    model$spatmod$finalModel,
-    #model$finalModel,
-    X_pred[idx, model$spatmod$finalModel$xNames]
-    #X_pred[idx, model$finalModel$xNames]
-    #X_pred[idx, model$covariates]
-  )
-}
-
-# ----------------------------------------------------------
-# UNCERTAINTY
 # using spatial folds
 # ----------------------------------------------------------
 
-if(!is.null(model$fold_models)) {
+nfolds <- length(model$fold_models)
 
-  print("Check model$fold_models")
-  print(names(model))
-  print(length(model$fold_models))
+all_fold_preds <- matrix(
+  NA,
+  nrow = n,
+  ncol = nfolds
+)
 
-  nfolds <- length(model$fold_models)
+for(f in seq_len(nfolds)) {
 
-  all_fold_preds <- matrix(
-    NA,
-    nrow = n,
-    ncol = nfolds
+  cat(
+    paste("predicting fold", f),
+    fill = TRUE
   )
 
-  for(f in seq_len(nfolds)) {
+  fold_model <- model$fold_models[[f]]
 
-    cat(
-      paste("predicting fold", f),
-      fill = TRUE
+  fold_pred <- numeric(n)
+
+  for(i in start_idx) {
+
+    idx <- i:min(i + chunk_size - 1, n)
+
+    xnames <- attr(fold_model, "xNames")
+
+    fold_pred[idx] <- predict(
+      fold_model,
+      X_pred[idx, xnames, drop = FALSE]
     )
-
-    fold_model <- model$fold_models[[f]]
-    print(attr(fold_model, "xNames"))
-
-    fold_pred <- numeric(n)
-
-    for(i in start_idx) {
-
-      idx <- i:min(i + chunk_size - 1, n)
-      xnames <- attr(fold_model, "xNames")
-
-      fold_pred[idx] <- predict(
-        fold_model,
-        #X_pred[idx, fold_model$xNames]
-        X_pred[idx, xnames, drop = FALSE]
-      )
-    }
-
-    all_fold_preds[, f] <- fold_pred
   }
 
-  # SD across folds
-  y_sd <- apply(
-    all_fold_preds,
-    1,
-    sd,
-    na.rm = TRUE
-  )
-
-  # coefficient of variation
-  #y_cv <- y_sd / abs(y_pred)
-  y_cv <- y_sd / pmax(abs(y_pred), 1e-6)
-
-  print("check all_fold_preds")
-  print(dim(all_fold_preds))
-  print(summary(all_fold_preds))
-  print(sum(is.na(all_fold_preds)))
-
-} else {
-
-  y_sd <- rep(NA, n)
-  y_cv <- rep(NA, n)
-
-  print("WARNING: model$fold_models is NULL")
-
+  all_fold_preds[, f] <- fold_pred
 }
+
+# final prediction = mean across folds
+y_pred <- rowMeans(
+  all_fold_preds,
+  na.rm = TRUE
+)
+
+# uncertainty = SD across folds
+y_sd <- apply(
+  all_fold_preds,
+  1,
+  sd,
+  na.rm = TRUE
+)
+
+# coefficient of variation
+y_cv <- y_sd / pmax(abs(y_pred), 1e-6)
+
+
+# # ----------------------------------------------------------
+# # UNCERTAINTY
+# # using spatial folds
+# # ----------------------------------------------------------
+
+# if(!is.null(model$fold_models)) {
+
+#   print("Check model$fold_models")
+#   print(names(model))
+#   print(length(model$fold_models))
+
+#   nfolds <- length(model$fold_models)
+
+#   all_fold_preds <- matrix(
+#     NA,
+#     nrow = n,
+#     ncol = nfolds
+#   )
+
+#   for(f in seq_len(nfolds)) {
+
+#     cat(
+#       paste("predicting fold", f),
+#       fill = TRUE
+#     )
+
+#     fold_model <- model$fold_models[[f]]
+#     print(attr(fold_model, "xNames"))
+
+#     fold_pred <- numeric(n)
+
+#     for(i in start_idx) {
+
+#       idx <- i:min(i + chunk_size - 1, n)
+#       xnames <- attr(fold_model, "xNames")
+
+#       fold_pred[idx] <- predict(
+#         fold_model,
+#         #X_pred[idx, fold_model$xNames]
+#         X_pred[idx, xnames, drop = FALSE]
+#       )
+#     }
+
+#     all_fold_preds[, f] <- fold_pred
+#   }
+
+#   # SD across folds
+#   y_sd <- apply(
+#     all_fold_preds,
+#     1,
+#     sd,
+#     na.rm = TRUE
+#   )
+
+#   # coefficient of variation
+#   #y_cv <- y_sd / abs(y_pred)
+#   y_cv <- y_sd / pmax(abs(y_pred), 1e-6)
+
+#   print("check all_fold_preds")
+#   print(dim(all_fold_preds))
+#   print(summary(all_fold_preds))
+#   print(sum(is.na(all_fold_preds)))
+
+# } else {
+
+#   y_sd <- rep(NA, n)
+#   y_cv <- rep(NA, n)
+
+#   print("WARNING: model$fold_models is NULL")
+
+# }
 
 print("prediction done!")
 
