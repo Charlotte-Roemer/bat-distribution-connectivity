@@ -5,8 +5,8 @@ library(raster)
 library(tidyverse)
 library(beepr)
 
-Threshold = "weighted"
-NamePre = "weighted_2023-11-17"
+Threshold = "90"
+NamePre = "90_2023-11-17"
 
 START = Sys.time()
 
@@ -16,7 +16,8 @@ List_Species = c(#"Barbar", "Eptser", "Minsch", "Pipkuh", "Pippip", "Pippyg", "R
                  #"Hypsav", 
                  #"Myoalc","Myobec","Myocap", "Myodau", "Myodas", "Myoema", "Myomys", "Myonat", 
                  #"Nyclas",
-                 "Nyclei", "Nycnoc", "Pipnat"
+                 #"Nyclei", "Nycnoc", 
+                 "Pipnat"
                  #"Pleaur", 
                  #"Pleaus", "Plemac", "Rhieur", 
                  #, "Rhihip", "Tadten", "Vesmur"
@@ -29,8 +30,8 @@ for (j in 1:length(List_Species)){
   print(List_Species[j])
   for (k in 1:length(ListTimes)){
     print(ListTimes[k])
-    files <- list.files(path=paste0("/mnt/beegfs/croemer/VigieChiro/Connectivity_maps", "/", NamePre),
-                        pattern=paste0(NamePre, "_", List_Species[j], "_", ListTimes[k]), 
+    files <- list.files(path=paste0("/home/charlotte/Bureau/SDM/French_neighbours/Connectivity/VC90_all_acticlass_None_season", "/"),
+                        pattern=paste0(List_Species[j], ".*", ".tif"), 
                         all.files=FALSE, full.names=TRUE,recursive=F)
     
     s <- stack(files) # stack rasters
