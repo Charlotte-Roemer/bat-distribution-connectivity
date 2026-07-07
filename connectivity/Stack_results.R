@@ -4,50 +4,58 @@
 library(raster)
 library(tidyverse)
 library(beepr)
+source("../variables.R")
 
-Threshold = "90"
-NamePre = "90_2023-11-17"
+option_list <- list(
+  optparse::make_option(c("-t", "--threshold"),
+    type = "character", default = "50",
+    help = 'Choose sorting threshold between values : "0", "50", "90" and "weighted'
+  ),
+  optparse::make_option(c("-s", "--species"),
+    type = "character", default = "Minsch",
+    help = "Choose for which species you want to make predictions"
+  ),
+  optparse::make_option(c("-r", "--region"),
+    type = "character", default = "france_met",
+    help = "Which area do you want to predict on ?"
+  ),
+)
+
+# Parse options to opt object
+opt_parser <- optparse::OptionParser(option_list = option_list)
+t <- optparse::parse_args(opt_parser)
+
+print(opt$species)
+
+Threshold = opt$threshold
+Sp = opt$species
+ListTimes = c("SPRING", "AUTUMN")
+
+output_dir = paste0("/sps/mnhn/croemer/data/Connectivity/VC", Threshold, "all_acticlass_None_season/")
 
 START = Sys.time()
 
-
-List_Species = c(#"Barbar", "Eptser", "Minsch", "Pipkuh", "Pippip", "Pippyg", "Rhifer",
-                 #"Eptnil", 
-                 #"Hypsav", 
-                 #"Myoalc","Myobec","Myocap", "Myodau", "Myodas", "Myoema", "Myomys", "Myonat", 
-                 #"Nyclas",
-                 #"Nyclei", "Nycnoc", 
-                 "Pipnat"
-                 #"Pleaur", 
-                 #"Pleaus", "Plemac", "Rhieur", 
-                 #, "Rhihip", "Tadten", "Vesmur"
-)
-ListTimes = c("0315", "0401", "0415", "0501", "0515", "0601", 
-              "0615", "0701", "0715",
-              "0801", "0815", "0901", "0915", "1001")
-
-for (j in 1:length(List_Species)){
-  print(List_Species[j])
-  for (k in 1:length(ListTimes)){
-    print(ListTimes[k])
-    files <- list.files(path=paste0("/home/charlotte/Bureau/SDM/French_neighbours/Connectivity/VC90_all_acticlass_None_season", "/"),
-                        pattern=paste0(List_Species[j], ".*", ".tif"), 
-                        all.files=FALSE, full.names=TRUE,recursive=F)
+for (k in 1:length(ListTimes)){
+  print(ListTimes[k])
+  files <- list.files(path=output_dir,
+                      pattern=paste0(Sp, ".*", ".tif"), 
+                      all.files=FALSE, full.names=TRUE,recursive=F)
     
-    s <- stack(files) # stack rasters
-    i <- (maxValue(s))>0 # select only rasters that succeeded (contain values > 0)
-    s_no_0 = s[[which(i)]]
+  s <- stack(files) # stack rasters
+  i <- (maxValue(s))>0 # select only rasters that succeeded (contain values > 0)
+  s_no_0 = s[[which(i)]]
     
-    rs1 <- calc(s_no_0, sum) # sum all rasters
+  rs1 <- calc(s_no_0, sum) # sum all rasters
     
-    # Save
-    writeRaster(rs1, paste0("/mnt/beegfs/croemer/VigieChiro/Connectivity_maps/Stacked/", 
-                            paste0(NamePre, "_", List_Species[j], "_", ListTimes[k]), "_TOTAL_n", 
-                            dim(s_no_0)[3],  ".tif"), overwrite = T)
+  # Save
+  dir.create(paste0(output_dir, "Stacked/"))
+  writeRaster(rs1, paste0(output_dir, "Stacked/", 
+                          paste0(Sp, "_", ListTimes[k]), "_TOTAL_n", 
+                          dim(s_no_0)[3],  ".tif"), overwrite = T)
     
-    #plot(rs1)
-  }
+  #plot(rs1)
 }
+
 
 END=Sys.time()
 TIMEDIFF=END-START
