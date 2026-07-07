@@ -3,7 +3,6 @@
 
 library(raster)
 library(tidyverse)
-library(beepr)
 source("../variables.R")
 
 option_list <- list(
