@@ -17,7 +17,7 @@ option_list <- list(
   optparse::make_option(c("-r", "--region"),
     type = "character", default = "france_met",
     help = "Which area do you want to predict on ?"
-  ),
+  )
 )
 
 # Parse options to opt object
