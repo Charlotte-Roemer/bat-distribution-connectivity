@@ -22,7 +22,7 @@ option_list <- list(
 
 # Parse options to opt object
 opt_parser <- optparse::OptionParser(option_list = option_list)
-t <- optparse::parse_args(opt_parser)
+opt <- optparse::parse_args(opt_parser)
 
 Threshold = opt$threshold
 Sp = opt$species
