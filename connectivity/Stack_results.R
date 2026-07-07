@@ -24,11 +24,11 @@ option_list <- list(
 opt_parser <- optparse::OptionParser(option_list = option_list)
 t <- optparse::parse_args(opt_parser)
 
-print(opt$species)
-
 Threshold = opt$threshold
 Sp = opt$species
 ListTimes = c("SPRING", "AUTUMN")
+
+print(Sp)
 
 output_dir = paste0("/sps/mnhn/croemer/data/Connectivity/VC", Threshold, "all_acticlass_None_season/")
 
