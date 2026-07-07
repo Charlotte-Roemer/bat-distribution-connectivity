@@ -297,104 +297,104 @@ for (i in 1:length(listfun))
 
 # print(FCoord)
 
-# ## Bioclim ###
-# print("Bioclim")
-# Coord_BioclimLocal(
-#   points = FCoord,
-#   names_coord = Coord_Headers,
-#   layer_folder = bioclim_folder
-# )
+## Bioclim ###
+print("Bioclim")
+Coord_BioclimLocal(
+  points = FCoord,
+  names_coord = Coord_Headers,
+  layer_folder = bioclim_folder
+)
 
-# ### ALAN ###
-# print("ALAN")
-# Coord_ALAN(
-#   points = FCoord,
-#   names_coord = c(Coord_Headers, "Nuit"),
-#   bm = BM,
-#   bl = BL,
-#   layers = folder_alan
-# )
+### ALAN ###
+print("ALAN")
+Coord_ALAN(
+  points = FCoord,
+  names_coord = c(Coord_Headers, "Nuit"),
+  bm = BM,
+  bl = BL,
+  layers = folder_alan
+)
 
-# # ALTI ####
-# print("Altitude & slope")
-# Coord_Alti(
-#   points = FCoord,
-#   names_coord = Coord_Headers,
-#   bs = BS,
-#   bm = BM,
-#   bl = BL,
-#   region = opt$region,
-#   layer = layer_alti
-# )
-
-
-# # CARTHAGE (eau) ####
-# print("Water")
-# Coord_Water(
-#   points = FCoord,
-#   names_coord = Coord_Headers,
-#   water_polyg = layer_Carthage_P,
-#   water_lines = layer_Carthage_C
-# )
+# ALTI ####
+print("Altitude & slope")
+Coord_Alti(
+  points = FCoord,
+  names_coord = Coord_Headers,
+  bs = BS,
+  bm = BM,
+  bl = BL,
+  region = opt$region,
+  layer = layer_alti
+)
 
 
-# if (opt$region == "idf"){
-#   ## Ecoline (idf)
-#   Coord_Ecoline(
-#     points = FCoord,
-#     names_coord = Coord_Headers,
-#     ecoline_vh = layer_ecoline_high,
-#     ecoline_vb = layer_ecoline_low,
-#     buffer = BM
-#   )
+# CARTHAGE (eau) ####
+print("Water")
+Coord_Water(
+  points = FCoord,
+  names_coord = Coord_Headers,
+  water_polyg = layer_Carthage_P,
+  water_lines = layer_Carthage_C
+)
 
-#   # MOS Land Cover ####
-#   print("MOS")
-#   Coord_MOSraster(
-#     points = FCoord,
-#     names_coord = c(Coord_Headers, "Nuit"),
-#     bs = BS,
-#     bm = BM,
-#     bl = BL,
-#     layer = folder_MOS
-#   )
-# }
 
-# if (!(opt$region %in% c("europe", "french_neighbours"))) {
-#   ### wind turbines ###
+if (opt$region == "idf"){
+  ## Ecoline (idf)
+  Coord_Ecoline(
+    points = FCoord,
+    names_coord = Coord_Headers,
+    ecoline_vh = layer_ecoline_high,
+    ecoline_vb = layer_ecoline_low,
+    buffer = BM
+  )
 
-#   print("wind turbines")
-#   Coord_eol(
-#     points = FCoord,
-#     names_coord = Coord_Headers,
-#     bm = BM,
-#     bl = BL,
-#     layer = layer_wind_turbines
-#   )
+  # MOS Land Cover ####
+  print("MOS")
+  Coord_MOSraster(
+    points = FCoord,
+    names_coord = c(Coord_Headers, "Nuit"),
+    bs = BS,
+    bm = BM,
+    bl = BL,
+    layer = folder_MOS
+  )
+}
 
-#   ### Grotto ###
-#   print("Grotto")
-#   Coord_Grotto(
-#     points = FCoord,
-#     names_coord = Coord_Headers,
-#     bs = BS,
-#     bm = BM,
-#     bl = BL,
-#     layer = layer_grotto
-#   )
-# }
+if (!(opt$region %in% c("europe", "french_neighbours"))) {
+  ### wind turbines ###
 
-# if (opt$region != "idf"){
-# # VCF ###
-# print("VCF")
-# Coord_VCF(
-#   points = FCoord,
-#   names_coord = c(Coord_Headers, "Nuit"),
-#   bs = BS,
-#   bm = BM,
-#   bl = BL,
-#   layers = folder_vcf
-# )
+  print("wind turbines")
+  Coord_eol(
+    points = FCoord,
+    names_coord = Coord_Headers,
+    bm = BM,
+    bl = BL,
+    layer = layer_wind_turbines
+  )
+
+  ### Grotto ###
+  print("Grotto")
+  Coord_Grotto(
+    points = FCoord,
+    names_coord = Coord_Headers,
+    bs = BS,
+    bm = BM,
+    bl = BL,
+    layer = layer_grotto
+  )
+}
+
+if (opt$region != "idf"){
+# VCF ###
+print("VCF")
+Coord_VCF(
+  points = FCoord,
+  names_coord = c(Coord_Headers, "Nuit"),
+  bs = BS,
+  bm = BM,
+  bl = BL,
+  layers = folder_vcf
+)
 
 ## Land cover ####
 cat("Land Cover", fill = TRUE)
@@ -405,26 +405,26 @@ Coord_Land_Cover(
   bl = BL,
   layer = Layer_OCS
 )
-# }
+}
 
-# # ROADS and TRAINS ####
-# print("Roads and trains")
-# Coord_Roads(
-#   points = FCoord,
-#   names_coord = Coord_Headers,
-#   bm = BM,
-#   bl = BL,
-#   folder = folder_route
-# )
+# ROADS and TRAINS ####
+print("Roads and trains")
+Coord_Roads(
+  points = FCoord,
+  names_coord = Coord_Headers,
+  bm = BM,
+  bl = BL,
+  folder = folder_route
+)
 
-# # WEATHER
-# print("Meteo")
-# Coord_Meteo(
-#   points = FCoord,
-#   temp = layer_temp,
-#   prec = layer_precip,
-#   wind = layer_wind
-# )
+# WEATHER
+print("Meteo")
+Coord_Meteo(
+  points = FCoord,
+  temp = layer_temp,
+  prec = layer_precip,
+  wind = layer_wind
+)
 
 print("ALL VARIABLES EXTRACTED !")
 
