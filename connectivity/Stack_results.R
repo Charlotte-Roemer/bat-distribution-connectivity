@@ -30,7 +30,7 @@ ListTimes = c("SPRING", "AUTUMN")
 
 print(Sp)
 
-output_dir = paste0("/sps/mnhn/croemer/data/Connectivity/VC", Threshold, "all_acticlass_None_season/")
+output_dir = paste0("/sps/mnhn/croemer/data/Connectivity/VC", Threshold, "_all_acticlass_None_season/")
 
 START = Sys.time()
 
@@ -39,6 +39,7 @@ for (k in 1:length(ListTimes)){
   files <- list.files(path=output_dir,
                       pattern=paste0(Sp, ".*", ".tif"), 
                       all.files=FALSE, full.names=TRUE,recursive=F)
+                      print(head(files))
     
   s <- stack(files) # stack rasters
   i <- (maxValue(s))>0 # select only rasters that succeeded (contain values > 0)
