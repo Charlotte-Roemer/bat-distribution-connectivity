@@ -243,7 +243,7 @@ n <- nrow(X_pred)
 # y_pred <- numeric(n)
 # y_sd   <- numeric(n)  # incertitude (écart-type)
 
-# start_idx <- seq(1, n, by = chunk_size)
+start_idx <- seq(1, n, by = chunk_size)
 
 # for (i in start_idx) {
 #   idx <- i:min(i + chunk_size - 1, n)
