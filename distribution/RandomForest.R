@@ -215,8 +215,8 @@ return_start <- function(period) {
 return_end <- function(period) {
   switch(period,
     year = 304L,
-    spring = 135L,
-    summer = 212L,
+    spring = 151L,
+    summer = 226L,
     autumn = 304L
   )
 }
