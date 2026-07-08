@@ -60,5 +60,3 @@ for (k in 1:length(ListTimes)){
 END=Sys.time()
 TIMEDIFF=END-START
 TIMEDIFF
-
-beep(2)
