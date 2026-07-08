@@ -79,10 +79,12 @@ Coord_Land_Cover <- function(points, names_coord, bm, bl, layer) {
 
     # Determine which clc year is closest
     ocs_file <- ocs_files[which.min(abs(ocs_annees - as.integer(year)))]
+    cat("ocs_file =", ocs_file, "\n")
     OCS <- terra::rast(ocs_file) # OCS OSO is already in L93
-    print(terra::freq(OCS))
-    print(terra::minmax(OCS))
+    print(sort(terra::freq(OCS)$value))
+  } # ligne a supprimer
 
+    for (year in unique_years) { # ligne a supprimer
     # create a buffer around the points
     #tableau_BS <- sf::st_buffer(tableau_year, bs) %>%
     #  sf::st_transform(2154)
