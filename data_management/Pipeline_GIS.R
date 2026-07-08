@@ -51,14 +51,6 @@ dir.create(file.path(data_folder, "observations", "pred_vars"), showWarnings = F
 obs_vars_folder <- file.path(data_folder, "observations", "obs_vars")
 pred_vars_folder <- file.path(data_folder, "observations", "pred_vars")
 
-# I keep the loop for later (meteo) no need for folder but useful as filenaming
-# for (i in seq(3, 11)){
-# for (ii in seq(1, 2)){
-# folder_name <- paste0(sprintf("%02d", i), "-", ii)
-# dir.create(file.path(pred_vars_folder, folder_name), showWarnings = FALSE)
-# }
-# }
-
 ## loading study area
 # change to zone <− sf::st_read(zone_file, layer = opt$region) in production
 print("Loading study area...")
@@ -69,29 +61,11 @@ print("Study area loaded.")
 ## Function folder :
 folderfun <- file.path(project_path, "data_management","f_Coord")
 
-
-# for testing purposes
-
-## opt <- NA
-## opt$region <- "france_met"
-## opt$mode <- "train"
-
-
-# FCoord varie selon qu’on soit sur les observations ou de la préparation
-# de données de prédiction
-
-# valid <- FALSE
-# train <- TRUE  #Si on veut entrainer le modèle, sinon predict
-
 # replace date setting with options
-# to be replaced
 if (opt$mode == "predict") {
   print("predict mode")
-  # date_pred should be in fortnightnumber_year format fn_yyyy. Fortnight scales
-  # from 1 to 24 as there are two every month (ex : 2_2023)
   date_pred <- opt$date
 }
-# end of replacement
 
 print(paste0("MODE : ", opt$mode))
 
@@ -114,7 +88,6 @@ if (opt$mode == "train" && loc_train_exists == FALSE) {
   nuits_obs$Y <- nuits_obs$latitude
 
   locs <- sf::st_as_sf(nuits_obs, coords = c("X", "Y"), remove = FALSE, crs = 4326)
-  ## rapide
 
   if(opt$region %in% c("europe", "french_neighbours")){
     locs = locs %>% 
@@ -122,8 +95,6 @@ if (opt$mode == "train" && loc_train_exists == FALSE) {
   }
 
   locs <- locs[zone, ]
-  ## long
-  ## locs_intersects <- sf::st_intersection(locs, zone)
 
   locs <- locs %>% 
     dplyr::select(X, Y, Nuit)
@@ -193,7 +164,6 @@ if (opt$mode == "train" && loc_train_exists == FALSE) {
     locs_etrs89$fortnight_year
   )
 
-
   print("Getting codes from temp file, left joining them to locs")
   codes <- locs_etrs89 %>%
     dplyr::select(FID, code)
@@ -204,8 +174,6 @@ if (opt$mode == "train" && loc_train_exists == FALSE) {
   locs <- locs %>%
     dplyr::select(-FID) %>%
     sf::st_drop_geometry()
-  ## locs$X <- locs$longitude
-  ## locs$Y <- locs$latitude
   print("Writting observations with codes file")
 
   FCoord <- file.path(obs_vars_folder, paste0("loc_train_", opt$region))
@@ -235,7 +203,6 @@ if (opt$region %in% c("idf", "france_met")) {
   #  GIS Layers locations :
   folder_alan <- file.path(data_folder, "GIS", "ALAN")
   folder_vcf <- file.path(data_folder, "GIS", "VCF")
-  # layer_alti <- file.path(data_folder, "GIS", "BDALTI")
   layer_alti <- file.path(data_folder, "GIS", "copernicus", "data")
   layer_Carthage_P <- file.path(data_folder, "GIS", "BD_TOPAGE_2024-shp", "SurfaceElementaire_FXX.shp")
   layer_Carthage_C <- file.path(data_folder, "GIS", "BD_TOPAGE_2024-shp", "TronconHydrographique_FXX.shp")
@@ -295,106 +262,104 @@ for (i in 1:length(listfun))
 }
 
 
-# print(FCoord)
+# ## Bioclim ###
+# print("Bioclim")
+# Coord_BioclimLocal(
+#   points = FCoord,
+#   names_coord = Coord_Headers,
+#   layer_folder = bioclim_folder
+# )
 
-## Bioclim ###
-print("Bioclim")
-Coord_BioclimLocal(
-  points = FCoord,
-  names_coord = Coord_Headers,
-  layer_folder = bioclim_folder
-)
+# ### ALAN ###
+# print("ALAN")
+# Coord_ALAN(
+#   points = FCoord,
+#   names_coord = c(Coord_Headers, "Nuit"),
+#   bm = BM,
+#   bl = BL,
+#   layers = folder_alan
+# )
 
-### ALAN ###
-print("ALAN")
-Coord_ALAN(
-  points = FCoord,
-  names_coord = c(Coord_Headers, "Nuit"),
-  bm = BM,
-  bl = BL,
-  layers = folder_alan
-)
-
-# ALTI ####
-print("Altitude & slope")
-Coord_Alti(
-  points = FCoord,
-  names_coord = Coord_Headers,
-  bs = BS,
-  bm = BM,
-  bl = BL,
-  region = opt$region,
-  layer = layer_alti
-)
+# # ALTI ####
+# print("Altitude & slope")
+# Coord_Alti(
+#   points = FCoord,
+#   names_coord = Coord_Headers,
+#   bs = BS,
+#   bm = BM,
+#   bl = BL,
+#   region = opt$region,
+#   layer = layer_alti
+# )
 
 
-# CARTHAGE (eau) ####
-print("Water")
-Coord_Water(
-  points = FCoord,
-  names_coord = Coord_Headers,
-  water_polyg = layer_Carthage_P,
-  water_lines = layer_Carthage_C
-)
+# # CARTHAGE (eau) ####
+# print("Water")
+# Coord_Water(
+#   points = FCoord,
+#   names_coord = Coord_Headers,
+#   water_polyg = layer_Carthage_P,
+#   water_lines = layer_Carthage_C
+# )
 
 
-if (opt$region == "idf"){
-  ## Ecoline (idf)
-  Coord_Ecoline(
-    points = FCoord,
-    names_coord = Coord_Headers,
-    ecoline_vh = layer_ecoline_high,
-    ecoline_vb = layer_ecoline_low,
-    buffer = BM
-  )
+# if (opt$region == "idf"){
+#   ## Ecoline (idf)
+#   Coord_Ecoline(
+#     points = FCoord,
+#     names_coord = Coord_Headers,
+#     ecoline_vh = layer_ecoline_high,
+#     ecoline_vb = layer_ecoline_low,
+#     buffer = BM
+#   )
 
-  # MOS Land Cover ####
-  print("MOS")
-  Coord_MOSraster(
-    points = FCoord,
-    names_coord = c(Coord_Headers, "Nuit"),
-    bs = BS,
-    bm = BM,
-    bl = BL,
-    layer = folder_MOS
-  )
-}
+#   # MOS Land Cover ####
+#   print("MOS")
+#   Coord_MOSraster(
+#     points = FCoord,
+#     names_coord = c(Coord_Headers, "Nuit"),
+#     bs = BS,
+#     bm = BM,
+#     bl = BL,
+#     layer = folder_MOS
+#   )
+# }
 
-if (!(opt$region %in% c("europe", "french_neighbours"))) {
-  ### wind turbines ###
+# if (!(opt$region %in% c("europe", "french_neighbours"))) {
+#   ### wind turbines ###
 
-  print("wind turbines")
-  Coord_eol(
-    points = FCoord,
-    names_coord = Coord_Headers,
-    bm = BM,
-    bl = BL,
-    layer = layer_wind_turbines
-  )
+#   print("wind turbines")
+#   Coord_eol(
+#     points = FCoord,
+#     names_coord = Coord_Headers,
+#     bm = BM,
+#     bl = BL,
+#     layer = layer_wind_turbines
+#   )
 
-  ### Grotto ###
-  print("Grotto")
-  Coord_Grotto(
-    points = FCoord,
-    names_coord = Coord_Headers,
-    bs = BS,
-    bm = BM,
-    bl = BL,
-    layer = layer_grotto
-  )
-}
+#   ### Grotto ###
+#   print("Grotto")
+#   Coord_Grotto(
+#     points = FCoord,
+#     names_coord = Coord_Headers,
+#     bs = BS,
+#     bm = BM,
+#     bl = BL,
+#     layer = layer_grotto
+#   )
+# }
 
-if (opt$region != "idf"){
-# VCF ###
-print("VCF")
-Coord_VCF(
-  points = FCoord,
-  names_coord = c(Coord_Headers, "Nuit"),
-  bs = BS,
-  bm = BM,
-  bl = BL,
-  layers = folder_vcf
-)
+# if (opt$region != "idf"){
+# # VCF ###
+# print("VCF")
+# Coord_VCF(
+#   points = FCoord,
+#   names_coord = c(Coord_Headers, "Nuit"),
+#   bs = BS,
+#   bm = BM,
+#   bl = BL,
+#   layers = folder_vcf
+# )
 
 ## Land cover ####
 cat("Land Cover", fill = TRUE)
@@ -405,26 +370,27 @@ Coord_Land_Cover(
   bl = BL,
   layer = Layer_OCS
 )
-}
 
-# ROADS and TRAINS ####
-print("Roads and trains")
-Coord_Roads(
-  points = FCoord,
-  names_coord = Coord_Headers,
-  bm = BM,
-  bl = BL,
-  folder = folder_route
-)
+# }
 
-# WEATHER
-print("Meteo")
-Coord_Meteo(
-  points = FCoord,
-  temp = layer_temp,
-  prec = layer_precip,
-  wind = layer_wind
-)
+# # ROADS and TRAINS ####
+# print("Roads and trains")
+# Coord_Roads(
+#   points = FCoord,
+#   names_coord = Coord_Headers,
+#   bm = BM,
+#   bl = BL,
+#   folder = folder_route
+# )
+
+# # WEATHER
+# print("Meteo")
+# Coord_Meteo(
+#   points = FCoord,
+#   temp = layer_temp,
+#   prec = layer_precip,
+#   wind = layer_wind
+# )
 
 print("ALL VARIABLES EXTRACTED !")
 

@@ -80,6 +80,8 @@ Coord_Land_Cover <- function(points, names_coord, bm, bl, layer) {
     # Determine which clc year is closest
     ocs_file <- ocs_files[which.min(abs(ocs_annees - as.integer(year)))]
     OCS <- terra::rast(ocs_file) # OCS OSO is already in L93
+    print(terra::freq(OCS))
+    print(terra::minmax(OCS))
 
     # create a buffer around the points
     #tableau_BS <- sf::st_buffer(tableau_year, bs) %>%
@@ -103,6 +105,7 @@ Coord_Land_Cover <- function(points, names_coord, bm, bl, layer) {
 
     # Append medium buffer list
     tableaux_m <- rlist::list.append(tableaux_m, landcov_fracs_Medium)
+    print(sort(unique(landcov_fracs_Medium$value)))
     rm(landcov_fracs_Medium)
 
     # Extract values in large buffer
@@ -117,6 +120,7 @@ Coord_Land_Cover <- function(points, names_coord, bm, bl, layer) {
 
     # Append large buffer list
     tableaux_l <- rlist::list.append(tableaux_l, landcov_fracs_Large)
+    print(sort(unique(landcov_fracs_Large$value)))
     rm(OCS, landcov_fracs_Large)
   }
   # Concatenate lists of tibbles
@@ -127,14 +131,14 @@ Coord_Land_Cover <- function(points, names_coord, bm, bl, layer) {
 
   #  Pivot tibbles and rename columns
   landcov_fracs_Medium_pivot <- tableaux_m_bind %>%
-    tidyr::pivot_wider(names_from = "value", values_from = "freq") %>% # pivot to use CLC values as column names
+    tidyr::pivot_wider(names_from = "value", values_from = "freq") %>% # pivot to use OSO/ESA values as column names
     dplyr::rename_with(~ paste0("SpHOCS", ., "M"), -FID) %>%
     replace(is.na(.), 0)
 
   rm(tableaux_m_bind)
 
   landcov_fracs_Large_pivot <- tableaux_l_bind %>%
-    tidyr::pivot_wider(names_from = "value", values_from = "freq") %>% # pivot to use CLC values as column names
+    tidyr::pivot_wider(names_from = "value", values_from = "freq") %>% # pivot to use OSO/ESA values as column names
     dplyr::rename_with(~ paste0("SpHOCS", ., "L"), -FID) %>%
     replace(is.na(.), 0)
 
