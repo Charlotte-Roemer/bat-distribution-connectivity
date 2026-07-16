@@ -34,10 +34,10 @@ option_list <- list(
     type = "character", default = "france_met",
     help = "Which area do you want to predict on ?"
   ),
-  optparse::make_option(c("-g", "--grid"),
-    type = "character", default = "500",
-    help = "Which size is your grid in meters (500, 200, 100) ?"
-  ),
+  # optparse::make_option(c("-g", "--grid"),
+  #   type = "character", default = "500",
+  #   help = "Which size is your grid in meters (500, 200, 100) ?"
+  # ),
   optparse::make_option(c("-p", "--period"),
     type = "character", default = "year",
     help = "Is it a yearly model or a seasonal one ? (spring, summer, autumn)"
@@ -63,6 +63,7 @@ option_list <- list(
 # Parse options to opt object
 opt_parser <- optparse::OptionParser(option_list = option_list)
 opt <- optparse::parse_args(opt_parser)
+opt$grid = ifelse(opt$region == "idf", 100, 500)
 
 print(opt$species)
 
