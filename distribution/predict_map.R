@@ -149,10 +149,12 @@ pred_data$SpRecorder <- "SM4"
 
 train_names <- colnames(model$spatmod$trainingData)
 required_vars <- model$spatmod$finalModel$xNames
+print("Required variables")
 print(required_vars)
 pred_names <- colnames(pred_data)
 
-setdiff(train_names, pred_names) # pour connaitre les colonnes à ajouter
+print("Missing variables")
+missing_vars <- setdiff(model$finalModel$xNames, pred_names) # pour connaitre les colonnes à ajouter
 # [1] "SpGite"      "SpCDate"     "SpSDate"     "SpYear"      "SpEDF1"      "SpEDF2"
 # [7] "SpEDF3"      "SpEDF4"      "SpEDF5"      "Splatitude"  "Splongitude" "SpRecorder"
 
@@ -164,10 +166,10 @@ pred_data$SpSDate <- sin(SpFDate / 365 * 2L * pi) # to create a circular variabl
 pred_data$SpYear <- lubridate::year(pred_data$Nuit)
 pred_data$Splongitude <- pred_data$X
 pred_data$Splatitude <- pred_data$Y
-pred_data$Spprecipitations <- 0
-pred_data$Sptemp <- 0
-pred_data$Spwind <- 0
-pred_data$SpRo_dist <- 0
+pred_data$Spprecipitations <- 0 # to use monthly mean
+pred_data$Sptemp <- 0 # to use monthly mean
+pred_data$Spwind <- 0 # to use monthly mean
+pred_data$SpRo_dist <- 0 # to deal with possible sampling bias near roads
 
 if (!is.null(opt$predict_period)) {
   pred_data$SpSaison <- opt$predict_period
