@@ -1,7 +1,7 @@
 
 library(tidyverse)
 library(sf)
-library(raster)
+library(terra)
 library(viridis)
 library(beepr)
 
@@ -10,7 +10,7 @@ DateOrigin = "SPRING"
 DateGoal = "SPRING"
 
 # Connectivity
-Connectivity = raster(list.files("/home/charlotte/Bureau/SDM/French_neighbours/Connectivity/VC90_all_acticlass_None_season/Stacked/", 
+Connectivity = terra::rast(list.files("/home/charlotte/Bureau/SDM/French_neighbours/Connectivity/VC90_all_acticlass_None_season/Stacked/", 
                                  pattern=paste0(".*", Sp, "_", DateGoal),
                                  full.names = T))
 
@@ -75,6 +75,7 @@ plot(c_final)
 # 
 # plot(c_final_goal)
 
+crs(Connectivity) <- st_crs(2154)$wkt # a WKT string
 temp<-as.data.frame(Connectivity, xy = T)
 names(temp)[which(grepl(paste0(".*", Sp, "_", DateOrigin), names(temp)))] = "layer"
 
@@ -84,10 +85,30 @@ c_final3 = st_as_sf(c_final2, crs = 2154)
 # c_final_goal2 = st_sfc(c_final_goal)
 # c_final_goal3 = st_as_sf(c_final_goal2, crs = 4326)
 
+countries <- c(
+  "Andorra", "Portugal", "Spain", "France", "Switzerland", "Germany",
+  "Belgium", "UK", "Netherlands", "Monaco", "Luxembourg", "Italy"
+)
+
+Europe <- map_data("world", region = countries)
+Europe_sf = st_as_sf(
+  Europe, coords = c("long", "lat"), crs=4326, remove=FALSE)  %>%
+  group_by(group) %>%
+  summarise(geometry = st_combine(geometry)) %>%
+  st_cast("POLYGON") %>% 
+  st_transform("+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs") %>% 
+  st_transform(2154)
+
+# Crop to raster extent
+bbox <- st_bbox(Connectivity) %>% 
+  st_as_sfc()
+
+isection <- st_intersection(Europe_sf, bbox)
+
 png(filename=paste0("/home/charlotte/Documents/Donnees vigie-chiro/Connectivity_maps/", 
                     Sp, "_", DateOrigin, ".png"),width=1600,height=1000,res=300)
 ggplot() +
-  geom_raster(data=temp, aes(x = x, y = y, fill = (Pipnat_TOTAL_n170), col=NULL)) +
+  geom_raster(data=temp, aes(x = x, y = y, fill = layer, col=NULL)) +
   geom_sf(data=c_final3, fill="#FDE725FF", colour = NA) +
   #geom_sf(data=c_final_goal3, fill="#FDE725FF", colour = NA) +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
@@ -97,16 +118,12 @@ ggplot() +
                        trans = scales::pseudo_log_trans(base = 10),
                        na.value=NA,
                        name = "Index of connectivity") +
-  coord_sf()
+  coord_sf() +
+  geom_sf(data=isection, col="white", fill = NA, size = 1)
 
 dev.off()
-# 
-# FRANCE <- map_data("world", region = "France")
-# FRANCE_sf = st_as_sf(
-#   FRANCE, coords = c("long", "lat"), crs=4326, remove=FALSE)  %>%
-#   group_by(group) %>%
-#   summarise(geometry = st_combine(geometry)) %>%
-#   st_cast("POLYGON")
+
+
 # 
 # png(filename=paste0("C:/Users/croemer01/Documents/Donnees vigie-chiro/Connectivity_maps/", 
 #                     Sp, "_", DateOrigin, ".png"),width=1600,height=1000,res=300)
