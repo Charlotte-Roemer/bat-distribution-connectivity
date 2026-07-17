@@ -108,7 +108,7 @@ isection <- st_intersection(Europe_sf, bbox)
 png(filename=paste0("/home/charlotte/Documents/Donnees vigie-chiro/Connectivity_maps/", 
                     Sp, "_", DateOrigin, ".png"),width=1600,height=1000,res=300)
 ggplot() +
-  geom_raster(data=temp, aes(x = x, y = y, fill = layer, col=NULL)) +
+  geom_raster(data=temp, aes(x = x, y = y, fill = layer*100, col=NULL)) +
   geom_sf(data=c_final3, fill="#FDE725FF", colour = NA) +
   #geom_sf(data=c_final_goal3, fill="#FDE725FF", colour = NA) +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
@@ -119,7 +119,7 @@ ggplot() +
                        na.value=NA,
                        name = "Index of connectivity") +
   coord_sf() +
-  geom_sf(data=isection, col="white", fill = NA, size = 1)
+  geom_sf(data=isection, col="white", fill = NA, size = 0.2)
 
 dev.off()
 
