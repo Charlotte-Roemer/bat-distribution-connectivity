@@ -1,4 +1,3 @@
-
 # Create patches for movement model
 
 source("../variables.R")
@@ -6,40 +5,40 @@ library(data.table)
 library(tidyverse)
 library(raster)
 library(sf)
-#library(landscapemetrics)
+# library(landscapemetrics)
 library(gdistance)
 library(terra)
 
 ## Script is called with Rscript and options :
 option_list <- list(
   optparse::make_option(c("-s", "--species"),
-                        type = "character", default = "Pippip",
-                        help = 'Set modelling species as a 6 character species code (e.g. "Pippip")'
+    type = "character", default = "Pippip",
+    help = 'Set modelling species as a 6 character species code (e.g. "Pippip")'
   ),
   optparse::make_option(c("-r", "--region"),
-                        type = "character", default = "france_met",
-                        help = 'Set region of interest between "france_met" (default),
+    type = "character", default = "france_met",
+    help = 'Set region of interest between "france_met" (default),
                         "europe", "idf", "french_neighbours'
   ),
   optparse::make_option(c("-t", "--threshold"),
-                        type = "character", default = "50",
-                        help = 'Set sorting threshold between values : "0", "50", "90" and "weighted'
+    type = "character", default = "50",
+    help = 'Set sorting threshold between values : "0", "50", "90" and "weighted'
   ),
   optparse::make_option(c("-v", "--variableselection"),
-                        type = "character", default = "None",
-                        help = 'Choose which variable selection you want to make between values : "None", "VSURF", "indisp", "PCA", "PCAdecomp".'
+    type = "character", default = "None",
+    help = 'Choose which variable selection you want to make between values : "None", "VSURF", "indisp", "PCA", "PCAdecomp".'
   ),
   optparse::make_option(c("-d", "--date"),
-                        type = "character",
-                        help = "Necessary : pass date when script is run with $(date +%Y-%m-%d)"
+    type = "character",
+    help = "Necessary : pass date when script is run with $(date +%Y-%m-%d)"
   ),
   optparse::make_option(c("--data_sel"),
-                        type = "character", default = "all",
-                        help = "Do you reduce data by the pixel (no = all, yes = median)"
+    type = "character", default = "all",
+    help = "Do you reduce data by the pixel (no = all, yes = median)"
   ),
   optparse::make_option(c("--acti"),
-                        type = "character", default = "nb_contacts",
-                        help = "Which value do you want to predict ? nbcontacts, acticlass"
+    type = "character", default = "nb_contacts",
+    help = "Which value do you want to predict ? nbcontacts, acticlass"
   ),
   optparse::make_option(c("-p", "--period"),
     type = "character", default = "year",
@@ -52,114 +51,117 @@ opt_parser <- optparse::OptionParser(option_list = option_list)
 opt <- optparse::parse_args(opt_parser)
 
 # Load acoustic predictions
-Name = paste0("RFspat_VC", opt$threshold, "_",  opt$date, ".*", "_noSpace_", opt$data_sel, "_", opt$acti, "_", opt$variableselection) # RFspat_VC90_2026-05-04_noSpace_all_acticlass_None
+Name <- paste0("RFspat_VC", opt$threshold, "_", opt$date, ".*", "_noSpace_", opt$data_sel, "_", opt$acti, "_", opt$variableselection) # RFspat_VC90_2026-05-04_noSpace_all_acticlass_None
 print(Name)
-#Directory <- "/home/charlotte/Bureau/SDM/IDF_k4/Season/" # repertory with outputs from Predict_act
-season_year = ifelse(opt$period == "year", "year", "season")
-Directory = file.path(data_path, "ModPred", opt$acti, paste0("VC", opt$threshold, "_", opt$data_sel, "_", opt$acti, "_", opt$variableselection, "_", season_year))
+# Directory <- "/home/charlotte/Bureau/SDM/IDF_k4/Season/" # repertory with outputs from Predict_act
+season_year <- ifelse(opt$period == "year", "year", "season")
+Directory <- file.path(data_path, "ModPred", opt$acti, paste0("VC", opt$threshold, "_", opt$data_sel, "_", opt$acti, "_", opt$variableselection, "_", season_year))
 print(Directory)
-#NewDir = file.path(data_path, "Connectivity", Name)
-NewDir = file.path(paste0(data_path, "/Connectivity/", basename(Directory)))
+# NewDir = file.path(data_path, "Connectivity", Name)
+NewDir <- file.path(paste0(data_path, "/Connectivity/", basename(Directory)))
 dir.create(NewDir)
 
-START=Sys.time()
+START <- Sys.time()
 
 # Functions needed
 
-Q80_function <- function(x_raster)
-{
+Q80_function <- function(x_raster) {
   # Patches are areas with value > Q80
-  Data_Q80 = x_raster
-  Data_Q80[Data_Q80<quantile(Data_Q80, 0.8)] = 0
-  Data_Q80[Data_Q80>quantile(Data_Q80, 0.8)] = 1
-  
+  Data_Q80 <- x_raster
+  Data_Q80[Data_Q80 < quantile(Data_Q80, 0.8)] <- 0
+  Data_Q80[Data_Q80 > quantile(Data_Q80, 0.8)] <- 1
+
   return(Data_Q80)
 }
 
-Clump_function <- function(Raster_sub)
-{
-  Raster_patches <- clump(Raster_sub, directions=8, gaps=F)
+Clump_function <- function(Raster_sub) {
+  Raster_patches <- clump(Raster_sub, directions = 8, gaps = F)
   y <- patches(rast(Raster_patches))
-  rz <- zonal(cellSize(y, unit="ha"), y, sum, as.raster=TRUE)
+  rz <- zonal(cellSize(y, unit = "ha"), y, sum, as.raster = TRUE)
   s <- ifel(rz < 100, NA, y)
-  s2 = st_as_sf(as.polygons(s))
-  patches_perimeter = as.data.frame(st_coordinates(s2))
+  s2 <- st_as_sf(as.polygons(s))
+  patches_perimeter <- as.data.frame(st_coordinates(s2))
   colnames(patches_perimeter)[colnames(patches_perimeter) == "X"] <- "x"
   colnames(patches_perimeter)[colnames(patches_perimeter) == "Y"] <- "y"
-  patches_perimeter$id = rownames(patches_perimeter)
-  
+  patches_perimeter$id <- rownames(patches_perimeter)
+
   return(patches_perimeter)
 }
 
 # Load files
 print("Load files")
 print(paste0("^", Name, ".*", opt$species, ".*", opt$region, ".*", "predictions\\.tif$"))
-list_file <- list.files(Directory, recursive=TRUE, pattern=paste0("^", Name, ".*", opt$species, ".*", opt$region, ".*", "predictions\\.tif$"))
+list_file <- list.files(Directory, recursive = TRUE, pattern = paste0("^", Name, ".*", opt$species, ".*", opt$region, ".*", "predictions\\.tif$"))
 print(list_file)
 
-ls2 = paste(Directory, list_file, sep="/")
+ls2 <- paste(Directory, list_file, sep = "/")
 print(ls2)
 ld <- lapply(ls2, function(x) raster(x))
 
-Sp = opt$species
+Sp <- opt$species
 print(Sp)
 
 # Define origin and goal data
-dataa_ALLSPRING = subset(ld, grepl(Sp, ld) & grepl("spring", ld))
-dataa_ALLSUMMER = subset(ld, grepl(Sp, ld) & grepl("summer", ld))
-dataa_ALLAUTUMN = subset(ld, grepl(Sp, ld) & grepl("autumn", ld))
+dataa_ALLSPRING <- subset(ld, grepl(Sp, ld) & grepl("spring", ld))
+dataa_ALLSUMMER <- subset(ld, grepl(Sp, ld) & grepl("summer", ld))
+dataa_ALLAUTUMN <- subset(ld, grepl(Sp, ld) & grepl("autumn", ld))
 s <- stack(ld)
-if(dim(s)[3]!=3){
+if (dim(s)[3] != 3) {
   stop(paste0("error: there are ", dim(s)[3], " layers for ", Sp))
 }
 
 print("Transition layer")
 
 # Create transition layer by selecting the highest value of each pixel across the year
-Raster_TRANSITION_YEAR = max(s)
+Raster_TRANSITION_YEAR <- max(s)
 
 # Create transition layer
-Raster_extent= extent(Raster_TRANSITION_YEAR)
+Raster_extent <- extent(Raster_TRANSITION_YEAR)
 land_cost_sub_YEAR <- crop(Raster_TRANSITION_YEAR, Raster_extent)
-
-print("Merge with offshore layer")
-# Read offshore raster
-List_offshore = list.files("/sps/mnhn/croemer/data/GIS/Offshore", pattern = ".tif$", full.names = T)
-offshore = subset(List_offshore, grepl(Sp, List_offshore))
-offshore_raster <- rast(offshore)
-crs(offshore_raster) <- "EPSG:3035"
-print(summary(offshore_raster))
-
-# Align offshore raster according to transition layer
-land_cost_sub_YEAR_spat = rast(land_cost_sub_YEAR)
+land_cost_sub_YEAR_spat <- rast(land_cost_sub_YEAR)
 crs(land_cost_sub_YEAR_spat) <- "EPSG:2154"
-offshore_align <- project( 
-  offshore_raster,
-  land_cost_sub_YEAR_spat,
-  method = "bilinear"
-)
 
-# Check alignment before fusion : if TRUE it's OK
-print("is alignment OK?")
-print(terra::compareGeom(land_cost_sub_YEAR_spat, offshore_align))
+if (opt$region == "french_neighbours") {
+  print("Merge with offshore layer")
+  # Read offshore raster
+  List_offshore <- list.files("/sps/mnhn/croemer/data/GIS/Offshore", pattern = ".tif$", full.names = T)
+  offshore <- subset(List_offshore, grepl(Sp, List_offshore))
+  offshore_raster <- rast(offshore)
+  crs(offshore_raster) <- "EPSG:3035"
+  print(summary(offshore_raster))
 
-# Fusion
-land_cost_sub_YEAR_offshore <- cover(land_cost_sub_YEAR_spat, offshore_align)
+  # Align offshore raster according to transition layer
+  offshore_align <- project(
+    offshore_raster,
+    land_cost_sub_YEAR_spat,
+    method = "bilinear"
+  )
+
+  # Check alignment before fusion : if TRUE it's OK
+  print("is alignment OK?")
+  print(terra::compareGeom(land_cost_sub_YEAR_spat, offshore_align))
+
+  # Fusion
+  land_cost_sub_YEAR_offshore <- cover(land_cost_sub_YEAR_spat, offshore_align)
+  Raster_TRANSITION_YEAR_wtNA <- land_cost_sub_YEAR_offshore
+  Raster_TRANSITION_YEAR_wtNA[is.na(Raster_TRANSITION_YEAR_wtNA)] <- 0 # replace NA by 0 because passage function does not like NA
+} else {
+  Raster_TRANSITION_YEAR_wtNA <- land_cost_sub_YEAR_spat
+  Raster_TRANSITION_YEAR_wtNA[is.na(Raster_TRANSITION_YEAR_wtNA)] <- 0 # replace NA by 0 because passage function does not like NA
+}
 
 # Convert to transition object
-Raster_TRANSITION_YEAR_wtNA = land_cost_sub_YEAR_offshore
-Raster_TRANSITION_YEAR_wtNA[is.na(Raster_TRANSITION_YEAR_wtNA)] <- 0 # replace NA by 0 because passage function does not like NA
 land_cost_sub_YEAR_final <- transition(raster(Raster_TRANSITION_YEAR_wtNA), transitionFunction = mean, 8)
 land_cost_sub_YEAR_final <- geoCorrection(land_cost_sub_YEAR_final, type = "r", scl = T) # "r" if we anticipate low theta values close to randomised shortest path method or "c" else
 
 print("Save transition object")
-#writeRaster(land_cost_sub_YEAR_offshore, paste0(NewDir, "/", Sp, "_", opt$region, "_Year_", "Transition", ".tif"), overwrite=TRUE)
+# writeRaster(land_cost_sub_YEAR_offshore, paste0(NewDir, "/", Sp, "_", opt$region, "_Year_", "Transition", ".tif"), overwrite=TRUE)
 saveRDS(land_cost_sub_YEAR_final, paste0(NewDir, "/", Sp, "_", opt$region, "_Year_", "Transition", ".rds"))
 
 # Get highest values for patches
 print("Get highest values for patches")
-Raster_SPRING= Q80_function(dataa_ALLSPRING[[1]])
-Raster_AUTUMN= Q80_function(dataa_ALLAUTUMN[[1]])
+Raster_SPRING <- Q80_function(dataa_ALLSPRING[[1]])
+Raster_AUTUMN <- Q80_function(dataa_ALLAUTUMN[[1]])
 
 # Crop data in box (optional)
 print("Crop")
@@ -168,19 +170,17 @@ Raster_AUTUMN_sub <- crop(Raster_AUTUMN, Raster_extent)
 
 # Clump pixels and remove small patches
 print("Clump")
-SPRING_patches_perimeter = Clump_function(Raster_SPRING_sub)
-AUTUMN_patches_perimeter = Clump_function(Raster_AUTUMN_sub)
+SPRING_patches_perimeter <- Clump_function(Raster_SPRING_sub)
+AUTUMN_patches_perimeter <- Clump_function(Raster_AUTUMN_sub)
 
-ListPatches = list(SPRING_patches_perimeter, AUTUMN_patches_perimeter)
+ListPatches <- list(SPRING_patches_perimeter, AUTUMN_patches_perimeter)
 
 # Save patches
 fwrite(SPRING_patches_perimeter, paste0(NewDir, "/", Sp, "_", opt$region, "_SPRING", ".csv"))
 fwrite(AUTUMN_patches_perimeter, paste0(NewDir, "/", Sp, "_", opt$region, "_AUTUMN", ".csv"))
 
-END=Sys.time()
-TIMEDIFF=END-START
+END <- Sys.time()
+TIMEDIFF <- END - START
 print(TIMEDIFF)
 
 print(paste0("Patches selected for ", Sp))
-
-
