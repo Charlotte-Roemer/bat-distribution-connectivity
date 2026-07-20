@@ -1,6 +1,6 @@
 library(dplyr)
 # Set data folder location :
-data_vc <- "/home/bbk9/Documents/mnhn/data/Vigie-Chiro"
+data_vc <- "/sps/mnhn/croemer/data/observations/donnees_vigie_chiro"
 
 # Observations
 obs_file <- file.path(data_vc, "SpNuit2_0_DataLP_PF_exportTot.csv")
