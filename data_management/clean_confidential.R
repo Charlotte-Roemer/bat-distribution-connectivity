@@ -42,15 +42,16 @@ parti <- parti %>% left_join(users, by = c("idobservateur" = "identifiant"))
 
 
 # Selecting only non-confidential participations :
-parti_ok <- parti[parti$confidentiel != "oui", ]
+#parti_ok <- parti[parti$confidentiel != "oui", ]
+parti_ok = parti # select all participations
 
-# Getting location for non-confidential participations only :
+# Getting location for participations :
 parti_ok_loc <- dplyr::inner_join(parti_ok,
   loc,
   by = c("idsite" = "id_site", "point" = "nom")
 )
 
-# Adding location info to unique non-confidential nights :
+# Adding location info to unique nights :
 unique_nights_ok_loc <- dplyr::inner_join(unique_nights, parti_ok_loc,
   by = "participation"
 )
