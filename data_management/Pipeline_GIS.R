@@ -362,27 +362,27 @@ for (i in 1:length(listfun))
 # )
 # }
 
-if (opt$region != "idf"){
-## Land cover ####
-cat("Land Cover", fill = TRUE)
-Coord_Land_Cover(
-  points = FCoord,
-  names_coord = c(Coord_Headers, "Nuit"),
-  bm = BM,
-  bl = BL,
-  layer = Layer_OCS
-)
-}
+# if (opt$region != "idf"){
+# ## Land cover ####
+# cat("Land Cover", fill = TRUE)
+# Coord_Land_Cover(
+#   points = FCoord,
+#   names_coord = c(Coord_Headers, "Nuit"),
+#   bm = BM,
+#   bl = BL,
+#   layer = Layer_OCS
+# )
+# }
 
-# ROADS and TRAINS ####
-print("Roads and trains")
-Coord_Roads(
-  points = FCoord,
-  names_coord = Coord_Headers,
-  bm = BM,
-  bl = BL,
-  folder = folder_route
-)
+# # ROADS and TRAINS ####
+# print("Roads and trains")
+# Coord_Roads(
+#   points = FCoord,
+#   names_coord = Coord_Headers,
+#   bm = BM,
+#   bl = BL,
+#   folder = folder_route
+# )
 
 # WEATHER
 print("Meteo")
