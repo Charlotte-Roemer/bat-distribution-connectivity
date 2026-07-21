@@ -85,24 +85,28 @@ Season <- str_to_upper(opt$season)
 cat(Sp, Season, "\n")
 
 # Read Patches
+print("Load Patches")
 Patches <- fread(paste0(Directory, "/", Sp, "_", opt$region, "_", Season, ".csv"))
 
 # Read Transition
+print("Load transition")
 land_cond_sub <- readRDS(paste0(Directory, "/", Sp, "_", opt$region, "_Year_Transition", ".rds"))
 crs(land_cond_sub) <- "EPSG:2154"
+print(object.size(land_cond_sub))
 
-# -------- Cell precalculation for passage function --------
+# # -------- Cell precalculation for passage function --------
 
-coords_mat <- as.matrix(
-  Patches[, c("x", "y")]
-)
+# print("Cell precalculation")
+# coords_mat <- as.matrix(
+#   Patches[, c("x", "y")]
+# )
 
-r_template <- raster(land_cond_sub)
+# r_template <- raster(land_cond_sub)
 
-patch_cells <- cellFromXY(
-  r_template,
-  coords_mat
-)
+# patch_cells <- cellFromXY(
+#   r_template,
+#   coords_mat
+# )
 
 # -------- Tries to calculate paths for N_paths attempts --------
 

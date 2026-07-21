@@ -53,7 +53,7 @@ for (k in 1:length(ListTimes)){
   # Save
   dir.create(paste0(output_dir, "Stacked/"))
   writeRaster(rs1, paste0(output_dir, "Stacked/", 
-                          paste0(Sp, "_", ListTimes[k]), "_TOTAL_n", 
+                          paste0(Sp, "_", opt$region, "_", ListTimes[k]), "_TOTAL_n", 
                           dim(s_no_0)[3],  ".tif"), overwrite = T)
     
   #plot(rs1)
