@@ -36,8 +36,11 @@ START = Sys.time()
 
 for (k in 1:length(ListTimes)){
   print(ListTimes[k])
+
+  season = ListTimes[k]
+
   files <- list.files(path=output_dir,
-                      pattern=paste0(Sp, ".*", ".tif"), 
+                      pattern=paste0(Sp, ".*", opt$region, ".*", season, ".*", ".tif"), 
                       all.files=FALSE, full.names=TRUE,recursive=F)
                       print(head(files))
     
