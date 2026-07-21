@@ -1,10 +1,10 @@
-library(dplyr)
+library(tidyverse)
 # Set data folder location :
 data_vc <- "/sps/mnhn/croemer/data/observations/donnees_vigie_chiro"
 
 # Observations
 obs_file <- file.path(data_vc, "SpNuit2_0_DataLP_PF_exportTot.csv")
-obs <- utils::read.csv(obs_file)
+obs <- readr::read_delim(obs_file)
 night <- subset(obs, select = c("participation", "Nuit"))
 unique_nights <- unique(night)
 
@@ -15,7 +15,7 @@ users <- subset(users, select = c("identifiant", "confidentiel"))
 
 # Locations
 loc_file <- file.path(data_vc, "sites_localites.txt")
-loc <- utils::read.delim(loc_file, sep = "\t")
+loc <- readr::read_delim(loc_file)
 loc <- subset(loc, select = c(
   "id_site",
   "site",
