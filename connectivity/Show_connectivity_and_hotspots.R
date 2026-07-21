@@ -5,8 +5,9 @@ library(terra)
 library(viridis)
 library(beepr)
 
-Sp = "Pipnat"
+Sp = "Nyclei"
 Season = "SPRING"
+Region = "french_neighbours"
 
 # Load connectivity
 Connectivity = rast(list.files("/home/charlotte/Bureau/SDM/French_neighbours/Connectivity/VC90_all_acticlass_None_season/Stacked/", 
@@ -16,7 +17,7 @@ Connectivity = rast(list.files("/home/charlotte/Bureau/SDM/French_neighbours/Con
 
 # Load hotspots
 Hotspots = read_sf(paste0("/home/charlotte/Bureau/SDM/French_neighbours/Connectivity/VC90_all_acticlass_None_season/", 
-                          Sp, "_", Season, ".csv"))
+                          Sp, "_", Region, "_", Season, ".csv"))
 
 # Create polygons from table for polygons
 for(k in 1:length(names(table(Hotspots$L2)))){
@@ -104,7 +105,7 @@ writeRaster(corridors_final,
   isection <- st_intersection(Europe_sf, bbox)
   
   png(filename=paste0("/home/charlotte/Documents/Donnees vigie-chiro/Connectivity_maps/", 
-                      Sp, "_", DateOrigin, ".png"),width=1600,height=1000,res=300)
+                      Sp, "_", Season, ".png"),width=1600,height=1000,res=150)
   ggplot() +
     tidyterra::geom_spatraster(data = corridors_final) +
     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),

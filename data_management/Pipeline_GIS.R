@@ -349,18 +349,20 @@ for (i in 1:length(listfun))
 #   )
 # }
 
-if (opt$region != "idf"){
-# VCF ###
-print("VCF")
-Coord_VCF(
-  points = FCoord,
-  names_coord = c(Coord_Headers, "Nuit"),
-  bs = BS,
-  bm = BM,
-  bl = BL,
-  layers = folder_vcf
-)
+# if (opt$region != "idf"){
+# # VCF ###
+# print("VCF")
+# Coord_VCF(
+#   points = FCoord,
+#   names_coord = c(Coord_Headers, "Nuit"),
+#   bs = BS,
+#   bm = BM,
+#   bl = BL,
+#   layers = folder_vcf
+# )
+# }
 
+if (opt$region != "idf"){
 ## Land cover ####
 cat("Land Cover", fill = TRUE)
 Coord_Land_Cover(
@@ -370,7 +372,6 @@ Coord_Land_Cover(
   bl = BL,
   layer = Layer_OCS
 )
-
 }
 
 # ROADS and TRAINS ####
