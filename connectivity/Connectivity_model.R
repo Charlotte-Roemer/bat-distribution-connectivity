@@ -150,14 +150,16 @@ for (k in 1:N_paths) {
     y_vecteur <- goal_xy[2] - origin_xy[2]
 
     if (x_vecteur == 0 || y_vecteur == 0) {
+      print("Origin and goal are probably the same point")
       next
-    } # does not go further because origin and goal are probably the same point
+    }
 
     Distance <- sqrt(x_vecteur^2 + y_vecteur^2) / 1000
 
     if (Distance >= DistanceMaxSp) {
+      print("Distance between points is too big")
       next
-    } # does not go further because distance between points is too big
+    }
 
     # -------- Check orientation + distance --------
 
@@ -208,7 +210,8 @@ for (k in 1:N_paths) {
       AngleDist <- log10(orientation2^2 * Distance + 1)
 
       if (AngleDist >= Tolerance && (Sp %in% LongMigrant)) {
-        next # if wrong direction and LongDistantMigrant then stop unless short distance
+        print("Long distant migrant : wrong direction and long distance")
+        next
       }
     }
 
