@@ -96,10 +96,10 @@ print(object.size(land_cond_sub))
 
 # # -------- Cell precalculation for passage function --------
 
-# print("Cell precalculation")
-# coords_mat <- as.matrix(
-#   Patches[, c("x", "y")]
-# )
+print("Cell precalculation")
+coords_mat <- as.matrix(
+  Patches[, c("x", "y")]
+)
 
 # r_template <- raster(land_cond_sub)
 
