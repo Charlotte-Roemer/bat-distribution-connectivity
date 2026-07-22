@@ -5,13 +5,13 @@ library(terra)
 library(viridis)
 library(beepr)
 
-Sp = "Nyclei"
+Sp = "Nycnoc"
 Season = "SPRING"
 Region = "french_neighbours"
 
 # Load connectivity
 Connectivity = rast(list.files("/home/charlotte/Bureau/SDM/French_neighbours/Connectivity/VC90_all_acticlass_None_season/Stacked/", 
-                                      pattern=paste0(".*", Sp, "_", Season),
+                                      pattern=paste0(".*", Sp, "_", Region, "_", Season),
                                       full.names = T))
 
 
