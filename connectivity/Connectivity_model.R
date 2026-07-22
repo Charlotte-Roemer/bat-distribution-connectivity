@@ -157,7 +157,9 @@ for (k in 1:N_paths) {
     Distance <- sqrt(x_vecteur^2 + y_vecteur^2) / 1000
 
     if (Distance >= DistanceMaxSp) {
-      print("Distance between points is too big")
+      print("Distance between points is too big:")
+      print(paste0("Distance = ", Distance))
+      print(paste0("While maximum distance = ", DistanceMaxSp))
       next
     }
 
@@ -210,7 +212,9 @@ for (k in 1:N_paths) {
       AngleDist <- log10(orientation2^2 * Distance + 1)
 
       if (AngleDist >= Tolerance && (Sp %in% LongMigrant)) {
-        print("Long distant migrant : wrong direction and long distance")
+        print("Long distant migrant : wrong direction and long distance:")
+        print(paste0("Orientation = ", orientation3))
+        print(paste0("Distance = ", Distance))
         next
       }
     }
