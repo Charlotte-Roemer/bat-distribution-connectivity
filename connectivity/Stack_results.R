@@ -42,9 +42,9 @@ for (k in 1:length(ListTimes)){
   files <- list.files(path=output_dir,
                       pattern=paste0(Sp, ".*", opt$region, ".*", season, ".*", ".tif"), 
                       all.files=FALSE, full.names=TRUE,recursive=F)
-  print(paste0(length(files), " files found")
+  print(paste0(length(files), " files found"))
   files2 = files[1:500]
-  print(paste0(length(files2), " files selected")
+  print(paste0(length(files2), " files selected"))
     
   s <- stack(files2) # stack rasters
   i <- (maxValue(s))>0 # select only rasters that succeeded (contain values > 0)
