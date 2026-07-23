@@ -5,18 +5,18 @@ library(terra)
 library(viridis)
 library(beepr)
 
-Sp = "Nycnoc"
+Sp = "Rhifer"
 Season = "SPRING"
-Region = "french_neighbours"
+Region = "france_met"
 
 # Load connectivity
-Connectivity = rast(list.files("/home/charlotte/Bureau/SDM/French_neighbours/Connectivity/VC90_all_acticlass_None_season/Stacked/", 
-                                      pattern=paste0(".*", Sp, "_", Region, "_", Season),
+Connectivity = rast(list.files("/home/charlotte/Bureau/SDM/France/Connectivity/", 
+                                      pattern=paste0(".*", Sp, "_", Region, "_", Season, ".*.tif"),
                                       full.names = T))
 
 
 # Load hotspots
-Hotspots = read_sf(paste0("/home/charlotte/Bureau/SDM/French_neighbours/Connectivity/VC90_all_acticlass_None_season/", 
+Hotspots = read_sf(paste0("/home/charlotte/Bureau/SDM/France/Connectivity/", 
                           Sp, "_", Region, "_", Season, ".csv"))
 
 # Create polygons from table for polygons
@@ -114,9 +114,9 @@ writeRaster(corridors_final,
     scale_fill_viridis_c(option = "D",
                          trans = scales::pseudo_log_trans(base = 10),
                          na.value=NA,
-                         name = "Index of connectivity") +
-    coord_sf() +
-    geom_sf(data=isection, col="white", fill = NA, size = 0.2)
+                         name = "Index of connectivity") #+
+    #coord_sf() +
+    #geom_sf(data=isection, col="white", fill = NA, size = 0.2)
   
   dev.off()
 }
