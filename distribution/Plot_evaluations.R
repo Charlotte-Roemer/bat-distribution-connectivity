@@ -23,7 +23,8 @@ Concatenation = read_csv(paste0("/home/charlotte/Bureau/SDM/France/Evaluations/"
 #          AUC_presence_absence = kNNDM_auc_pa,
 #          Bias = kNNDM_bias)
 Concat = Concatenation %>% 
-  rename(Justesse = kNNDM_accuracy_Waldock,
+  rename(Justesse = MAE,
+         Justesse_relative = kNNDM_accuracy_Waldock,
          Discrimination_all = kNNDM_discrimination,
          Discrimination_positive = kNNDM_discrimination_presence,
          Precision = kNNDM_precision,
@@ -36,11 +37,11 @@ Concat$Season = as.factor(Concat$Season )
 Concat = Concat %>% 
   mutate(Season = fct_relevel(Season, "printemps", "été", "automne"))
 
-# Plot accuracy
-png(filename=(paste0("/home/charlotte/Bureau/SDM/Evaluation_Accuracy_", Name, ".png")), height=1500, width=2000,res=150)
+# Plot accuracy relative
+png(filename=(paste0("/home/charlotte/Bureau/SDM/Evaluation_Accuracy_relative_", Name, ".png")), height=1500, width=2000,res=150)
 plot1 = Concat %>% 
-  ggplot(aes(Season, Justesse)) +
-  geom_point(aes(fill = Justesse), colour="black", shape=21, size = 8) +
+  ggplot(aes(Season, Justesse_relative)) +
+  geom_point(aes(fill = Justesse_relative), colour="black", shape=21, size = 8) +
   facet_wrap(vars(Species), ncol=4) +
   scale_fill_gradient2(low = 'darkgreen', mid = 'white', high = 'red', midpoint = 1) +
   ylim(0,4) +
@@ -50,6 +51,19 @@ plot1 = Concat %>%
 print(plot1)
 dev.off()
 
+# Plot accuracy
+png(filename=(paste0("/home/charlotte/Bureau/SDM/Evaluation_MAE_", Name, ".png")), height=1500, width=2000,res=150)
+plot1 = Concat %>% 
+  ggplot(aes(Season, Justesse_)) +
+  geom_point(aes(fill = Justesse), colour="black", shape=21, size = 8) +
+  facet_wrap(vars(Species), ncol=4) +
+  scale_fill_gradient2(low = 'darkgreen', mid = 'white', high = 'red', midpoint = 1) +
+  ylim(0,4) +
+  theme_classic(base_size=20) +
+  theme(panel.grid.minor = element_line(colour="grey")) +
+  guides(size = "none")
+print(plot1)
+dev.off()
 
 # Plot precision
 png(filename=(paste0("/home/charlotte/Bureau/SDM/Evaluation_Precision_", Name, ".png")), height=1500, width=2000,res=150)
